@@ -8,7 +8,7 @@
 #include <cstdio>
 
 int __attribute((constructor)) Startup() {
-	printf("Loaded library");
+	printf("Loaded library\n");
 	Interfaces::baseClient = Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClient");
 	Interfaces::engine = Interfaces::GetInterface("./bin/linux64/engine_client.so", "VEngineClient");
 	Interfaces::entityList = Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClientEntityList");
@@ -31,12 +31,6 @@ int __attribute((constructor)) Startup() {
 
 	Hooks::CreateMove::proxy = Framework::Hooking::detour(createMove, (void*) Hooks::CreateMove::CreateMoveHook, 6);
 	printf("CreateMove has been detour'd");
-	
-	// Set the address for the return address spoofer
-	Framework::ReturnAddr::ret_instruction_addr =
-				Framework::ReturnAddr::leave_ret_instruction.searchPattern(
-					createMove
-				);
 
 	return 0;
 }

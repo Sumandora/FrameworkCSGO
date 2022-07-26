@@ -12,17 +12,22 @@ fi
 
 # Set the SU variable on the cmdline to use e.g. doas
 SU="${SU:=sudo}"
-echo "Using '$SU' for upgrading privileges"
-if ! [ -x "$(command -v $SU)" ]; then
-	echo "$SU does not exist"
-	echo "Install it or set the SU variable to a replacement"
-	exit 1
+if ! [ $(id -u) = 0 ]; then
+	echo "Using '$SU' for upgrading privileges"
+	if ! [ -x "$(command -v $SU)" ]; then
+		echo "$SU does not exist"
+		echo "Install it or set the SU variable to a replacement"
+		exit 1
+	fi
+else
+	SU=""
 fi
+
 
 csgo_pid=$(pidof csgo_linux64)
 if [ -z "$csgo_pid" ]; then
-    echo "CS:GO can't be found, is the game running?"
-    exit 1
+	echo "CS:GO can't be found, is the game running?"
+	exit 1
 fi
 
 # Pretty weak disguise as MangoHud
