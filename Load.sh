@@ -54,7 +54,9 @@ $SU $DEBUGGER -p $csgo_pid -n -q -batch \
 	echo "A error has appeared"
 	echo "$DEBUGGER has failed to dlopen the library"
 
-	echo "- Make sure that $DEBUGGER supports the same usage as GDB"
+	if [ $DEBUGGER != "gdb" ]; then
+		echo "- Make sure that $DEBUGGER supports the same usage as GDB"
+	fi
 	
 	echo "- A possible error could be this"
 	echo "https://github.com/LWSS/Fuzion/issues/621#issuecomment-777815272"
