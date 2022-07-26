@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.20)
 project(Framework_Example)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -ftree-vectorize -march=native -mtune=native -fomit-frame-pointer -fpic -fpie -Wno-return-type -fvisibility=hidden")
+
+if(DEBUG)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -fpie -Wno-return-type")
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -ftree-vectorize -march=native -mtune=native -fomit-frame-pointer -fpie -Wno-return-type -fvisibility=hidden")
+endif()
+
 set(CMAKE_SKIP_RPATH ON)
 
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")

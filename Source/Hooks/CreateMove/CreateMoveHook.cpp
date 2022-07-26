@@ -22,8 +22,8 @@ bool Hooks::CreateMove::CreateMoveHook(void* thisptr, float flInputSampleTime, C
 	if(!cmd || !cmd->command_number)
 		return silent;
 
-	int localPlayerIndex = Framework::ReturnAddr::invoke<int, void*>((*(void***)Interfaces::engine)[12], Interfaces::engine);
-	void* localPlayer = Framework::ReturnAddr::invoke<void*, void*, int>((*(void***)Interfaces::entityList)[3], Interfaces::entityList, localPlayerIndex);
+	int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
+	void* localPlayer = Interfaces::entityList->GetClientEntity(localPlayerIndex);
 
 	if(!localPlayer)
 		return silent;
