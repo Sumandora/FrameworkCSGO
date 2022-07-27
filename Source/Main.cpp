@@ -1,15 +1,22 @@
 #include "Hooks/CreateMove/CreateMoveHook.hpp"
+#include "Hooks/SDL/SDLHook.hpp"
+
 #include "Interfaces.hpp"
 
-#include <cstdio>
+#include <pthread.h>
 
-int __attribute((constructor)) Startup() {
-	printf("Loaded library\n");
+void* Initializer(void*) {
 	Interfaces::baseClient = Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClient");
 	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface("./bin/linux64/engine_client.so", "VEngineClient"));
 	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClientEntityList"));
 
 	Hooks::CreateMove::Hook();
-	
+	Hooks::SDL::Hook();
+}
+
+int __attribute((constructor)) Startup() {
+	pthread_t thread;
+	pthread_create(&thread, nullptr, Initializer, nullptr);
+
 	return 0;
 }

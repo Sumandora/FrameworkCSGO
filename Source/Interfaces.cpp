@@ -1,6 +1,5 @@
 #include "Interfaces.hpp"
 #include <cstring>
-#include <cstdio>
 #include <dlfcn.h>
 
 struct InterfaceReg
@@ -24,8 +23,6 @@ void* Interfaces::GetInterface(const char* file, const char* name) {
 
 	while((interface = interface->m_pNext) != nullptr) {
 		if(strncmp(interface->m_pName, name, strlen(interface->m_pName) - 3) == 0) {
-			printf("Found %s at %p\n", interface->m_pName, interface->m_CreateFn);
-
 			/**
 			 * These functions look like this:
 			 * push rbp ; Stack frame - we dont care

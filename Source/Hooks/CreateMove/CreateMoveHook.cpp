@@ -31,7 +31,7 @@ bool Hooks::CreateMove::CreateMoveHook(void* thisptr, float flInputSampleTime, C
 	if(!localPlayer)
 		return silent;
 
-	int flags = *(int*)(static_cast<char*>(localPlayer) + 0x13c);
+	int flags = *reinterpret_cast<int*>(static_cast<char*>(localPlayer) + 0x13c);
 	
 	if(cmd->buttons & IN_JUMP) {
 		if(!(flags & FL_ONGROUND)) {
@@ -54,9 +54,9 @@ void Hooks::CreateMove::Hook() {
 	void* getClientMode = relAddr + 4 + *reinterpret_cast<int*>(relAddr);
 	
 	relAddr = static_cast<char*>(getClientMode) + 4; // Skip push and mov opcodes
-	void* clientMode = *(void**) (relAddr + 4 + *reinterpret_cast<int*>(relAddr));
+	void* clientMode = *reinterpret_cast<void**>(relAddr + 4 + *reinterpret_cast<int*>(relAddr));
 	
 	void* createMove = Utils::GetVTable(clientMode)[25];
 
-	proxy = Framework::Hooking::detour(createMove, (void*) CreateMoveHook, 6);
+	proxy = Framework::Hooking::detour(createMove, reinterpret_cast<void*>(CreateMoveHook), 6);
 }

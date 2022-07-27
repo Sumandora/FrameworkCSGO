@@ -14,7 +14,7 @@ set(CMAKE_SKIP_RPATH ON)
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
 add_library(Framework_Example SHARED ${SOURCE_FILES})
-target_link_libraries(Framework_Example dl)
+target_link_libraries(Framework_Example dl SDL2 GL)
 
 # Setup Framework
 target_include_directories(Framework_Example PUBLIC Dependencies/Framework/Source/Framework)
