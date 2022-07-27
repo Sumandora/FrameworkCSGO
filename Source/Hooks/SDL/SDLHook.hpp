@@ -1,7 +1,7 @@
 #ifndef HOOKS_SDL_HOOK
 #define HOOKS_SDL_HOOK
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 namespace Hooks {
 	namespace SDL {
@@ -10,6 +10,9 @@ namespace Hooks {
 		
 		inline void* pollEvents_proxy;
 		int SDL_PollEvents_Hook(SDL_Event*);
+		
+		inline void* warpMouseInWindow_proxy;
+		void SDL_WarpMouseInWindow_Hook(SDL_Window*, int, int);
 		
 		void Hook();
 	}
