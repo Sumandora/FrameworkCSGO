@@ -4,7 +4,7 @@ project(Framework_Example)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(DEBUG)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -fpie -Wno-return-type")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -fpie -Wno-return-type -ggdb")
 else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -ftree-vectorize -march=native -mtune=native -fomit-frame-pointer -fpie -Wno-return-type -fvisibility=hidden")
 endif()
@@ -16,6 +16,9 @@ file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 add_library(Framework_Example SHARED ${SOURCE_FILES})
 target_link_libraries(Framework_Example dl SDL2 GL)
 
+# SDL
+target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
+
 # Setup Framework
 target_include_directories(Framework_Example PUBLIC Dependencies/Framework/Source/Framework)
 
@@ -26,3 +29,10 @@ target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_HOOKING_DET
 target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
 target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_PATTERN_SCANNING)
 target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_RETURN_ADDRESS)
+
+# Setup ImGui
+target_include_directories(Framework_Example PUBLIC Dependencies/imgui)
+file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
+list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
+list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl.cpp")
+target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})

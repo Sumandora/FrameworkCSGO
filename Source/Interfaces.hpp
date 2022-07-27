@@ -1,5 +1,5 @@
-#ifndef INTERFACES_HPP
-#define INTERFACES_HPP
+#ifndef INTERFACES
+#define INTERFACES
 
 #include "SDK/GameClass/CClientEntityList.hpp"
 #include "SDK/GameClass/CEngineClient.hpp"

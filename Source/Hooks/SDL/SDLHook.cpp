@@ -1,36 +1,48 @@
 #include "Hooking/Hooking.hpp"
 #include "SDLHook.hpp"
 
+#include "../../GUI.hpp"
+
 #include <cstdio>
 #include <dlfcn.h>
 
 void Hooks::SDL::SDL_GL_SwapWindow_Hook(SDL_Window* window) {
-	printf("SwapWindow\n");
-
+	Interface::SwapWindow(window);
 	// We are we returning a void? Ah who cares ^^
 	return reinterpret_cast<void(*)(SDL_Window*)>(swapWindow_proxy)(window);
 }
 
 int Hooks::SDL::SDL_PollEvents_Hook(SDL_Event* event) {
-	printf("PollEvents\n");
+	int returnValue = reinterpret_cast<int(*)(SDL_Event*)>(pollEvents_proxy)(event);
+
+	Interface::PollEvent(event, returnValue);
 	
-	return reinterpret_cast<int(*)(SDL_Event*)>(pollEvents_proxy)(event);
+	return returnValue;
 }
 
+void Hooks::SDL::SDL_WarpMouseInWindow_Hook(SDL_Window* window, int x, int y) {
+	if(Interface::WarpMouseInWindow())
+		return;
+	
+	// Returning voids once again
+	return reinterpret_cast<void(*)(SDL_Window*,int,int)>(warpMouseInWindow_proxy)(window, x, y);
+}
 
-void Hooks::SDL::Hook() {
+void* HookSDLFunction(const char* name, void* hook) {
 	/**
-	 * These are wrapper function
-	 * It has a relative jmp instruction inside of it.
+	 * These are wrapper functions
+	 * They have a relative jmp instruction inside of them.
 	 * We take the address of the relative jmp and let swap it with our method
 	 */
-	char* swapWindow = reinterpret_cast<char*>(dlsym(RTLD_NEXT, "SDL_GL_SwapWindow")) + 1;
-	void** swapWindowJumpAddress = reinterpret_cast<void**>(swapWindow + *reinterpret_cast<int*>(swapWindow + 1) + 5);
-	swapWindow_proxy = *swapWindowJumpAddress;
-	*swapWindowJumpAddress = reinterpret_cast<unsigned int*>(&SDL_GL_SwapWindow_Hook);
-	
-	char* pollEvents = reinterpret_cast<char*>(dlsym(RTLD_NEXT, "SDL_PollEvent")) + 1;
-	void** pollEventsJumpAddress = reinterpret_cast<void**>(pollEvents + *reinterpret_cast<int*>(pollEvents + 1) + 5);
-	pollEvents_proxy = *pollEventsJumpAddress;
-	*pollEventsJumpAddress = reinterpret_cast<unsigned int*>(&SDL_PollEvents_Hook);
+	char* address = reinterpret_cast<char*>(dlsym(RTLD_NEXT, name)) + 1;
+	void** jumpAddress = reinterpret_cast<void**>(address + *reinterpret_cast<int*>(address + 1) + 5);
+	void* realFunction = *jumpAddress;
+	*jumpAddress = reinterpret_cast<unsigned int*>(hook);
+	return realFunction;
+}
+
+void Hooks::SDL::Hook() {
+	swapWindow_proxy		= HookSDLFunction("SDL_GL_SwapWindow", reinterpret_cast<void*>(SDL_GL_SwapWindow_Hook));
+	pollEvents_proxy		= HookSDLFunction("SDL_PollEvent", reinterpret_cast<void*>(SDL_PollEvents_Hook));
+	warpMouseInWindow_proxy	= HookSDLFunction("SDL_WarpMouseInWindow", reinterpret_cast<void*>(SDL_WarpMouseInWindow_Hook));
 }
