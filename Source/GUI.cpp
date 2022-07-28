@@ -75,7 +75,6 @@ void Gui::PollEvent(SDL_Event* event, int result) {
 	else if(visible) {
     	io.MousePos.x += event->motion.xrel;
     	io.MousePos.y += event->motion.yrel;
-    	printf("%f %f\n", io.MousePos.x, io.MousePos.y);
 	}
 	
 	if(visible && result)

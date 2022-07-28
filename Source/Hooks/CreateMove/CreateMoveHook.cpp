@@ -9,6 +9,8 @@
 #include "../../SDK/StateFlags.hpp"
 #include "../../Utils/VMT.hpp"
 
+#include "../../Netvars.hpp"
+
 #include <cstdint>
 #include <cstdio>
 
@@ -30,8 +32,8 @@ bool Hooks::CreateMove::CreateMoveHook(void* thisptr, float flInputSampleTime, C
 
 	if(!localPlayer)
 		return silent;
-
-	int flags = *reinterpret_cast<int*>(static_cast<char*>(localPlayer) + 0x13c);
+	//TODO Create class for player
+	int flags = *reinterpret_cast<int*>(static_cast<char*>(localPlayer) + Netvars::GetOffset("DT_BasePlayer", "m_fFlags"));
 	
 	if(cmd->buttons & IN_JUMP) {
 		if(!(flags & FL_ONGROUND)) {

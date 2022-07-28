@@ -3,23 +3,26 @@
 #include "Utils/VMT.hpp"
 #include "SDK/ClientClass.hpp"
 
-void ReadTable(RecvTable* recvTable, int depth) {
-	for(int i = 0; i < depth; i++)
-		printf("\t");
-	printf("%s\n", recvTable->m_pNetTableName);
+#include <cstring>
+#include <map>
 
+std::map<char*, std::map<char*, int>> netvars;
+
+void ReadTable(RecvTable* recvTable) {
 	for(int i = 0; i < recvTable->m_nProps; i++) {
 		RecvProp* prop = &recvTable->m_pProps[i];
 		if(!prop) continue;
+		if(strcmp(prop->m_pVarName, "baseclass") == 0)
+			continue;
 
-		for(int i = 0; i < depth + 1; i++)
-			printf("\t");
-		printf("%s\t0x%x\n", prop->m_pVarName, prop->m_Offset);
-		
-		if(prop->m_pDataTable)
-			ReadTable(prop->m_pDataTable, depth + 1);
+		if(!netvars.contains(recvTable->m_pNetTableName)) // It should never already exist, but I don't trust Source
+			netvars[recvTable->m_pNetTableName] = {};
+			
+		if(!netvars[recvTable->m_pNetTableName].contains(prop->m_pVarName))
+			netvars[recvTable->m_pNetTableName][prop->m_pVarName] = prop->m_Offset;
+		else if(prop->m_pDataTable) // sometimes there are tables, which have var names. They are always second; skip them
+			ReadTable(prop->m_pDataTable);
 	}
-	
 }
 
 void Netvars::DumpNetvars() {
@@ -40,9 +43,24 @@ void Netvars::DumpNetvars() {
 
 	for(ClientClass* cClass = reinterpret_cast<ClientClass*>(addr); cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
-		printf("%s\n", cClass->m_pNetworkName);
-		ReadTable(table, 1);
+		ReadTable(table);
 	}
-	
-	__asm ("int3");
+
+	// Uncomment for debugging
+    // for (const auto& [key, value] : netvars) {
+	    // for (const auto& [key2, value2] : value) {
+	    	// printf("[%s][%s] = %x\n", key, key2, value2);
+	    // }
+    // }
+}
+
+int Netvars::GetOffset(const char* table, const char* name) {
+    for (const auto& [key, value] : netvars) {
+    	if(strcmp(table, key) == 0)
+    		for (const auto& [key2, value2] : value) {
+    			if(strcmp(name, key2) == 0)
+    				return value2;
+		    }
+    }
+    return 0;
 }
