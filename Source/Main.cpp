@@ -3,6 +3,7 @@
 
 #include "Interfaces.hpp"
 #include "GUI.hpp"
+#include "Netvars.hpp"
 
 #include <pthread.h>
 
@@ -11,7 +12,9 @@ void* Initializer(void*) {
 	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface("./bin/linux64/engine_client.so", "VEngineClient"));
 	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClientEntityList"));
 
-	Interface::Create();
+	Netvars::DumpNetvars();
+	
+	Gui::Create();
 	
 	Hooks::CreateMove::Hook();
 	Hooks::SDL::Hook();

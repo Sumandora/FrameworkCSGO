@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 
-namespace Interface {
+namespace Gui {
 	void Create();
 	void SwapWindow(SDL_Window* window);
 	void PollEvent(SDL_Event* event, int result);

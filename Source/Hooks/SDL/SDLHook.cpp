@@ -7,7 +7,7 @@
 #include <dlfcn.h>
 
 void Hooks::SDL::SDL_GL_SwapWindow_Hook(SDL_Window* window) {
-	Interface::SwapWindow(window);
+	Gui::SwapWindow(window);
 	// We are we returning a void? Ah who cares ^^
 	return reinterpret_cast<void(*)(SDL_Window*)>(swapWindow_proxy)(window);
 }
@@ -15,13 +15,13 @@ void Hooks::SDL::SDL_GL_SwapWindow_Hook(SDL_Window* window) {
 int Hooks::SDL::SDL_PollEvents_Hook(SDL_Event* event) {
 	int returnValue = reinterpret_cast<int(*)(SDL_Event*)>(pollEvents_proxy)(event);
 
-	Interface::PollEvent(event, returnValue);
+	Gui::PollEvent(event, returnValue);
 	
 	return returnValue;
 }
 
 void Hooks::SDL::SDL_WarpMouseInWindow_Hook(SDL_Window* window, int x, int y) {
-	if(Interface::WarpMouseInWindow())
+	if(Gui::WarpMouseInWindow())
 		return;
 	
 	// Returning voids once again
