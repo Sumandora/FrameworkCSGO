@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(Framework_Example)
 
+set(CMAKE_CXX_STANDARD 23)
+
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(DEBUG)
