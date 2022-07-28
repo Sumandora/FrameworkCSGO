@@ -12,16 +12,16 @@
 bool visible = false;
 SDL_Window* windowPtr;
 
-void Interface::Create() {
+void Gui::Create() {
 	ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = nullptr;
     io.LogFilename = nullptr;
 }
 
-void Interface::SwapWindow(SDL_Window* window) {
+void Gui::SwapWindow(SDL_Window* window) {
 	windowPtr = window;
-	// This hack is also used by Osiris, because of the 'const' keyword it is only executed once
+	// This hack is also used by Osiris, because of the 'static' keyword it is only executed once
 	static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
     static const auto _2 = ImGui_ImplOpenGL3_Init("#version 100");
 
@@ -54,7 +54,7 @@ void Interface::SwapWindow(SDL_Window* window) {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Interface::PollEvent(SDL_Event* event, int result) {
+void Gui::PollEvent(SDL_Event* event, int result) {
 	if(
 		event->type != SDL_MOUSEWHEEL &&
 		event->type != SDL_MOUSEBUTTONDOWN &&
@@ -82,7 +82,7 @@ void Interface::PollEvent(SDL_Event* event, int result) {
 		event->type = 0;
 }
 
-bool Interface::WarpMouseInWindow() {
+bool Gui::WarpMouseInWindow() {
 	// lol no	
 	return visible;
 }
