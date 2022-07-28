@@ -28,11 +28,11 @@ void ReadTable(RecvTable* recvTable) {
 void Netvars::DumpNetvars() {
 	/*
 	 * GetAllClasses assembly:
-	 *	mov    0x1988841(%rip),%rax	; Take RIP + offset and dereference it into RAX
-	 *	push   %rbp					; Create Stackframe	|These
-	 *	mov    %rsp,%rbp			; Create Stackframe	|Instructions
-	 *	pop    %rbp					; Destroy Stackframe|Are Useless
-	 *	mov    (%rax),%rax			; Dereference it again
+	 *	mov		0x1988841(%rip),%rax	; Take RIP + offset and dereference it into RAX
+	 *	push	%rbp					; Create Stackframe	|These
+	 *	mov		%rsp,%rbp				; Create Stackframe	|Instructions
+	 *	pop		%rbp					; Destroy Stackframe|Are Useless
+	 *	mov		(%rax),%rax				; Dereference it again
 	 *	ret
 	 */
 	 
@@ -47,20 +47,20 @@ void Netvars::DumpNetvars() {
 	}
 
 	// Uncomment for debugging
-    // for (const auto& [key, value] : netvars) {
-	    // for (const auto& [key2, value2] : value) {
-	    	// printf("[%s][%s] = %x\n", key, key2, value2);
-	    // }
-    // }
+	// for (const auto& [key, value] : netvars) {
+		// for (const auto& [key2, value2] : value) {
+			// printf("[%s][%s] = %x\n", key, key2, value2);
+		// }
+	// }
 }
 
 int Netvars::GetOffset(const char* table, const char* name) {
-    for (const auto& [key, value] : netvars) {
-    	if(strcmp(table, key) == 0)
-    		for (const auto& [key2, value2] : value) {
-    			if(strcmp(name, key2) == 0)
-    				return value2;
-		    }
-    }
-    return 0;
+	for (const auto& [key, value] : netvars) {
+		if(strcmp(table, key) == 0)
+			for (const auto& [key2, value2] : value) {
+				if(strcmp(name, key2) == 0)
+					return value2;
+			}
+	}
+	return 0;
 }
