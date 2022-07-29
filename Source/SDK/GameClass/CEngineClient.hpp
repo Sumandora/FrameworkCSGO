@@ -4,7 +4,7 @@
 #include "VirtualMethod.hpp"
 #include "../../Utils/VMT.hpp"
 
-struct CEngineClient {
+class CEngineClient {
 public:
 	VIRTUAL_METHOD(12, GetLocalPlayer, int, (), (this))
 	VIRTUAL_METHOD(26, IsInGame, bool, (), (this))

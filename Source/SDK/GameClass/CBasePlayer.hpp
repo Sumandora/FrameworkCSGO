@@ -5,7 +5,7 @@
 #include "../LifeState.hpp"
 #include "../BoneDefinitions.hpp"
 
-struct C_BasePlayer : C_BaseEntity {
+class C_BasePlayer : public C_BaseEntity {
 public:
 	NETVAR_FUNCTION(int, Flags, "DT_BasePlayer", "m_fFlags")
 	NETVAR_FUNCTION(char, LifeState, "DT_BasePlayer", "m_lifeState")
