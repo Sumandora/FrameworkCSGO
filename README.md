@@ -75,8 +75,7 @@ Issues and Pull Requests can help improve the program
 git clone --recurse-submodules [URL] # Replace URL with your forked repository
 ./Build.sh # Check for initial build errors
 ** Make changes **
-./Build.sh # Rebuild with your changes
-./Load.sh # Test changes if needed
+./Debug.sh # The debug script will build and load a debug build, which can also be analyzed using a debugger of your choice
 
 git add file1 file2 # If you added new files, you have to mark them to be tracked, if you didn't add any files, you can skip this step.
 git commit -a # Make a commit with all changed files. You may have to set the 'EDITOR' variable, because you have to write a commit message. Please write a small and compact message explaining what you have done.
