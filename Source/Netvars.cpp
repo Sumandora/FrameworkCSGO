@@ -11,7 +11,8 @@ std::map<char*, std::map<char*, int>> netvars;
 void ReadTable(RecvTable* recvTable) {
 	for(int i = 0; i < recvTable->m_nProps; i++) {
 		RecvProp* prop = &recvTable->m_pProps[i];
-		if(!prop) continue;
+		if(!prop)
+			continue;
 		if(strcmp(prop->m_pVarName, "baseclass") == 0)
 			continue;
 
@@ -20,13 +21,13 @@ void ReadTable(RecvTable* recvTable) {
 			
 		if(!netvars[recvTable->m_pNetTableName].contains(prop->m_pVarName))
 			netvars[recvTable->m_pNetTableName][prop->m_pVarName] = prop->m_Offset;
-		else if(prop->m_pDataTable) // sometimes there are tables, which have var names. They are always second; skip them
+		if(prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
 			ReadTable(prop->m_pDataTable);
 	}
 }
 
 void Netvars::DumpNetvars() {
-	/*
+	/**
 	 * GetAllClasses assembly:
 	 *	mov		0x1988841(%rip),%rax	; Take RIP + offset and dereference it into RAX
 	 *	push	%rbp					; Create Stackframe	|These
@@ -35,7 +36,7 @@ void Netvars::DumpNetvars() {
 	 *	mov		(%rax),%rax				; Dereference it again
 	 *	ret
 	 */
-	 
+	
 	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
 	int* ripOffset = reinterpret_cast<int*>(static_cast<char*>(getAllClasses) + 3);
 	void* addr = static_cast<char*>(reinterpret_cast<void*>(ripOffset)) + 4 + *ripOffset;

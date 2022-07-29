@@ -4,6 +4,8 @@
 #include "Interfaces.hpp"
 #include "GUI.hpp"
 #include "Netvars.hpp"
+#include "SDK/GameClass/VirtualMethod.hpp"
+#include "Memory.hpp"
 
 #include <pthread.h>
 
@@ -13,6 +15,7 @@ void* Initializer(void*) {
 	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClientEntityList"));
 
 	Netvars::DumpNetvars();
+	Memory::Create();
 	
 	Gui::Create();
 	

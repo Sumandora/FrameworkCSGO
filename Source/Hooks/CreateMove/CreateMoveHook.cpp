@@ -1,4 +1,3 @@
-#include "ReturnAddr/ReturnAddr.hpp"
 #include "Hooking/Hooking.hpp"
 #include "PatternScan/PatternScan.hpp"
 
@@ -7,6 +6,7 @@
 
 #include "../../SDK/InputFlags.hpp"
 #include "../../SDK/StateFlags.hpp"
+#include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../Utils/VMT.hpp"
 
 #include "../../Netvars.hpp"
@@ -15,25 +15,18 @@
 #include <cstdio>
 
 bool Hooks::CreateMove::CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd) {
-	// Set the address for the return address spoofer
-	if(!Framework::ReturnAddr::ret_instruction_addr)
-		Framework::ReturnAddr::ret_instruction_addr =
-			Framework::ReturnAddr::leave_ret_instruction.searchPattern(
-				__builtin_extract_return_addr(__builtin_return_address(0))
-			);
-
-	bool silent = Framework::ReturnAddr::invoke<bool, void*, float, CUserCmd*>(proxy, thisptr, flInputSampleTime, cmd);
+	bool silent = Framework::ReturnAddr::invoke<bool, void*, float, CUserCmd*>(proxy, Memory::ret_instruction_addr, thisptr, flInputSampleTime, cmd);
 
 	if(!cmd || !cmd->command_number)
 		return silent;
 
 	int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	void* localPlayer = Interfaces::entityList->GetClientEntity(localPlayerIndex);
+	C_BasePlayer* localPlayer = reinterpret_cast<C_BasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 
 	if(!localPlayer)
 		return silent;
-	//TODO Create class for player
-	int flags = *reinterpret_cast<int*>(static_cast<char*>(localPlayer) + Netvars::GetOffset("DT_BasePlayer", "m_fFlags"));
+	
+	int flags = *localPlayer->Flags();
 	
 	if(cmd->buttons & IN_JUMP) {
 		if(!(flags & FL_ONGROUND)) {

@@ -2,6 +2,7 @@
 #include "SDLHook.hpp"
 
 #include "../../GUI.hpp"
+#include "../../Features/Legit/Aimbot.hpp"
 
 #include <cstdio>
 #include <dlfcn.h>
@@ -16,6 +17,7 @@ int Hooks::SDL::SDL_PollEvents_Hook(SDL_Event* event) {
 	int returnValue = reinterpret_cast<int(*)(SDL_Event*)>(pollEvents_proxy)(event);
 
 	Gui::PollEvent(event, returnValue);
+	Features::Legit::Aimbot::PollEvent(event);
 	
 	return returnValue;
 }

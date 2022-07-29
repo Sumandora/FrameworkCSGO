@@ -2,9 +2,11 @@
 #define SDK_CCLIENTENTITYLIST
 
 #include "VirtualMethod.hpp"
+#include "CBaseEntity.hpp"
 
 struct CClientEntityList {
-	VIRTUAL_METHOD(3, GetClientEntity, void*, (int index), (this, index))
+public:
+	VIRTUAL_METHOD(3, GetClientEntity, C_BaseEntity*, (int index), (this, index))
 };
 
 #endif
