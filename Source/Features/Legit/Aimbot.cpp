@@ -117,8 +117,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 
 	bestRotation /= 100.0f; // Approximation, this has to be changed into a rotation -> mouse delta calculation
 
-	float beforeX = event->motion.xrel;
-	float beforeY = event->motion.yrel;
+	int beforeX = event->motion.xrel;
+	int beforeY = event->motion.yrel;
 	
 	event->motion.xrel -= bestRotation.y;
 	event->motion.yrel += bestRotation.x;
