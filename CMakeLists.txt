@@ -35,6 +35,6 @@ target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_RETURN_ADDR
 # Setup ImGui
 target_include_directories(Framework_Example PUBLIC Dependencies/imgui)
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
-list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
+list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_dx9.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl.cpp")
 target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})

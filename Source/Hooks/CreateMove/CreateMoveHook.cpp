@@ -1,5 +1,4 @@
 #include "Hooking/Hooking.hpp"
-#include "PatternScan/PatternScan.hpp"
 
 #include "CreateMoveHook.hpp"
 #include "../../Interfaces.hpp"

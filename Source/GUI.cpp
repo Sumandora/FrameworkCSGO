@@ -1,10 +1,11 @@
 #include "GUI.hpp"
 
 #include "Hooks/SDL/SDLHook.hpp"
+#include "Hooks/DX9/DX9Hook.hpp"
 
 #include "imgui.h"
 #include "backends/imgui_impl_sdl.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_dx9.h"
 
 #include <SDL.h>
 #include <algorithm>
@@ -21,9 +22,13 @@ void Gui::Create() {
 
 void Gui::SwapWindow(SDL_Window* window) {
 	windowPtr = window;
+
+	if(!Hooks::DX9::device)
+		return;
+	
 	// This hack is also used by Osiris, because of the 'static' keyword it is only executed once
-	static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
-	static const auto _2 = ImGui_ImplOpenGL3_Init("#version 100");
+	static const auto _1 = ImGui_ImplSDL2_InitForD3D(window);
+	static const auto _2 = ImGui_ImplDX9_Init((IDirect3DDevice9*) Hooks::DX9::device);
 
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -34,7 +39,7 @@ void Gui::SwapWindow(SDL_Window* window) {
 	io.MousePos.x = std::clamp(io.MousePos.x, 0.0f, (float)w);
 	io.MousePos.y = std::clamp(io.MousePos.y, 0.0f, (float)h);
 
-	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplDX9_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 	
@@ -51,7 +56,7 @@ void Gui::SwapWindow(SDL_Window* window) {
 	io.WantCaptureKeyboard = visible;
 
 	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Gui::PollEvent(SDL_Event* event, int result) {
