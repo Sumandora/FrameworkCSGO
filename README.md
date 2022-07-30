@@ -1,6 +1,10 @@
 # FrameworkExample
 A fully-featured training software for Counter Strike: Global Offensive, made for Linux with [Framework](https://github.com/Sumandora/Framework)
 ### WARNING: This program is being detected by Valve. Usage on official, custom or private servers will most likely result in punishment from Valve!
+## Vulkan branch
+This is a test for supporting opengl and vulkan at the same time, by hooking dx9 functions from the game  
+Right now this does not compile, because ImGui expects `d3d9.h` to be present, which is not the case for Linux machines  
+A wrapper is probably needed, but this has not been done yet
 ## Installation
 ### Dependencies
 **Ubuntu / Debian**
