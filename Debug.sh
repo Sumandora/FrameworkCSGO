@@ -3,7 +3,6 @@
 echo "Building Debug-Binary"
 rm -rf Build-Debug
 mkdir Build-Debug
-cmake -B Build-Debug -DDEBUG=ON || exit 1
 
 if [ -z "$MAKEOPTS" ]; then
 	MAKE_CONF=/etc/portage/make.conf
@@ -11,6 +10,8 @@ if [ -z "$MAKEOPTS" ]; then
 	    source $MAKE_CONF
 	fi
 fi
+
+cmake -B Build-Debug -DDEBUG=ON || exit 1
 make $MAKEOPTS -C Build-Debug || exit 1
 
 

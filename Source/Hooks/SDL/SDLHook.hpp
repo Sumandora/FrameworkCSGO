@@ -15,6 +15,7 @@ namespace Hooks {
 		void SDL_WarpMouseInWindow_Hook(SDL_Window*, int, int);
 		
 		void Hook();
+		void Unhook();
 	}
 }
 

@@ -48,3 +48,9 @@ void Hooks::SDL::Hook() {
 	pollEvents_proxy		= HookSDLFunction("SDL_PollEvent", reinterpret_cast<void*>(SDL_PollEvents_Hook));
 	warpMouseInWindow_proxy	= HookSDLFunction("SDL_WarpMouseInWindow", reinterpret_cast<void*>(SDL_WarpMouseInWindow_Hook));
 }
+
+void Hooks::SDL::Unhook() {
+	HookSDLFunction("SDL_GL_SwapWindow", swapWindow_proxy);
+	HookSDLFunction("SDL_PollEvent", pollEvents_proxy);
+	HookSDLFunction("SDL_WarpMouseInWindow", warpMouseInWindow_proxy);
+}

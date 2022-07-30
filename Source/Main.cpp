@@ -29,3 +29,11 @@ int __attribute((constructor)) Startup() {
 
 	return 0;
 }
+
+void __attribute((destructor)) Shutdown() {
+	Hooks::SDL::Unhook();
+	Hooks::CreateMove::Unhook();
+
+	Gui::Destroy();
+	
+}

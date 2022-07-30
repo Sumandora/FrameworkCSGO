@@ -34,11 +34,12 @@ fi
 # Change the language for the log
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
+# Also allow other compilers (e.g. clang) to be used
 LANG=en cmake -B Build . >> build.log 2>&1 || error
 LANG=en make $MAKEOPTS -C Build >> build.log 2>&1 || error
 
-strip -x -s Build/libFramework_Example.so
-patchelf --set-soname "libMangoHud" Build/libFramework_Example.so
-sed -i 's/libFramework_Example.so/libMangoHud.so         /' Build/libFramework_Example.so # This should never happen; We are not allowed to change the file size
+strip -x -s Build/libFramework_Example.so >> build.log 2>&1 || error
+patchelf --set-soname "libMangoHud.so" Build/libFramework_Example.so >> build.log 2>&1 || error
+sed -i 's/libFramework_Example.so/libMangoHud.so         /' Build/libFramework_Example.so >> build.log 2>&1 || error # This should never happen; We are not allowed to change the file size
 
 echo "The ELF-Binary has been built in the \"Build\"-directory"

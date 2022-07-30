@@ -1,5 +1,6 @@
 #include "Hooking/Hooking.hpp"
 #include "PatternScan/PatternScan.hpp"
+#include "Memory/Memory.hpp"
 
 #include "CreateMoveHook.hpp"
 #include "../../Interfaces.hpp"
@@ -12,9 +13,13 @@
 #include "../../Netvars.hpp"
 
 #include <cstdint>
-#include <cstdio>
+#include <cstring>
+#include <unistd.h>
+#include <sys/mman.h>
 
-bool Hooks::CreateMove::CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd) {
+void* createMove;
+
+bool __attribute((optimize("O0"))) Hooks::CreateMove::CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd) {
 	bool silent = Framework::ReturnAddr::invoke<bool, void*, float, CUserCmd*>(proxy, Memory::ret_instruction_addr, thisptr, flInputSampleTime, cmd);
 
 	if(!cmd || !cmd->command_number)
@@ -51,7 +56,14 @@ void Hooks::CreateMove::Hook() {
 	relAddr = static_cast<char*>(getClientMode) + 4; // Skip push and mov opcodes
 	void* clientMode = *reinterpret_cast<void**>(relAddr + 4 + *reinterpret_cast<int*>(relAddr));
 	
-	void* createMove = Utils::GetVTable(clientMode)[25];
+	createMove = Utils::GetVTable(clientMode)[25];
 
 	proxy = Framework::Hooking::detour(createMove, reinterpret_cast<void*>(CreateMoveHook), 6);
+}
+
+void Hooks::CreateMove::Unhook() {
+	Framework::Memory::protect(createMove, PROT_READ | PROT_WRITE | PROT_EXEC);
+	memcpy(createMove, proxy, 6);
+	Framework::Memory::protect(createMove, PROT_READ | PROT_EXEC);
+	munmap(proxy, getpagesize());
 }
