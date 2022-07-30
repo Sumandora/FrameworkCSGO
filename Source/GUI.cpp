@@ -15,8 +15,18 @@ SDL_Window* windowPtr;
 void Gui::Create() {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
+
+	// Might not work on certain distros/configurations
+	io.Fonts->AddFontFromFileTTF("/usr/share/fonts/noto/NotoSans-Regular.ttf", 24.0f);
+
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
+}
+
+void Gui::Destroy() {
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void Gui::SwapWindow(SDL_Window* window) {

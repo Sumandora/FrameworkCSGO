@@ -8,6 +8,7 @@ namespace Hooks {
 		inline void* proxy;
 		bool CreateMoveHook(void*, float, CUserCmd*);
 		void Hook();
+		void Unhook();
 	}
 }
 

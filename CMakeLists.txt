@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(DEBUG)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -mtune=native -fpie -Wno-return-type -ggdb")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -march=native -mtune=native -fpie -Wno-return-type -ggdb")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -ftree-vectorize -march=native -mtune=native -fomit-frame-pointer -fpie -Wno-return-type -fvisibility=hidden")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -s -march=native -mtune=native -fpie -Wno-return-type -fvisibility=hidden")
 endif()
 
 set(CMAKE_SKIP_RPATH ON)
