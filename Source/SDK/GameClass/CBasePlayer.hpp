@@ -7,10 +7,10 @@
 
 class C_BasePlayer : public C_BaseEntity {
 public:
-	NETVAR_FUNCTION(int, Flags, "DT_BasePlayer", "m_fFlags")
-	NETVAR_FUNCTION(char, LifeState, "DT_BasePlayer", "m_lifeState")
-	NETVAR_FUNCTION(bool, GunGameImmunity, "DT_CSPlayer", "m_bGunGameImmunity")
-	NETVAR_FUNCTION(Vector, VecViewOffset, "DT_LocalPlayerExclusive", "m_vecViewOffset[0]")
+	NETVAR_FUNCTION(int,	Flags,				xorstr_("DT_BasePlayer"),			xorstr_("m_fFlags"))
+	NETVAR_FUNCTION(char,	LifeState,			xorstr_("DT_BasePlayer"),			xorstr_("m_lifeState"))
+	NETVAR_FUNCTION(bool,	GunGameImmunity,	xorstr_("DT_CSPlayer"),				xorstr_("m_bGunGameImmunity"))
+	NETVAR_FUNCTION(Vector,	VecViewOffset,		xorstr_("DT_LocalPlayerExclusive"),	xorstr_("m_vecViewOffset[0]"))
 
 	inline Vector GetEyePosition() {
 		return *this->VecOrigin() + *this->VecViewOffset();

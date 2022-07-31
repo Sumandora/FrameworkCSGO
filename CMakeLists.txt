@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(DEBUG)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -march=native -mtune=native -fpie -Wno-return-type -ggdb")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -march=native -mtune=native -Wno-return-type -ggdb")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -s -march=native -mtune=native -fpie -Wno-return-type -fvisibility=hidden")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fdata-sections -ffunction-sections -Wl,--gc-sections")
 endif()
 
 set(CMAKE_SKIP_RPATH ON)
@@ -18,8 +18,9 @@ file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 add_library(Framework_Example SHARED ${SOURCE_FILES})
 target_link_libraries(Framework_Example dl SDL2 GL)
 
-# SDL
-target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
+if(!DEBUG)
+	target_compile_definitions(Framework_Example PUBLIC NDEBUG)
+endif()
 
 # Setup Framework
 target_include_directories(Framework_Example PUBLIC Dependencies/Framework/Source/Framework)
@@ -34,7 +35,15 @@ target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_RETURN_ADDR
 
 # Setup ImGui
 target_include_directories(Framework_Example PUBLIC Dependencies/imgui)
+# SDL
+target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
+
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
+list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
+
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl.cpp")
 target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
+
+# Setup xorstr
+target_include_directories(Framework_Example PUBLIC Dependencies/xorstr/include)

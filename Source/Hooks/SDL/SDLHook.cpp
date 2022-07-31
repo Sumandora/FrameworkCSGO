@@ -4,6 +4,8 @@
 #include "../../GUI.hpp"
 #include "../../Features/Legit/Aimbot.hpp"
 
+#include "xorstr.hpp"
+
 #include <cstdio>
 #include <dlfcn.h>
 
@@ -44,13 +46,13 @@ void* HookSDLFunction(const char* name, void* hook) {
 }
 
 void Hooks::SDL::Hook() {
-	swapWindow_proxy		= HookSDLFunction("SDL_GL_SwapWindow", reinterpret_cast<void*>(SDL_GL_SwapWindow_Hook));
-	pollEvents_proxy		= HookSDLFunction("SDL_PollEvent", reinterpret_cast<void*>(SDL_PollEvents_Hook));
-	warpMouseInWindow_proxy	= HookSDLFunction("SDL_WarpMouseInWindow", reinterpret_cast<void*>(SDL_WarpMouseInWindow_Hook));
+	swapWindow_proxy		= HookSDLFunction(xorstr_("SDL_GL_SwapWindow"),		reinterpret_cast<void*>(SDL_GL_SwapWindow_Hook));
+	pollEvents_proxy		= HookSDLFunction(xorstr_("SDL_PollEvent"),			reinterpret_cast<void*>(SDL_PollEvents_Hook));
+	warpMouseInWindow_proxy	= HookSDLFunction(xorstr_("SDL_WarpMouseInWindow"),	reinterpret_cast<void*>(SDL_WarpMouseInWindow_Hook));
 }
 
 void Hooks::SDL::Unhook() {
-	HookSDLFunction("SDL_GL_SwapWindow", swapWindow_proxy);
-	HookSDLFunction("SDL_PollEvent", pollEvents_proxy);
-	HookSDLFunction("SDL_WarpMouseInWindow", warpMouseInWindow_proxy);
+	HookSDLFunction(xorstr_("SDL_GL_SwapWindow"),		swapWindow_proxy);
+	HookSDLFunction(xorstr_("SDL_PollEvent"),			pollEvents_proxy);
+	HookSDLFunction(xorstr_("SDL_WarpMouseInWindow"),	warpMouseInWindow_proxy);
 }

@@ -2,6 +2,8 @@
 #include <cstring>
 #include <dlfcn.h>
 
+#include "xorstr.hpp"
+
 struct InterfaceReg
 {
 	void* m_CreateFn;
@@ -13,7 +15,7 @@ void* Interfaces::GetInterface(const char* file, const char* name) {
 	void* library = dlopen(file, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	if(!library) return nullptr;
 
-	void* interfacesList = dlsym(library, "s_pInterfaceRegs");
+	void* interfacesList = dlsym(library, xorstr_("s_pInterfaceRegs"));
 	
 	dlclose(library);
 	
