@@ -6,13 +6,14 @@
 #include "VirtualMethod.hpp"
 #include "../Vector.hpp"
 #include "../Matrix3x4.hpp"
+#include "xorstr.hpp"
 
 class C_BaseEntity {
 public:
-	NETVAR_FUNCTION(TeamID, Team, "DT_BaseEntity", "m_iTeamNum")
-	NETVAR_FUNCTION(bool, Spotted, "DT_BaseEntity", "m_bSpotted")
-	NETVAR_FUNCTION(int, SpottedByMask, "DT_BaseEntity", "m_bSpottedByMask")
-	NETVAR_FUNCTION(Vector, VecOrigin, "DT_BaseEntity", "m_vecOrigin")
+	NETVAR_FUNCTION(TeamID,	Team,			xorstr_("DT_BaseEntity"),	xorstr_("m_iTeamNum"))
+	NETVAR_FUNCTION(bool,	Spotted,		xorstr_("DT_BaseEntity"),	xorstr_("m_bSpotted"))
+	NETVAR_FUNCTION(int,	SpottedByMask,	xorstr_("DT_BaseEntity"),	xorstr_("m_bSpottedByMask"))
+	NETVAR_FUNCTION(Vector,	VecOrigin,		xorstr_("DT_BaseEntity"),	xorstr_("m_vecOrigin"))
 
 	// IClientNetworkable
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))

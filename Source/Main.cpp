@@ -2,17 +2,19 @@
 #include "Hooks/SDL/SDLHook.hpp"
 
 #include "Interfaces.hpp"
-#include "GUI.hpp"
 #include "Netvars.hpp"
 #include "SDK/GameClass/VirtualMethod.hpp"
 #include "Memory.hpp"
+#include "GUI.hpp"
+
+#include "xorstr.hpp"
 
 #include <pthread.h>
 
 void* Initializer(void*) {
-	Interfaces::baseClient = Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClient");
-	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface("./bin/linux64/engine_client.so", "VEngineClient"));
-	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface("./csgo/bin/linux64/client_client.so", "VClientEntityList"));
+	Interfaces::baseClient = Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
+	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
+	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
 
 	Netvars::DumpNetvars();
 	Memory::Create();

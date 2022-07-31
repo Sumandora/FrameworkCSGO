@@ -123,5 +123,5 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	event->motion.xrel -= bestRotation.y;
 	event->motion.yrel += bestRotation.x;
 
-	printf("%d %d -> %d %d\n", beforeX, beforeY, event->motion.xrel, event->motion.yrel);
+	printf(xorstr_("%d %d -> %d %d\n"), beforeX, beforeY, event->motion.xrel, event->motion.yrel);
 }

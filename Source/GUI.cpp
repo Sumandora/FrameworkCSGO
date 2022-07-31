@@ -1,10 +1,12 @@
+#include "imgui.h"
+#include "backends/imgui_impl_sdl.h"
+#include "backends/imgui_impl_opengl3.h"
+
 #include "GUI.hpp"
 
 #include "Hooks/SDL/SDLHook.hpp"
 
-#include "imgui.h"
-#include "backends/imgui_impl_sdl.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "xorstr.hpp"
 
 #include <SDL.h>
 #include <algorithm>
@@ -17,7 +19,7 @@ void Gui::Create() {
 	ImGuiIO& io = ImGui::GetIO();
 
 	// Might not work on certain distros/configurations
-	io.Fonts->AddFontFromFileTTF("/usr/share/fonts/noto/NotoSans-Regular.ttf", 24.0f);
+	io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), 24.0f);
 
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
@@ -32,8 +34,8 @@ void Gui::Destroy() {
 void Gui::SwapWindow(SDL_Window* window) {
 	windowPtr = window;
 	// This hack is also used by Osiris, because of the 'static' keyword it is only executed once
-	static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
-	static const auto _2 = ImGui_ImplOpenGL3_Init("#version 100");
+	[[maybe_unused]] static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
+	[[maybe_unused]] static const auto _2 = ImGui_ImplOpenGL3_Init(xorstr_("#version 100"));
 
 	ImGuiIO& io = ImGui::GetIO();
 
