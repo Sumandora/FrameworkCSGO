@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if(DEBUG)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -march=native -mtune=native -Wno-return-type -ggdb")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fdata-sections -ffunction-sections -Wl,--gc-sections")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden")
 endif()
 
 set(CMAKE_SKIP_RPATH ON)
