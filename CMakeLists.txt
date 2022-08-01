@@ -16,7 +16,7 @@ set(CMAKE_SKIP_RPATH ON)
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
 add_library(Framework_Example SHARED ${SOURCE_FILES})
-target_link_libraries(Framework_Example dl SDL2 GL)
+target_link_libraries(Framework_Example dl SDL2 vulkan)
 
 # SDL
 target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
@@ -35,6 +35,6 @@ target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_RETURN_ADDR
 # Setup ImGui
 target_include_directories(Framework_Example PUBLIC Dependencies/imgui)
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
-list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_dx9.cpp")
+list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_vulkan.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl.cpp")
 target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
