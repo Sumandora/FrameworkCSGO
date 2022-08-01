@@ -5,6 +5,7 @@
 #include "GUI.hpp"
 
 #include "Hooks/SDL/SDLHook.hpp"
+#include "Features/Legit/Aimbot.hpp"
 
 #include "xorstr.hpp"
 
@@ -51,7 +52,16 @@ void Gui::SwapWindow(SDL_Window* window) {
 	ImGui::NewFrame();
 	
 	if(visible) {
-		ImGui::ShowDemoWindow();
+		ImGui::Begin(xorstr_("Framework"));
+		if(ImGui::BeginTabBar(xorstr_("#Settings"), ImGuiTabBarFlags_Reorderable)) {
+			if(ImGui::BeginTabItem(xorstr_("Aimbot"))) {
+			    Features::Legit::Aimbot::SetupGUI();
+				ImGui::EndTabItem();
+			}
+			
+			ImGui::EndTabBar();
+		}
+		ImGui::End();
 	}
 	
 	if (ImGui::IsKeyPressed(SDL_SCANCODE_INSERT, false)) {

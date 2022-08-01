@@ -7,6 +7,9 @@ namespace Features {
 	namespace Legit {
 		namespace Aimbot {
 			void PollEvent(SDL_Event* event);
+
+			// GUI
+			void SetupGUI();
 		}
 	}
 }
