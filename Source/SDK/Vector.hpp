@@ -149,6 +149,19 @@ struct Vector {
 	inline float Length() {
 		return sqrt(x * x + y * y + z * z);
 	}
+
+	inline float Dot(Vector other) {
+		return this->x * other.x + this->y * other.y;
+	}
+
+	inline Vector Normalize() {
+		float len = Length();
+		return Vector(
+			this->x / len,
+			this->y / len,
+			this->z / len
+		);
+	}
 };
 
 #endif

@@ -3,8 +3,18 @@
 #include "../../Interfaces.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
+#include "imgui.h"
+
+#include <algorithm>
+#include <math.h>
+
 #define DEG2RAD(deg) (deg * M_PI / 180.0)
 #define RAD2DEG(rad) (rad * 180.0 / M_PI)
+
+// Settings
+float fov = 10.0f;
+float smoothness = 4.0f;
+int clamp = 1;
 
 // Thanks 2 Mathlib (https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1108)
 void VectorAngles( const Vector& forward, Vector &angles )
@@ -112,16 +122,26 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	if(!target)
 		return;
 
-	if(bestRotation.Length() > /*FOV*/ 10.0F)
+	if(bestRotation.Length() > fov)
 		return;
 
-	bestRotation /= 100.0f; // Approximation, this has to be changed into a rotation -> mouse delta calculation
+	bestRotation /= smoothness;
 
-	int beforeX = event->motion.xrel;
-	int beforeY = event->motion.yrel;
+	Vector before	= Vector(event->motion.xrel, event->motion.yrel, 0);
+	Vector goal		= Vector(-round(bestRotation.y), round(bestRotation.x), 0);
+
+	float dir = before.Normalize().Dot(goal.Normalize());
+	if(dir > 0)
+		return; // We are trying to aim away
+
+	event->motion.xrel += std::clamp(static_cast<int>(goal.x), -clamp, clamp);
+	event->motion.yrel += std::clamp(static_cast<int>(goal.y), -clamp, clamp);
 	
-	event->motion.xrel -= bestRotation.y;
-	event->motion.yrel += bestRotation.x;
+	printf(xorstr_("%d %d -> %d %d\n"), before.x, before.y, event->motion.xrel, event->motion.yrel);
+}
 
-	printf(xorstr_("%d %d -> %d %d\n"), beforeX, beforeY, event->motion.xrel, event->motion.yrel);
+void Features::Legit::Aimbot::SetupGUI() {
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 45.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%f");
+	ImGui::SliderInt(xorstr_("Clamp"), &clamp, 1, 5, "%d");
 }

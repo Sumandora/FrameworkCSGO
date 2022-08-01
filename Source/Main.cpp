@@ -9,9 +9,9 @@
 
 #include "xorstr.hpp"
 
-#include <pthread.h>
+#include <thread>
 
-void* Initializer(void*) {
+void Initializer() {
 	Interfaces::baseClient = Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
 	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
 	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
@@ -26,8 +26,9 @@ void* Initializer(void*) {
 }
 
 int __attribute((constructor)) Startup() {
-	pthread_t thread;
-	pthread_create(&thread, nullptr, Initializer, nullptr);
+	std::thread t(Initializer);
+
+	t.detach();
 
 	return 0;
 }
@@ -37,5 +38,4 @@ void __attribute((destructor)) Shutdown() {
 	Hooks::CreateMove::Unhook();
 
 	Gui::Destroy();
-	
 }
