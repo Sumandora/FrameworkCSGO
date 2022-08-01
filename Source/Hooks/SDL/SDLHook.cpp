@@ -2,19 +2,23 @@
 #include "SDLHook.hpp"
 
 #include "../../Features/Legit/Aimbot.hpp"
+#include "backends/imgui_impl_sdl.h"
 
 #include <cstdio>
 #include <dlfcn.h>
 
-void Hooks::SDL::SDL_GL_SwapWindow_Hook(SDL_Window* window) {
-	windowptr = window;
-	// We are we returning a void? Ah who cares ^^
-	return reinterpret_cast<void(*)(SDL_Window*)>(swapWindow_proxy)(window);
-}
-
 int Hooks::SDL::SDL_PollEvents_Hook(SDL_Event* event) {
 	int returnValue = reinterpret_cast<int(*)(SDL_Event*)>(pollEvents_proxy)(event);
-	
+	if (!windowptr && event->type == SDL_WINDOWEVENT) {
+		SDL_Window* pWindow = SDL_GetWindowFromID(event->window.windowID);
+		if (pWindow) {
+			windowptr = pWindow;
+		}
+	}
+	if (ImGui::GetCurrentContext( )) {
+		ImGui_ImplSDL2_ProcessEvent(event);
+	}
+		
 	// Features::Legit::Aimbot::PollEvent(event);
 	
 	return returnValue;
@@ -34,6 +38,5 @@ void* HookSDLFunction(const char* name, void* hook) {
 }
 
 void Hooks::SDL::Hook() {
-	swapWindow_proxy		= HookSDLFunction("SDL_GL_SwapWindow", reinterpret_cast<void*>(SDL_GL_SwapWindow_Hook));
-	pollEvents_proxy		= HookSDLFunction("SDL_PollEvent", reinterpret_cast<void*>(SDL_PollEvents_Hook));
+	pollEvents_proxy	= HookSDLFunction("SDL_PollEvent", reinterpret_cast<void*>(SDL_PollEvents_Hook));
 }

@@ -286,21 +286,21 @@ namespace Hooks {
 				return;
 			}
 
-			void* fnAcquireNextImageKHR	= dlsym(RTLD_NEXT, "vkAcquireNextImageKHR");
-			void* fnQueuePresentKHR		= dlsym(RTLD_NEXT, "vkQueuePresentKHR");
-			void* fnCreateSwapchainKHR	= dlsym(RTLD_NEXT, "vkCreateSwapchainKHR");
-
+			void* fnAcquireNextImageKHR = reinterpret_cast<void*>(vkGetDeviceProcAddr(g_FakeDevice, "vkAcquireNextImageKHR"));
+			void* fnQueuePresentKHR = reinterpret_cast<void*>(vkGetDeviceProcAddr(g_FakeDevice, "vkQueuePresentKHR"));
+			void* fnCreateSwapchainKHR = reinterpret_cast<void*>(vkGetDeviceProcAddr(g_FakeDevice, "vkCreateSwapchainKHR"));
+			
 			if (g_FakeDevice) { vkDestroyDevice(g_FakeDevice, g_Allocator); g_FakeDevice = NULL; }
 
 			if (fnAcquireNextImageKHR) {
 				// Hook
-				LOG("[+] Vulkan: fnAcquireNextImageKHR: 0x%p\n", fnAcquireNextImageKHR);
-				LOG("[+] Vulkan: fnQueuePresentKHR: 0x%p\n", fnQueuePresentKHR);
-				LOG("[+] Vulkan: fnCreateSwapchainKHR: 0x%p\n", fnCreateSwapchainKHR);
+				LOG("[+] Vulkan: fnAcquireNextImageKHR: %p\n", fnAcquireNextImageKHR);
+				LOG("[+] Vulkan: fnQueuePresentKHR: %p\n", fnQueuePresentKHR);
+				LOG("[+] Vulkan: fnCreateSwapchainKHR: %p\n", fnCreateSwapchainKHR);
 
 				oAcquireNextImageKHR	= reinterpret_cast<std::add_pointer_t<VkResult VKAPI_CALL(VkDevice, VkSwapchainKHR, uint64_t, VkSemaphore, VkFence, uint32_t*)>>(Framework::Hooking::detour(fnAcquireNextImageKHR, reinterpret_cast<void*>(hkAcquireNextImageKHR), 7));
 				oQueuePresentKHR		= reinterpret_cast<std::add_pointer_t<VkResult VKAPI_CALL(VkQueue, const VkPresentInfoKHR*)>>(Framework::Hooking::detour(fnQueuePresentKHR, reinterpret_cast<void*>(hkQueuePresentKHR), 7));
-				oCreateSwapchainKHR		= reinterpret_cast<std::add_pointer_t<VkResult VKAPI_CALL(VkDevice, const VkSwapchainCreateInfoKHR*, const VkAllocationCallbacks*, VkSwapchainKHR*)>>(Framework::Hooking::detour(fnCreateSwapchainKHR, reinterpret_cast<void*>(hkCreateSwapchainKHR), 7));
+				oCreateSwapchainKHR		= reinterpret_cast<std::add_pointer_t<VkResult VKAPI_CALL(VkDevice, const VkSwapchainCreateInfoKHR*, const VkAllocationCallbacks*, VkSwapchainKHR*)>>(Framework::Hooking::detour(fnCreateSwapchainKHR, reinterpret_cast<void*>(hkCreateSwapchainKHR), 6));
 			}
 		}
 
