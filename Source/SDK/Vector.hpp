@@ -165,18 +165,18 @@ public:
 	}
 
 	inline Vector Wrap() {
-		while (angle.x > 89.0f)
-			angle.x -= 180.f;
+		while (this->x > 89.0f)
+			this->x -= 180.f;
 
-		while (angle.x < -89.0f)
-			angle.x += 180.f;
+		while (this->x < -89.0f)
+			this->x += 180.f;
 
-		while (angle.y > 180.f)
-			angle.y -= 360.f;
+		while (this->y > 180.f)
+			this->y -= 360.f;
 
-		while (angle.y < -180.f)
-			angle.y += 360.f;
-		z = 0.0f;
+		while (this->y < -180.f)
+			this->y += 360.f;
+		this->z = 0.0f;
 		return *this;
 	}
 };
