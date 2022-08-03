@@ -15,7 +15,7 @@ void Initializer() {
 	Interfaces::baseClient = Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
 	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
 	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
-
+	
 	Netvars::DumpNetvars();
 	Memory::Create();
 	
@@ -25,7 +25,7 @@ void Initializer() {
 	Hooks::SDL::Hook();
 }
 
-int __attribute((constructor)) Startup() {
+int __attribute__((constructor)) Startup() {
 	std::thread t(Initializer);
 
 	t.detach();
@@ -33,7 +33,7 @@ int __attribute((constructor)) Startup() {
 	return 0;
 }
 
-void __attribute((destructor)) Shutdown() {
+void __attribute__((destructor)) Shutdown() {
 	Hooks::SDL::Unhook();
 	Hooks::CreateMove::Unhook();
 

@@ -5,6 +5,8 @@
 
 #include "imgui.h"
 
+#include "../../Utils/Recoil.hpp"
+
 #include <algorithm>
 #include <math.h>
 
@@ -12,6 +14,7 @@
 #define RAD2DEG(rad) (rad * 180.0 / M_PI)
 
 // Settings
+bool enabled = false;
 float fov = 10.0f;
 float smoothness = 4.0f;
 int clamp = 1;
@@ -53,22 +56,10 @@ Vector CalculateView(Vector a, Vector b) {
 	return rotation;
 }
 
-void NormalizeAngles(Vector& angle)
-{
-	while (angle.x > 89.0f)
-		angle.x -= 180.f;
-
-	while (angle.x < -89.0f)
-		angle.x += 180.f;
-
-	while (angle.y > 180.f)
-		angle.y -= 360.f;
-
-	while (angle.y < -180.f)
-		angle.y += 360.f;
-}
-
 void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
+	if(!enabled)
+		return;
+	
 	if(event->type != SDL_MOUSEMOTION)
 		return;
 	
@@ -109,8 +100,15 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 			*player->SpottedByMask() & (1 << localPlayerIndex)
 		) continue;
 
-		Vector rotation = CalculateView(playerEye, player->GetBonePosition(8)) - viewAngles;
-		NormalizeAngles(rotation);
+		Vector rotation = CalculateView(playerEye, player->GetBonePosition(8));
+		
+		Vector recoil = Utils::CalcRecoilKickBack(localPlayer) * 2;
+		rotation -= recoil;
+		
+		rotation -= viewAngles;
+		
+		rotation = rotation.Wrap();
+		
 		float delta = rotation.Length();
 		if(!target || bestDistance > delta) {
 			target = player;
@@ -131,16 +129,15 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	Vector goal		= Vector(-round(bestRotation.y), round(bestRotation.x), 0);
 
 	float dir = before.Normalize().Dot(goal.Normalize());
-	if(dir > 0)
+	if(dir < 0)
 		return; // We are trying to aim away
 
 	event->motion.xrel += std::clamp(static_cast<int>(goal.x), -clamp, clamp);
 	event->motion.yrel += std::clamp(static_cast<int>(goal.y), -clamp, clamp);
-	
-	printf(xorstr_("%d %d -> %d %d\n"), before.x, before.y, event->motion.xrel, event->motion.yrel);
 }
 
 void Features::Legit::Aimbot::SetupGUI() {
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 45.0f, "%.2f");
 	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%f");
 	ImGui::SliderInt(xorstr_("Clamp"), &clamp, 1, 5, "%d");

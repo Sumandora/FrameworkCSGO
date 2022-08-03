@@ -12,6 +12,8 @@
 
 #include "../../Netvars.hpp"
 
+#include "../../Utils/Recoil.hpp"
+
 #include <cstdint>
 #include <cstring>
 #include <unistd.h>
@@ -38,25 +40,12 @@ bool __attribute((optimize("O0"))) Hooks::CreateMove::CreateMoveHook(void* thisp
 			cmd->buttons &= ~IN_JUMP;
 		}
 	}
-
+	
 	return silent || true;
 }
 
-void Hooks::CreateMove::Hook() {
-	void* hudProcessInput = Utils::GetVTable(Interfaces::baseClient)[10];
-	
-	/**
-	 * This method calls GetClientMode()
-	 * Call instruction is at the 11th byte
-	 * The next byte is the address
-	 */
-	char* relAddr = static_cast<char*>(hudProcessInput) + 12;
-	void* getClientMode = relAddr + 4 + *reinterpret_cast<int*>(relAddr);
-	
-	relAddr = static_cast<char*>(getClientMode) + 4; // Skip push and mov opcodes
-	void* clientMode = *reinterpret_cast<void**>(relAddr + 4 + *reinterpret_cast<int*>(relAddr));
-	
-	createMove = Utils::GetVTable(clientMode)[25];
+void Hooks::CreateMove::Hook() {	
+	createMove = Utils::GetVTable(Interfaces::clientMode)[25];
 
 	proxy = Framework::Hooking::detour(createMove, reinterpret_cast<void*>(CreateMoveHook), 6);
 }

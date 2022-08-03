@@ -4,6 +4,7 @@
 #include "CBaseEntity.hpp"
 #include "../LifeState.hpp"
 #include "../BoneDefinitions.hpp"
+#include "CWeaponCSBase.hpp"
 
 class C_BasePlayer : public C_BaseEntity {
 public:
@@ -11,6 +12,14 @@ public:
 	NETVAR_FUNCTION(char,	LifeState,			xorstr_("DT_BasePlayer"),			xorstr_("m_lifeState"))
 	NETVAR_FUNCTION(bool,	GunGameImmunity,	xorstr_("DT_CSPlayer"),				xorstr_("m_bGunGameImmunity"))
 	NETVAR_FUNCTION(Vector,	VecViewOffset,		xorstr_("DT_LocalPlayerExclusive"),	xorstr_("m_vecViewOffset[0]"))
+
+	// This can be more than just a weaponcsbase, means that I can't enforce a cast to weaponcsbase here
+	NETVAR_FUNCTION(void*,	ActiveWeapon,	xorstr_("DT_BaseCombatCharacter"),	xorstr_("m_hActiveWeapon"))
+
+	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngle,		xorstr_("DT_LocalPlayerExclusive"),	xorstr_("m_Local"),	xorstr_("DT_Local"),	xorstr_("m_aimPunchAngle"))
+	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngleVel,	xorstr_("DT_LocalPlayerExclusive"),	xorstr_("m_Local"),	xorstr_("DT_Local"),	xorstr_("m_aimPunchAngleVel"))
+
+	NETVAR_FUNCTION(int,	ShotsFired,			xorstr_("DT_CSLocalPlayerExclusive"),	xorstr_("m_iShotsFired"))
 
 	inline Vector GetEyePosition() {
 		return *this->VecOrigin() + *this->VecViewOffset();
