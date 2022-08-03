@@ -4,6 +4,7 @@
 #include "SDK/ClientClass.hpp"
 #include "xorstr.hpp"
 
+#include <cstdio>
 #include <cstring>
 #include <map>
 
@@ -50,10 +51,14 @@ void Netvars::DumpNetvars() {
 	}
 
 	// Uncomment for debugging
-	// for (const auto& [key, value] : netvars) {
-		// for (const auto& [key2, value2] : value) {
-			// printf("[%s][%s] = %x\n", key, key2, value2);
+	// FILE* buf = fopen(xorstr_("/tmp/netvars.dmp"), "w");
+	// if(buf != NULL) {
+		// for (const auto& [key, value] : netvars) {
+			// for (const auto& [key2, value2] : value) {
+				// fprintf(buf, xorstr_("[%s][%s] = %x\n"), key, key2, value2);
+			// }
 		// }
+		// fclose(buf);
 	// }
 }
 
@@ -65,5 +70,6 @@ int Netvars::GetOffset(const char* table, const char* name) {
 					return value2;
 			}
 	}
+	printf(xorstr_("Couldn't find netvar %s in %s\n"), name, table);
 	return 0;
 }

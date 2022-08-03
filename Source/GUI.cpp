@@ -89,6 +89,7 @@ void Gui::PollEvent(SDL_Event* event, int result) {
 
 	ImGuiIO& io = ImGui::GetIO();
 	if(visible && event->type == SDL_MOUSEBUTTONUP) {
+		//TODO Get Window ptr from event
 		reinterpret_cast<void(*)(SDL_Window*,int,int)>(Hooks::SDL::warpMouseInWindow_proxy)(windowPtr, io.MousePos.x, io.MousePos.y);
 	}
 	

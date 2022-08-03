@@ -3,7 +3,8 @@
 
 #include <math.h>
 
-struct Vector {
+class Vector {
+public:
 	float x, y, z;
 	
 	inline Vector() {
@@ -161,6 +162,22 @@ struct Vector {
 			this->y / len,
 			this->z / len
 		);
+	}
+
+	inline Vector Wrap() {
+		while (angle.x > 89.0f)
+			angle.x -= 180.f;
+
+		while (angle.x < -89.0f)
+			angle.x += 180.f;
+
+		while (angle.y > 180.f)
+			angle.y -= 360.f;
+
+		while (angle.y < -180.f)
+			angle.y += 360.f;
+		z = 0.0f;
+		return *this;
 	}
 };
 
