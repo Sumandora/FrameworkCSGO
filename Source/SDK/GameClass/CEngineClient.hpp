@@ -2,7 +2,9 @@
 #define SDK_CENGINECLIENT
 
 #include "VirtualMethod.hpp"
-#include "../../Utils/VMT.hpp"
+
+#include "../Matrix4x4.hpp"
+#include "../Vector.hpp"
 
 class CEngineClient {
 public:
@@ -11,6 +13,8 @@ public:
 	// Other cheats label this pointer as a reference, this doesn't work for me
 	VIRTUAL_METHOD(18, GetViewAngles, void, (Vector* angle), (this, angle))
 	VIRTUAL_METHOD(20, GetMaxClients, int, (), (this))
+	
+	VIRTUAL_METHOD(37, WorldToScreenMatrix, Matrix4x4, (), (this))
 };
 
 #endif

@@ -14,10 +14,10 @@
 #define RAD2DEG(rad) (rad * 180.0 / M_PI)
 
 // Settings
-bool enabled = false;
-float fov = 10.0f;
-float smoothness = 4.0f;
-int clamp = 1;
+bool	Features::Legit::Aimbot::enabled	= false;
+float	Features::Legit::Aimbot::fov		= 10.0f;
+float	Features::Legit::Aimbot::smoothness	= 4.0f;
+int		Features::Legit::Aimbot::clamp		= 1;
 
 // Thanks 2 Mathlib (https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1108)
 void VectorAngles( const Vector& forward, Vector &angles )
@@ -86,7 +86,6 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	C_BasePlayer* target = nullptr;
 	float bestDistance;
 	Vector bestRotation;
-
 	
 	// The first object is always the WorldObj
 	for(int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
@@ -137,8 +136,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 }
 
 void Features::Legit::Aimbot::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 45.0f, "%.2f");
-	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%f");
-	ImGui::SliderInt(xorstr_("Clamp"), &clamp, 1, 5, "%d");
+	ImGui::Checkbox(xorstr_("Enabled##Aimbot"), &enabled);
+	ImGui::SliderFloat(xorstr_("FOV##Aimbot"), &fov, 0.0f, 45.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Smoothness##Aimbot"), &smoothness, 1.0f, 5.0f, "%f");
+	ImGui::SliderInt(xorstr_("Clamp##Aimbot"), &clamp, 1, 5, "%d");
 }

@@ -1,5 +1,6 @@
 #include "Hooks/CreateMove/CreateMoveHook.hpp"
 #include "Hooks/SDL/SDLHook.hpp"
+#include "Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
 #include "Interfaces.hpp"
 #include "Netvars.hpp"
@@ -12,9 +13,9 @@
 #include <thread>
 
 void Initializer() {
-	Interfaces::baseClient = Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
-	Interfaces::engine = static_cast<CEngineClient*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
-	Interfaces::entityList = static_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
+	Interfaces::baseClient	= Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
+	Interfaces::engine		= static_cast<CEngineClient*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
+	Interfaces::entityList	= static_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
 	
 	Netvars::DumpNetvars();
 	Memory::Create();
@@ -23,6 +24,7 @@ void Initializer() {
 	
 	Hooks::CreateMove::Hook();
 	Hooks::SDL::Hook();
+	Hooks::FrameStageNotify::Hook();
 }
 
 int __attribute__((constructor)) Startup() {
@@ -34,6 +36,7 @@ int __attribute__((constructor)) Startup() {
 }
 
 void __attribute__((destructor)) Shutdown() {
+	Hooks::FrameStageNotify::Unhook();
 	Hooks::SDL::Unhook();
 	Hooks::CreateMove::Unhook();
 

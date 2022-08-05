@@ -5,7 +5,9 @@
 #include "GUI.hpp"
 
 #include "Hooks/SDL/SDLHook.hpp"
+
 #include "Features/Legit/Aimbot.hpp"
+#include "Features/Legit/ESP.hpp"
 
 #include "xorstr.hpp"
 
@@ -58,6 +60,10 @@ void Gui::SwapWindow(SDL_Window* window) {
 			    Features::Legit::Aimbot::SetupGUI();
 				ImGui::EndTabItem();
 			}
+			if(ImGui::BeginTabItem(xorstr_("ESP"))) {
+				Features::Legit::Esp::SetupGUI();
+				ImGui::EndTabItem();
+			}
 			
 			ImGui::EndTabBar();
 		}
@@ -67,6 +73,8 @@ void Gui::SwapWindow(SDL_Window* window) {
 	if (ImGui::IsKeyPressed(SDL_SCANCODE_INSERT, false)) {
 		visible = !visible;
 	}
+
+	Features::Legit::Esp::ImGuiRender(ImGui::GetForegroundDrawList());
 
 	io.MouseDrawCursor = visible;
 	io.WantCaptureMouse = visible;
