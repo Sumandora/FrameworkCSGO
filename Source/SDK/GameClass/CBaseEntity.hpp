@@ -19,7 +19,7 @@ public:
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
 
 	// IClientRenderable
-	VIRTUAL_METHOD(13, SetupBones, bool, (matrix3x4_t* pBoneMatrix, int nMaxBones, int nBoneMask, float flCurTime = 0), (this + sizeof(void*), pBoneMatrix, nMaxBones, nBoneMask, flCurTime))
+	VIRTUAL_METHOD(13, SetupBones, bool, (Matrix3x4* pBoneMatrix, int nMaxBones, int nBoneMask, float flCurTime = 0), (this + sizeof(void*), pBoneMatrix, nMaxBones, nBoneMask, flCurTime))
 };
 
 #endif

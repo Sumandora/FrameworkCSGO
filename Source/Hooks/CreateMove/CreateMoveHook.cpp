@@ -1,18 +1,16 @@
 #include "Hooking/Hooking.hpp"
 #include "PatternScan/PatternScan.hpp"
 #include "Memory/Memory.hpp"
+#include "Assembly/Assembly.hpp"
 
 #include "CreateMoveHook.hpp"
+
 #include "../../Interfaces.hpp"
 
 #include "../../SDK/InputFlags.hpp"
 #include "../../SDK/StateFlags.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../Utils/VMT.hpp"
-
-#include "../../Netvars.hpp"
-
-#include "../../Utils/Recoil.hpp"
 
 #include <cstdint>
 #include <cstring>
@@ -54,5 +52,5 @@ void Hooks::CreateMove::Unhook() {
 	Framework::Memory::protect(createMove, PROT_READ | PROT_WRITE | PROT_EXEC);
 	memcpy(createMove, proxy, 6);
 	Framework::Memory::protect(createMove, PROT_READ | PROT_EXEC);
-	munmap(proxy, getpagesize());
+	munmap(static_cast<char*>(proxy) - FRAMEWORK_ABS_JMP_LENGTH, getpagesize());
 }
