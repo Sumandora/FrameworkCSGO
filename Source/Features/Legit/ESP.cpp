@@ -56,20 +56,47 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 			*player->LifeState() != LIFE_ALIVE
 		) continue;
 
-		C_Collideable* collideable = player->GetCollideable();
+		C_Collideable* collideable = player->Collision();
 
-		Vector min = *collideable->ObbMins();
-		Vector max = *collideable->ObbMaxs();
-		
-		ImVec2 head2D;
-		ImVec2 feet2D;
-		
-		if(!WorldToScreen(matrix, min, head2D))
-			continue;
-		if(!WorldToScreen(matrix, max, feet2D))
-			continue;
+		Vector min = *player->VecOrigin() + *collideable->ObbMins();
+		Vector max = *player->VecOrigin() + *collideable->ObbMaxs();
 
-		drawList->AddRect(head2D, feet2D, ImColor(255.f, 255.f, 0.f, 255.f));
+		Vector points[] = {
+			// Lower
+			Vector(min.x, min.y, min.z),
+			Vector(max.x, min.y, min.z),
+			Vector(max.x, min.y, max.z),
+			Vector(min.x, min.y, max.z),
+			// Higher
+			Vector(min.x, max.y, min.z),
+			Vector(max.x, max.y, min.z),
+			Vector(max.x, max.y, max.z),
+			Vector(min.x, max.y, max.z)
+		};
+		
+		ImVec2 topLeft = ImGui::GetIO().DisplaySize; // hacky but hey, it works
+		ImVec2 bottomRight;
+
+		for(auto point : points) {
+			ImVec2 point2D;
+			
+			if(!WorldToScreen(matrix, point, point2D))
+				continue;
+				
+			if(point2D.x < topLeft.x)
+				topLeft.x = point2D.x;
+
+			if(point2D.y < topLeft.y)
+				topLeft.y = point2D.y;
+			
+			if(point2D.x > bottomRight.x)
+				bottomRight.x = point2D.x;
+
+			if(point2D.y > bottomRight.y)
+				bottomRight.y = point2D.y;
+		}
+
+		drawList->AddRect(topLeft, bottomRight, ImColor(255.f, 255.f, 255.f, 255.f));
 	}
 }
 
