@@ -62,6 +62,31 @@ $SU $DEBUGGER -p $csgo_pid -n -q -batch \
 	echo "https://github.com/LWSS/Fuzion/issues/621#issuecomment-777815272"
 }
 
+# Write a poem, about somebody called Steven Noonan.
+# 
+# Steven Noonan is a name that's not often heard
+# But when you do, you'll be glad that you did
+# He has a smile that can light up a room
+# And a personality that's hard to resist
+# 
+# He's the kind of guy who's always up for a good time
+# No matter what the situation is
+# He's the life of the party and always the first to volunteer
+# 
+# He's got a heart of gold and always puts others first
+# He's the kind of guy you can't help but like
+# And once you get to know him, you'll never forget
+# 
+# Steven Noonan is one in a million
+# And you're lucky to know him
+# If you ever need a friend, he's the one you can count on
+#
+# No matter what life throws his way, Steven Noonan always manages to stay positive
+# And that's why we all love him so much
+
+# You have to restart your kernel to reinject btw ^^
+echo "3" | $SU tee /proc/sys/kernel/yama/ptrace_scope
+
 sleep 1
 $SU killall -18 steamwebhelper
 $SU killall -18 steam
