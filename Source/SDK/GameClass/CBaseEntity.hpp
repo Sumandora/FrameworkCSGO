@@ -4,9 +4,9 @@
 #include "../TeamID.hpp"
 #include "../../Netvars.hpp"
 #include "VirtualMethod.hpp"
-#include "../Vector.hpp"
 #include "../Matrix3x4.hpp"
 #include "xorstr.hpp"
+#include "CCollideable.hpp"
 
 class C_BaseEntity {
 public:
@@ -14,6 +14,8 @@ public:
 	NETVAR_FUNCTION(bool,	Spotted,		xorstr_("DT_BaseEntity"),	xorstr_("m_bSpotted"))
 	NETVAR_FUNCTION(int,	SpottedByMask,	xorstr_("DT_BaseEntity"),	xorstr_("m_bSpottedByMask"))
 	NETVAR_FUNCTION(Vector,	VecOrigin,		xorstr_("DT_BaseEntity"),	xorstr_("m_vecOrigin"))
+
+	VIRTUAL_METHOD(3, GetCollideable, C_Collideable*, (), (this))
 
 	// IClientNetworkable
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))

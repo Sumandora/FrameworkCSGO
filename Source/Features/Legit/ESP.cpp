@@ -12,7 +12,7 @@ bool Features::Legit::Esp::enabled = false;
 
 bool WorldToScreen(Matrix4x4& matrix, Vector worldPosition, ImVec2& screenPosition)
 {
-    float w = matrix[3][1] * worldPosition.x + matrix[3][2] * worldPosition.y + matrix[3][3] * worldPosition.z + matrix[3][4];
+    float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
     if (w < 0.001f)
         return false;
 
@@ -20,8 +20,8 @@ bool WorldToScreen(Matrix4x4& matrix, Vector worldPosition, ImVec2& screenPositi
     screenPosition.x /= 2.0f;
 	screenPosition.y /= 2.0f;
     
-    screenPosition.x *= 1.0f + (matrix[0][1] * worldPosition.x + matrix[0][2] * worldPosition.y + matrix[0][3] * worldPosition.z + matrix[0][4]) / w;
-    screenPosition.y *= 1.0f - (matrix[1][1] * worldPosition.x + matrix[1][2] * worldPosition.y + matrix[1][3] * worldPosition.z + matrix[1][4]) / w;
+    screenPosition.x *= 1.0f + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
+    screenPosition.y *= 1.0f - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
     return true;
 }
 
@@ -55,20 +55,19 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 			player->GetDormant() ||
 			*player->LifeState() != LIFE_ALIVE
 		) continue;
-		
-		Vector head = player->GetBonePosition(8);
-		Vector feet = *player->VecOrigin();
+
+		C_Collideable* collideable = player->GetCollideable();
+
+		Vector min = *collideable->ObbMins();
+		Vector max = *collideable->ObbMaxs();
 		
 		ImVec2 head2D;
 		ImVec2 feet2D;
 		
-		if(!WorldToScreen(matrix, head, head2D))
+		if(!WorldToScreen(matrix, min, head2D))
 			continue;
-		if(!WorldToScreen(matrix, feet, feet2D))
+		if(!WorldToScreen(matrix, max, feet2D))
 			continue;
-
-		head2D.x -= 10;
-		feet2D.x += 10;
 
 		drawList->AddRect(head2D, feet2D, ImColor(255.f, 255.f, 0.f, 255.f));
 	}

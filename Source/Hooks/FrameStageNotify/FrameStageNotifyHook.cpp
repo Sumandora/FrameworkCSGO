@@ -16,11 +16,10 @@
 void* frameStageNotify;
 
 void __attribute((optimize("O0"))) Hooks::FrameStageNotify::FrameStageNotifyHook(void* thisptr, ClientFrameStage stage) {
-	if(stage == ClientFrameStage::FRAME_START)
-		worldToScreenMatrix = Interfaces::engine->WorldToScreenMatrix();
-	printf("Updated\n");
-	
-	return reinterpret_cast<void(*)(void*, ClientFrameStage)>(proxy)(thisptr, stage);
+	if(stage == ClientFrameStage::FRAME_START) {
+		worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
+	}
+	return Framework::ReturnAddr::invoke<void, void*, ClientFrameStage>(proxy, Memory::ret_instruction_addr, thisptr, stage);
 }
 
 void Hooks::FrameStageNotify::Hook() {	

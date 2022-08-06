@@ -22,9 +22,9 @@ void Initializer() {
 	
 	Gui::Create();
 	
+	Hooks::FrameStageNotify::Hook();
 	Hooks::CreateMove::Hook();
 	Hooks::SDL::Hook();
-	Hooks::FrameStageNotify::Hook();
 }
 
 int __attribute__((constructor)) Startup() {
@@ -36,9 +36,9 @@ int __attribute__((constructor)) Startup() {
 }
 
 void __attribute__((destructor)) Shutdown() {
-	Hooks::FrameStageNotify::Unhook();
 	Hooks::SDL::Unhook();
 	Hooks::CreateMove::Unhook();
+	Hooks::FrameStageNotify::Unhook();
 
 	Gui::Destroy();
 }

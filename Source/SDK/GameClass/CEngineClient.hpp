@@ -14,7 +14,7 @@ public:
 	VIRTUAL_METHOD(18, GetViewAngles, void, (Vector* angle), (this, angle))
 	VIRTUAL_METHOD(20, GetMaxClients, int, (), (this))
 	
-	VIRTUAL_METHOD(37, WorldToScreenMatrix, Matrix4x4, (), (this))
+	VIRTUAL_METHOD(37, WorldToScreenMatrix, Matrix4x4*, (), (this))
 };
 
 #endif
