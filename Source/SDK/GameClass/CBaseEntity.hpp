@@ -15,7 +15,7 @@ public:
 	NETVAR_FUNCTION(int,	SpottedByMask,	xorstr_("DT_BaseEntity"),	xorstr_("m_bSpottedByMask"))
 	NETVAR_FUNCTION(Vector,	VecOrigin,		xorstr_("DT_BaseEntity"),	xorstr_("m_vecOrigin"))
 
-	VIRTUAL_METHOD(3, GetCollideable, C_Collideable*, (), (this))
+	NETVAR_FUNCTION(C_Collideable,	Collision,		xorstr_("DT_BaseEntity"),	xorstr_("m_Collision"))
 
 	// IClientNetworkable
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
