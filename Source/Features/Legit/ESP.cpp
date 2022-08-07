@@ -36,27 +36,20 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 
 	if(!matrix.Base())
 		return;
-
-	printf("%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n----\n",
-		matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3],
-		matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3],
-		matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3],
-		matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]
-	);
 	
 	int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	C_BasePlayer* localPlayer = reinterpret_cast<C_BasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	CBasePlayer* localPlayer = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 	
 	// The first object is always the WorldObj
 	for(int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		C_BasePlayer* player = reinterpret_cast<C_BasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if(!player ||
 			player == localPlayer ||
 			player->GetDormant() ||
 			*player->LifeState() != LIFE_ALIVE
 		) continue;
 
-		C_Collideable* collideable = player->Collision();
+		CCollideable* collideable = player->Collision();
 
 		Vector min = *player->VecOrigin() + *collideable->ObbMins();
 		Vector max = *player->VecOrigin() + *collideable->ObbMaxs();

@@ -8,6 +8,7 @@
 
 #include "Features/Legit/Aimbot.hpp"
 #include "Features/Legit/ESP.hpp"
+#include "Features/Legit/Bhop.hpp"
 
 #include "xorstr.hpp"
 
@@ -55,6 +56,9 @@ void Gui::SwapWindow(SDL_Window* window) {
 	
 	if(visible) {
 		ImGui::Begin(xorstr_("Framework"));
+		
+		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
+		
 		if(ImGui::BeginTabBar(xorstr_("#Settings"), ImGuiTabBarFlags_Reorderable)) {
 			if(ImGui::BeginTabItem(xorstr_("Aimbot"))) {
 			    Features::Legit::Aimbot::SetupGUI();
@@ -62,6 +66,10 @@ void Gui::SwapWindow(SDL_Window* window) {
 			}
 			if(ImGui::BeginTabItem(xorstr_("ESP"))) {
 				Features::Legit::Esp::SetupGUI();
+				ImGui::EndTabItem();
+			}
+			if(ImGui::BeginTabItem(xorstr_("Bhop"))) {
+				Features::Legit::Bhop::SetupGUI();
 				ImGui::EndTabItem();
 			}
 			
@@ -74,7 +82,7 @@ void Gui::SwapWindow(SDL_Window* window) {
 		visible = !visible;
 	}
 
-	Features::Legit::Esp::ImGuiRender(ImGui::GetForegroundDrawList());
+	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	io.MouseDrawCursor = visible;
 	io.WantCaptureMouse = visible;

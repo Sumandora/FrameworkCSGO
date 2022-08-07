@@ -3,7 +3,7 @@
 
 #include "../Vector.hpp"
 
-class C_Collideable {
+class CCollideable {
 public:
 	VIRTUAL_METHOD(1, ObbMins, Vector*, (), (this))
 	VIRTUAL_METHOD(2, ObbMaxs, Vector*, (), (this))
