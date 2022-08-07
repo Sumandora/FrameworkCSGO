@@ -1,10 +1,11 @@
 #include "Memory.hpp"
 
-#include "ReturnAddr/ReturnAddr.hpp"
 #include "Utils/VMT.hpp"
 #include "Interfaces.hpp"
 
 #include <dlfcn.h>
+
+#include "xorstr.hpp"
 
 void* GetBaseAddress(const char* library) {
 	void* handle = dlopen(library, RTLD_NOW | RTLD_NOLOAD);
@@ -22,8 +23,13 @@ void* relToAbsAddress(void* addr) {
 
 void Memory::Create() {
 	// Set the address for the return address spoofer
+	
+	
 	ret_instruction_addr =
-		Framework::ReturnAddr::leave_ret_instruction.searchPattern(
+		Pattern(
+			xorstr_("\xC9\xC3"), // leave; ret; instructions
+			xorstr_("xx")
+		).searchPattern(
 			Utils::GetVTable(Interfaces::baseClient)[0] // random code piece
 		);
 
