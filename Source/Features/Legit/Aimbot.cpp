@@ -67,7 +67,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 		return;
 	
 	int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	C_BasePlayer* localPlayer = reinterpret_cast<C_BasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	CBasePlayer* localPlayer = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 
 	if(!localPlayer)
 		return;
@@ -83,13 +83,13 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	Vector viewAngles;
 	Interfaces::engine->GetViewAngles(&viewAngles);
 	
-	C_BasePlayer* target = nullptr;
+	CBasePlayer* target = nullptr;
 	float bestDistance;
 	Vector bestRotation;
 	
 	// The first object is always the WorldObj
 	for(int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		C_BasePlayer* player = reinterpret_cast<C_BasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if(!player ||
 			player == localPlayer ||
 			player->GetDormant() ||

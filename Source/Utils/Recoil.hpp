@@ -5,7 +5,7 @@
 #include "../SDK/Vector.hpp"
 
 namespace Utils {
-	Vector CalcRecoilKickBack(C_BasePlayer* player);
+	Vector CalcRecoilKickBack(CBasePlayer* player);
 }
 
 #endif

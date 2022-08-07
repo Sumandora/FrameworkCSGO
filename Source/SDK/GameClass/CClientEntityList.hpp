@@ -6,7 +6,7 @@
 
 class CClientEntityList {
 public:
-	VIRTUAL_METHOD(3, GetClientEntity, C_BaseEntity*, (int index), (this, index))
+	VIRTUAL_METHOD(3, GetClientEntity, CBaseEntity*, (int index), (this, index))
 };
 
 #endif

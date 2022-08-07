@@ -3,7 +3,7 @@
 #include "../Interfaces.hpp"
 #include "../Memory.hpp"
 
-Vector Utils::CalcRecoilKickBack(C_BasePlayer* player) {
+Vector Utils::CalcRecoilKickBack(CBasePlayer* player) {
 	static Vector prevAimPunch = {};
 	
 	if(*player->ShotsFired() <= 1) {

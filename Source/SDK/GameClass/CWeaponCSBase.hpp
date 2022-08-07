@@ -6,7 +6,7 @@
 
 #include "xorstr.hpp"
 
-class C_WeaponCSBase {
+class CWeaponCSBase {
 public:
 	NETVAR_FUNCTION(CSWeaponMode,	WeaponMode,	xorstr_("DT_WeaponCSBase"),	xorstr_("m_weaponMode"))
 };

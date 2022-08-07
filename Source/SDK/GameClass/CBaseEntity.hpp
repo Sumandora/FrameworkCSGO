@@ -8,14 +8,14 @@
 #include "xorstr.hpp"
 #include "CCollideable.hpp"
 
-class C_BaseEntity {
+class CBaseEntity {
 public:
 	NETVAR_FUNCTION(TeamID,	Team,			xorstr_("DT_BaseEntity"),	xorstr_("m_iTeamNum"))
 	NETVAR_FUNCTION(bool,	Spotted,		xorstr_("DT_BaseEntity"),	xorstr_("m_bSpotted"))
 	NETVAR_FUNCTION(int,	SpottedByMask,	xorstr_("DT_BaseEntity"),	xorstr_("m_bSpottedByMask"))
 	NETVAR_FUNCTION(Vector,	VecOrigin,		xorstr_("DT_BaseEntity"),	xorstr_("m_vecOrigin"))
 
-	NETVAR_FUNCTION(C_Collideable,	Collision,		xorstr_("DT_BaseEntity"),	xorstr_("m_Collision"))
+	NETVAR_FUNCTION(CCollideable,	Collision,		xorstr_("DT_BaseEntity"),	xorstr_("m_Collision"))
 
 	// IClientNetworkable
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))

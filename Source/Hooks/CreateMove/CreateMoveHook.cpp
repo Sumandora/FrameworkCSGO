@@ -7,10 +7,7 @@
 
 #include "../../Interfaces.hpp"
 
-#include "../../SDK/InputFlags.hpp"
-#include "../../SDK/StateFlags.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
-#include "../../Utils/VMT.hpp"
+#include "../../Features/Legit/Bhop.hpp"
 
 #include <cstdint>
 #include <cstring>
@@ -25,19 +22,7 @@ bool __attribute((optimize("O0"))) Hooks::CreateMove::CreateMoveHook(void* thisp
 	if(!cmd || !cmd->command_number)
 		return silent;
 
-	int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	C_BasePlayer* localPlayer = reinterpret_cast<C_BasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
-
-	if(!localPlayer)
-		return silent;
-	
-	int flags = *localPlayer->Flags();
-	
-	if(cmd->buttons & IN_JUMP) {
-		if(!(flags & FL_ONGROUND)) {
-			cmd->buttons &= ~IN_JUMP;
-		}
-	}
+	Features::Legit::Bhop::CreateMove(cmd);
 	
 	return silent || true;
 }

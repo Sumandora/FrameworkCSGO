@@ -6,7 +6,7 @@
 #include "../BoneDefinitions.hpp"
 #include "CWeaponCSBase.hpp"
 
-class C_BasePlayer : public C_BaseEntity {
+class CBasePlayer : public CBaseEntity {
 public:
 	NETVAR_FUNCTION(int,	Flags,				xorstr_("DT_BasePlayer"),				xorstr_("m_fFlags"))
 	NETVAR_FUNCTION(char,	LifeState,			xorstr_("DT_BasePlayer"),				xorstr_("m_lifeState"))
