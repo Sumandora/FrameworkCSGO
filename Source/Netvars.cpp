@@ -32,20 +32,20 @@ void ReadTable(RecvTable* recvTable) {
 void Netvars::DumpNetvars() {
 	/**
 	 * GetAllClasses assembly:
-	 *	mov		0x1988841(%rip),%rax	; Take RIP + offset and dereference it into RAX
-	 *	push	%rbp					; Create Stackframe	|These
-	 *	mov		%rsp,%rbp				; Create Stackframe	|Instructions
-	 *	pop		%rbp					; Destroy Stackframe|Are Useless
-	 *	mov		(%rax),%rax				; Dereference it again
-	 *	ret
+	 * 	lea    0x23c9fc1(%rip),%rax        # 0x7f44ff24df08
+	 * 	push   %rbp
+	 * 	mov    %rsp,%rbp
+   	 *	pop    %rbp
+	 *	mov    (%rax),%rax
+	 * 	ret
 	 */
-	
+
 	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
 	int* ripOffset = reinterpret_cast<int*>(static_cast<char*>(getAllClasses) + 3);
 	void* addr = static_cast<char*>(reinterpret_cast<void*>(ripOffset)) + 4 + *ripOffset;
-	addr = **reinterpret_cast<void***>(addr);
+	addr = *reinterpret_cast<void**>(addr);
 
-	for(ClientClass* cClass = reinterpret_cast<ClientClass*>(addr); cClass != nullptr; cClass = cClass->m_pNext) {
+	for(ClientClass* cClass = static_cast<ClientClass*>(addr); cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
 		ReadTable(table);
 	}
