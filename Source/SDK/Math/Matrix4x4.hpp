@@ -1,5 +1,5 @@
-#ifndef SDK_MATRIX4X4
-#define SDK_MATRIX4X4
+#ifndef SDK_MATH_MATRIX4X4
+#define SDK_MATH_MATRIX4X4
 
 struct Matrix4x4
 {

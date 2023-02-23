@@ -1,10 +1,12 @@
 #ifndef HOOKS_SDL_HOOK
 #define HOOKS_SDL_HOOK
 
-#include <SDL.h>
+#include "SDL.h"
 
 namespace Hooks {
 	namespace SDL {
+		inline SDL_Window* windowPtr;
+
 		inline void* swapWindow_proxy;
 		void SDL_GL_SwapWindow_Hook(SDL_Window*);
 		

@@ -1,10 +1,11 @@
 #ifndef SDK_CWEAPONCSBASE
 #define SDK_CWEAPONCSBASE
 
-#include "../../Netvars.hpp"
+#include "xorstr.hpp"
+
 #include "../WeaponMode.hpp"
 
-#include "xorstr.hpp"
+#include "../../Netvars.hpp"
 
 class CWeaponCSBase {
 public:

@@ -1,18 +1,22 @@
-#include "Hooking/Hooking.hpp"
-#include "PatternScan/PatternScan.hpp"
-#include "Memory/Memory.hpp"
-#include "Assembly/Assembly.hpp"
-
 #include "CreateMoveHook.hpp"
 
-#include "../../Interfaces.hpp"
-
-#include "../../Features/Legit/Bhop.hpp"
-
-#include <cstdint>
-#include <cstring>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <cstring>
+
+#include "Hooking/Hooking.hpp"
+#include "Memory/Memory.hpp"
+#include "ReturnAddr/ReturnAddr.hpp"
+#include "Assembly/Assembly.hpp"
+
+#include "../../Memory.hpp"
+
+#include "../../Utils/VMT.hpp"
+
+#include "../../Features/Legit/Bhop.hpp"
+#include "../../Features/Legit/Triggerbot.hpp"
+
+#include "../../SDK/CUserCmd.hpp"
 
 void* createMove;
 
@@ -23,12 +27,13 @@ bool __attribute((optimize("O0"))) Hooks::CreateMove::CreateMoveHook(void* thisp
 		return silent;
 
 	Features::Legit::Bhop::CreateMove(cmd);
+	Features::Legit::Triggerbot::CreateMove(cmd);
 	
 	return silent || true;
 }
 
 void Hooks::CreateMove::Hook() {	
-	createMove = Utils::GetVTable(Interfaces::clientMode)[25];
+	createMove = Utils::GetVTable(Memory::clientMode)[25];
 
 	proxy = Framework::Hooking::detour(createMove, reinterpret_cast<void*>(CreateMoveHook), 6);
 }

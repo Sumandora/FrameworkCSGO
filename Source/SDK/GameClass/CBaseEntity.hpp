@@ -1,12 +1,15 @@
 #ifndef SDK_CBASEENTITY
 #define SDK_CBASEENTITY
 
-#include "../TeamID.hpp"
-#include "../../Netvars.hpp"
 #include "VirtualMethod.hpp"
-#include "../Matrix3x4.hpp"
 #include "xorstr.hpp"
 #include "CCollideable.hpp"
+
+#include "../TeamID.hpp"
+#include "../Math/Matrix3x4.hpp"
+#include "../Netvars/ClientClass.hpp"
+
+#include "../../Netvars.hpp"
 
 class CBaseEntity {
 public:
@@ -18,10 +21,15 @@ public:
 	NETVAR_FUNCTION(CCollideable,	Collision,		xorstr_("DT_BaseEntity"),	xorstr_("m_Collision"))
 
 	// IClientNetworkable
+	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
 
 	// IClientRenderable
 	VIRTUAL_METHOD(13, SetupBones, bool, (Matrix3x4* pBoneMatrix, int nMaxBones, int nBoneMask, float flCurTime = 0), (this + sizeof(void*), pBoneMatrix, nMaxBones, nBoneMask, flCurTime))
+
+	// Actually CBaseEntity
+	VIRTUAL_METHOD(210, IsPlayer, bool, (), (this))
+
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef FEATURES_LEGIT_AIMBOT
 #define FEATURES_LEGIT_AIMBOT
 
-#include <SDL.h>
+#include "SDL.h"
 
 namespace Features {
 	namespace Legit {

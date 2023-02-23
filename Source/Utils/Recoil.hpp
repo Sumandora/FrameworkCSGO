@@ -2,7 +2,8 @@
 #define UTILS_RECOIL
 
 #include "../SDK/GameClass/CBasePlayer.hpp"
-#include "../SDK/Vector.hpp"
+
+#include "../SDK/Math/Vector.hpp"
 
 namespace Utils {
 	Vector CalcRecoilKickBack(CBasePlayer* player);

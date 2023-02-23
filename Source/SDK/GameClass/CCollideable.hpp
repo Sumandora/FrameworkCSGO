@@ -1,7 +1,7 @@
 #ifndef SDK_COLLIDEABLE
 #define SDK_COLLIDEABLE
 
-#include "../Vector.hpp"
+#include "../Math/Vector.hpp"
 
 class CCollideable {
 public:

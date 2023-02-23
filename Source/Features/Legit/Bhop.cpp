@@ -4,8 +4,9 @@
 
 #include "../../Interfaces.hpp"
 
-#include "../../SDK/InputFlags.hpp"
-#include "../../SDK/StateFlags.hpp"
+#include "../../SDK/Definitions/InputFlags.hpp"
+#include "../../SDK/Definitions/StateFlags.hpp"
+
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 // Settings

@@ -3,6 +3,8 @@
 
 #include <imgui.h>
 
+struct ImDrawList;
+
 namespace Features {
 	namespace Legit {
 		namespace Esp {

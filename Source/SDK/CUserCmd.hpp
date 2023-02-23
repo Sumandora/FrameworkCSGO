@@ -1,7 +1,7 @@
 #ifndef SDK_CUSERCMD
 #define SDK_CUSERCMD
 
-#include "Vector.hpp"
+#include "Math/Vector.hpp"
 
 struct CUserCmd
 {

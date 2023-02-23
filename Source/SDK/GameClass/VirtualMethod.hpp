@@ -2,6 +2,7 @@
 #define SDK_VIRTUALMETHOD
 
 #include "ReturnAddr/ReturnAddr.hpp"
+
 #include "../../Utils/VMT.hpp"
 #include "../../Memory.hpp"
 
