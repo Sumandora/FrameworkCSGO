@@ -1,16 +1,19 @@
 #ifndef INTERFACES
 #define INTERFACES
 
-#include "SDK/GameClass/CClientEntityList.hpp"
-#include "SDK/GameClass/CEngineClient.hpp"
-#include "SDK/GameClass/CGlobalVars.hpp"
+#include "SDK/GameClass/Interfaces/CClientEntityList.hpp"
+#include "SDK/GameClass/Interfaces/CEngineClient.hpp"
+#include "SDK/GameClass/Interfaces/CEngineTrace.hpp"
+
+class CClientEntityList;
+class CEngineClient;
+class CEngineTrace;
 
 namespace Interfaces {
 	inline void*				baseClient;
-	inline void*				clientMode;
 	inline CClientEntityList*	entityList;
 	inline CEngineClient*		engine;
-	inline CGlobalVars*			globalVars;
+	inline CEngineTrace*		engineTrace;
 	
 	void* GetInterface(const char* file, const char* name);
 }

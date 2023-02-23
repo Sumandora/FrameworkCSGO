@@ -1,16 +1,16 @@
-#include "Hooking/Hooking.hpp"
-#include "SDLHook.hpp"
-
-#include "../../GUI.hpp"
-#include "../../Features/Legit/Aimbot.hpp"
-
-#include "xorstr.hpp"
-
-#include <cstdio>
 #include <dlfcn.h>
 
+#include "xorstr.hpp"
+#include "SDLHook.hpp"
+
+#include "../../GUI/GUI.hpp"
+
+#include "../../Features/Legit/Aimbot.hpp"
+
 void Hooks::SDL::SDL_GL_SwapWindow_Hook(SDL_Window* window) {
+	windowPtr = window;
 	Gui::SwapWindow(window);
+
 	// We are we returning a void? Ah who cares ^^
 	return reinterpret_cast<void(*)(SDL_Window*)>(swapWindow_proxy)(window);
 }

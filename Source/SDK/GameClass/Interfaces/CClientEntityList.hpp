@@ -1,8 +1,8 @@
 #ifndef SDK_CCLIENTENTITYLIST
 #define SDK_CCLIENTENTITYLIST
 
-#include "VirtualMethod.hpp"
-#include "CBaseEntity.hpp"
+#include "../VirtualMethod.hpp"
+#include "../CBaseEntity.hpp"
 
 class CClientEntityList {
 public:

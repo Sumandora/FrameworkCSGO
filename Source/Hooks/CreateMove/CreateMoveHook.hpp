@@ -3,6 +3,8 @@
 
 #include "../../SDK/CUserCmd.hpp"
 
+struct CUserCmd;
+
 namespace Hooks {
 	namespace CreateMove {
 		inline void* proxy;

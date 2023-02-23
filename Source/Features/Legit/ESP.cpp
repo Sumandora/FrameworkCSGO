@@ -1,11 +1,23 @@
 #include "ESP.hpp"
 
 #include "xorstr.hpp"
+#include "imgui.h"
 
 #include "../../Interfaces.hpp"
+
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
+
+#include "../../SDK/Definitions/LifeState.hpp"
+
+#include "../../SDK/GameClass/CCollideable.hpp"
+
+#include "../../SDK/GameClass/Interfaces/CClientEntityList.hpp"
+#include "../../SDK/GameClass/Interfaces/CEngineClient.hpp"
+
+#include "../../Source/SDK/Math/Matrix4x4.hpp"
+#include "../../Source/SDK/Math/Vector.hpp"
 
 // Settings
 bool Features::Legit::Esp::enabled = false;

@@ -1,12 +1,17 @@
 #include "Netvars.hpp"
-#include "Interfaces.hpp"
-#include "Utils/VMT.hpp"
-#include "SDK/ClientClass.hpp"
-#include "xorstr.hpp"
 
 #include <cstdio>
 #include <cstring>
 #include <map>
+
+#include "Interfaces.hpp"
+#include "xorstr.hpp"
+
+#include "Utils/VMT.hpp"
+
+#include "SDK/Netvars/ClientClass.hpp"
+#include "SDK/Netvars/RecvProp.hpp"
+#include "SDK/Netvars/RecvTable.hpp"
 
 std::map<char*, std::map<char*, int>> netvars;
 

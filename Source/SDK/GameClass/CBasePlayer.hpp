@@ -2,9 +2,10 @@
 #define SDK_CBASEPLAYER
 
 #include "CBaseEntity.hpp"
-#include "../LifeState.hpp"
-#include "../BoneDefinitions.hpp"
 #include "CWeaponCSBase.hpp"
+
+#include "../Definitions/LifeState.hpp"
+#include "../Definitions/Bones.hpp"
 
 class CBasePlayer : public CBaseEntity {
 public:
@@ -20,6 +21,7 @@ public:
 	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngleVel,	xorstr_("DT_LocalPlayerExclusive"),	xorstr_("m_Local"),	xorstr_("DT_Local"),	xorstr_("m_aimPunchAngleVel"))
 
 	NETVAR_FUNCTION(int,	ShotsFired,			xorstr_("DT_CSLocalPlayerExclusive"),	xorstr_("m_iShotsFired"))
+	NETVAR_FUNCTION(int,	Health,			xorstr_("DT_BasePlayer"),	xorstr_("m_iHealth"))
 
 	inline Vector GetEyePosition() {
 		return *this->VecOrigin() + *this->VecViewOffset();

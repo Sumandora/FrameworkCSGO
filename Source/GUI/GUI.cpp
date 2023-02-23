@@ -1,22 +1,21 @@
-#include "imgui.h"
-#include "backends/imgui_impl_sdl.h"
-#include "backends/imgui_impl_opengl3.h"
-
 #include "GUI.hpp"
 
-#include "Hooks/SDL/SDLHook.hpp"
-
-#include "Features/Legit/Aimbot.hpp"
-#include "Features/Legit/ESP.hpp"
-#include "Features/Legit/Bhop.hpp"
-
-#include "xorstr.hpp"
-
-#include <SDL.h>
 #include <algorithm>
 
+#include "xorstr.hpp"
+#include "imgui.h"
+
+#include "backends/imgui_impl_sdl2.h"
+#include "backends/imgui_impl_opengl3.h"
+
+#include "../Hooks/SDL/SDLHook.hpp"
+
+#include "../Features/Legit/Aimbot.hpp"
+#include "../Features/Legit/ESP.hpp"
+#include "../Features/Legit/Bhop.hpp"
+#include "../Features/Legit/Triggerbot.hpp"
+
 bool visible = false;
-SDL_Window* windowPtr;
 
 void Gui::Create() {
 	ImGui::CreateContext();
@@ -36,10 +35,9 @@ void Gui::Destroy() {
 }
 
 void Gui::SwapWindow(SDL_Window* window) {
-	windowPtr = window;
 	// This hack is also used by Osiris, because of the 'static' keyword it is only executed once
 	[[maybe_unused]] static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
-	[[maybe_unused]] static const auto _2 = ImGui_ImplOpenGL3_Init(xorstr_("#version 100"));
+	[[maybe_unused]] static const auto _2 = ImGui_ImplOpenGL3_Init();
 
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -72,13 +70,17 @@ void Gui::SwapWindow(SDL_Window* window) {
 				Features::Legit::Bhop::SetupGUI();
 				ImGui::EndTabItem();
 			}
+			if(ImGui::BeginTabItem(xorstr_("Triggerbot"))) {
+				Features::Legit::Triggerbot::SetupGUI();
+				ImGui::EndTabItem();
+			}
 			
 			ImGui::EndTabBar();
 		}
 		ImGui::End();
 	}
 	
-	if (ImGui::IsKeyPressed(SDL_SCANCODE_INSERT, false)) {
+	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false)) {
 		visible = !visible;
 	}
 
@@ -104,11 +106,7 @@ void Gui::PollEvent(SDL_Event* event, int result) {
 	) return;
 
 	ImGuiIO& io = ImGui::GetIO();
-	if(visible && event->type == SDL_MOUSEBUTTONUP) {
-		//TODO Get Window ptr from event
-		reinterpret_cast<void(*)(SDL_Window*,int,int)>(Hooks::SDL::warpMouseInWindow_proxy)(windowPtr, io.MousePos.x, io.MousePos.y);
-	}
-	
+
 	if(event->type != SDL_MOUSEMOTION)
 		ImGui_ImplSDL2_ProcessEvent(event);
 	else if(visible) {

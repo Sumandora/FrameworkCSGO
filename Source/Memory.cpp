@@ -1,11 +1,15 @@
 #include "Memory.hpp"
 
-#include "Utils/VMT.hpp"
-#include "Interfaces.hpp"
-
 #include <dlfcn.h>
 
+#include "Interfaces.hpp"
 #include "xorstr.hpp"
+
+#include "PatternScan/PatternScan.hpp"
+
+#include "Utils/VMT.hpp"
+
+class CGlobalVars;
 
 void* GetBaseAddress(const char* library) {
 	void* handle = dlopen(library, RTLD_NOW | RTLD_NOLOAD);
@@ -14,7 +18,7 @@ void* GetBaseAddress(const char* library) {
 	return addr;
 }
 
-void* relToAbsAddress(void* addr) {
+void* RelativeToAbsolute(void* addr) {
 	// RIP-Relatives start after the instruction using it
 	// The relative offsets are 4 bytes long
 
@@ -22,24 +26,23 @@ void* relToAbsAddress(void* addr) {
 }
 
 void Memory::Create() {
+	void** baseClientVTable = Utils::GetVTable(Interfaces::baseClient);
+	
 	// Set the address for the return address spoofer
-	
-	
 	ret_instruction_addr =
 		Pattern(
 			xorstr_("\xC9\xC3"), // leave; ret; instructions
 			xorstr_("xx")
 		).searchPattern(
-			Utils::GetVTable(Interfaces::baseClient)[0] // random code piece
+			baseClientVTable[0] // random code piece
 		);
 
-	void** baseClientVTable = Utils::GetVTable(Interfaces::baseClient);
 	
 	void* hudProcessInput	= baseClientVTable[10];
 	void* hudUpdate			= baseClientVTable[11];
 	
-	void* getClientMode		= relToAbsAddress(static_cast<char*>(hudProcessInput) + 12);
+	void* getClientMode		= RelativeToAbsolute(static_cast<char*>(hudProcessInput) + 12);
 	
-	Interfaces::clientMode	= *reinterpret_cast<void**>(relToAbsAddress(static_cast<char*>(getClientMode) + 4));
-	Interfaces::globalVars	= *reinterpret_cast<CGlobalVars**>(relToAbsAddress(static_cast<char*>(hudUpdate) + 16));
+	clientMode	= *reinterpret_cast<void**>(RelativeToAbsolute(static_cast<char*>(getClientMode) + 4));
+	globalVars	= *reinterpret_cast<CGlobalVars**>(RelativeToAbsolute(static_cast<char*>(hudUpdate) + 16));
 }

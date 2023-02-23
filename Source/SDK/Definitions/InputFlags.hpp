@@ -1,5 +1,5 @@
-#ifndef SDK_INPUTFLAGS
-#define SDK_INPUTFLAGS
+#ifndef SDK_DEFINITIONS_INPUTFLAGS
+#define SDK_DEFINITIONS_INPUTFLAGS
 
 #define IN_ATTACK		(1 << 0)
 #define IN_JUMP			(1 << 1)

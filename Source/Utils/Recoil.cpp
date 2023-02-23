@@ -1,8 +1,5 @@
 #include "Recoil.hpp"
 
-#include "../Interfaces.hpp"
-#include "../Memory.hpp"
-
 Vector Utils::CalcRecoilKickBack(CBasePlayer* player) {
 	static Vector prevAimPunch = {};
 	

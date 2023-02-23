@@ -1,17 +1,24 @@
-#include "Hooking/Hooking.hpp"
-#include "PatternScan/PatternScan.hpp"
-#include "Memory/Memory.hpp"
-#include "Assembly/Assembly.hpp"
-
 #include "FrameStageNotifyHook.hpp"
 
-#include "../../Interfaces.hpp"
-
-#include <cstdint>
-#include <cstring>
 #include <unistd.h>
 #include <sys/mman.h>
-#include <cstdio>
+#include <cstring>
+
+#include "Hooking/Hooking.hpp"
+#include "Memory/Memory.hpp"
+#include "Assembly/Assembly.hpp"
+#include "ReturnAddr/ReturnAddr.hpp"
+
+#include "../../Interfaces.hpp"
+#include "../../Memory.hpp"
+
+#include "../../SDK/ClientFrameStage.hpp"
+
+#include "../../SDK/GameClass/Interfaces/CEngineClient.hpp"
+
+#include "../../SDK/Math/Matrix4x4.hpp"
+
+#include "../../Utils/VMT.hpp"
 
 void* frameStageNotify;
 
