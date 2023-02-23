@@ -16,7 +16,7 @@ bool IsInputDown(int key) {
 	return false;
 }
 
-IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& size) {
+IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size) {
 
 	static const char* waiting = nullptr;
 
