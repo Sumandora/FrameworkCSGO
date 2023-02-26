@@ -8,6 +8,7 @@ namespace Features {
 		namespace Bhop {
 			// Settings
 			extern bool enabled;
+			extern int humanization;
 
 			void CreateMove(CUserCmd* cmd);
 

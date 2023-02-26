@@ -1,7 +1,5 @@
 #include "Memory.hpp"
 
-#include <dlfcn.h>
-
 #include "Interfaces.hpp"
 #include "xorstr.hpp"
 
@@ -9,16 +7,7 @@
 
 #include "Utils/VMT.hpp"
 
-class CGlobalVars;
-
-void* GetBaseAddress(const char* library) {
-	void* handle = dlopen(library, RTLD_NOW | RTLD_NOLOAD);
-	void* addr = *reinterpret_cast<void**>(handle);
-	dlclose(handle);
-	return addr;
-}
-
-void* RelativeToAbsolute(void* addr) {
+void* Memory::RelativeToAbsolute(void* addr) {
 	// RIP-Relatives start after the instruction using it
 	// The relative offsets are 4 bytes long
 

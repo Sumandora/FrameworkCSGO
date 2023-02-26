@@ -3,3 +3,6 @@ Build/
 Build-Debug/
 build.log
 gdb.log
+
+# CLion
+.idea/

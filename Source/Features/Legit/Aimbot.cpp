@@ -6,25 +6,16 @@
 
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
-#include "../../Utils/Recoil.hpp"
 #include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/Raytrace.hpp"
 
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
-// Settings
 bool	Features::Legit::Aimbot::enabled	= false;
 float	Features::Legit::Aimbot::fov		= 3.0f;
 float	Features::Legit::Aimbot::smoothness	= 4.0f;
 int		Features::Legit::Aimbot::clamp		= 1;
-
-Vector CalculateView(Vector a, Vector b) {
-	Vector delta = b - a;
-	Vector rotation = {};
-	Utils::VectorAngles(delta, rotation);
-	return rotation;
-}
 
 void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	if(!enabled)
@@ -68,15 +59,19 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 			*player->Team() == localTeam
 		) continue;
 
-		Vector head = player->GetBonePosition(8);
+		Matrix3x4 boneMatrix[MAXSTUDIOBONES];
+		if(!player->SetupBones(boneMatrix))
+			continue;
+
+		Vector head = boneMatrix[8].Origin();
 
 		Trace trace = Utils::TraceRay(playerEye, head, &filter);
 
 		if(trace.m_pEnt != player)
 			continue; // The enemy is behind something...
 
-		Vector rotation = CalculateView(playerEye, head);
-		rotation -= Utils::CalcRecoilKickBack(localPlayer) * 2;
+		Vector rotation = Utils::CalculateView(playerEye, head);
+		rotation -= *localPlayer->AimPunchAngle() * 2;
 		rotation -= viewAngles;
 		rotation = rotation.Wrap();
 		
@@ -108,8 +103,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 }
 
 void Features::Legit::Aimbot::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##Aimbot"), &enabled);
-	ImGui::SliderFloat(xorstr_("FOV##Aimbot"), &fov, 0.0f, 10.0f, "%.2f");
-	ImGui::SliderFloat(xorstr_("Smoothness##Aimbot"), &smoothness, 1.0f, 5.0f, "%f");
-	ImGui::SliderInt(xorstr_("Clamp##Aimbot"), &clamp, 1, 5, "%d");
+	ImGui::Checkbox(xorstr_("Enabled##LegitAimbot"), &enabled);
+	ImGui::SliderFloat(xorstr_("FOV##LegitAimbot"), &fov, 0.0f, 10.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Smoothness##LegitAimbot"), &smoothness, 1.0f, 5.0f, "%.2f");
+	ImGui::SliderInt(xorstr_("Clamp##LegitAimbot"), &clamp, 1, 5);
 }

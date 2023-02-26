@@ -1,10 +1,8 @@
-#ifndef HOOKS_PAINT_HOOK
-#define HOOKS_PAINT_HOOK
+#ifndef HOOKS_FRAMESTAGENOTIFY
+#define HOOKS_FRAMESTAGENOTIFY
 
 #include "../../SDK/Math/Matrix4x4.hpp"
 #include "../../SDK/ClientFrameStage.hpp"
-
-enum class ClientFrameStage : int;
 
 namespace Hooks {
 	namespace FrameStageNotify {

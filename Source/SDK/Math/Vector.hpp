@@ -1,7 +1,8 @@
 #ifndef SDK_MATH_VECTOR
 #define SDK_MATH_VECTOR
 
-#include <math.h>
+#include <cmath>
+#include <algorithm>
 
 class Vector {
 public:
@@ -15,7 +16,7 @@ public:
 		y = other.y;
 		z = other.z;
 	}
-	inline Vector(float scalar) {
+	inline explicit Vector(float scalar) {
 		x = y = z = scalar;
 	}
 	inline Vector(float x, float y, float z) {
@@ -25,12 +26,7 @@ public:
 	}
 
 	// Assign
-	inline Vector& operator=(const Vector& other) {
-		x = other.x;
-		y = other.y;
-		z = other.z;
-		return *this;
-	}
+	inline Vector& operator=(const Vector& other) = default;
 
 	// Array-like access
 	inline float& operator[](int i) {
@@ -77,38 +73,42 @@ public:
 		x += other;
 		y += other;
 		z += other;
+		return *this;
 	}
 
 	inline Vector& operator-=(float other) {
 		x -= other;
 		y -= other;
 		z -= other;
+		return *this;
 	}
 
 	inline Vector& operator*=(float other) {
 		x *= other;
 		y *= other;
 		z *= other;
+		return *this;
 	}
 
 	inline Vector& operator/=(float other) {
 		x /= other;
 		y /= other;
 		z /= other;
+		return *this;
 	}
 
 	// Comparison
-	inline bool operator==(const Vector& other) {
+	inline bool operator==(const Vector& other) const {
 		return x == other.x && y == other.y && z == other.z;
 	}
 
-	inline bool operator/(const Vector& other) {
+	inline bool operator!=(const Vector& other) const {
 		return x != other.x || y != other.y || z != other.z;
 	}
 
 	// Invert
-	inline Vector operator-(void) const {
-		return Vector(-x, -y, -z);
+	inline Vector operator-() const {
+		return {-x, -y, -z};
 	}
 
 	// Arithmetic using non-mutable vectors
@@ -179,33 +179,35 @@ public:
 		return vec;
 	}
 
-	inline float LengthSquared() {
+	inline float LengthSquared() const {
 		return x * x + y * y + z * z;
 	}
 
-	inline float Length() {
+	inline float Length() const {
 		return sqrt(LengthSquared());
 	}
 
-	inline float Dot(Vector other) {
+	inline float Dot(const Vector& other) const {
 		return this->x * other.x + this->y * other.y + this->z * other.z;
 	}
 
-	inline Vector Normalize() {
+	inline Vector Normalize() const {
 		float len = Length();
-		return Vector(
+		return {
 			this->x / len,
 			this->y / len,
 			this->z / len
-		);
+		};
 	}
 
 	inline Vector Wrap() {
-		while (this->x > 89.0f)
+		while (this->x > 90.0f)
 			this->x -= 180.f;
 
-		while (this->x < -89.0f)
+		while (this->x < -90.0f)
 			this->x += 180.f;
+
+		this->x = std::clamp(this->x, -89.0f, 89.0f);
 
 		while (this->y > 180.f)
 			this->y -= 360.f;
@@ -224,12 +226,14 @@ public:
 		this->x = x;
 		this->y = y;
 		this->z = z;
+		this->w = 0;
 	}
 
 	AlignedVector& operator=(const Vector &vOther) {
 		this->x = vOther.x;
 		this->y = vOther.y;
 		this->z = vOther.z;
+		this->w = 0;
 		return *this;
 	}
 	float w;

@@ -13,6 +13,7 @@ returnType* functionName () { \
 namespace Netvars {
 	void DumpNetvars();
 	int GetOffset(const char* table, const char* name);
+	void BuildGUI();
 }
 
 #endif

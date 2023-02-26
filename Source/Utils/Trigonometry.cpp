@@ -26,12 +26,12 @@ void Utils::VectorAngles(Vector& forward, Vector& angles) {
 	}
 	else
 	{
-		yaw = (atan2(forward[1], forward[0]) * 180 / M_PI);
+		yaw = RAD2DEG(atan2(forward[1], forward[0]));
 		if (yaw < 0)
 			yaw += 360;
 
 		tmp = sqrt (forward[0]*forward[0] + forward[1]*forward[1]);
-		pitch = (atan2(-forward[2], tmp) * 180 / M_PI);
+		pitch = RAD2DEG(atan2(-forward[2], tmp));
 		if (pitch < 0)
 			pitch += 360;
 	}
@@ -39,4 +39,11 @@ void Utils::VectorAngles(Vector& forward, Vector& angles) {
 	angles[0] = pitch;
 	angles[1] = yaw;
 	angles[2] = 0;
+}
+
+Vector Utils::CalculateView(const Vector& a, const Vector& b) {
+	Vector delta = b - a;
+	Vector rotation = {};
+	Utils::VectorAngles(delta, rotation);
+	return rotation;
 }

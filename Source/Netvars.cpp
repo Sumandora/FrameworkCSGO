@@ -6,6 +6,7 @@
 
 #include "Interfaces.hpp"
 #include "xorstr.hpp"
+#include "imgui.h"
 
 #include "Utils/VMT.hpp"
 
@@ -37,34 +38,22 @@ void ReadTable(RecvTable* recvTable) {
 void Netvars::DumpNetvars() {
 	/**
 	 * GetAllClasses assembly:
-	 * 	lea    0x23c9fc1(%rip),%rax        # 0x7f44ff24df08
-	 * 	push   %rbp
-	 * 	mov    %rsp,%rbp
-   	 *	pop    %rbp
-	 *	mov    (%rax),%rax
+	 *	lea	0x23c9fc1(%rip),%rax		# 0x7f44ff24df08
+	 *	push %rbp
+	 *	mov	%rsp,%rbp
+	 *	pop	%rbp
+	 *	mov	(%rax),%rax
 	 * 	ret
 	 */
 
 	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
-	int* ripOffset = reinterpret_cast<int*>(static_cast<char*>(getAllClasses) + 3);
-	void* addr = static_cast<char*>(reinterpret_cast<void*>(ripOffset)) + 4 + *ripOffset;
-	addr = *reinterpret_cast<void**>(addr);
+	char* relativeAddress = static_cast<char*>(getAllClasses) + 3;
+	ClientClass* rootClass = *reinterpret_cast<ClientClass**>(Memory::RelativeToAbsolute(relativeAddress));
 
-	for(ClientClass* cClass = static_cast<ClientClass*>(addr); cClass != nullptr; cClass = cClass->m_pNext) {
+	for(ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
 		ReadTable(table);
 	}
-
-	// Uncomment for debugging
-	// FILE* buf = fopen(xorstr_("/tmp/netvars.dmp"), "w");
-	// if(buf != NULL) {
-		// for (const auto& [key, value] : netvars) {
-			// for (const auto& [key2, value2] : value) {
-				// fprintf(buf, xorstr_("[%s][%s] = %x\n"), key, key2, value2);
-			// }
-		// }
-		// fclose(buf);
-	// }
 }
 
 int Netvars::GetOffset(const char* table, const char* name) {
@@ -77,4 +66,23 @@ int Netvars::GetOffset(const char* table, const char* name) {
 	}
 	printf(xorstr_("Couldn't find netvar %s in %s\n"), name, table);
 	return 0;
+}
+
+void Netvars::BuildGUI() {
+	static char searchBar[128] = "";
+	ImGui::InputText(xorstr_("Search bar"), searchBar, 128);
+
+	for (const auto& [key, value] : netvars) {
+		if (searchBar[0] == '\0' || strncmp(searchBar, key, strlen(searchBar)) == 0) {
+			if (ImGui::TreeNode(key)) {
+				for (const auto &[key2, value2]: value) {
+					if (ImGui::TreeNode(key2)) {
+						ImGui::Text(xorstr_("[%s][%s] = 0x%x\n"), key, key2, value2);
+						ImGui::TreePop();
+					}
+				}
+				ImGui::TreePop();
+			}
+		}
+	}
 }

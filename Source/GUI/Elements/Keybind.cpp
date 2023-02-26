@@ -20,10 +20,10 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 
 	static const char* waiting = nullptr;
 
-	const char* newLabel;
+	char newLabel[128];
 
 	if(waiting == label) {
-		newLabel = xorstr_("Waiting for input");
+		strcpy(newLabel, xorstr_("Waiting for input"));
 
 		bool found = false;
 		for(int imguikey = ImGuiKey_Tab; imguikey != ImGuiKey_KeypadEqual; imguikey++) {
@@ -41,7 +41,7 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 			// Maybe a mouse button?
 			auto buttons = ImGui::GetIO().MouseDown;
 			for(int i = 0; i < 5; i++) {
-				if(buttons[i])  {
+				if(buttons[i]) {
 					waiting = nullptr;
 					key = -1 - i; // Negative ids indicate mouse buttons (LMB has id 0, in order to not conflict with unset which is also zero, we do that)
 					break;
@@ -52,18 +52,16 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 		char keyName[128];
 
 		if(key == 0) {
-			strcpy(keyName, "Unset");
+			strcpy(keyName, xorstr_("Unset"));
 		} else if(key > 0) {
 			strcpy(keyName, ImGui::GetKeyName(static_cast<ImGuiKey>(key)));
 		} else if(key < 0) {
-			strcpy(keyName, "Mouse");
+			strcpy(keyName, xorstr_("Mouse"));
 			keyName[5] = 48 + abs(key); // 48 = '0' in ascii
 			keyName[6] = '\0';
 		}
 
-		char buf[512];
-		sprintf(buf, label, keyName);
-		newLabel = buf;
+		sprintf(newLabel, label, keyName);
 	}
 
 	if(ImGui::Button(newLabel, size)) {

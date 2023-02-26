@@ -1,7 +1,7 @@
 #ifndef UTILS_TRIGONOMETRY
 #define UTILS_TRIGONOMETRY
 
-#include <math.h>
+#include <cmath>
 
 #include "../SDK/Math/Vector.hpp"
 
@@ -11,6 +11,7 @@
 namespace Utils {
 	void AngleVectors(Vector angles, Vector* forward);
 	void VectorAngles(Vector& forward, Vector& angles);
+	Vector CalculateView(const Vector& a, const Vector& b);
 }
 
 #endif

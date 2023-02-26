@@ -14,6 +14,12 @@
 #include "../Features/Legit/ESP.hpp"
 #include "../Features/Legit/Bhop.hpp"
 #include "../Features/Legit/Triggerbot.hpp"
+#include "../Features/Legit/SpectatorList.hpp"
+
+#include "../Features/Semirage/Aimbot.hpp"
+#include "../Features/Semirage/RecoilAssistance.hpp"
+
+#include "../Netvars.hpp"
 
 bool visible = false;
 
@@ -58,20 +64,59 @@ void Gui::SwapWindow(SDL_Window* window) {
 		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
 		
 		if(ImGui::BeginTabBar(xorstr_("#Settings"), ImGuiTabBarFlags_Reorderable)) {
-			if(ImGui::BeginTabItem(xorstr_("Aimbot"))) {
-			    Features::Legit::Aimbot::SetupGUI();
+			if(ImGui::BeginTabItem(xorstr_("Legit"))) {
+				if(ImGui::BeginTabBar(xorstr_("#Legit Settings"), ImGuiTabBarFlags_Reorderable)) {
+					if(ImGui::BeginTabItem(xorstr_("Aimbot"))) {
+						Features::Legit::Aimbot::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if(ImGui::BeginTabItem(xorstr_("ESP"))) {
+						Features::Legit::Esp::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if(ImGui::BeginTabItem(xorstr_("Bhop"))) {
+						Features::Legit::Bhop::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if(ImGui::BeginTabItem(xorstr_("Triggerbot"))) {
+						Features::Legit::Triggerbot::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if(ImGui::BeginTabItem(xorstr_("Spectator List"))) {
+						Features::Legit::SpectatorList::SetupGUI();
+						ImGui::EndTabItem();
+					}
+
+					ImGui::EndTabBar();
+				}
 				ImGui::EndTabItem();
 			}
-			if(ImGui::BeginTabItem(xorstr_("ESP"))) {
-				Features::Legit::Esp::SetupGUI();
+
+			if(ImGui::BeginTabItem(xorstr_("Semirage"))) {
+				if(ImGui::BeginTabBar(xorstr_("#Semirage Settings"), ImGuiTabBarFlags_Reorderable)) {
+					if(ImGui::BeginTabItem(xorstr_("Aimbot"))) {
+						Features::Semirage::Aimbot::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if(ImGui::BeginTabItem(xorstr_("Recoil assistance"))) {
+						Features::Semirage::RecoilAssistance::SetupGUI();
+						ImGui::EndTabItem();
+					}
+
+					ImGui::EndTabBar();
+				}
 				ImGui::EndTabItem();
 			}
-			if(ImGui::BeginTabItem(xorstr_("Bhop"))) {
-				Features::Legit::Bhop::SetupGUI();
-				ImGui::EndTabItem();
-			}
-			if(ImGui::BeginTabItem(xorstr_("Triggerbot"))) {
-				Features::Legit::Triggerbot::SetupGUI();
+
+			if(ImGui::BeginTabItem(xorstr_("Debug"))) {
+				if(ImGui::BeginTabBar(xorstr_("#Debug Settings"), ImGuiTabBarFlags_Reorderable)) {
+					if(ImGui::BeginTabItem(xorstr_("Netvars"))) {
+						Netvars::BuildGUI();
+						ImGui::EndTabItem();
+					}
+
+					ImGui::EndTabBar();
+				}
 				ImGui::EndTabItem();
 			}
 			
@@ -79,12 +124,9 @@ void Gui::SwapWindow(SDL_Window* window) {
 		}
 		ImGui::End();
 	}
-	
-	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false)) {
-		visible = !visible;
-	}
 
 	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
+	Features::Legit::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	io.MouseDrawCursor = visible;
 	io.WantCaptureMouse = visible;
@@ -95,8 +137,7 @@ void Gui::SwapWindow(SDL_Window* window) {
 }
 
 void Gui::PollEvent(SDL_Event* event, int result) {
-	if(
-		event->type != SDL_MOUSEWHEEL &&
+	if( event->type != SDL_MOUSEWHEEL &&
 		event->type != SDL_MOUSEBUTTONDOWN &&
 		event->type != SDL_MOUSEBUTTONUP &&
 		event->type != SDL_TEXTINPUT &&
@@ -107,15 +148,36 @@ void Gui::PollEvent(SDL_Event* event, int result) {
 
 	ImGuiIO& io = ImGui::GetIO();
 
-	if(event->type != SDL_MOUSEMOTION)
+	// Emulate these 2 events, because ImGui is broken... :c
+	if(event->type == SDL_MOUSEMOTION) {
+		io.MousePos.x += (float) event->motion.xrel;
+		io.MousePos.y += (float) event->motion.yrel;
+	} else if(event->type == SDL_MOUSEWHEEL) {
+		io.MouseWheelH += (float) event->wheel.x;
+		io.MouseWheel  += (float) event->wheel.y;
+	} else
 		ImGui_ImplSDL2_ProcessEvent(event);
-	else if(visible) {
-		io.MousePos.x += event->motion.xrel;
-		io.MousePos.y += event->motion.yrel;
+
+	// Cancel both up and down events, but only down events do something
+	if (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP) {
+		if (event->key.keysym.sym == SDLK_INSERT ||
+			(event->key.keysym.mod == KMOD_LALT && event->key.keysym.sym == SDLK_i)) {
+			if(event->type == SDL_KEYDOWN)
+				visible = !visible;
+			event->type = 0;
+		} else if (visible && event->key.keysym.sym == SDLK_ESCAPE) {
+			if(event->type == SDL_KEYDOWN)
+				visible = false;
+			event->type = 0;
+		}
 	}
-	
-	if(visible && result)
+
+	if (visible) {
+		if(event->type == SDL_MOUSEBUTTONUP)
+			reinterpret_cast<void(*)(SDL_Window*,int,int)>(Hooks::SDL::warpMouseInWindow_proxy)(Hooks::SDL::windowPtr, (int) io.MousePos.x, (int) io.MousePos.y);
+
 		event->type = 0;
+	}
 }
 
 bool Gui::WarpMouseInWindow() {

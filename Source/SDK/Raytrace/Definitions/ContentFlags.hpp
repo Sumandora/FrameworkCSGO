@@ -12,7 +12,7 @@
 #define CONTENTS_BLOCKLOS				0x40
 #define CONTENTS_OPAQUE					0x80
 #define CONTENTS_TESTFOGVOLUME			0x100
-#define CONTENTS_UNUSED                 0x200
+#define CONTENTS_UNUSED				 0x200
 
 #define CONTENTS_BLOCKLIGHT				0x400
 

@@ -5,28 +5,12 @@
 
 #include "../../Interfaces.hpp"
 
-#include "../../Utils/Recoil.hpp"
 #include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/Raytrace.hpp"
 
-#include "../../SDK/Raytrace/TraceFilter.hpp"
-
 #include "../../SDK/Definitions/InputFlags.hpp"
-#include "../../SDK/Definitions/LifeState.hpp"
-
 #include "../../SDK/GameClass/CBasePlayer.hpp"
-#include "../../SDK/GameClass/CBaseEntity.hpp"
-#include "../../SDK/GameClass/Interfaces/CClientEntityList.hpp"
-#include "../../SDK/GameClass/Interfaces/CEngineClient.hpp"
 
-#include "../../SDK/Math/Vector.hpp"
-
-#include "../../SDK/Raytrace/Trace.hpp"
-
-#include "../../SDK/CUserCmd.hpp"
-#include "../../SDK/TeamID.hpp"
-
-// Settings
 bool	Features::Legit::Triggerbot::enabled	= false;
 int		Features::Legit::Triggerbot::input		= ImGuiKey_V;
 
@@ -45,7 +29,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 		return;
 
 	Vector playerEye = localPlayer->GetEyePosition();
-	Vector viewangles = cmd->viewangles;
+	Vector viewangles = Vector(cmd->viewangles);
 
 	viewangles += *localPlayer->AimPunchAngle();
 
@@ -75,6 +59,6 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 }
 
 void Features::Legit::Triggerbot::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##Triggerbot"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)##Triggerbot"), input);
+	ImGui::Checkbox(xorstr_("Enabled##LegitTriggerbot"), &enabled);
+	ImGui::InputSelector(xorstr_("Input (%s)##LegitTriggerbot"), input);
 }
