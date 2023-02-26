@@ -3,7 +3,7 @@
 # Set the DEBUGGER variable on the cmdline to use lldb or any debugger
 # Make sure it supports the following commands
 DEBUGGER="${DEBUGGER:=gdb}"
-echo "Using '$DEBUGGER' to unload"
+echo "Using '$DEBUGGER' to uninject"
 if ! [ -x "$(command -v $DEBUGGER)" ]; then
 	echo "$DEBUGGER does not exist"
 	echo "Install it or set the DEBUGGER variable to a replacement"
