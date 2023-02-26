@@ -3,15 +3,14 @@
 #include "xorstr.hpp"
 #include "SDLHook.hpp"
 
+#include "../../Memory.hpp"
 #include "../../GUI/GUI.hpp"
-
 #include "../../Features/Legit/Aimbot.hpp"
 
 void Hooks::SDL::SDL_GL_SwapWindow_Hook(SDL_Window* window) {
 	windowPtr = window;
 	Gui::SwapWindow(window);
 
-	// We are we returning a void? Ah who cares ^^
 	return reinterpret_cast<void(*)(SDL_Window*)>(swapWindow_proxy)(window);
 }
 
@@ -28,7 +27,6 @@ void Hooks::SDL::SDL_WarpMouseInWindow_Hook(SDL_Window* window, int x, int y) {
 	if(Gui::WarpMouseInWindow())
 		return;
 	
-	// Returning voids once again
 	return reinterpret_cast<void(*)(SDL_Window*,int,int)>(warpMouseInWindow_proxy)(window, x, y);
 }
 
@@ -36,10 +34,10 @@ void* HookSDLFunction(const char* name, void* hook) {
 	/**
 	 * These are wrapper functions
 	 * They have a relative jmp instruction inside of them.
-	 * We take the address of the relative jmp and let swap it with our method
+	 * We take the address of the relative jmp and swap it with our method
 	 */
-	char* address = reinterpret_cast<char*>(dlsym(RTLD_NEXT, name)) + 1;
-	void** jumpAddress = reinterpret_cast<void**>(address + *reinterpret_cast<int*>(address + 1) + 5);
+	char* address = reinterpret_cast<char*>(dlsym(RTLD_NEXT, name)) + 2;
+	void** jumpAddress = reinterpret_cast<void**>(Memory::RelativeToAbsolute(address));
 	void* realFunction = *jumpAddress;
 	*jumpAddress = reinterpret_cast<unsigned int*>(hook);
 	return realFunction;

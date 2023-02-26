@@ -21,8 +21,8 @@ struct CUserCmd
 	short mousedx;
 	short mousedy;
 	bool hasbeenpredicted;
-	Vector headangles;
-	Vector headoffset;
+	Vector viewangles_copy;
+	int buttons_copy;
 };
 
 #endif

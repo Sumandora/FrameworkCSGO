@@ -22,6 +22,10 @@ struct Matrix3x4
 	inline float* Base() {
 		return &matrix[0][0];
 	}
+
+	inline Vector Origin() {
+		return {matrix[0][3], matrix[1][3], matrix[2][3]};
+	}
 };
 
 #endif

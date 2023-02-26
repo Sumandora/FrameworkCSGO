@@ -15,13 +15,13 @@ struct Ray
 	bool			m_IsRay;
 	bool			m_IsSwept;
 
-	Ray() : m_pWorldAxisTransform( NULL ) {}
+	Ray() : m_pWorldAxisTransform( nullptr ) {}
 
 	void Init(Vector& start, Vector& end) {
 		m_Delta = end - start;
 		m_IsSwept = (m_Delta.LengthSquared() != 0);
 		m_Extents.x = m_Extents.y = m_Extents.z = 0;
-		m_pWorldAxisTransform = NULL;
+		m_pWorldAxisTransform = nullptr;
 		m_IsRay = true;
 		m_StartOffset.x = m_StartOffset.y = m_StartOffset.z = 0;
 		m_Start = start;
@@ -29,7 +29,7 @@ struct Ray
 
 	void Init(Vector const& start, Vector const& end, Vector const& mins, Vector const& maxs) {
 		m_Delta = end - start;
-		m_pWorldAxisTransform = NULL;
+		m_pWorldAxisTransform = nullptr;
 		m_IsSwept = (m_Delta.LengthSquared() != 0);
 		m_Extents = (maxs - mins) * 0.5;
 		m_IsRay = (m_Extents.LengthSquared() < 1e-6);

@@ -10,15 +10,6 @@
 #include "ReturnAddr/ReturnAddr.hpp"
 
 #include "../../Interfaces.hpp"
-#include "../../Memory.hpp"
-
-#include "../../SDK/ClientFrameStage.hpp"
-
-#include "../../SDK/GameClass/Interfaces/CEngineClient.hpp"
-
-#include "../../SDK/Math/Matrix4x4.hpp"
-
-#include "../../Utils/VMT.hpp"
 
 void* frameStageNotify;
 

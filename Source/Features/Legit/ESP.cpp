@@ -4,37 +4,30 @@
 #include "imgui.h"
 
 #include "../../Interfaces.hpp"
-
 #include "../../SDK/GameClass/CBasePlayer.hpp"
-
 #include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
-#include "../../SDK/Definitions/LifeState.hpp"
+#include <vector>
 
-#include "../../SDK/GameClass/CCollideable.hpp"
+bool		Features::Legit::Esp::enabled			= false;
+float		Features::Legit::Esp::rounding			= 0.0f;
+float		Features::Legit::Esp::thickness			= 1.0f;
+bool		Features::Legit::Esp::outlined			= false;
+float		Features::Legit::Esp::outlineThickness	= 1.0f;
 
-#include "../../SDK/GameClass/Interfaces/CClientEntityList.hpp"
-#include "../../SDK/GameClass/Interfaces/CEngineClient.hpp"
-
-#include "../../Source/SDK/Math/Matrix4x4.hpp"
-#include "../../Source/SDK/Math/Vector.hpp"
-
-// Settings
-bool Features::Legit::Esp::enabled = false;
-
-bool WorldToScreen(Matrix4x4& matrix, Vector worldPosition, ImVec2& screenPosition)
+bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
-    float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
-    if (w < 0.001f)
-        return false;
+	float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
+	if (w < 0.01f)
+		return false;
 
-    screenPosition = ImGui::GetIO().DisplaySize;
-    screenPosition.x /= 2.0f;
+	screenPosition = ImVec2(ImGui::GetIO().DisplaySize);
+	screenPosition.x /= 2.0f;
 	screenPosition.y /= 2.0f;
-    
-    screenPosition.x *= 1.0f + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
-    screenPosition.y *= 1.0f - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
-    return true;
+	
+	screenPosition.x *= 1.0f + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
+	screenPosition.y *= 1.0f - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
+	return true;
 }
 
 void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
@@ -67,27 +60,30 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 		Vector max = *player->VecOrigin() + *collideable->ObbMaxs();
 
 		Vector points[] = {
-			// Lower
-			Vector(min.x, min.y, min.z),
-			Vector(max.x, min.y, min.z),
-			Vector(max.x, min.y, max.z),
-			Vector(min.x, min.y, max.z),
-			// Higher
-			Vector(min.x, max.y, min.z),
-			Vector(max.x, max.y, min.z),
-			Vector(max.x, max.y, max.z),
-			Vector(min.x, max.y, max.z)
+				// Lower
+				Vector(min.x, min.y, min.z),
+				Vector(max.x, min.y, min.z),
+				Vector(max.x, min.y, max.z),
+				Vector(min.x, min.y, max.z),
+				// Higher
+				Vector(min.x, max.y, min.z),
+				Vector(max.x, max.y, min.z),
+				Vector(max.x, max.y, max.z),
+				Vector(min.x, max.y, max.z)
 		};
 		
-		ImVec2 topLeft = ImGui::GetIO().DisplaySize; // hacky but hey, it works
+		ImVec2 topLeft = ImVec2(ImGui::GetIO().DisplaySize); // hacky but hey, it works
 		ImVec2 bottomRight;
+		bool visible = true;
 
-		for(auto point : points) {
+		for(const auto& point : points) {
 			ImVec2 point2D;
-			
-			if(!WorldToScreen(matrix, point, point2D))
-				continue;
-				
+
+			if (!WorldToScreen(matrix, point, point2D)) {
+				visible = false;
+				break;
+			}
+
 			if(point2D.x < topLeft.x)
 				topLeft.x = point2D.x;
 
@@ -101,10 +97,19 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 				bottomRight.y = point2D.y;
 		}
 
-		drawList->AddRect(topLeft, bottomRight, ImColor(255.f, 255.f, 255.f, 255.f));
+		if(visible) {
+			if(outlined)
+				drawList->AddRect(topLeft, bottomRight, ImColor(0.f, 0.f, 0.f, 255.f), rounding, ImDrawFlags_None, thickness + outlineThickness);
+			drawList->AddRect(topLeft, bottomRight, ImColor(255.f, 255.f, 255.f, 255.f), rounding, ImDrawFlags_None, thickness);
+		}
 	}
 }
 
 void Features::Legit::Esp::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##ESP"), &enabled);
+	ImGui::Checkbox(xorstr_("Enabled##LegitESP"), &enabled);
+	ImGui::SliderFloat(xorstr_("Rounding##LegitESP"), &rounding, 0.0f, 10.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Thickness##LegitESP"), &thickness, 0.0f, 10.0f, "%.2f");
+	ImGui::Checkbox(xorstr_("Outlined##LegitESP"), &outlined);
+	if(outlined)
+		ImGui::SliderFloat(xorstr_("Outline thickness##LegitESP"), &outlineThickness, 0.0f, 10.0f, "%.2f");
 }

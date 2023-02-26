@@ -5,9 +5,7 @@
 #include <cstring>
 
 #include "Hooking/Hooking.hpp"
-#include "Memory/Memory.hpp"
 #include "ReturnAddr/ReturnAddr.hpp"
-#include "Assembly/Assembly.hpp"
 
 #include "../../Memory.hpp"
 
@@ -16,7 +14,8 @@
 #include "../../Features/Legit/Bhop.hpp"
 #include "../../Features/Legit/Triggerbot.hpp"
 
-#include "../../SDK/CUserCmd.hpp"
+#include "../../Features/Semirage/Aimbot.hpp"
+#include "../../Features/Semirage/RecoilAssistance.hpp"
 
 void* createMove;
 
@@ -28,8 +27,20 @@ bool __attribute((optimize("O0"))) Hooks::CreateMove::CreateMoveHook(void* thisp
 
 	Features::Legit::Bhop::CreateMove(cmd);
 	Features::Legit::Triggerbot::CreateMove(cmd);
-	
-	return silent || true;
+
+	silent = silent && !Features::Semirage::RecoilAssistance::CreateMove(cmd);
+	silent = silent && !Features::Semirage::Aimbot::CreateMove(cmd);
+
+	cmd->viewangles_copy = cmd->viewangles;
+	cmd->buttons_copy = cmd->buttons;
+
+	// We can't just move the cmd into lastCmd, because it will be deleted by the original process
+	if(lastCmd != nullptr)
+		free(lastCmd);
+	lastCmd = static_cast<CUserCmd *>(malloc(sizeof(CUserCmd)));
+	memcpy((void*) lastCmd, (void*) cmd, sizeof(CUserCmd));
+
+	return silent;
 }
 
 void Hooks::CreateMove::Hook() {	

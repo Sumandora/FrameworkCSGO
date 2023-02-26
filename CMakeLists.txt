@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(DEBUG)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall --no-gnu-unique -march=native -mtune=native -Wno-return-type -ggdb")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native -mtune=native -Wno-return-type -ggdb")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Oz -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s --no-gnu-unique -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Oz -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden")
 endif()
 
 set(CMAKE_SKIP_RPATH ON)
@@ -47,3 +47,6 @@ target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
 
 # Setup xorstr
 target_include_directories(Framework_Example PUBLIC Dependencies/xorstr/include)
+
+file(GLOB_RECURSE XORSTR_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/xorstr/include")
+target_sources(Framework_Example PUBLIC ${XORSTR_SOURCE_FILES})

@@ -7,8 +7,8 @@
 struct InterfaceReg
 {
 	void* m_CreateFn;
-	const char *m_pName;
-	InterfaceReg *m_pNext;
+	const char* m_pName;
+	InterfaceReg* m_pNext;
 };
 
 void* Interfaces::GetInterface(const char* file, const char* name) {
@@ -16,9 +16,9 @@ void* Interfaces::GetInterface(const char* file, const char* name) {
 	if(!library) return nullptr;
 
 	void* interfacesList = dlsym(library, xorstr_("s_pInterfaceRegs"));
-	
+
 	dlclose(library);
-	
+
 	if(!interfacesList) return nullptr;
 
 	InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList);
@@ -31,10 +31,9 @@ void* Interfaces::GetInterface(const char* file, const char* name) {
 			 * lea rax, [rip + address] ; We want this address
 			 * yadda yadda yadda
 			 */
-			
+
 			char* relAddr = static_cast<char*>(interface->m_CreateFn) + 4 /* Offset to skip push and lea opcodes (push = 1; lea = 3 + address) */;
-			// Address + Length of Address + relative Offset -> Absolute Address
-			return relAddr + 4 + *reinterpret_cast<int*>(relAddr);
+			return Memory::RelativeToAbsolute(relAddr);
 		}
 	}
 

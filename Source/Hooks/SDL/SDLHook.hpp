@@ -1,5 +1,5 @@
-#ifndef HOOKS_SDL_HOOK
-#define HOOKS_SDL_HOOK
+#ifndef HOOKS_SDL
+#define HOOKS_SDL
 
 #include "SDL.h"
 
