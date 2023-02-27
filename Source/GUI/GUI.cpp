@@ -176,7 +176,8 @@ void Gui::PollEvent(SDL_Event* event, int result) {
 		if(event->type == SDL_MOUSEBUTTONUP)
 			reinterpret_cast<void(*)(SDL_Window*,int,int)>(Hooks::SDL::warpMouseInWindow_proxy)(Hooks::SDL::windowPtr, (int) io.MousePos.x, (int) io.MousePos.y);
 
-		event->type = 0;
+		if(event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP)
+			event->type = 0;
 	}
 }
 
