@@ -3,21 +3,17 @@
 
 #include "SDL.h"
 
-namespace Features {
-	namespace Legit {
-		namespace Aimbot {
-			// Settings
-			extern bool		enabled;
-			extern float	fov;
-			extern float	smoothness;
-			extern int		clamp;
-			
-			void PollEvent(SDL_Event* event);
+namespace Features::Legit::Aimbot {
+	// Settings
+	extern bool	 enabled;
+	extern float fov;
+	extern float smoothness;
+	extern int	 clamp;
 
-			// GUI
-			void SetupGUI();
-		}
-	}
+	void		 PollEvent(SDL_Event* event);
+
+	// GUI
+	void		 SetupGUI();
 }
 
 #endif

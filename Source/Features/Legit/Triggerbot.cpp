@@ -1,37 +1,36 @@
 #include "Triggerbot.hpp"
 
-#include "xorstr.hpp"
 #include "imgui.h"
+#include "xorstr.hpp"
 
 #include "../../Interfaces.hpp"
 
-#include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/Raytrace.hpp"
+#include "../../Utils/Trigonometry.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
-bool	Features::Legit::Triggerbot::enabled	= false;
-int		Features::Legit::Triggerbot::input		= ImGuiKey_V;
+bool Features::Legit::Triggerbot::enabled = false;
+int	 Features::Legit::Triggerbot::input	  = ImGuiKey_V;
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
-	if(!enabled || !IsInputDown(input))
+	if (!enabled || !IsInputDown(input))
 		return;
 
-	int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	CBasePlayer* localPlayer = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
-	if(!localPlayer)
+	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
+	CBasePlayer* localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	if (!localPlayer)
 		return;
 
 	TeamID localTeam = *localPlayer->Team();
-	if(	localTeam == TeamID::TEAM_UNASSIGNED ||
-		localTeam == TeamID::TEAM_SPECTATOR)
+	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
 		return;
 
-	Vector playerEye = localPlayer->GetEyePosition();
+	Vector playerEye  = localPlayer->GetEyePosition();
 	Vector viewangles = Vector(cmd->viewangles);
 
-	viewangles += *localPlayer->AimPunchAngle();
+	viewangles		  += *localPlayer->AimPunchAngle();
 
 	Vector forward;
 	Utils::AngleVectors(viewangles, &forward);
@@ -40,19 +39,14 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 
 	CTraceFilterEntity filter(localPlayer);
 
-	Trace trace = Utils::TraceRay(playerEye, forward, &filter);
+	Trace			   trace  = Utils::TraceRay(playerEye, forward, &filter);
 
-	CBaseEntity* entity = trace.m_pEnt;
-	if(	!entity ||
-		 entity == localPlayer ||
-		!entity->IsPlayer() ||
-		 entity->GetDormant()
-	) return;
+	CBaseEntity*	   entity = trace.m_pEnt;
+	if (!entity || entity == localPlayer || !entity->IsPlayer() || entity->GetDormant())
+		return;
 
 	CBasePlayer* player = reinterpret_cast<CBasePlayer*>(entity);
-	if( *player->LifeState() != LIFE_ALIVE ||
-		*player->GunGameImmunity() ||
-		*player->Team() == localTeam)
+	if (*player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
 		return;
 
 	cmd->buttons |= IN_ATTACK;

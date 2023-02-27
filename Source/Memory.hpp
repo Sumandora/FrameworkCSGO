@@ -6,10 +6,10 @@
 namespace Memory {
 	inline void*		ret_instruction_addr;
 	inline void*		clientMode;
-	inline CGlobalVars*	globalVars;
+	inline CGlobalVars* globalVars;
 
-	void Create();
-	void *RelativeToAbsolute(void *addr);
+	void				Create();
+	void*				RelativeToAbsolute(void* addr);
 }
 
 #endif

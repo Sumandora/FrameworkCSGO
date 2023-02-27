@@ -6,12 +6,12 @@
 #include "SDK/GameClass/Interfaces/CEngineTrace.hpp"
 
 namespace Interfaces {
-	inline void*				baseClient;
-	inline CClientEntityList*	entityList;
-	inline CEngineClient*		engine;
-	inline CEngineTrace*		engineTrace;
+	inline void*			  baseClient;
+	inline CClientEntityList* entityList;
+	inline CEngineClient*	  engine;
+	inline CEngineTrace*	  engineTrace;
 
-	void* GetInterface(const char* file, const char* name);
+	void*					  GetInterface(const char* file, const char* name);
 }
 
 #endif

@@ -10,15 +10,15 @@
 
 class ITraceFilter {
 public:
-	virtual bool ShouldHitEntity(/*IHandleEntity*/ void* pEntity, int contentsMask) = 0;
-	virtual TraceType GetTraceType() const = 0;
+	virtual bool	  ShouldHitEntity(/*IHandleEntity*/ void* pEntity, int contentsMask) = 0;
+	virtual TraceType GetTraceType() const												 = 0;
 };
 
 class CTraceFilterEntity : public ITraceFilter {
 
 	CBaseEntity* entity;
 
-	bool ShouldHitEntity(/*IHandleEntity*/ void* pEntity, int contentsMask) {
+	bool		 ShouldHitEntity(/*IHandleEntity*/ void* pEntity, int contentsMask) {
 		return pEntity != entity;
 	}
 

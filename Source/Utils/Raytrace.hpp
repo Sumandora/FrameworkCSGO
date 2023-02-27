@@ -4,8 +4,8 @@
 #include "../SDK/Math/Vector.hpp"
 
 #include "../SDK/Raytrace/Ray.hpp"
-#include "../SDK/Raytrace/TraceFilter.hpp"
 #include "../SDK/Raytrace/Trace.hpp"
+#include "../SDK/Raytrace/TraceFilter.hpp"
 
 class ITraceFilter;
 

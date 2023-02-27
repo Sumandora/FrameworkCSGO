@@ -3,24 +3,18 @@
 
 #include "imgui.h"
 
-struct ImDrawList;
+namespace Features::Legit::Esp {
+	// Settings
+	extern bool	 enabled;
+	extern float rounding;
+	extern float thickness;
+	extern bool	 outlined;
+	extern float outlineThickness;
 
-namespace Features {
-	namespace Legit {
-		namespace Esp {
-			// Settings
-			extern bool		enabled;
-			extern float	rounding;
-			extern float	thickness;
-			extern bool		outlined;
-			extern float	outlineThickness;
+	void		 ImGuiRender(ImDrawList* drawList);
 
-			void ImGuiRender(ImDrawList* drawList);
-
-			// GUI
-			void SetupGUI();
-		}
-	}
+	// GUI
+	void		 SetupGUI();
 }
 
 #endif

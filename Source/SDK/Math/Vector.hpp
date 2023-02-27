@@ -1,13 +1,13 @@
 #ifndef SDK_MATH_VECTOR
 #define SDK_MATH_VECTOR
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 class Vector {
 public:
 	float x, y, z;
-	
+
 	inline Vector() {
 		x = y = z = 0;
 	}
@@ -29,8 +29,8 @@ public:
 	inline Vector& operator=(const Vector& other) = default;
 
 	// Array-like access
-	inline float& operator[](int i) {
-		return ((float*)this)[i];
+	inline float&  operator[](int i) {
+		 return ((float*)this)[i];
 	}
 
 	inline float operator[](int i) const {
@@ -108,7 +108,7 @@ public:
 
 	// Invert
 	inline Vector operator-() const {
-		return {-x, -y, -z};
+		return { -x, -y, -z };
 	}
 
 	// Arithmetic using non-mutable vectors
@@ -229,7 +229,7 @@ public:
 		this->w = 0;
 	}
 
-	AlignedVector& operator=(const Vector &vOther) {
+	AlignedVector& operator=(const Vector& vOther) {
 		this->x = vOther.x;
 		this->y = vOther.y;
 		this->z = vOther.z;

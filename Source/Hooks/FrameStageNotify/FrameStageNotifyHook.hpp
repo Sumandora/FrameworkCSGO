@@ -1,18 +1,16 @@
 #ifndef HOOKS_FRAMESTAGENOTIFY
 #define HOOKS_FRAMESTAGENOTIFY
 
-#include "../../SDK/Math/Matrix4x4.hpp"
 #include "../../SDK/ClientFrameStage.hpp"
+#include "../../SDK/Math/Matrix4x4.hpp"
+#include "../Hooks.hpp"
 
-namespace Hooks {
-	namespace FrameStageNotify {
-		inline Matrix4x4 worldToScreenMatrix;
-		
-		inline void* proxy;
-		void FrameStageNotifyHook(void*, ClientFrameStage);
-		void Hook();
-		void Unhook();
-	}
+namespace Hooks::FrameStageNotify {
+	inline Hook*	 hook;
+	inline Matrix4x4 worldToScreenMatrix;
+
+	void			 Hook();
+	void			 Unhook();
 }
 
 #endif

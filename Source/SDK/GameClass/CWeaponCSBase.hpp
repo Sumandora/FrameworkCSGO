@@ -9,7 +9,7 @@
 
 class CWeaponCSBase {
 public:
-	NETVAR_FUNCTION(CSWeaponMode,	WeaponMode,	xorstr_("DT_WeaponCSBase"),	xorstr_("m_weaponMode"))
+	NETVAR_FUNCTION(CSWeaponMode, WeaponMode, xorstr_("DT_WeaponCSBase"), xorstr_("m_weaponMode"))
 };
 
 #endif
