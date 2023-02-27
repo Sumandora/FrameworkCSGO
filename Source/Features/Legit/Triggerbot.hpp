@@ -5,19 +5,17 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-struct CUserCmd;
-
 namespace Features {
 	namespace Legit {
 		namespace Triggerbot {
 			// Settings
 			extern bool enabled;
-			extern int input;
+			extern int	input;
 
-			void CreateMove(CUserCmd* cmd);
+			void		CreateMove(CUserCmd* cmd);
 
 			// GUI
-			void SetupGUI();
+			void		SetupGUI();
 		}
 	}
 }

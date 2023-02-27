@@ -4,27 +4,28 @@
 
 #include "xorstr.hpp"
 
-struct InterfaceReg
-{
-	void* m_CreateFn;
-	const char* m_pName;
+struct InterfaceReg {
+	void*		  m_CreateFn;
+	const char*	  m_pName;
 	InterfaceReg* m_pNext;
 };
 
 void* Interfaces::GetInterface(const char* file, const char* name) {
 	void* library = dlopen(file, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
-	if(!library) return nullptr;
+	if (!library)
+		return nullptr;
 
 	void* interfacesList = dlsym(library, xorstr_("s_pInterfaceRegs"));
 
 	dlclose(library);
 
-	if(!interfacesList) return nullptr;
+	if (!interfacesList)
+		return nullptr;
 
 	InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList);
 
-	while((interface = interface->m_pNext) != nullptr) {
-		if(strncmp(interface->m_pName, name, strlen(interface->m_pName) - 3) == 0) {
+	while ((interface = interface->m_pNext) != nullptr) {
+		if (strncmp(interface->m_pName, name, strlen(interface->m_pName) - 3) == 0) {
 			/**
 			 * These functions look like this:
 			 * push rbp ; Stack frame - we dont care

@@ -3,19 +3,15 @@
 
 #include "../../SDK/CUserCmd.hpp"
 
-namespace Features {
-	namespace Legit {
-		namespace Bhop {
-			// Settings
-			extern bool enabled;
-			extern int humanization;
+namespace Features::Legit::Bhop {
+	// Settings
+	extern bool enabled;
+	extern int	humanization;
 
-			void CreateMove(CUserCmd* cmd);
+	void		CreateMove(CUserCmd* cmd);
 
-			// GUI
-			void SetupGUI();
-		}
-	}
+	// GUI
+	void		SetupGUI();
 }
 
 #endif

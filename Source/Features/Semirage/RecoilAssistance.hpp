@@ -7,16 +7,16 @@ namespace Features {
 	namespace Semirage {
 		namespace RecoilAssistance {
 			// Settings
-			extern bool		enabled;
-			extern float	horizontalAdjustment;
-			extern float	verticalAdjustment;
-			extern bool		silent;
-			extern int		minShots;
+			extern bool	 enabled;
+			extern float horizontalAdjustment;
+			extern float verticalAdjustment;
+			extern bool	 silent;
+			extern int	 minShots;
 
-			bool CreateMove(CUserCmd* cmd);
+			bool		 CreateMove(CUserCmd* cmd);
 
 			// GUI
-			void SetupGUI();
+			void		 SetupGUI();
 		}
 	}
 }

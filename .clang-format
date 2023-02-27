@@ -1,0 +1,18 @@
+Language: Cpp
+BasedOnStyle: WebKit
+TabWidth: 4
+UseTab: Always
+NamespaceIndentation: All
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossComments: true
+  AcrossEmptyLines: true
+  AlignCompound: true
+  PadOperators: true
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossComments: true
+  AcrossEmptyLines: true
+  AlignCompound: true
+  PadOperators: true
+BreakBeforeBraces: Attach

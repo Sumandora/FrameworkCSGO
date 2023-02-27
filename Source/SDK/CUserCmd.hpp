@@ -3,26 +3,25 @@
 
 #include "Math/Vector.hpp"
 
-struct CUserCmd
-{
+struct CUserCmd {
 	virtual ~CUserCmd() {};
-	int command_number;
-	int tick_count;
-	Vector viewangles;
-	Vector aimdirection;
-	float forwardmove;
-	float sidemove;
-	float upmove;
-	int buttons;
+	int			  command_number;
+	int			  tick_count;
+	Vector		  viewangles;
+	Vector		  aimdirection;
+	float		  forwardmove;
+	float		  sidemove;
+	float		  upmove;
+	int			  buttons;
 	unsigned char impulse;
-	int weaponselect;
-	int weaponsubtype;
-	int random_seed;
-	short mousedx;
-	short mousedy;
-	bool hasbeenpredicted;
-	Vector viewangles_copy;
-	int buttons_copy;
+	int			  weaponselect;
+	int			  weaponsubtype;
+	int			  random_seed;
+	short		  mousedx;
+	short		  mousedy;
+	bool		  hasbeenpredicted;
+	Vector		  viewangles_copy;
+	int			  buttons_copy;
 };
 
 #endif

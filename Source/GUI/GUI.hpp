@@ -8,9 +8,9 @@
 namespace Gui {
 	void Create();
 	void Destroy();
-	
+
 	void SwapWindow(SDL_Window* window);
-	void PollEvent(SDL_Event* event, int result);
+	void PollEvent(SDL_Event* event);
 	bool WarpMouseInWindow();
 };
 

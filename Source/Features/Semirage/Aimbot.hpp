@@ -7,17 +7,17 @@ namespace Features {
 	namespace Semirage {
 		namespace Aimbot {
 			// Settings
-			extern bool		enabled;
-			extern bool		onlyWhenShooting;
-			extern float	fov;
-			extern float	aimSpeed;
-			extern bool		silent;
-			extern float	snapBack;
+			extern bool	 enabled;
+			extern bool	 onlyWhenShooting;
+			extern float fov;
+			extern float aimSpeed;
+			extern bool	 silent;
+			extern float snapBack;
 
-			bool CreateMove(CUserCmd* cmd);
+			bool		 CreateMove(CUserCmd* cmd);
 
 			// GUI
-			void SetupGUI();
+			void		 SetupGUI();
 		}
 	}
 }
