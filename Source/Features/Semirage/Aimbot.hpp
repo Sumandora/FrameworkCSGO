@@ -12,10 +12,10 @@ namespace Features::Semirage::Aimbot {
 	extern bool	 silent;
 	extern float snapBack;
 
-	bool		 CreateMove(CUserCmd* cmd);
+	bool CreateMove(CUserCmd* cmd);
 
 	// GUI
-	void		 SetupGUI();
+	void SetupGUI();
 }
 
 #endif

@@ -3,7 +3,7 @@
 
 #include "imgui.h"
 
-bool IsInputDown(int key);
+bool IsInputDown(int key, bool _default);
 
 namespace ImGui {
 	IMGUI_API bool InputSelector(const char* label, int& key, const ImVec2& size = ImVec2(0, 0));

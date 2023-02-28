@@ -1,23 +1,23 @@
 #include "Keybind.hpp"
 
-#include "xorstr.hpp"
 #include "SDL.h"
+#include "xorstr.hpp"
 
 #include <cstdlib>
 
-bool IsInputDown(int key) {
+bool IsInputDown(int key, bool _default) {
 	if (key > 0)
 		return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
 	else if (key < 0)
 		return ImGui::IsMouseDown(abs(key) - 1);
-	return false;
+	return _default;
 }
 
 IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size) {
 
 	static const char* waiting = nullptr;
 
-	char			   newLabel[128];
+	char newLabel[128];
 
 	if (waiting == label) {
 		strcpy(newLabel, xorstr_("Waiting for input"));
@@ -54,7 +54,7 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 			strcpy(keyName, ImGui::GetKeyName(static_cast<ImGuiKey>(key)));
 		} else if (key < 0) {
 			strcpy(keyName, xorstr_("Mouse"));
-			keyName[5] = (char) (48 + abs(key)); // 48 = '0' in ascii
+			keyName[5] = (char)(48 + abs(key)); // 48 = '0' in ascii
 			keyName[6] = '\0';
 		}
 

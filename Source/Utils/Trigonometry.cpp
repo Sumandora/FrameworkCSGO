@@ -7,9 +7,9 @@ void Utils::AngleVectors(Vector angles, Vector* forward) {
 	float pitch = DEG2RAD(angles.x);
 	float yaw	= DEG2RAD(angles.y);
 
-	forward->x	= cos(pitch) * cos(yaw);
-	forward->y	= cos(pitch) * sin(yaw);
-	forward->z	= -sin(pitch);
+	forward->x = cos(pitch) * cos(yaw);
+	forward->y = cos(pitch) * sin(yaw);
+	forward->z = -sin(pitch);
 }
 
 // https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1108

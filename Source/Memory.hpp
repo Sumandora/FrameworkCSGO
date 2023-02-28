@@ -8,8 +8,8 @@ namespace Memory {
 	inline void*		clientMode;
 	inline CGlobalVars* globalVars;
 
-	void				Create();
-	void*				RelativeToAbsolute(void* addr);
+	void  Create();
+	void* RelativeToAbsolute(void* addr);
 }
 
 #endif

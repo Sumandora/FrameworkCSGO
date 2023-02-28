@@ -9,8 +9,8 @@ namespace Hooks::FrameStageNotify {
 	inline Hook*	 hook;
 	inline Matrix4x4 worldToScreenMatrix;
 
-	void			 Hook();
-	void			 Unhook();
+	void Hook();
+	void Unhook();
 }
 
 #endif

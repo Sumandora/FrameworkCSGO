@@ -8,30 +8,30 @@
 
 struct Trace {
 	// CBaseTrace
-	Vector		   startpos;
-	Vector		   endpos;
-	Plane		   plane;
+	Vector startpos;
+	Vector endpos;
+	Plane  plane;
 
-	float		   fraction;
+	float fraction;
 
 	int			   contents;
 	unsigned short dispFlags;
 
-	bool		   allsolid;
-	bool		   startsolid;
+	bool allsolid;
+	bool startsolid;
 
 	// CGameTrace
-	float		   fractionleftsolid;
-	Surface		   surface;
+	float	fractionleftsolid;
+	Surface surface;
 
-	int			   hitgroup;
+	int hitgroup;
 
 	short		   physicsbone;
 	unsigned short worldSurfaceIndex;
 
-	CBaseEntity*   m_pEnt;
+	CBaseEntity* m_pEnt;
 
-	int			   hitbox;
+	int hitbox;
 };
 
 #endif

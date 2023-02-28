@@ -8,10 +8,10 @@ namespace Features::Legit::Bhop {
 	extern bool enabled;
 	extern int	humanization;
 
-	void		CreateMove(CUserCmd* cmd);
+	void CreateMove(CUserCmd* cmd);
 
 	// GUI
-	void		SetupGUI();
+	void SetupGUI();
 }
 
 #endif

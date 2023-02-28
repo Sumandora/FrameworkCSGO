@@ -18,7 +18,7 @@ class CTraceFilterEntity : public ITraceFilter {
 
 	CBaseEntity* entity;
 
-	bool		 ShouldHitEntity(void* pEntity, int contentsMask) override {
+	bool ShouldHitEntity(void* pEntity, int contentsMask) override {
 		return pEntity != entity;
 	}
 

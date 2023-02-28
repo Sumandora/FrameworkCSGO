@@ -8,18 +8,17 @@
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
+#include "../../GameCache.hpp"
 #include "../../SDK/Definitions/InputFlags.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
 
 bool Features::Legit::Triggerbot::enabled = false;
 int	 Features::Legit::Triggerbot::input	  = ImGuiKey_V;
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
-	if (!enabled || !IsInputDown(input))
+	if (!enabled || !IsInputDown(input, false))
 		return;
 
-	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	auto localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 	if (!localPlayer)
 		return;
 
@@ -28,9 +27,9 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 		return;
 
 	Vector playerEye  = localPlayer->GetEyePosition();
-	auto viewangles = Vector(cmd->viewangles);
+	auto   viewangles = Vector(cmd->viewangles);
 
-	viewangles		  += *localPlayer->AimPunchAngle();
+	viewangles += *localPlayer->AimPunchAngle();
 
 	Vector forward;
 	Utils::AngleVectors(viewangles, &forward);
@@ -39,9 +38,9 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 
 	CTraceFilterEntity filter(localPlayer);
 
-	Trace			   trace  = Utils::TraceRay(playerEye, forward, &filter);
+	Trace trace = Utils::TraceRay(playerEye, forward, &filter);
 
-	CBaseEntity*	   entity = trace.m_pEnt;
+	CBaseEntity* entity = trace.m_pEnt;
 	if (!entity || entity == localPlayer || !entity->IsPlayer() || entity->GetDormant())
 		return;
 

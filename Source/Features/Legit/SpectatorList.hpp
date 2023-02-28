@@ -7,10 +7,10 @@ namespace Features::Legit::SpectatorList {
 	// Settings
 	extern bool enabled;
 
-	void		ImGuiRender(ImDrawList* drawList);
+	void ImGuiRender(ImDrawList* drawList);
 
 	// GUI
-	void		SetupGUI();
+	void SetupGUI();
 }
 
 #endif

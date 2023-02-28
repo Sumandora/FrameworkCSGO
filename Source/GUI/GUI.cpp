@@ -11,10 +11,10 @@
 #include "../Hooks/SDL/SDLHook.hpp"
 
 #include "../Features/Legit/Aimbot.hpp"
-#include "../Features/Legit/Bhop.hpp"
 #include "../Features/Legit/ESP.hpp"
 #include "../Features/Legit/SpectatorList.hpp"
 #include "../Features/Legit/Triggerbot.hpp"
+#include "../Features/Movement/Bhop.hpp"
 
 #include "../Features/Semirage/Aimbot.hpp"
 #include "../Features/Semirage/RecoilAssistance.hpp"
@@ -45,14 +45,15 @@ void Gui::SwapWindow(SDL_Window* window) {
 	[[maybe_unused]] static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 	[[maybe_unused]] static const auto _2 = ImGui_ImplOpenGL3_Init();
 
-	ImGuiIO&						   io = ImGui::GetIO();
+	ImGuiIO& io				= ImGui::GetIO();
+	io.SetPlatformImeDataFn = nullptr;
 
-	int								   w, h;
+	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
 	io.DisplaySize = ImVec2((float)w, (float)h);
 
-	io.MousePos.x  = std::clamp(io.MousePos.x, 0.0f, (float)w);
-	io.MousePos.y  = std::clamp(io.MousePos.y, 0.0f, (float)h);
+	io.MousePos.x = std::clamp(io.MousePos.x, 0.0f, (float)w);
+	io.MousePos.y = std::clamp(io.MousePos.y, 0.0f, (float)h);
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
@@ -72,10 +73,6 @@ void Gui::SwapWindow(SDL_Window* window) {
 					}
 					if (ImGui::BeginTabItem(xorstr_("ESP"))) {
 						Features::Legit::Esp::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Bhop"))) {
-						Features::Legit::Bhop::SetupGUI();
 						ImGui::EndTabItem();
 					}
 					if (ImGui::BeginTabItem(xorstr_("Triggerbot"))) {
@@ -108,6 +105,18 @@ void Gui::SwapWindow(SDL_Window* window) {
 				ImGui::EndTabItem();
 			}
 
+			if (ImGui::BeginTabItem(xorstr_("Movement"))) {
+				if (ImGui::BeginTabBar(xorstr_("#Movement Settings"), ImGuiTabBarFlags_Reorderable)) {
+					if (ImGui::BeginTabItem(xorstr_("Bhop"))) {
+						Features::Legit::Bhop::SetupGUI();
+						ImGui::EndTabItem();
+					}
+
+					ImGui::EndTabBar();
+				}
+				ImGui::EndTabItem();
+			}
+
 			if (ImGui::BeginTabItem(xorstr_("Debug"))) {
 				if (ImGui::BeginTabBar(xorstr_("#Debug Settings"), ImGuiTabBarFlags_Reorderable)) {
 					if (ImGui::BeginTabItem(xorstr_("Netvars"))) {
@@ -125,10 +134,8 @@ void Gui::SwapWindow(SDL_Window* window) {
 		ImGui::End();
 	}
 
-	if(ImGui::IsKeyDown(ImGuiKey_Insert) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyDown(ImGuiKey_I)))
+	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_I, false)))
 		visible = !visible;
-	else if(visible && ImGui::IsKeyDown(ImGuiKey_Escape))
-		visible = false;
 
 	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::Legit::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());
@@ -141,9 +148,14 @@ void Gui::SwapWindow(SDL_Window* window) {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Gui::PollEvent(SDL_Event* event) {
-	ImGuiIO& io = ImGui::GetIO();
+// I don't even want to know why I have to do this
+unsigned int lastTextInput;
 
+void Gui::PollEvent(SDL_Event* event) {
+	if (event->type == SDL_TEXTINPUT && lastTextInput >= event->text.timestamp)
+		return;
+
+	ImGuiIO& io = ImGui::GetIO();
 	// Emulate these 2 events, because ImGui is broken... :c
 	if (event->type == SDL_MOUSEMOTION) {
 		io.MousePos.x += (float)event->motion.xrel;
@@ -151,11 +163,18 @@ void Gui::PollEvent(SDL_Event* event) {
 	} else if (event->type == SDL_MOUSEWHEEL) {
 		io.MouseWheelH += (float)event->wheel.x;
 		io.MouseWheel  += (float)event->wheel.y;
-	} else if (ImGui_ImplSDL2_ProcessEvent(event) && visible) {
-		if (event->type == SDL_MOUSEBUTTONUP)
-			reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::warpMouseInWindow->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
-		event->type = 0;
+	} else
+		ImGui_ImplSDL2_ProcessEvent(event);
+
+	if (event->type == SDL_MOUSEBUTTONUP)
+		reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::warpMouseInWindow->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
+
+	if (event->type == SDL_TEXTINPUT) {
+		lastTextInput = event->text.timestamp;
 	}
+
+	if (visible)
+		event->type = -1; // Change type to an invalid event to make the game ignore it.
 }
 
 bool Gui::WarpMouseInWindow() {
