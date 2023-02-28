@@ -10,10 +10,10 @@ namespace Features::Legit::Triggerbot {
 	extern bool enabled;
 	extern int	input;
 
-	void		CreateMove(CUserCmd* cmd);
+	void CreateMove(CUserCmd* cmd);
 
 	// GUI
-	void		SetupGUI();
+	void SetupGUI();
 }
 
 #endif

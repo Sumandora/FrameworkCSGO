@@ -6,13 +6,11 @@ NamespaceIndentation: All
 AlignConsecutiveAssignments:
   Enabled: true
   AcrossComments: true
-  AcrossEmptyLines: true
   AlignCompound: true
   PadOperators: true
 AlignConsecutiveDeclarations:
   Enabled: true
   AcrossComments: true
-  AcrossEmptyLines: true
   AlignCompound: true
   PadOperators: true
 BreakBeforeBraces: Attach

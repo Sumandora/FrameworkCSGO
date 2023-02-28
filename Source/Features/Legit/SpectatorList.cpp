@@ -3,24 +3,24 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include <map>
 #include <vector>
 
 bool Features::Legit::SpectatorList::enabled = false;
 
-int	 getEntityId(CBaseEntity* entity) {
-	 for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		 auto player2 = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		 if (player2 == entity) {
-			 return i;
-		 }
-	 }
+int getEntityId(CBaseEntity* entity) {
+	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
+		auto player2 = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		if (player2 == entity) {
+			return i;
+		}
+	}
 }
 
-void mapObservers(std::map<int, int>& map) {
+void MapObservers(std::map<int, int>& map) {
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player)
@@ -37,7 +37,7 @@ void mapObservers(std::map<int, int>& map) {
 	}
 }
 
-const char* localizeObserverMode(ObserverMode observerMode) {
+const char* LocalizeObserverMode(ObserverMode observerMode) {
 	switch (observerMode) {
 	case ObserverMode::OBS_MODE_NONE:
 		return "None";
@@ -61,11 +61,11 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		return;
 
 	std::map<int, int> map;
-	mapObservers(map);
+	MapObservers(map);
 
 	CBaseEntity* currentTarget;
-	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	auto localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	auto		 localPlayer = GameCache::GetLocalPlayer();
+
 	if (localPlayer) {
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
 			currentTarget = localPlayer;
@@ -79,14 +79,14 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 	} else
 		return;
 
-	int		playerTarget = getEntityId(currentTarget);
+	int playerTarget = getEntityId(currentTarget);
 
-	ImVec2	displaySize	 = ImGui::GetIO().DisplaySize;
-	float	offset		 = 0;
+	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+	float  offset	   = 0;
 
-	ImColor white		 = ImColor(255, 255, 255, 255);
-	ImColor red			 = ImColor(255, 0, 0, 255);
-	ImColor black		 = ImColor(0, 0, 0, 255);
+	ImColor white = ImColor(255, 255, 255, 255);
+	ImColor red	  = ImColor(255, 0, 0, 255);
+	ImColor black = ImColor(0, 0, 0, 255);
 
 	for (auto entry : map) {
 		PlayerInfo first {};
@@ -97,8 +97,8 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 
 		ObserverMode observerMode = *reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(entry.first))->ObserverMode();
 
-		char		 text[strlen(first.name) + 4 + strlen(second.name) + 1];
-		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, localizeObserverMode(observerMode));
+		char text[strlen(first.name) + 4 + strlen(second.name) + 1];
+		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, LocalizeObserverMode(observerMode));
 
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);

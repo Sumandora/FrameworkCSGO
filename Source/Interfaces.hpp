@@ -11,7 +11,7 @@ namespace Interfaces {
 	inline CEngineClient*	  engine;
 	inline CEngineTrace*	  engineTrace;
 
-	void*					  GetInterface(const char* file, const char* name);
+	void* GetInterface(const char* file, const char* name);
 }
 
 #endif

@@ -11,10 +11,10 @@ namespace Features::Semirage::RecoilAssistance {
 	extern bool	 silent;
 	extern int	 minShots;
 
-	bool		 CreateMove(CUserCmd* cmd);
+	bool CreateMove(CUserCmd* cmd);
 
 	// GUI
-	void		 SetupGUI();
+	void SetupGUI();
 }
 
 #endif

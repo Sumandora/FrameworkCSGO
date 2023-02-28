@@ -29,8 +29,8 @@ public:
 	inline Vector& operator=(const Vector& other) = default;
 
 	// Array-like access
-	inline float&  operator[](int i) {
-		 return ((float*)this)[i];
+	inline float& operator[](int i) {
+		return ((float*)this)[i];
 	}
 
 	inline float operator[](int i) const {

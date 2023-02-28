@@ -16,23 +16,23 @@
 
 std::map<char*, std::map<char*, int>> netvars;
 
-void								  ReadTable(RecvTable* recvTable) {
-	 for (int i = 0; i < recvTable->m_nProps; i++) {
-		 RecvProp* prop = &recvTable->m_pProps[i];
-		 if (!prop)
-			 continue;
-		 if (strcmp(prop->m_pVarName, xorstr_("baseclass")) == 0)
-			 continue;
+void ReadTable(RecvTable* recvTable) {
+	for (int i = 0; i < recvTable->m_nProps; i++) {
+		RecvProp* prop = &recvTable->m_pProps[i];
+		if (!prop)
+			continue;
+		if (strcmp(prop->m_pVarName, xorstr_("baseclass")) == 0)
+			continue;
 
-		 if (!netvars.contains(recvTable->m_pNetTableName)) // It should never already exist, but I don't trust Source
-			 netvars[recvTable->m_pNetTableName] = {};
+		if (!netvars.contains(recvTable->m_pNetTableName)) // It should never already exist, but I don't trust Source
+			netvars[recvTable->m_pNetTableName] = {};
 
-		 if (!netvars[recvTable->m_pNetTableName].contains(prop->m_pVarName))
-			 netvars[recvTable->m_pNetTableName][prop->m_pVarName] = prop->m_Offset;
+		if (!netvars[recvTable->m_pNetTableName].contains(prop->m_pVarName))
+			netvars[recvTable->m_pNetTableName][prop->m_pVarName] = prop->m_Offset;
 
-		 if (prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
-			 ReadTable(prop->m_pDataTable);
-	 }
+		if (prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
+			ReadTable(prop->m_pDataTable);
+	}
 }
 
 void Netvars::DumpNetvars() {

@@ -8,8 +8,8 @@ namespace Hooks::CreateMove {
 	inline Hook*	 hook;
 	inline CUserCmd* lastCmd;
 
-	void			 Hook();
-	void			 Unhook();
+	void Hook();
+	void Unhook();
 }
 
 #endif

@@ -14,6 +14,8 @@ void Initializer() {
 	Interfaces::entityList	= reinterpret_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
 	Interfaces::engineTrace = reinterpret_cast<CEngineTrace*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
 
+	srand(time(nullptr));
+
 	Netvars::DumpNetvars();
 	Memory::Create();
 

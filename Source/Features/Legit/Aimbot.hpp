@@ -10,10 +10,10 @@ namespace Features::Legit::Aimbot {
 	extern float smoothness;
 	extern int	 clamp;
 
-	void		 PollEvent(SDL_Event* event);
+	void PollEvent(SDL_Event* event);
 
 	// GUI
-	void		 SetupGUI();
+	void SetupGUI();
 }
 
 #endif

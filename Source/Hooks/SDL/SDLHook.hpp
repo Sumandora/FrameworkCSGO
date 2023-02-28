@@ -19,8 +19,8 @@ namespace Hooks::SDL {
 	inline SDLHook*	   warpMouseInWindow;
 	inline SDL_Window* windowPtr;
 
-	void			   Hook();
-	void			   Unhook();
+	void Hook();
+	void Unhook();
 }
 
 #endif

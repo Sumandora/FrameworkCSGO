@@ -11,10 +11,10 @@ namespace Features::Legit::Esp {
 	extern bool	 outlined;
 	extern float outlineThickness;
 
-	void		 ImGuiRender(ImDrawList* drawList);
+	void ImGuiRender(ImDrawList* drawList);
 
 	// GUI
-	void		 SetupGUI();
+	void SetupGUI();
 }
 
 #endif

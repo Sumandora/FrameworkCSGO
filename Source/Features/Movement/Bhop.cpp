@@ -7,7 +7,7 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 
-#include "../../SDK/GameClass/CBasePlayer.hpp"
+#include "../../GameCache.hpp"
 
 bool Features::Legit::Bhop::enabled		 = false;
 int	 Features::Legit::Bhop::humanization = 0;
@@ -16,9 +16,7 @@ void Features::Legit::Bhop::CreateMove(CUserCmd* cmd) {
 	if (!enabled)
 		return;
 
-	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	auto localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
-
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 	if (!localPlayer)
 		return;
 
@@ -26,6 +24,7 @@ void Features::Legit::Bhop::CreateMove(CUserCmd* cmd) {
 
 	if (humanization > 0) {
 		if (!(flags & FL_ONGROUND)) {
+			// We don't necessarily want to tell the server, that we are able to perform tick perfect button presses, so let's randomize them in air, they matter anyway
 			if (rand() % humanization == 0)
 				cmd->buttons &= ~IN_JUMP;
 		} else {
