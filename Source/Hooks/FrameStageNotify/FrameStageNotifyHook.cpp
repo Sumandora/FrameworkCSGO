@@ -1,7 +1,6 @@
 #include "FrameStageNotifyHook.hpp"
 
 #include "../../Interfaces.hpp"
-#include "../Hooks.hpp"
 
 void __attribute((optimize("O0"))) FrameStageNotifyHook(void* thisptr, ClientFrameStage stage) {
 	if (stage == ClientFrameStage::FRAME_START) {

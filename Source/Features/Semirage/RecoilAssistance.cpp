@@ -19,7 +19,7 @@ bool   Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd) {
 	  }
 
 	  int		   localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	  CBasePlayer* localPlayer		= reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	  auto localPlayer		= reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 	  if (!localPlayer)
 		  return false;
 

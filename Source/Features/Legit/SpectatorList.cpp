@@ -13,7 +13,7 @@ bool Features::Legit::SpectatorList::enabled = false;
 
 int	 getEntityId(CBaseEntity* entity) {
 	 for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		 CBasePlayer* player2 = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		 auto player2 = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		 if (player2 == entity) {
 			 return i;
 		 }
@@ -22,7 +22,7 @@ int	 getEntityId(CBaseEntity* entity) {
 
 void mapObservers(std::map<int, int>& map) {
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player)
 			continue;
 
@@ -65,7 +65,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 
 	CBaseEntity* currentTarget;
 	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	CBasePlayer* localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	auto localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 	if (localPlayer) {
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
 			currentTarget = localPlayer;

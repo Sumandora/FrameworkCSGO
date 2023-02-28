@@ -42,11 +42,11 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 		return;
 
 	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	CBasePlayer* localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	auto localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE)
 			continue;
 
@@ -68,7 +68,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 			  Vector(min.x, max.y, max.z)
 		  };
 
-		ImVec2 topLeft = ImVec2(ImGui::GetIO().DisplaySize); // hacky but hey, it works
+		auto topLeft = ImVec2(ImGui::GetIO().DisplaySize); // hacky but hey, it works
 		ImVec2 bottomRight;
 		bool   visible = true;
 

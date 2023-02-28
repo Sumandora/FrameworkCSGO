@@ -1,6 +1,7 @@
 #ifndef SDK_COLLIDEABLE
 #define SDK_COLLIDEABLE
 
+#include "VirtualMethod.hpp"
 #include "../Math/Vector.hpp"
 
 class CCollideable {

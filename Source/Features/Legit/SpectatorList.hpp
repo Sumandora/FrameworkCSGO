@@ -3,18 +3,14 @@
 
 #include "imgui.h"
 
-namespace Features {
-	namespace Legit {
-		namespace SpectatorList {
-			// Settings
-			extern bool enabled;
+namespace Features::Legit::SpectatorList {
+	// Settings
+	extern bool enabled;
 
-			void		ImGuiRender(ImDrawList* drawList);
+	void		ImGuiRender(ImDrawList* drawList);
 
-			// GUI
-			void		SetupGUI();
-		}
-	}
+	// GUI
+	void		SetupGUI();
 }
 
 #endif

@@ -1,9 +1,6 @@
 #include "Keybind.hpp"
 
 #include "xorstr.hpp"
-
-#include "../GUI.hpp"
-
 #include "SDL.h"
 
 #include <cstdlib>
@@ -57,7 +54,7 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 			strcpy(keyName, ImGui::GetKeyName(static_cast<ImGuiKey>(key)));
 		} else if (key < 0) {
 			strcpy(keyName, xorstr_("Mouse"));
-			keyName[5] = 48 + abs(key); // 48 = '0' in ascii
+			keyName[5] = (char) (48 + abs(key)); // 48 = '0' in ascii
 			keyName[6] = '\0';
 		}
 
