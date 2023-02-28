@@ -10,24 +10,24 @@
 
 class ITraceFilter {
 public:
-	virtual bool	  ShouldHitEntity(/*IHandleEntity*/ void* pEntity, int contentsMask) = 0;
-	virtual TraceType GetTraceType() const												 = 0;
+	virtual bool					ShouldHitEntity(void* pEntity, int contentsMask) = 0;
+	[[nodiscard]] virtual TraceType GetTraceType() const							 = 0;
 };
 
 class CTraceFilterEntity : public ITraceFilter {
 
 	CBaseEntity* entity;
 
-	bool		 ShouldHitEntity(/*IHandleEntity*/ void* pEntity, int contentsMask) {
+	bool		 ShouldHitEntity(void* pEntity, int contentsMask) override {
 		return pEntity != entity;
 	}
 
-	TraceType GetTraceType() const {
+	[[nodiscard]] TraceType GetTraceType() const override {
 		return TRACE_EVERYTHING;
 	}
 
 public:
-	inline CTraceFilterEntity(CBaseEntity* entity) {
+	inline explicit CTraceFilterEntity(CBaseEntity* entity) {
 		this->entity = entity;
 	}
 };

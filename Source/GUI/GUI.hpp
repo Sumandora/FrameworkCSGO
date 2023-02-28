@@ -12,6 +12,6 @@ namespace Gui {
 	void SwapWindow(SDL_Window* window);
 	void PollEvent(SDL_Event* event);
 	bool WarpMouseInWindow();
-};
+}
 
 #endif

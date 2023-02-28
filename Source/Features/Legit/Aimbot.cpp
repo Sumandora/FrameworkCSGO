@@ -88,7 +88,7 @@ void  Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	 Vector before = Vector(event->motion.xrel, event->motion.yrel, 0);
 	 Vector goal   = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
 
-	 float	dir	   = before.Normalize().Dot(goal.Normalize());
+	 float	dir	   = before.Normalized().Dot(goal.Normalized());
 	 if (dir < 0)
 		 return; // We are trying to aim away
 

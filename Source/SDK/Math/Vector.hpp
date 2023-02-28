@@ -179,19 +179,19 @@ public:
 		return vec;
 	}
 
-	inline float LengthSquared() const {
+	[[nodiscard]] inline float LengthSquared() const {
 		return x * x + y * y + z * z;
 	}
 
-	inline float Length() const {
+	[[nodiscard]] inline float Length() const {
 		return sqrt(LengthSquared());
 	}
 
-	inline float Dot(const Vector& other) const {
+	[[nodiscard]] inline float Dot(const Vector& other) const {
 		return this->x * other.x + this->y * other.y + this->z * other.z;
 	}
 
-	inline Vector Normalize() const {
+	[[nodiscard]] inline Vector Normalized() const {
 		float len = Length();
 		return {
 			this->x / len,

@@ -125,6 +125,11 @@ void Gui::SwapWindow(SDL_Window* window) {
 		ImGui::End();
 	}
 
+	if(ImGui::IsKeyDown(ImGuiKey_Insert) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyDown(ImGuiKey_I)))
+		visible = !visible;
+	else if(visible && ImGui::IsKeyDown(ImGuiKey_Escape))
+		visible = false;
+
 	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::Legit::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());
 
@@ -137,9 +142,6 @@ void Gui::SwapWindow(SDL_Window* window) {
 }
 
 void Gui::PollEvent(SDL_Event* event) {
-	if (event->type != SDL_MOUSEWHEEL && event->type != SDL_MOUSEBUTTONDOWN && event->type != SDL_MOUSEBUTTONUP && event->type != SDL_TEXTINPUT && event->type != SDL_KEYDOWN && event->type != SDL_KEYUP && event->type != SDL_MOUSEMOTION)
-		return;
-
 	ImGuiIO& io = ImGui::GetIO();
 
 	// Emulate these 2 events, because ImGui is broken... :c
@@ -149,28 +151,10 @@ void Gui::PollEvent(SDL_Event* event) {
 	} else if (event->type == SDL_MOUSEWHEEL) {
 		io.MouseWheelH += (float)event->wheel.x;
 		io.MouseWheel  += (float)event->wheel.y;
-	} else
-		ImGui_ImplSDL2_ProcessEvent(event);
-
-	// Cancel both up and down events, but only down events do something
-	if (event->type == SDL_KEYDOWN || event->type == SDL_KEYUP) {
-		if (event->key.keysym.sym == SDLK_INSERT || (event->key.keysym.mod == KMOD_LALT && event->key.keysym.sym == SDLK_i)) {
-			if (event->type == SDL_KEYDOWN)
-				visible = !visible;
-			event->type = 0;
-		} else if (visible && event->key.keysym.sym == SDLK_ESCAPE) {
-			if (event->type == SDL_KEYDOWN)
-				visible = false;
-			event->type = 0;
-		}
-	}
-
-	if (visible) {
+	} else if (ImGui_ImplSDL2_ProcessEvent(event) && visible) {
 		if (event->type == SDL_MOUSEBUTTONUP)
 			reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::warpMouseInWindow->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
-
-		if (event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP || event->type == SDL_MOUSEMOTION /* this one might lead to desyncs */)
-			event->type = 0;
+		event->type = 0;
 	}
 }
 

@@ -19,7 +19,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 		return;
 
 	int			 localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	CBasePlayer* localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	auto localPlayer	  = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 	if (!localPlayer)
 		return;
 
@@ -28,7 +28,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 		return;
 
 	Vector playerEye  = localPlayer->GetEyePosition();
-	Vector viewangles = Vector(cmd->viewangles);
+	auto viewangles = Vector(cmd->viewangles);
 
 	viewangles		  += *localPlayer->AimPunchAngle();
 
@@ -45,7 +45,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	if (!entity || entity == localPlayer || !entity->IsPlayer() || entity->GetDormant())
 		return;
 
-	CBasePlayer* player = reinterpret_cast<CBasePlayer*>(entity);
+	auto player = reinterpret_cast<CBasePlayer*>(entity);
 	if (*player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
 		return;
 

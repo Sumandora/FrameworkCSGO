@@ -2,12 +2,7 @@
 
 #include "../Interfaces.hpp"
 
-#include "../SDK/Math/Vector.hpp"
-
-#include "../SDK/GameClass/Interfaces/CEngineTrace.hpp"
-
 #include "../SDK/Raytrace/Definitions/MaskFlags.hpp"
-#include "../SDK/Raytrace/Ray.hpp"
 
 class ITraceFilter;
 
