@@ -31,7 +31,7 @@ public:
 	}
 
 	inline bool SetupBones(Matrix3x4 (&boneMatrix)[]) {
-		return CBaseEntity::SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, 0);
+		return CBaseEntity::SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
 	}
 };
 

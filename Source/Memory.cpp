@@ -21,9 +21,7 @@ void Memory::Create() {
 	ret_instruction_addr = Pattern(
 		xorstr_("\xC9\xC3"), // leave; ret; instructions
 		xorstr_("xx"))
-							   .searchPattern(
-								   baseClientVTable[0] // random code piece
-							   );
+							   .searchPattern(baseClientVTable[0]); // random code piece
 
 	void* hudProcessInput = baseClientVTable[10];
 	void* hudUpdate		  = baseClientVTable[11];

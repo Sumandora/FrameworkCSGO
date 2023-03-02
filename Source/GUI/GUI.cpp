@@ -8,6 +8,8 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
 
+#include "EventLog.hpp"
+
 #include "../Hooks/SDL/SDLHook.hpp"
 
 #include "../Features/Legit/Aimbot.hpp"
@@ -18,6 +20,7 @@
 
 #include "../Features/Semirage/Aimbot.hpp"
 #include "../Features/Semirage/RecoilAssistance.hpp"
+#include "../Features/Semirage/Backtrack.hpp"
 
 #include "../Netvars.hpp"
 
@@ -99,6 +102,10 @@ void Gui::SwapWindow(SDL_Window* window) {
 						Features::Semirage::RecoilAssistance::SetupGUI();
 						ImGui::EndTabItem();
 					}
+					if (ImGui::BeginTabItem(xorstr_("Backtrack"))) {
+						Features::Semirage::Backtrack::SetupGUI();
+						ImGui::EndTabItem();
+					}
 
 					ImGui::EndTabBar();
 				}
@@ -134,8 +141,11 @@ void Gui::SwapWindow(SDL_Window* window) {
 		ImGui::End();
 	}
 
-	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_I, false)))
+	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_I, false))) {
 		visible = !visible;
+		Gui::EventLog::CreateReport("%s the menu", visible ? "Opened" : "Closed");
+	}
+	Gui::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::Legit::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());

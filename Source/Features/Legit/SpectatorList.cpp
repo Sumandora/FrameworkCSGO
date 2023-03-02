@@ -11,7 +11,7 @@
 
 bool Features::Legit::SpectatorList::enabled = false;
 
-int getEntityId(CBaseEntity* entity) {
+int GetEntityId(CBaseEntity* entity) {
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		auto player2 = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (player2 == entity) {
@@ -26,14 +26,14 @@ void MapObservers(std::map<int, int>& map) {
 		if (!player)
 			continue;
 
-		if (player->GetDormant() || player->LifeState() == LIFE_ALIVE)
+		if (player->GetDormant() || *player->LifeState() != LIFE_DEAD)
 			continue;
 
 		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());
 		if (!target)
 			continue;
 
-		map.emplace(i, getEntityId(target));
+		map.emplace(i, GetEntityId(target));
 	}
 }
 
@@ -79,7 +79,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 	} else
 		return;
 
-	int playerTarget = getEntityId(currentTarget);
+	int playerTarget = GetEntityId(currentTarget);
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float  offset	   = 0;
@@ -95,7 +95,11 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		PlayerInfo second {};
 		Interfaces::engine->GetPlayerInfo(entry.second, &second);
 
-		ObserverMode observerMode = *reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(entry.first))->ObserverMode();
+		CBaseEntity* otherEntity = Interfaces::entityList->GetClientEntity(entry.first);
+		if(!otherEntity)
+			continue;
+
+		ObserverMode observerMode = *reinterpret_cast<CBasePlayer*>(otherEntity)->ObserverMode();
 
 		char text[strlen(first.name) + 4 + strlen(second.name) + 1];
 		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, LocalizeObserverMode(observerMode));

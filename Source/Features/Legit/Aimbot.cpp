@@ -27,7 +27,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
 		return;
 
 	TeamID localTeam = *localPlayer->Team();
