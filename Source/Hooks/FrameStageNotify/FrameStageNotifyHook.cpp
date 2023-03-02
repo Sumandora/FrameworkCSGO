@@ -2,9 +2,20 @@
 
 #include "../../Interfaces.hpp"
 
+#include "../../Features/Semirage/Backtrack.hpp"
+
 void __attribute((optimize("O0"))) FrameStageNotifyHook(void* thisptr, ClientFrameStage stage) {
-	if (stage == ClientFrameStage::FRAME_START) {
-		Hooks::FrameStageNotify::worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
+	switch (stage) {
+		case ClientFrameStage::FRAME_START: {
+			Hooks::FrameStageNotify::worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
+			break;
+		}
+		case ClientFrameStage::FRAME_RENDER_START: {
+			Features::Semirage::Backtrack::FrameStageNotify();
+		}
+		default:
+			// ignored
+			break;
 	}
 	return Framework::ReturnAddr::invoke<void, void*, ClientFrameStage>(Hooks::FrameStageNotify::hook->proxy, Memory::ret_instruction_addr, thisptr, stage);
 }

@@ -20,6 +20,8 @@ public:
 
 	NETVAR_FUNCTION(CCollideable, Collision, xorstr_("DT_BaseEntity"), xorstr_("m_Collision"))
 
+	NETVAR_FUNCTION(float, SimulationTime, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
+
 	// IClientNetworkable
 	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
