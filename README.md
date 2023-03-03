@@ -61,6 +61,11 @@ SU=doas ./Load.sh
 ```
 The script is not going to use the program if already root.
 
+After the script loaded the program into the game it will set the ptrace_scope to 3.  
+This means that you will not be able to use ptrace after loading.  
+To use ptrace again you will need to reboot.  
+Please note that the program is not the only software using ptrace, it may be used widely on your system.
+
 Make sure to use the script in a state, where the game is not changing frequently.  
 - Don't inject before you can see the main menu
 - Don't inject when you are loading a level
