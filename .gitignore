@@ -6,3 +6,6 @@ gdb.log
 
 # CLion
 .idea/
+
+# VSCode
+.vscode/
