@@ -35,7 +35,7 @@ fi
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
-LANG=en cmake -B Build . >> build.log 2>&1 || error
+LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release . >> build.log 2>&1 || error
 LANG=en make $MAKEOPTS -C Build >> build.log 2>&1 || error
 
 strip -x -s Build/libFramework_Example.so >> build.log 2>&1 || error

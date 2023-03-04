@@ -5,11 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if(DEBUG)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -march=native -mtune=native -Wno-return-type -ggdb")
-else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Oz -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden")
-endif()
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -Wall -march=native -mtune=native -Wno-return-type -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -Oz -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden")
 
 set(CMAKE_SKIP_RPATH ON)
 
@@ -17,10 +14,6 @@ file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
 add_library(Framework_Example SHARED ${SOURCE_FILES})
 target_link_libraries(Framework_Example dl SDL2 GL)
-
-if(!DEBUG)
-	target_compile_definitions(Framework_Example PUBLIC NDEBUG)
-endif()
 
 # Setup Framework
 target_include_directories(Framework_Example PUBLIC Dependencies/Framework/Source/Framework)
