@@ -14,8 +14,8 @@ namespace VirtualMethod {
 	template <typename Ret, std::size_t Index, typename... Args>
 	auto invoke(void* gameClass, Args... args) -> Ret {
 		// Don't uncomment the first line, unless you know what you are doing / debugging
-		// return reinterpret_cast<Ret(*)(void*, Args...)>(Utils::GetVTable(gameClass)[Index])(gameClass, args...);
-		return Framework::ReturnAddr::invoke<Ret, void*, Args...>(Utils::GetVTable(gameClass)[Index], Memory::ret_instruction_addr, gameClass, args...);
+		return reinterpret_cast<Ret(*)(void*, Args...)>(Utils::GetVTable(gameClass)[Index])(gameClass, args...);
+		//return Framework::ReturnAddr::invoke<Ret, void*, Args...>(Utils::GetVTable(gameClass)[Index], Memory::ret_instruction_addr, gameClass, args...);
 	}
 }
 
