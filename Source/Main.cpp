@@ -9,13 +9,9 @@
 #include "xorstr.hpp"
 
 void Initializer() {
-	Interfaces::baseClient	= Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
-	Interfaces::engine		= reinterpret_cast<CEngineClient*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
-	Interfaces::entityList	= reinterpret_cast<CClientEntityList*>(Interfaces::GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
-	Interfaces::engineTrace = reinterpret_cast<CEngineTrace*>(Interfaces::GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
-	Interfaces::icvar 		= reinterpret_cast<ICvar*>(Interfaces::GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
-
 	srand(time(nullptr));
+
+	Interfaces::GetInterfaces();
 
 	Netvars::DumpNetvars();
 	Memory::Create();

@@ -13,7 +13,8 @@ namespace Interfaces {
 	inline CEngineTrace*	  engineTrace;
 	inline ICvar*			  icvar;
 
-	void* GetInterface(const char* file, const char* name);
+	void GetInterfaces();
+	void SetupGUI();
 }
 
 #endif

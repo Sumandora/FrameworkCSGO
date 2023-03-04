@@ -23,6 +23,7 @@
 #include "../Features/Semirage/Backtrack.hpp"
 
 #include "../Netvars.hpp"
+#include "../Interfaces.hpp"
 
 bool visible = false;
 
@@ -127,7 +128,11 @@ void Gui::SwapWindow(SDL_Window* window) {
 			if (ImGui::BeginTabItem(xorstr_("Debug"))) {
 				if (ImGui::BeginTabBar(xorstr_("#Debug Settings"), ImGuiTabBarFlags_Reorderable)) {
 					if (ImGui::BeginTabItem(xorstr_("Netvars"))) {
-						Netvars::BuildGUI();
+						Netvars::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if (ImGui::BeginTabItem(xorstr_("Interfaces"))) {
+						Interfaces::SetupGUI();
 						ImGui::EndTabItem();
 					}
 

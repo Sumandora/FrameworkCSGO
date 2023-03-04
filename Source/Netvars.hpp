@@ -13,7 +13,7 @@
 namespace Netvars {
 	void DumpNetvars();
 	int	 GetOffset(const char* table, const char* name);
-	void BuildGUI();
+	void SetupGUI();
 }
 
 #endif

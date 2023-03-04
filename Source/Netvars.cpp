@@ -68,7 +68,7 @@ int Netvars::GetOffset(const char* table, const char* name) {
 	return 0;
 }
 
-void Netvars::BuildGUI() {
+void Netvars::SetupGUI() {
 	static char searchBar[128] = "";
 	ImGui::InputText(xorstr_("Search bar"), searchBar, 128);
 
