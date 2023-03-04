@@ -11,7 +11,7 @@ if [ -z "$MAKEOPTS" ]; then
 	fi
 fi
 
-cmake -B Build-Debug -DDEBUG=ON || exit 1
+cmake -B Build-Debug -D CMAKE_BUILD_TYPE=Debug || exit 1
 make $MAKEOPTS -C Build-Debug || exit 1
 
 
