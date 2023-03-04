@@ -1,0 +1,13 @@
+#ifndef SDK_CONVAR
+#define SDK_CONVAR
+
+#include "VirtualMethod.hpp"
+
+class ConVar {
+public:
+    VIRTUAL_METHOD(15, GetFloat, float, (), (this))
+    VIRTUAL_METHOD(16, GetInt, int, (), (this))
+    // Setting convars is discouraged
+};
+
+#endif

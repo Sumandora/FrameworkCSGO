@@ -37,7 +37,7 @@ MAKEOPTS="-j2" ./Build.sh
 ```
 Make sure that your CPU/Memory is capable of doing this.  
 Usually memory consumption will be around twice the number of threads you provide in gigabytes.  
-If you dont know how many threads you have you can execute the `nproc` program.
+If you don't know how many threads you have you can execute the `nproc` program.
 
 **Gentoo Users do not have to do this, because the script will take the settings you specified in your `make.conf`.  
 If this behaviour is unwanted then you can supply MAKEOPTS aswell.**
