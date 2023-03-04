@@ -1,9 +1,9 @@
-#ifndef FEATURES_LEGIT_TRIGGERBOT
-#define FEATURES_LEGIT_TRIGGERBOT
+#ifndef FEATURES_MOVEMENT_HIGHJUMP
+#define FEATURES_MOVEMENT_HIGHJUMP
 
 #include "../../SDK/CUserCmd.hpp"
 
-namespace Features::Legit::Triggerbot {
+namespace Features::Movement::HighJump {
 	// Settings
 	extern bool enabled;
 	extern int	input;

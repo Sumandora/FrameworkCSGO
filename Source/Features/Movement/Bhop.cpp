@@ -2,17 +2,15 @@
 
 #include "imgui.h"
 
-#include "../../Interfaces.hpp"
-
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 
 #include "../../GameCache.hpp"
 
-bool Features::Legit::Bhop::enabled		 = false;
-int	 Features::Legit::Bhop::humanization = 0;
+bool Features::Movement::Bhop::enabled		 = false;
+int	 Features::Movement::Bhop::humanization = 0;
 
-void Features::Legit::Bhop::CreateMove(CUserCmd* cmd) {
+void Features::Movement::Bhop::CreateMove(CUserCmd* cmd) {
 	if (!enabled)
 		return;
 
@@ -37,7 +35,7 @@ void Features::Legit::Bhop::CreateMove(CUserCmd* cmd) {
 	}
 }
 
-void Features::Legit::Bhop::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##LegitBhop"), &enabled);
-	ImGui::SliderInt(xorstr_("Humanize##LegitBhop"), &humanization, 0, 4);
+void Features::Movement::Bhop::SetupGUI() {
+	ImGui::Checkbox(xorstr_("Enabled##MovementBhop"), &enabled);
+	ImGui::SliderInt(xorstr_("Humanize##MovementBhop"), &humanization, 0, 4);
 }

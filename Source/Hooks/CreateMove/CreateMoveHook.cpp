@@ -6,8 +6,10 @@
 
 #include "../../GameCache.hpp"
 
-#include "../../Features/Legit/Triggerbot.hpp"
 #include "../../Features/Movement/Bhop.hpp"
+#include "../../Features/Movement/HighJump.hpp"
+
+#include "../../Features/Legit/Triggerbot.hpp"
 
 #include "../../Features/Semirage/Aimbot.hpp"
 #include "../../Features/Semirage/RecoilAssistance.hpp"
@@ -21,7 +23,9 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	if (!cmd || !cmd->command_number)
 		return silent;
 
-	Features::Legit::Bhop::CreateMove(cmd);
+	Features::Movement::Bhop::CreateMove(cmd);
+	Features::Movement::HighJump::CreateMove(cmd);
+
 	Features::Legit::Triggerbot::CreateMove(cmd);
 
 	silent = !Features::Semirage::RecoilAssistance::CreateMove(cmd) && silent;

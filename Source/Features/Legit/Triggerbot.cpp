@@ -4,6 +4,7 @@
 #include "xorstr.hpp"
 
 #include "../../Interfaces.hpp"
+#include "../../ConVarStorage.hpp"
 
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
@@ -11,8 +12,10 @@
 #include "../../GameCache.hpp"
 #include "../../SDK/Definitions/InputFlags.hpp"
 
-bool Features::Legit::Triggerbot::enabled = false;
-int	 Features::Legit::Triggerbot::input	  = ImGuiKey_V;
+#include "../../GUI/Elements/Keybind.hpp"
+
+bool Features::Legit::Triggerbot::enabled	= false;
+int	 Features::Legit::Triggerbot::input		= 0;
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	if (!enabled || !IsInputDown(input, false))
@@ -26,10 +29,10 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
 		return;
 
-	Vector playerEye  = localPlayer->GetEyePosition();
+	Vector playerEye  = localPlayer->GetEyePosition() * ConVarStorage::weapon_recoil_scale->GetFloat();
 	auto   viewangles = Vector(cmd->viewangles);
 
-	viewangles += *localPlayer->AimPunchAngle();
+	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat() / 2.0f;
 
 	Vector forward;
 	Utils::AngleVectors(viewangles, &forward);

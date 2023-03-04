@@ -1,7 +1,11 @@
 #include "RecoilAssistance.hpp"
+
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
+#include "../../ConVarStorage.hpp"
+
 #include "../../SDK/Definitions/InputFlags.hpp"
+
 #include "imgui.h"
 
 bool  Features::Semirage::RecoilAssistance::enabled				 = false;
@@ -28,9 +32,9 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd) {
 	Vector currentAimPunch = *localPlayer->AimPunchAngle();
 	Vector recoil;
 	if (silent)
-		recoil = currentAimPunch * 2;
+		recoil = currentAimPunch * ConVarStorage::weapon_recoil_scale->GetFloat();
 	else
-		recoil = (currentAimPunch - lastAimPunch) * 2;
+		recoil = (currentAimPunch - lastAimPunch) * ConVarStorage::weapon_recoil_scale->GetFloat();
 	lastAimPunch = currentAimPunch;
 
 	recoil.x *= verticalAdjustment;

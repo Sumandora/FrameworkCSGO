@@ -1,15 +1,16 @@
 #include "Backtrack.hpp"
+
 #include <deque>
 #include <map>
 #include <vector>
 
-#include "../../GUI/EventLog.hpp"
 #include "../../GameCache.hpp"
-#include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 #include "../../Interfaces.hpp"
+#include "../../ConVarStorage.hpp"
+
 #include "../../SDK/Definitions/InputFlags.hpp"
+#include "../../GUI/EventLog.hpp"
 #include "../../Utils/Trigonometry.hpp"
-#include "../Legit/ESP.hpp"
 
 bool Features::Semirage::Backtrack::enabled = false;
 float Features::Semirage::Backtrack::timeDelta = 0.2f;
@@ -46,7 +47,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd) {
 		}
 		for (const auto& tick : pair.second) {
 			Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), tick.boneMatrix[8].Origin());
-			requiredView -= *localPlayer->AimPunchAngle() * 2;
+			requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
 			requiredView -= cmd->viewangles;
 			requiredView.Wrap();
 
