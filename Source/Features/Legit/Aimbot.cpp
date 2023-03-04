@@ -3,6 +3,7 @@
 #include "imgui.h"
 
 #include "../../Interfaces.hpp"
+#include "../../ConVarStorage.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Utils/Raytrace.hpp"
@@ -63,7 +64,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 			continue; // The enemy is behind something...
 
 		Vector rotation = Utils::CalculateView(playerEye, head);
-		rotation		-= *localPlayer->AimPunchAngle() * 2;
+		rotation		-= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
 		rotation		-= viewAngles;
 		rotation		= rotation.Wrap();
 

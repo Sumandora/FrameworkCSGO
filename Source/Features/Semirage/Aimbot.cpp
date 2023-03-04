@@ -3,10 +3,10 @@
 #include "imgui.h"
 
 #include "../../Interfaces.hpp"
+#include "../../ConVarStorage.hpp"
+#include "../../GameCache.hpp"
 
 #include "../../Hooks/CreateMove/CreateMoveHook.hpp"
-
-#include "../../GameCache.hpp"
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
@@ -68,7 +68,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 				continue; // The enemy is behind something...
 
 			Vector rotation = Utils::CalculateView(playerEye, head);
-			rotation		-= *localPlayer->AimPunchAngle() * 2;
+			rotation		-= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
 			float delta		= (rotation - cmd->viewangles).Wrap().Length(); // Use the real angle for the fov check
 			rotation		-= viewAngles;
 			rotation.Wrap();

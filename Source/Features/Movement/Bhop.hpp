@@ -1,9 +1,9 @@
-#ifndef FEATURES_LEGIT_BHOP
-#define FEATURES_LEGIT_BHOP
+#ifndef FEATURES_MOVEMENT_BHOP
+#define FEATURES_MOVEMENT_BHOP
 
 #include "../../SDK/CUserCmd.hpp"
 
-namespace Features::Legit::Bhop {
+namespace Features::Movement::Bhop {
 	// Settings
 	extern bool enabled;
 	extern int	humanization;

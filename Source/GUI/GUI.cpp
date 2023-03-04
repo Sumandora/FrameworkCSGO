@@ -16,11 +16,13 @@
 #include "../Features/Legit/ESP.hpp"
 #include "../Features/Legit/SpectatorList.hpp"
 #include "../Features/Legit/Triggerbot.hpp"
-#include "../Features/Movement/Bhop.hpp"
 
 #include "../Features/Semirage/Aimbot.hpp"
 #include "../Features/Semirage/RecoilAssistance.hpp"
 #include "../Features/Semirage/Backtrack.hpp"
+
+#include "../Features/Movement/Bhop.hpp"
+#include "../Features/Movement/HighJump.hpp"
 
 #include "../Netvars.hpp"
 #include "../Interfaces.hpp"
@@ -116,7 +118,11 @@ void Gui::SwapWindow(SDL_Window* window) {
 			if (ImGui::BeginTabItem(xorstr_("Movement"))) {
 				if (ImGui::BeginTabBar(xorstr_("#Movement Settings"), ImGuiTabBarFlags_Reorderable)) {
 					if (ImGui::BeginTabItem(xorstr_("Bhop"))) {
-						Features::Legit::Bhop::SetupGUI();
+						Features::Movement::Bhop::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if (ImGui::BeginTabItem(xorstr_("HighJump"))) {
+						Features::Movement::HighJump::SetupGUI();
 						ImGui::EndTabItem();
 					}
 

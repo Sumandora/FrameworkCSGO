@@ -6,6 +6,8 @@
 #include "Interfaces.hpp"
 #include "Memory.hpp"
 #include "Netvars.hpp"
+#include "ConVarStorage.hpp"
+
 #include "xorstr.hpp"
 
 void Initializer() {
@@ -15,6 +17,8 @@ void Initializer() {
 
 	Netvars::DumpNetvars();
 	Memory::Create();
+
+	ConVarStorage::FindAll();
 
 	Gui::Create();
 
