@@ -4,6 +4,8 @@
 #include "SDL.h"
 
 namespace Gui {
+	extern bool visible;
+
 	void Create();
 	void Destroy();
 

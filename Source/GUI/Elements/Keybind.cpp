@@ -3,18 +3,21 @@
 #include "SDL.h"
 #include "xorstr.hpp"
 
+#include "../GUI.hpp"
+
 #include <cstdlib>
 
 bool IsInputDown(int key, bool _default) {
-	if (key > 0)
-		return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
-	else if (key < 0)
-		return ImGui::IsMouseDown(abs(key) - 1);
+	if(!Gui::visible) {
+		if (key > 0)
+			return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
+		else if (key < 0)
+			return ImGui::IsMouseDown(abs(key) - 1);
+	}
 	return _default;
 }
 
 IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size) {
-
 	static const char* waiting = nullptr;
 
 	char newLabel[128];

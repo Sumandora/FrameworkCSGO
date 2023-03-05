@@ -82,6 +82,8 @@ void Interfaces::GetInterfaces() {
 	entityList	= reinterpret_cast<CClientEntityList*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
 	engineTrace = reinterpret_cast<CEngineTrace*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
 	icvar 		= reinterpret_cast<ICvar*>(GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
+	prediction	= reinterpret_cast<IPrediction*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction")));
+	gameMovement= reinterpret_cast<CGameMovement*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement")));
 }
 
 void Interfaces::SetupGUI() {
@@ -120,9 +122,6 @@ void Interfaces::SetupGUI() {
 			return 0;
 		}, nullptr);
 	});
-
-	static char searchBar[128] = "";
-	ImGui::InputText(xorstr_("Search bar"), searchBar, 128);
 
 	for (const auto& [key, value] : interfaceStorage) {
 		if (true) {

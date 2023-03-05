@@ -20,8 +20,7 @@ void Memory::Create() {
 	// Set the address for the return address spoofer
 	ret_instruction_addr = Pattern(
 		xorstr_("\xC9\xC3"), // leave; ret; instructions
-		xorstr_("xx"))
-							   .searchPattern(baseClientVTable[0]); // random code piece
+		xorstr_("xx")).searchPattern(baseClientVTable[0]); // random code piece
 
 	void* hudProcessInput = baseClientVTable[10];
 	void* hudUpdate		  = baseClientVTable[11];
@@ -30,4 +29,15 @@ void Memory::Create() {
 
 	clientMode = *reinterpret_cast<void**>(RelativeToAbsolute(static_cast<char*>(getClientMode) + 4));
 	globalVars = *reinterpret_cast<CGlobalVars**>(RelativeToAbsolute(static_cast<char*>(hudUpdate) + 16));
+
+
+	void** gameMovementVTable = Utils::GetVTable(Interfaces::gameMovement);
+
+	// If this index changes I'm mad bro...
+	// To find the method, just search for the moveHelper and look at all usages
+	// The method which contains the 1.25 and 1.0 float literals is the one...
+	void* categorizeGroundSurface = gameMovementVTable[69];
+
+	void* leaInstr = Pattern("\x48\x8d\x05" /* lea rax */, "xxx").searchPattern(categorizeGroundSurface);
+	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
 }

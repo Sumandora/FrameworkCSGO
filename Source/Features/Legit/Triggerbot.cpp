@@ -29,7 +29,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
 		return;
 
-	Vector playerEye  = localPlayer->GetEyePosition() * ConVarStorage::weapon_recoil_scale->GetFloat();
+	Vector playerEye  = localPlayer->GetEyePosition();
 	auto   viewangles = Vector(cmd->viewangles);
 
 	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat() / 2.0f;
@@ -44,7 +44,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	Trace trace = Utils::TraceRay(playerEye, forward, &filter);
 
 	CBaseEntity* entity = trace.m_pEnt;
-	if (!entity || entity == localPlayer || !entity->IsPlayer() || entity->GetDormant())
+	if (!entity || !entity->IsPlayer() || entity->GetDormant())
 		return;
 
 	auto player = reinterpret_cast<CBasePlayer*>(entity);

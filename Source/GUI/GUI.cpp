@@ -27,7 +27,7 @@
 #include "../Netvars.hpp"
 #include "../Interfaces.hpp"
 
-bool visible = false;
+bool Gui::visible = false;
 
 void Gui::Create() {
 	ImGui::CreateContext();
@@ -190,9 +190,8 @@ void Gui::PollEvent(SDL_Event* event) {
 	if (event->type == SDL_MOUSEBUTTONUP)
 		reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::warpMouseInWindow->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
 
-	if (event->type == SDL_TEXTINPUT) {
+	if (event->type == SDL_TEXTINPUT)
 		lastTextInput = event->text.timestamp;
-	}
 
 	if (visible)
 		event->type = -1; // Change type to an invalid event to make the game ignore it.
