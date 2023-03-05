@@ -177,7 +177,7 @@ void Gui::SwapWindow(SDL_Window* window) {
 
 	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_I, false))) {
 		visible = !visible;
-		Features::General::EventLog::CreateReport("%s the menu", visible ? "Opened" : "Closed");
+		Features::General::EventLog::CreateReport(xorstr_("%s the menu"), visible ? xorstr_("Opened") : xorstr_("Closed"));
 	}
 
 	Features::General::Watermark::ImGuiRender(ImGui::GetBackgroundDrawList());

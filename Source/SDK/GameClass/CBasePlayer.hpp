@@ -23,7 +23,7 @@ public:
 	NETVAR_FUNCTION(int, Health, xorstr_("DT_BasePlayer"), xorstr_("m_iHealth"))
 
 	NETVAR_FUNCTION(enum ObserverMode, ObserverMode, xorstr_("DT_BasePlayer"), xorstr_("m_iObserverMode"))
-	NETVAR_FUNCTION(void*, ObserverTarget, xorstr_("DT_BasePlayer"), xorstr_("m_hObserverTarget"))
+	NETVAR_FUNCTION(void, ObserverTarget, xorstr_("DT_BasePlayer"), xorstr_("m_hObserverTarget"))
 
 	NETVAR_FUNCTION(unsigned int, TickBase, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_nTickBase"))
 

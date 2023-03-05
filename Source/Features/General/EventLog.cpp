@@ -2,7 +2,9 @@
 
 #include "xorstr.hpp"
 
+#include "../../GUI/ImGuiColors.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
+
 #include "Watermark.hpp"
 
 #include <chrono>
@@ -35,8 +37,6 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList) {
 	if(!enabled)
 		return;
 
-	ImColor white = ImColor(255, 255, 255, 255);
-
 	float yOffset = 0;
 
 	if(Watermark::enabled) {
@@ -55,7 +55,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList) {
 		ImVec2 size = ImGui::CalcTextSize(entry.text);
 		ImVec2 position(-size.x * (1.0f - animation) + 10.0f, yOffset + 10.0f);
 
-		ShadowString::AddText(drawList, position, white, entry.text);
+		ShadowString::AddText(drawList, position, ImGuiColors::white, entry.text);
 
 		yOffset += ImGui::GetTextLineHeightWithSpacing() * animation;
 	}

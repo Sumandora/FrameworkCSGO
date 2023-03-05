@@ -3,6 +3,7 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "../../GUI/ImGuiColors.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
 
 #include "../../GameCache.hpp"
@@ -42,19 +43,19 @@ void MapObservers(std::map<int, int>& map) {
 const char* LocalizeObserverMode(ObserverMode observerMode) {
 	switch (observerMode) {
 	case ObserverMode::OBS_MODE_NONE:
-		return "None";
+		return xorstr_("None");
 	case ObserverMode::OBS_MODE_DEATHCAM:
-		return "Deathcam";
+		return xorstr_("Deathcam");
 	case ObserverMode::OBS_MODE_FREEZECAM:
-		return "Freezecam";
+		return xorstr_("Freezecam");
 	case ObserverMode::OBS_MODE_FIXED:
-		return "Fixed";
+		return xorstr_("Fixed");
 	case ObserverMode::OBS_MODE_IN_EYE:
-		return "In Eye";
+		return xorstr_("In Eye");
 	case ObserverMode::OBS_MODE_CHASE:
-		return "Chase";
+		return xorstr_("Chase");
 	case ObserverMode::OBS_MODE_ROAMING:
-		return "Roaming";
+		return xorstr_("Roaming");
 	}
 }
 
@@ -72,7 +73,8 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
 			currentTarget = localPlayer;
 		else {
-			void* observerTarget = *localPlayer->ObserverTarget();
+			// Intentionally not dereferenced, because game is weird
+			void* observerTarget = localPlayer->ObserverTarget();
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 			else
@@ -80,14 +82,14 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		}
 	} else
 		return;
+	
+	if(!currentTarget)
+		return;
 
 	int playerTarget = GetEntityId(currentTarget);
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float  offset	   = 0;
-
-	ImColor white = ImColor(255, 255, 255, 255);
-	ImColor red	  = ImColor(255, 0, 0, 255);
 
 	for (auto entry : map) {
 		PlayerInfo first {};
@@ -108,7 +110,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		ShadowString::AddText(drawList, position, entry.second == playerTarget ? red : white, text);
+		ShadowString::AddText(drawList, position, entry.second == playerTarget ? ImGuiColors::red : ImGuiColors::white, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();
 	}
