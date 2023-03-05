@@ -3,6 +3,8 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "../../GUI/Elements/ShadowString.hpp"
+
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
@@ -86,7 +88,6 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 
 	ImColor white = ImColor(255, 255, 255, 255);
 	ImColor red	  = ImColor(255, 0, 0, 255);
-	ImColor black = ImColor(0, 0, 0, 255);
 
 	for (auto entry : map) {
 		PlayerInfo first {};
@@ -107,8 +108,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), black, text);
-		drawList->AddText(position, entry.second == playerTarget ? red : white, text);
+		ShadowString::AddText(drawList, position, entry.second == playerTarget ? red : white, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();
 	}

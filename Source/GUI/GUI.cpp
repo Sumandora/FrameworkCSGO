@@ -8,9 +8,12 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
 
-#include "EventLog.hpp"
 
 #include "../Hooks/SDL/SDLHook.hpp"
+
+#include "../Features/General/Watermark.hpp"
+#include "../Features/General/EnginePrediction.hpp"
+#include "../Features/General/EventLog.hpp"
 
 #include "../Features/Legit/Aimbot.hpp"
 #include "../Features/Legit/ESP.hpp"
@@ -71,6 +74,26 @@ void Gui::SwapWindow(SDL_Window* window) {
 		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
 
 		if (ImGui::BeginTabBar(xorstr_("#Settings"), ImGuiTabBarFlags_Reorderable)) {
+			if (ImGui::BeginTabItem(xorstr_("General"))) {
+				if (ImGui::BeginTabBar(xorstr_("#General Settings"), ImGuiTabBarFlags_Reorderable)) {
+					if (ImGui::BeginTabItem(xorstr_("Watermark"))) {
+						Features::General::Watermark::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if (ImGui::BeginTabItem(xorstr_("Engine prediction"))) {
+						Features::General::EnginePrediction::SetupGUI();
+						ImGui::EndTabItem();
+					}
+					if (ImGui::BeginTabItem(xorstr_("Event log"))) {
+						Features::General::EventLog::SetupGUI();
+						ImGui::EndTabItem();
+					}
+
+					ImGui::EndTabBar();
+				}
+				ImGui::EndTabItem();
+			}
+
 			if (ImGui::BeginTabItem(xorstr_("Legit"))) {
 				if (ImGui::BeginTabBar(xorstr_("#Legit Settings"), ImGuiTabBarFlags_Reorderable)) {
 					if (ImGui::BeginTabItem(xorstr_("Aimbot"))) {
@@ -154,9 +177,11 @@ void Gui::SwapWindow(SDL_Window* window) {
 
 	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_I, false))) {
 		visible = !visible;
-		Gui::EventLog::CreateReport("%s the menu", visible ? "Opened" : "Closed");
+		Features::General::EventLog::CreateReport("%s the menu", visible ? "Opened" : "Closed");
 	}
-	Gui::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());
+
+	Features::General::Watermark::ImGuiRender(ImGui::GetBackgroundDrawList());
+	Features::General::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::Legit::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());
