@@ -70,7 +70,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
 			currentTarget = localPlayer;
 		else {
-			void* observerTarget = localPlayer->ObserverTarget();
+			void* observerTarget = *localPlayer->ObserverTarget();
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 			else

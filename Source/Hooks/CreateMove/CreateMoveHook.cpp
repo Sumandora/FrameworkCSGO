@@ -5,6 +5,7 @@
 #include "ReturnAddr/ReturnAddr.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../Utils/Prediction.hpp"
 
 #include "../../Features/Movement/Bhop.hpp"
 #include "../../Features/Movement/HighJump.hpp"
@@ -26,6 +27,9 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	Features::Movement::Bhop::CreateMove(cmd);
 	Features::Movement::HighJump::CreateMove(cmd);
 
+    CMoveData moveData{};
+	Utils::StartPrediction(cmd, moveData);
+
 	Features::Legit::Triggerbot::CreateMove(cmd);
 
 	silent = !Features::Semirage::RecoilAssistance::CreateMove(cmd) && silent;
@@ -35,6 +39,8 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	// because of that we need to take the cmd at the last point before actually telling the server, that we shot,
 	// so we have the viewangles, which is being told to the server
 	Features::Semirage::Backtrack::CreateMove(cmd);
+
+	Utils::EndPrediction();
 
 	cmd->viewangles_copy = cmd->viewangles;
 	cmd->buttons_copy	 = cmd->buttons;
