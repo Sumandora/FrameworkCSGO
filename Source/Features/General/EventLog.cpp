@@ -1,9 +1,15 @@
 #include "EventLog.hpp"
 
+#include "xorstr.hpp"
+
+#include "../../GUI/Elements/ShadowString.hpp"
+#include "Watermark.hpp"
+
 #include <chrono>
 #include <vector>
 
-const int duration = 5000; // How long should one line last?
+bool	Features::General::EventLog::enabled	= true;
+int		Features::General::EventLog::duration	= 5000;
 
 struct Entry {
 	long time {};
@@ -16,7 +22,7 @@ long time() {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-void Gui::EventLog::ImGuiRender(ImDrawList* drawList) {
+void Features::General::EventLog::ImGuiRender(ImDrawList* drawList) {
 	if (entries.empty())
 		return;
 
@@ -24,11 +30,19 @@ void Gui::EventLog::ImGuiRender(ImDrawList* drawList) {
 
 	while (!entries.empty() && currentTime - entries.front().time > duration)
 		entries.erase(entries.begin());
+	
+	// Do the enabled check after erasing to prevent memory leaks
+	if(!enabled)
+		return;
 
 	ImColor white = ImColor(255, 255, 255, 255);
-	ImColor black = ImColor(0, 0, 0, 255);
 
 	float yOffset = 0;
+
+	if(Watermark::enabled) {
+		yOffset += ImGui::GetTextLineHeightWithSpacing();
+	}
+
 	for (Entry entry : entries) {
 		// Normalized from 0.0-1.0
 		float animation = (float)(currentTime - entry.time) / (float) duration;
@@ -41,14 +55,21 @@ void Gui::EventLog::ImGuiRender(ImDrawList* drawList) {
 		ImVec2 size = ImGui::CalcTextSize(entry.text);
 		ImVec2 position(-size.x * (1.0f - animation) + 10.0f, yOffset + 10.0f);
 
-		drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), black, entry.text);
-		drawList->AddText(position, white, entry.text);
+		ShadowString::AddText(drawList, position, white, entry.text);
 
 		yOffset += ImGui::GetTextLineHeightWithSpacing() * animation;
 	}
 }
 
-void Gui::EventLog::CreateReport(const char* fmt, ...) {
+void Features::General::EventLog::SetupGUI() {
+	ImGui::Checkbox(xorstr_("Enabled##GeneralEventLog"), &enabled);
+	if(!enabled) {
+        ImGui::Text(xorstr_("Warning: Certain features may use the event log as communication"));
+    }
+	ImGui::SliderInt(xorstr_("Duration##GeneralEventLog"), &duration, 0, 10000);
+}
+
+void Features::General::EventLog::CreateReport(const char* fmt, ...) {
 	Entry entry;
 	entry.time = time();
 

@@ -4,12 +4,13 @@
 #include <map>
 #include <vector>
 
+#include "../General/EventLog.hpp"
+
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 #include "../../ConVarStorage.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
-#include "../../GUI/EventLog.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
 bool Features::Semirage::Backtrack::enabled = false;
