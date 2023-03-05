@@ -7,6 +7,8 @@
 #include "../../GameCache.hpp"
 #include "../../Utils/Prediction.hpp"
 
+#include "../../Features/General/EnginePrediction.hpp"
+
 #include "../../Features/Movement/Bhop.hpp"
 #include "../../Features/Movement/HighJump.hpp"
 
@@ -27,8 +29,7 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	Features::Movement::Bhop::CreateMove(cmd);
 	Features::Movement::HighJump::CreateMove(cmd);
 
-    CMoveData moveData{};
-	Utils::StartPrediction(cmd, moveData);
+	Features::General::EnginePrediction::StartPrediction(cmd);
 
 	Features::Legit::Triggerbot::CreateMove(cmd);
 
@@ -40,7 +41,7 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	// so we have the viewangles, which is being told to the server
 	Features::Semirage::Backtrack::CreateMove(cmd);
 
-	Utils::EndPrediction();
+	Features::General::EnginePrediction::EndPrediction();
 
 	cmd->viewangles_copy = cmd->viewangles;
 	cmd->buttons_copy	 = cmd->buttons;

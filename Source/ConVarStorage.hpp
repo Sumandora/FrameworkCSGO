@@ -5,7 +5,6 @@
 
 namespace ConVarStorage {
     inline ConVar* weapon_recoil_scale;
-
     void FindAll();
 }
 

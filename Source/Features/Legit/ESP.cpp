@@ -4,8 +4,10 @@
 #include "xorstr.hpp"
 
 #include "../../GameCache.hpp"
-#include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 #include "../../Interfaces.hpp"
+#include "../../GUI/ImGuiColors.hpp"
+
+#include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
 #include <vector>
 
@@ -92,8 +94,8 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 
 		if (visible) {
 			if (outlined)
-				drawList->AddRect(topLeft, bottomRight, ImColor(0.f, 0.f, 0.f, 255.f), rounding, ImDrawFlags_None, thickness + outlineThickness);
-			drawList->AddRect(topLeft, bottomRight, ImColor(255.f, 255.f, 255.f, 255.f), rounding, ImDrawFlags_None, thickness);
+				drawList->AddRect(topLeft, bottomRight, ImGuiColors::black, rounding, ImDrawFlags_None, thickness + outlineThickness);
+			drawList->AddRect(topLeft, bottomRight, ImGuiColors::white, rounding, ImDrawFlags_None, thickness);
 		}
 	}
 }
