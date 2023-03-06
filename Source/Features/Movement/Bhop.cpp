@@ -6,6 +6,7 @@
 #include "../../SDK/Definitions/StateFlags.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../SDK/GameClass/CBasePlayer.hpp"
 
 bool Features::Movement::Bhop::enabled		 = false;
 int	 Features::Movement::Bhop::humanization = 0;

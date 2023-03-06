@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstring>
 #include <map>
+#include <vector>
 
 #include "Interfaces.hpp"
 #include "imgui.h"
@@ -14,9 +15,11 @@
 #include "SDK/Netvars/RecvProp.hpp"
 #include "SDK/Netvars/RecvTable.hpp"
 
-std::map<char*, std::map<char*, int>> netvars;
+#include "Features/General/EventLog.hpp"
 
-void ReadTable(RecvTable* recvTable) {
+std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars;
+
+void ReadTable(ClientClass* clientClass, RecvTable* recvTable) {
 	for (int i = 0; i < recvTable->m_nProps; i++) {
 		RecvProp* prop = &recvTable->m_pProps[i];
 		if (!prop)
@@ -24,14 +27,16 @@ void ReadTable(RecvTable* recvTable) {
 		if (strcmp(prop->m_pVarName, xorstr_("baseclass")) == 0)
 			continue;
 
-		if (!netvars.contains(recvTable->m_pNetTableName)) // It should never already exist, but I don't trust Source
-			netvars[recvTable->m_pNetTableName] = {};
+		if (!netvars.contains(clientClass)) // It should never already exist, but I don't trust Source
+			netvars[clientClass] = {};
 
-		if (!netvars[recvTable->m_pNetTableName].contains(prop->m_pVarName))
-			netvars[recvTable->m_pNetTableName][prop->m_pVarName] = prop->m_Offset;
+		if (!netvars[clientClass].contains(recvTable))
+			netvars[clientClass][recvTable] = {};
+		
+		netvars[clientClass][recvTable].push_back(prop);
 
 		if (prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
-			ReadTable(prop->m_pDataTable);
+			ReadTable(clientClass, prop->m_pDataTable);
 	}
 }
 
@@ -52,37 +57,46 @@ void Netvars::DumpNetvars() {
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
-		ReadTable(table);
+		ReadTable(cClass, table);
 	}
 }
 
 int Netvars::GetOffset(const char* table, const char* name) {
 	for (const auto& [key, value] : netvars) {
-		if (strcmp(table, key) == 0)
-			for (const auto& [key2, value2] : value) {
-				if (strcmp(name, key2) == 0)
-					return value2;
-			}
+		for (const auto& [key2, value2] : value) {
+			if(strcmp(key2->m_pNetTableName, table) == 0)
+				for(const auto& variable : value2) {
+					if (strcmp(name, variable->m_pVarName) == 0)
+						return variable->m_Offset;
+				}
+		}
 	}
+
 	printf(xorstr_("Couldn't find netvar %s in %s\n"), name, table);
 	return 0;
 }
 
 void Netvars::SetupGUI() {
-	static char searchBar[128] = "";
-	ImGui::InputText(xorstr_("Search bar"), searchBar, 128);
-
-	for (const auto& [key, value] : netvars) {
-		if (searchBar[0] == '\0' || strncmp(searchBar, key, strlen(searchBar)) == 0) {
-			if (ImGui::TreeNode(key)) {
-				for (const auto& [key2, value2] : value) {
-					if (ImGui::TreeNode(key2)) {
-						ImGui::Text(xorstr_("[%s][%s] = 0x%x\n"), key, key2, value2);
-						ImGui::TreePop();
+	for (const auto& [clientClass, table] : netvars) {
+		if (ImGui::TreeNode(clientClass->m_pNetworkName)) {
+			ImGui::Text(xorstr_("Class Id: %d"), clientClass->m_ClassID);
+			for(const auto& [table, variables] : table) {
+				if (ImGui::TreeNode(table->m_pNetTableName)) {
+					ImGui::Text(xorstr_("Main list: %d"), table->m_bInMainList);
+					for (const auto& variable : variables) {
+						if (ImGui::TreeNode(variable->m_pVarName)) {
+							ImGui::Text(xorstr_("[%s][%s][%s] = 0x%x"), clientClass->m_pNetworkName, table->m_pNetTableName, variable->m_pVarName, variable->m_Offset);
+							ImGui::Text(xorstr_("Proxy function: %p"), variable->m_ProxyFn);
+							ImGui::Text(xorstr_("Data table proxy function: %p"), variable->m_DataTableProxyFn);
+							ImGui::Text(xorstr_("Type: %d"), variable->m_RecvType);
+							ImGui::Text(xorstr_("Flags: %d"), variable->m_Flags);
+							ImGui::TreePop();
+						}
 					}
+					ImGui::TreePop();
 				}
-				ImGui::TreePop();
 			}
+			ImGui::TreePop();
 		}
 	}
 }

@@ -13,6 +13,9 @@ bool IsInputDown(int key, bool _default) {
 			return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
 		else if (key < 0)
 			return ImGui::IsMouseDown(abs(key) - 1);
+		else if(key == 0)
+			return _default;
+		return false;
 	}
 	return _default;
 }

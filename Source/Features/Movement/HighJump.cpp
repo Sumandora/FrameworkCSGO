@@ -7,6 +7,7 @@
 #include "../../SDK/Definitions/StateFlags.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
 
