@@ -1,7 +1,7 @@
 #ifndef GAMECACHE
 #define GAMECACHE
 
-#include "SDK/GameClass/CBasePlayer.hpp"
+class CBasePlayer;
 
 namespace GameCache {
 	CBasePlayer* GetLocalPlayer();

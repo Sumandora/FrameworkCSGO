@@ -5,6 +5,9 @@
 #include "ReturnAddr/ReturnAddr.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../Memory.hpp"
+
+#include "../../Utils/VMT.hpp"
 #include "../../Utils/Prediction.hpp"
 
 #include "../../Features/General/EnginePrediction.hpp"

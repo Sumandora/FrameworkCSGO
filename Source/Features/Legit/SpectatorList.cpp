@@ -3,6 +3,8 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "../../Utils/PlayerIds.hpp"
+
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
 
@@ -13,15 +15,6 @@
 #include <vector>
 
 bool Features::Legit::SpectatorList::enabled = false;
-
-int GetEntityId(CBaseEntity* entity) {
-	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto player2 = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (player2 == entity) {
-			return i;
-		}
-	}
-}
 
 void MapObservers(std::map<int, int>& map) {
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
@@ -36,7 +29,7 @@ void MapObservers(std::map<int, int>& map) {
 		if (!target)
 			continue;
 
-		map.emplace(i, GetEntityId(target));
+		map.emplace(i, Utils::GetEntityId(target));
 	}
 }
 
@@ -77,16 +70,13 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 			void* observerTarget = localPlayer->ObserverTarget();
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
-			else
-				return;
 		}
-	} else
-		return;
-	
-	if(!currentTarget)
-		return;
+	}
 
-	int playerTarget = GetEntityId(currentTarget);
+	int playerTarget = -1;
+
+	if(!currentTarget)
+		playerTarget = Utils::GetEntityId(currentTarget)
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float  offset	   = 0;
@@ -110,7 +100,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		ShadowString::AddText(drawList, position, entry.second == playerTarget ? ImGuiColors::red : ImGuiColors::white, text);
+		ShadowString::AddText(drawList, position, playerTarget != -1 && entry.second == playerTarget ? ImGuiColors::red : ImGuiColors::white, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();
 	}

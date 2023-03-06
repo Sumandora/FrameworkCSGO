@@ -16,7 +16,7 @@
 #include "../Features/General/EventLog.hpp"
 
 #include "../Features/Legit/Aimbot.hpp"
-#include "../Features/Legit/ESP.hpp"
+#include "../Features/Legit/ESP/ESP.hpp"
 #include "../Features/Legit/SpectatorList.hpp"
 #include "../Features/Legit/Triggerbot.hpp"
 
