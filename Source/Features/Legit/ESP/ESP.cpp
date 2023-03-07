@@ -9,14 +9,10 @@
 #include "../../../Utils/PlayerIds.hpp"
 #include "../../../Utils/Raytrace.hpp"
 
-#include "../../../GUI/ImGuiColors.hpp"
 #include "../../../GUI/Elements/Keybind.hpp"
-#include "../../../GUI/Elements/ClickableColorButton.hpp"
 
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
-#include "../../../SDK/GameClass/CBaseAttributableItem.hpp"
-#include "../../../SDK/GameClass/CPlantedC4.hpp"
 #include "../../../SDK/ClientClassIDs.hpp"
 #include "../../../SDK/Definitions/LifeState.hpp"
 
@@ -36,8 +32,9 @@ BoxNameSetting		Features::Legit::Esp::dzAmmoBoxes		{};
 BoxNameSetting		Features::Legit::Esp::dzSentries		{};
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition) {
+	float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
 	float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
-	if (w < 0.01f)
+	if (z <= 0.0f || w <= 0.0f)
 		return false;
 
 	screenPosition	 = ImVec2(ImGui::GetIO().DisplaySize);
@@ -49,109 +46,18 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 	return true;
 }
 
-void DrawBox(ImDrawList* drawList, ImVec4 rectangle, BoxSettings settings) {
-	if(!settings.enabled)
-		return;
-	if(settings.fill)
-		drawList->AddRectFilled(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), settings.fillColor, settings.rounding, ImDrawFlags_None);
-	if(settings.outlined)
-		drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), settings.outlineColor, settings.rounding, ImDrawFlags_None, settings.thickness + settings.outlineThickness);
-	drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), settings.color, settings.rounding, ImDrawFlags_None, settings.thickness);
-}
-
-void DrawTextSetting(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height, TextSetting settings) {
-	if(!settings.enabled)
-		return;
-	
-	// Hack
-	float fontScale = ImGui::GetFont()->Scale;
-	ImGui::GetFont()->Scale = settings.fontScale;
-	ImGui::PushFont(ImGui::GetFont());
-
-	ImVec2 size = ImGui::CalcTextSize(text);
-
-	float above = rectangle.y - size.y;
-	float below = rectangle.w;
-	ImVec2 position(rectangle.x + (rectangle.z - rectangle.x) * 0.5f - size.x / 2.0f, above + (below - above) * height);
-	
-	if(settings.shadow)
-		drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), settings.shadowColor, text);
-
-	drawList->AddText(position, settings.fontColor, text);
-	
-	ImGui::PopFont();
-	ImGui::GetFont()->Scale = fontScale;
-}
-
-void DrawHealthbar(ImDrawList* drawList, ImVec4 rectangle, float health, HealthbarSettings& settings) {
-	if(!settings.enabled)
-		return;
-
-	ImVec4 healthbar(rectangle.x - settings.spacing - settings.width, rectangle.y, rectangle.x - settings.spacing, rectangle.w);
-	ImVec4 outside(healthbar.x - settings.outlineThickness, healthbar.y - settings.outlineThickness, healthbar.z + settings.outlineThickness, healthbar.w + settings.outlineThickness);
-
-	ImVec4 background;
-
-	if(settings.outlined) // If we are outlining it, we don't want a gap between the outline and the healthbar
-		background = outside;
-	else
-		background = healthbar;
-
-	drawList->AddRectFilled(ImVec2(background.x, background.y), ImVec2(background.z, background.w), settings.backgroundColor, settings.rounding);
-	if(settings.outlined) {
-		drawList->AddRect(ImVec2(outside.x, outside.y), ImVec2(outside.z, outside.w), settings.outlineColor, settings.rounding, ImDrawFlags_None, settings.outlineThickness);
-	}
-
-	float aliveHsv[3];
-	ImGui::ColorConvertRGBtoHSV(
-		settings.aliveColor.Value.x, settings.aliveColor.Value.y, settings.aliveColor.Value.z,
-		aliveHsv[0], aliveHsv[1], aliveHsv[2]
-	);
-
-	float deadHsv[3];
-	ImGui::ColorConvertRGBtoHSV(
-		settings.deadColor.Value.x, settings.deadColor.Value.y, settings.deadColor.Value.z,
-		deadHsv[0], deadHsv[1], deadHsv[2]
-	);
-
-	float desiredHsv[] = {
-		deadHsv[0] + (aliveHsv[0] - deadHsv[0]) * health,
-		deadHsv[1] + (aliveHsv[1] - deadHsv[1]) * health,
-		deadHsv[2] + (aliveHsv[2] - deadHsv[2]) * health
-	};
-	float alpha = settings.deadColor.Value.w + (settings.aliveColor.Value.w - settings.deadColor.Value.w) * health;
-
-	float desiredRgb[3];
-	ImGui::ColorConvertHSVtoRGB(
-		desiredHsv[0], desiredHsv[1], desiredHsv[2],
-		desiredRgb[0], desiredRgb[1], desiredRgb[2]
-	);
-
-	ImColor color(desiredRgb[0], desiredRgb[1], desiredRgb[2], alpha);
-	drawList->AddRectFilled(ImVec2(healthbar.x, healthbar.y + (healthbar.w - healthbar.y) * (1.0 - health)), ImVec2(healthbar.z, healthbar.w), color, settings.rounding);
-}
-
-void DrawBoxName(ImDrawList* drawList, ImVec4 rectangle, const char* text, BoxNameSetting& settings) {
-	DrawBox(drawList, rectangle, settings.box);
-	DrawTextSetting(drawList, rectangle, text, 0.0f, settings.nametag);
-}
-
-void DrawPlayerWithName(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, BoxNameSetting& settings) {
+void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings& settings) {
 	char name[128];
-	if(settings.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+	if(settings.boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		int index = Utils::GetEntityId(player);
 
 		PlayerInfo info {};
 		Interfaces::engine->GetPlayerInfo(index, &info);
 		strcpy(name, info.name);
 	}
-	DrawBoxName(drawList, rectangle, name, settings);
-}
+	settings.boxName.Draw(drawList, rectangle, name);
 
-void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings& settings) {
-	DrawPlayerWithName(drawList, rectangle, player, settings);
-
-	DrawHealthbar(drawList, rectangle, std::clamp(*player->Health() / 100.0f, 0.0f, 1.0f), settings.healthbar);
+	settings.healthbar.Draw(drawList, rectangle, std::clamp(*player->Health() / 100.0f, 0.0f, 1.0f));
 	if(settings.weapon.enabled) { // Don't ask for the weapon, if we don't have to
 		CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
 		if(weapon) {
@@ -159,30 +65,15 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 			if(weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
 				char weaponName[256];
 				LocalizeWeaponID(weaponID, weaponName);
-				DrawTextSetting(drawList, rectangle, weaponName, 1.0f, settings.weapon);
+				settings.weapon.Draw(drawList, rectangle, weaponName, 1.0f);
 			}
 		}
 	}
 
 	float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
 	if(flashDuration > 0.0) {
-		DrawTextSetting(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5f, settings.flashDuration);
+		settings.flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5f);
 	}
-}
-
-void DrawWeapon(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon, WeaponSettings& settings) {
-	char weaponName[256]{};
-	if(settings.nametag.enabled) { // Don't ask for the weapon, if we don't have to
-		LocalizeWeaponID(*weapon->WeaponDefinitionIndex(), weaponName);
-	}
-	DrawBoxName(drawList, rectangle, weaponName, settings);
-
-	DrawTextSetting(drawList, rectangle, std::to_string(*weapon->Ammo()).c_str(), 1.0f, settings.ammo);
-}
-
-void DrawPlantedC4(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb, PlantedC4Settings& settings) {
-	DrawBoxName(drawList, rectangle, xorstr_("Planted C4"), settings);
-	DrawTextSetting(drawList, rectangle, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str(), 1.0f, settings.timer);
 }
 
 PlayerStateSettings SelectPlayerState(CBasePlayer* player, PlayerTeamSettings settings) {
@@ -246,9 +137,8 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 			Vector(min.x, max.y, max.z)
 		};
 
-		auto   topLeft = ImVec2(ImGui::GetIO().DisplaySize); // hacky but hey, it works
-		ImVec2 bottomRight;
-		bool   visible = true;
+		ImVec4	rectangle(FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX);
+		bool	visible = true;
 
 		for (const auto& point : points) {
 			ImVec2 point2D;
@@ -258,28 +148,33 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 				break;
 			}
 
-			if (point2D.x < topLeft.x)
-				topLeft.x = point2D.x;
+			if (point2D.x < rectangle.x)
+				rectangle.x = point2D.x;
+			else if (point2D.x > rectangle.z)
+				rectangle.z = point2D.x;
 
-			if (point2D.y < topLeft.y)
-				topLeft.y = point2D.y;
-
-			if (point2D.x > bottomRight.x)
-				bottomRight.x = point2D.x;
-
-			if (point2D.y > bottomRight.y)
-				bottomRight.y = point2D.y;
+			if (point2D.y < rectangle.y)
+				rectangle.y = point2D.y;
+			else if (point2D.y > rectangle.w)
+				rectangle.w = point2D.y;
 		}
 
 		if (visible) {
-			ImVec4 rectangle(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
 			if(entity->IsPlayer()) {
 				auto player = reinterpret_cast<CBasePlayer*>(entity);
 				PlayerStateSettings settings;
 				if(entity == GameCache::GetLocalPlayer()) // TODO Check for third person
 					settings = players.local;
 				else if(!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || *player->LifeState() != LIFE_ALIVE)) {
-					DrawPlayerWithName(drawList, rectangle, player, players.spectators);
+					char name[128];
+					if(players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+						int index = Utils::GetEntityId(player);
+
+						PlayerInfo info {};
+						Interfaces::engine->GetPlayerInfo(index, &info);
+						strcpy(name, info.name);
+					}
+					players.spectators.Draw(drawList, rectangle, name);
 					continue;
 				}
 				else if(*player->LifeState() == LIFE_ALIVE) {
@@ -293,48 +188,48 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 			} else if(entity->IsWeapon()) {
 				auto weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
 				if(*weapon->OwnerEntity() == -1)
-					DrawWeapon(drawList, rectangle, weapon, weapons);
+					weapons.Draw(drawList, rectangle, weapon);
 			} else {
 				ClientClass clientClass = *entity->GetClientClass();
 				switch(static_cast<ClientClassID>(clientClass.m_ClassID)) {
 				case ClientClassID::CPlantedC4: {
 					auto bomb = reinterpret_cast<CPlantedC4*>(entity);
-					DrawPlantedC4(drawList, rectangle, bomb, plantedC4);
+					plantedC4.Draw(drawList, rectangle, bomb);
 					break;
 				}
 				case ClientClassID::CBaseCSGrenadeProjectile:
 					//TODO Seperate
-					DrawBoxName(drawList, rectangle, xorstr_("Base grenade"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Base grenade"));
 					break;
 				case ClientClassID::CBreachChargeProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Breach charge"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Breach charge"));
 					break;
 				case ClientClassID::CBumpMineProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Bump Mine"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Bump Mine"));
 					break;
 				case ClientClassID::CDecoyProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Decoy"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Decoy"));
 					break;
 				case ClientClassID::CMolotovProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Molotov"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Molotov"));
 					break;
 				case ClientClassID::CSensorGrenadeProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Sensor grenade"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Sensor grenade"));
 					break;
 				case ClientClassID::CSmokeGrenadeProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Smoke grenade"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Smoke grenade"));
 					break;
 				case ClientClassID::CSnowballProjectile:
-					DrawBoxName(drawList, rectangle, xorstr_("Snowball"), projectiles);
+					projectiles.Draw(drawList, rectangle, xorstr_("Snowball"));
 					break;
 				case ClientClassID::CPhysPropLootCrate:
-					DrawBoxName(drawList, rectangle, xorstr_("Loot crate"), dzLootCrates);
+					dzLootCrates.Draw(drawList, rectangle, xorstr_("Loot crate"));
 					break;
 				case ClientClassID::CPhysPropAmmoBox:
-					DrawBoxName(drawList, rectangle, xorstr_("Ammo box"), dzAmmoBoxes);
+					dzAmmoBoxes.Draw(drawList, rectangle, xorstr_("Ammo box"));
 					break;
 				case ClientClassID::CDronegun:
-					DrawBoxName(drawList, rectangle, xorstr_("Sentry"), dzSentries);
+					dzSentries.Draw(drawList, rectangle, xorstr_("Sentry"));
 					break;
 				default:
 					//TODO?
@@ -346,152 +241,19 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 	}
 }
 
-// Yes the "..."-Popups are inspired by danielkrupinski/Osiris
-
-void ShowBoxSettings(const char* tag, BoxSettings& boxSettings) {
-	ImGui::PushID(tag);
-	ImGui::Checkbox(tag, &boxSettings.enabled);
-
-	ImGui::SameLine();
-	if(ImGui::Button("..."))
-		ImGui::OpenPopup(tag);
-
-	if(ImGui::BeginPopup(tag)) {
-		ImGui::ClickableColorButton(xorstr_("Color"), boxSettings.color);
-		ImGui::SliderFloat(xorstr_("Rounding"), &boxSettings.rounding, 0.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat(xorstr_("Thickness"), &boxSettings.thickness, 0.0f, 10.0f, "%.2f");
-		ImGui::Checkbox(xorstr_("Outlined"), &boxSettings.outlined);
-		if(boxSettings.outlined) {
-			ImGui::ClickableColorButton(xorstr_("Outline color"), boxSettings.outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &boxSettings.outlineThickness, 0.0f, 10.0f, "%.2f");
-		}
-		ImGui::Checkbox(xorstr_("Fill"), &boxSettings.fill);
-		if(boxSettings.fill)
-			ImGui::ClickableColorButton(xorstr_("Fill color"), boxSettings.fillColor);
-		
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopID();
-}
-
-void ShowHealthbarSettings(const char* tag, HealthbarSettings& healthbarSettings) {
-	ImGui::PushID(tag);
-	ImGui::Checkbox(tag, &healthbarSettings.enabled);
-
-	ImGui::SameLine();
-	if(ImGui::Button("..."))
-		ImGui::OpenPopup(tag);
-
-	if(ImGui::BeginPopup(tag)) {
-		ImGui::ClickableColorButton(xorstr_("Background color"), healthbarSettings.backgroundColor);
-		ImGui::SliderFloat(xorstr_("Rounding"), &healthbarSettings.rounding, 0.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat(xorstr_("Spacing"), &healthbarSettings.spacing, 0.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat(xorstr_("Width"), &healthbarSettings.width, 0.0f, 10.0f, "%.2f");
-		
-		ImGui::ClickableColorButton(xorstr_("Alive color"), healthbarSettings.aliveColor);
-		ImGui::ClickableColorButton(xorstr_("Dead color"), healthbarSettings.deadColor);
-		
-		ImGui::Checkbox(xorstr_("Outlined"), &healthbarSettings.outlined);
-		if(healthbarSettings.outlined) {
-			ImGui::ClickableColorButton(xorstr_("Outline color"), healthbarSettings.outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &healthbarSettings.outlineThickness, 0.0f, 10.0f, "%.2f");
-		}
-		
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopID();
-}
-
-void ShowTextSetting(const char* tag, TextSetting& textSetting) {
-	ImGui::PushID(tag);
-	ImGui::Checkbox(tag, &textSetting.enabled);
-
-	ImGui::SameLine();
-	if(ImGui::Button("..."))
-		ImGui::OpenPopup(tag);
-
-	if(ImGui::BeginPopup(tag)) {
-		ImGui::SliderFloat(xorstr_("Font scale"), &textSetting.fontScale, 0.1f, 2.0f, "%.2f");
-		ImGui::ClickableColorButton(xorstr_("Font color"), textSetting.fontColor);
-		ImGui::Checkbox(xorstr_("Shadow"), &textSetting.shadow);
-		if(textSetting.shadow)
-			ImGui::ClickableColorButton(xorstr_("Shadow color"), textSetting.shadowColor);
-		
-		ImGui::EndPopup();
-	}
-
-	ImGui::PopID();
-}
-
-void ShowBoxNameSetting(const char* tag, BoxNameSetting& boxNameSetting) {
-	ImGui::PushID(tag);
-	ShowBoxSettings(xorstr_("Box"), boxNameSetting.box);
-	ShowTextSetting(xorstr_("Name"), boxNameSetting.nametag);
-	ImGui::PopID();
-}
-
-void CopyPlayerStateSettings(PlayerStateSettings from, PlayerStateSettings& to) {
-	to.box = from.box;
-	to.nametag = from.nametag;
-	to.healthbar = from.healthbar;
-	to.weapon = from.weapon;
-	to.flashDuration = from.flashDuration;
-}
-
-void BuildMenu(PlayerStateSettings& playerStateSettings, PlayerTeamSettings playerTeamSettings) {
-	if(ImGui::MenuItem(xorstr_("Visible"))) {
-		CopyPlayerStateSettings(playerTeamSettings.visible, playerStateSettings);
-	}
-	if(ImGui::MenuItem(xorstr_("Occluded"))) {
-		CopyPlayerStateSettings(playerTeamSettings.occluded, playerStateSettings);
-	}
-	if(ImGui::MenuItem(xorstr_("Dormant"))) {
-		CopyPlayerStateSettings(playerTeamSettings.dormant, playerStateSettings);
-	}
-}
-
-void ShowPlayerStateSettings(const char* tag, PlayerStateSettings& playerStateSettings) {
-	ImGui::PushID(tag);
-	if(ImGui::Button(xorstr_("Copy from")))
-		ImGui::OpenPopup(xorstr_("##Copy from"));
-
-	if(ImGui::BeginPopup(xorstr_("##Copy from"))) {
-		if(ImGui::BeginMenu(xorstr_("Enemy"))) {
-			BuildMenu(playerStateSettings, Features::Legit::Esp::players.enemy);
-			ImGui::EndMenu();
-		}
-		if(ImGui::Selectable(xorstr_("Teammate"))) {
-			BuildMenu(playerStateSettings, Features::Legit::Esp::players.teammate);
-			ImGui::EndMenu();
-		}
-		if(ImGui::Selectable(xorstr_("Local"))) {
-			CopyPlayerStateSettings(Features::Legit::Esp::players.local, playerStateSettings);
-		}
-		ImGui::EndPopup();
-	}
-
-	ShowBoxNameSetting(tag, playerStateSettings);
-	ShowHealthbarSettings(xorstr_("Healthbar"), playerStateSettings.healthbar);
-	ShowTextSetting(xorstr_("Weapon"), playerStateSettings.weapon);
-	ShowTextSetting(xorstr_("Flash duration"), playerStateSettings.flashDuration);
-	ImGui::PopID();
-}
-
 void ShowPlayerTeamSettings(const char* tag, PlayerTeamSettings& playerTeamSettings) {
 	ImGui::PushID(tag);
 	if (ImGui::BeginTabBar(xorstr_("#Player team config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Visible"))) {
-			ShowPlayerStateSettings(xorstr_("Visible"), playerTeamSettings.visible);
+			playerTeamSettings.visible.SetupGUI(xorstr_("Visible"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Occluded"))) {
-			ShowPlayerStateSettings(xorstr_("Occluded"), playerTeamSettings.occluded);
+			playerTeamSettings.occluded.SetupGUI(xorstr_("Occluded"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Dormant"))) {
-			ShowPlayerStateSettings(xorstr_("Dormant"), playerTeamSettings.dormant);
+			playerTeamSettings.dormant.SetupGUI(xorstr_("Dormant"));
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -511,29 +273,15 @@ void ShowPlayerSettings(const char* tag, PlayerSettings& playerSettings) {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Local"))) {
-			ShowPlayerStateSettings(xorstr_("Local"), playerSettings.local);
+			playerSettings.local.SetupGUI(xorstr_("Local"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Spectators"))) {
-			ShowBoxNameSetting(xorstr_("Spectators"), playerSettings.spectators);
+			playerSettings.spectators.SetupGUI(xorstr_("Spectators"));
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
 	}
-	ImGui::PopID();
-}
-
-void ShowWeaponSettings(const char* tag, WeaponSettings& weaponSettings) {
-	ImGui::PushID(tag);
-	ShowBoxNameSetting(tag, weaponSettings);
-	ShowTextSetting(xorstr_("Ammo"), weaponSettings.ammo);
-	ImGui::PopID();
-}
-
-void ShowPlantedC4Settings(const char* tag, PlantedC4Settings& plantedC4Settings) {
-	ImGui::PushID(tag);
-	ShowBoxNameSetting(tag, plantedC4Settings);
-	ShowTextSetting(xorstr_("Timer"), plantedC4Settings.timer);
 	ImGui::PopID();
 }
 
@@ -549,29 +297,29 @@ void Features::Legit::Esp::SetupGUI() {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Weapons"))) {
-			ShowWeaponSettings(xorstr_("Weapons"), weapons);
+			weapons.SetupGUI(xorstr_("Weapons"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Projectiles"))) {
-			ShowBoxNameSetting(xorstr_("Projectiles"), projectiles);
+			projectiles.SetupGUI(xorstr_("Projectiles"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Planted C4"))) {
-			ShowPlantedC4Settings(xorstr_("Planted C4"), plantedC4);
+			plantedC4.SetupGUI(xorstr_("Planted C4"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
 			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
 				if (ImGui::BeginTabItem(xorstr_("Loot crates"))) {
-					ShowBoxNameSetting(xorstr_("Loot crates"), dzLootCrates);
+					dzLootCrates.SetupGUI(xorstr_("Loot crates"));
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(xorstr_("Ammo boxes"))) {
-					ShowBoxNameSetting(xorstr_("Ammo boxes"), dzAmmoBoxes);
+					dzAmmoBoxes.SetupGUI(xorstr_("Ammo boxes"));
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(xorstr_("Sentries"))) {
-					ShowBoxNameSetting(xorstr_("Sentries"), dzSentries);
+					dzSentries.SetupGUI(xorstr_("Sentries"));
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();

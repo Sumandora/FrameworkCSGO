@@ -76,7 +76,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 	int playerTarget = -1;
 
 	if(!currentTarget)
-		playerTarget = Utils::GetEntityId(currentTarget)
+		playerTarget = Utils::GetEntityId(currentTarget);
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float  offset	   = 0;

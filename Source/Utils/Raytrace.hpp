@@ -7,8 +7,6 @@
 #include "../SDK/Raytrace/Trace.hpp"
 #include "../SDK/Raytrace/TraceFilter.hpp"
 
-class ITraceFilter;
-
 namespace Utils {
 	Trace TraceRay(Vector start, Vector end, ITraceFilter* filter);
 }
