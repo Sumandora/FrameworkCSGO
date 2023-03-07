@@ -6,7 +6,7 @@
 
 void __attribute((optimize("O0"))) FrameStageNotifyHook(void* thisptr, ClientFrameStage stage) {
 	switch (stage) {
-		case ClientFrameStage::FRAME_START: {
+		case ClientFrameStage::FRAME_RENDER_END: {
 			Hooks::FrameStageNotify::worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
 			break;
 		}

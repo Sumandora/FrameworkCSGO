@@ -51,5 +51,6 @@ $SU cp Build-Debug/libFramework_Example.so /usr/lib/libMangoHud.so
 echo "2" | $SU tee /proc/sys/kernel/yama/ptrace_scope # Only allows root to inject code. This is temporary until reboot.
 
 $SU $DEBUGGER -p $csgo_pid \
+	-ex "set pagination off" \
 	-ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib/libMangoHud.so\", 1)" \
 	-ex "continue"
