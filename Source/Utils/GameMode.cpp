@@ -2,16 +2,17 @@
 
 #include "../ConVarStorage.hpp"
 
-Gamemode Utils::CalculateGamemode() {
+Gamemode Utils::CalculateGamemode()
+{
 	int game_type = ConVarStorage::game_type->GetInt();
 	int game_mode = ConVarStorage::game_mode->GetInt();
 	int sv_skirmish_id = ConVarStorage::sv_skirmish_id->GetInt();
 
 	// https://developer.valvesoftware.com/wiki/CS:GO_Game_Modes
 
-	switch(game_type) {
+	switch (game_type) {
 	case 0:
-		switch(game_mode) {
+		switch (game_mode) {
 		case 0:
 			return Gamemode::CASUAL;
 		case 1:
@@ -23,7 +24,7 @@ Gamemode Utils::CalculateGamemode() {
 		}
 		break;
 	case 1:
-		switch(game_mode) {
+		switch (game_mode) {
 		case 0:
 			return Gamemode::GUN_GAME_ARMS_RACE;
 		case 1:
@@ -33,22 +34,22 @@ Gamemode Utils::CalculateGamemode() {
 		}
 		break;
 	case 2:
-		if(game_mode == 0)
+		if (game_mode == 0)
 			return Gamemode::TRAINING;
 		break;
 	case 3:
-		if(game_mode == 0)
+		if (game_mode == 0)
 			return Gamemode::CUSTOM;
 		break;
 	case 4:
-		if(game_mode == 0)
+		if (game_mode == 0)
 			return Gamemode::GUARDIAN;
-		else if(game_mode == 1)
+		else if (game_mode == 1)
 			return Gamemode::COOP_STRIKE;
 		break;
 	case 5:
-		if(game_mode == 0) {
-			switch(sv_skirmish_id) {
+		if (game_mode == 0) {
+			switch (sv_skirmish_id) {
 			case 3:
 				return Gamemode::SKIRMISH_FLYING_SCOUTSMAN;
 			case 10:
@@ -61,7 +62,7 @@ Gamemode Utils::CalculateGamemode() {
 		}
 		break;
 	case 6:
-		if(game_mode == 0)
+		if (game_mode == 0)
 			return Gamemode::DANGER_ZONE;
 	}
 	return Gamemode::UNKNOWN;

@@ -2,9 +2,9 @@
 
 #include "imgui.h"
 
-#include "../../Interfaces.hpp"
 #include "../../ConVarStorage.hpp"
 #include "../../GameCache.hpp"
+#include "../../Interfaces.hpp"
 
 #include "../../Hooks/CreateMove/CreateMoveHook.hpp"
 #include "../../SDK/Definitions/InputFlags.hpp"
@@ -13,16 +13,17 @@
 
 #include <algorithm>
 
-bool  Features::Semirage::Aimbot::enabled		   = false;
-bool  Features::Semirage::Aimbot::onlyWhenShooting = false;
-float Features::Semirage::Aimbot::fov			   = 3.0f;
-float Features::Semirage::Aimbot::aimSpeed		   = 0.2f;
-bool  Features::Semirage::Aimbot::silent		   = false;
-float Features::Semirage::Aimbot::snapBack		   = 0.1f;
+bool Features::Semirage::Aimbot::enabled = false;
+bool Features::Semirage::Aimbot::onlyWhenShooting = false;
+float Features::Semirage::Aimbot::fov = 3.0f;
+float Features::Semirage::Aimbot::aimSpeed = 0.2f;
+bool Features::Semirage::Aimbot::silent = false;
+float Features::Semirage::Aimbot::snapBack = 0.1f;
 
 bool wasFaked = false;
 
-bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
+bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
+{
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return false;
 
@@ -43,8 +44,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 		viewAngles = Vector(cmd->viewangles);
 
 	CBasePlayer* target = nullptr;
-	Vector		 bestRotation;
-	float		 bestDistance;
+	Vector bestRotation;
+	float bestDistance;
 
 	// For compatibility’s sake, play it off like we didn't find a target
 	if (cmd->buttons & IN_ATTACK || !onlyWhenShooting) {
@@ -68,13 +69,13 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 				continue; // The enemy is behind something...
 
 			Vector rotation = Utils::CalculateView(playerEye, head);
-			rotation		-= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
-			float delta		= (rotation - cmd->viewangles).Wrap().Length(); // Use the real angle for the fov check
-			rotation		-= viewAngles;
+			rotation -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
+			float delta = (rotation - cmd->viewangles).Wrap().Length(); // Use the real angle for the fov check
+			rotation -= viewAngles;
 			rotation.Wrap();
 
 			if (!target || bestDistance > delta) {
-				target		 = player;
+				target = player;
 				bestDistance = delta;
 				bestRotation = rotation;
 			}
@@ -90,7 +91,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 				wasFaked = false;
 				return false;
 			}
-			delta			*= aimSpeed;
+			delta *= aimSpeed;
 			cmd->viewangles = viewAngles + delta;
 			cmd->viewangles.Wrap();
 			wasFaked = true;
@@ -100,7 +101,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 		return false;
 	}
 
-	bestRotation	*= aimSpeed;
+	bestRotation *= aimSpeed;
 	cmd->viewangles = viewAngles + bestRotation;
 	cmd->viewangles.Wrap();
 	if (!silent)
@@ -110,7 +111,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 	return silent;
 }
 
-void Features::Semirage::Aimbot::SetupGUI() {
+void Features::Semirage::Aimbot::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
 	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");

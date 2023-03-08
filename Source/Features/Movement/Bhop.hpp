@@ -6,7 +6,7 @@
 namespace Features::Movement::Bhop {
 	// Settings
 	extern bool enabled;
-	extern int	humanization;
+	extern int humanization;
 
 	void CreateMove(CUserCmd* cmd);
 

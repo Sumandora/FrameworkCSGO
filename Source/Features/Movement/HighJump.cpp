@@ -11,12 +11,13 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Movement::HighJump::enabled	= false;
-int	 Features::Movement::HighJump::input	= 0;
+bool Features::Movement::HighJump::enabled = false;
+int Features::Movement::HighJump::input = 0;
 
 bool performing = false;
 
-void Features::Movement::HighJump::CreateMove(CUserCmd* cmd) {
+void Features::Movement::HighJump::CreateMove(CUserCmd* cmd)
+{
 	if (!enabled || !IsInputDown(input, false)) {
 		performing = false;
 		return;
@@ -29,10 +30,10 @@ void Features::Movement::HighJump::CreateMove(CUserCmd* cmd) {
 	}
 
 	int flags = *localPlayer->Flags();
-	
+
 	cmd->buttons |= IN_DUCK;
-	if(flags & FL_ONGROUND) {
-		if(performing) {
+	if (flags & FL_ONGROUND) {
+		if (performing) {
 			cmd->buttons |= IN_JUMP;
 			performing = false;
 		} else
@@ -40,7 +41,8 @@ void Features::Movement::HighJump::CreateMove(CUserCmd* cmd) {
 	}
 }
 
-void Features::Movement::HighJump::SetupGUI() {
+void Features::Movement::HighJump::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }

@@ -14,9 +14,9 @@ public:
 };
 
 namespace Hooks::SDL {
-	inline SDLHook*	   swapWindow;
-	inline SDLHook*	   pollEvents;
-	inline SDLHook*	   warpMouseInWindow;
+	inline SDLHook* swapWindow;
+	inline SDLHook* pollEvents;
+	inline SDLHook* warpMouseInWindow;
 	inline SDL_Window* windowPtr;
 
 	void Hook();

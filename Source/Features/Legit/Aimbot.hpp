@@ -5,10 +5,10 @@
 
 namespace Features::Legit::Aimbot {
 	// Settings
-	extern bool	 enabled;
+	extern bool enabled;
 	extern float fov;
 	extern float smoothness;
-	extern int	 clamp;
+	extern int clamp;
 
 	void PollEvent(SDL_Event* event);
 

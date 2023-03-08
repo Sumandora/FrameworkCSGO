@@ -8,18 +8,22 @@ class Vector {
 public:
 	float x, y, z;
 
-	inline Vector() {
+	inline Vector()
+	{
 		x = y = z = 0;
 	}
-	inline Vector(const Vector& other) {
+	inline Vector(const Vector& other)
+	{
 		x = other.x;
 		y = other.y;
 		z = other.z;
 	}
-	inline explicit Vector(float scalar) {
+	inline explicit Vector(float scalar)
+	{
 		x = y = z = scalar;
 	}
-	inline Vector(float x, float y, float z) {
+	inline Vector(float x, float y, float z)
+	{
 		this->x = x;
 		this->y = y;
 		this->z = z;
@@ -29,39 +33,45 @@ public:
 	inline Vector& operator=(const Vector& other) = default;
 
 	// Array-like access
-	inline float& operator[](int i) {
+	inline float& operator[](int i)
+	{
 		return ((float*)this)[i];
 	}
 
-	inline float operator[](int i) const {
+	inline float operator[](int i) const
+	{
 		return ((float*)this)[i];
 	}
 
 	// Arithmetic using mutable vectors
 
 	// Arithmetic with other Vectors
-	inline Vector& operator+=(const Vector& other) {
+	inline Vector& operator+=(const Vector& other)
+	{
 		x += other.x;
 		y += other.y;
 		z += other.z;
 		return *this;
 	}
 
-	inline Vector& operator-=(const Vector& other) {
+	inline Vector& operator-=(const Vector& other)
+	{
 		x -= other.x;
 		y -= other.y;
 		z -= other.z;
 		return *this;
 	}
 
-	inline Vector& operator*=(const Vector& other) {
+	inline Vector& operator*=(const Vector& other)
+	{
 		x *= other.x;
 		y *= other.y;
 		z *= other.z;
 		return *this;
 	}
 
-	inline Vector& operator/=(const Vector& other) {
+	inline Vector& operator/=(const Vector& other)
+	{
 		x /= other.x;
 		y /= other.y;
 		z /= other.z;
@@ -69,28 +79,32 @@ public:
 	}
 
 	// Arithmetic with floating-point number
-	inline Vector& operator+=(float other) {
+	inline Vector& operator+=(float other)
+	{
 		x += other;
 		y += other;
 		z += other;
 		return *this;
 	}
 
-	inline Vector& operator-=(float other) {
+	inline Vector& operator-=(float other)
+	{
 		x -= other;
 		y -= other;
 		z -= other;
 		return *this;
 	}
 
-	inline Vector& operator*=(float other) {
+	inline Vector& operator*=(float other)
+	{
 		x *= other;
 		y *= other;
 		z *= other;
 		return *this;
 	}
 
-	inline Vector& operator/=(float other) {
+	inline Vector& operator/=(float other)
+	{
 		x /= other;
 		y /= other;
 		z /= other;
@@ -98,23 +112,27 @@ public:
 	}
 
 	// Comparison
-	inline bool operator==(const Vector& other) const {
+	inline bool operator==(const Vector& other) const
+	{
 		return x == other.x && y == other.y && z == other.z;
 	}
 
-	inline bool operator!=(const Vector& other) const {
+	inline bool operator!=(const Vector& other) const
+	{
 		return x != other.x || y != other.y || z != other.z;
 	}
 
 	// Invert
-	inline Vector operator-() const {
+	inline Vector operator-() const
+	{
 		return { -x, -y, -z };
 	}
 
 	// Arithmetic using non-mutable vectors
 
 	// Arithmetic with other Vectors
-	inline Vector operator+(const Vector& other) const {
+	inline Vector operator+(const Vector& other) const
+	{
 		Vector vec;
 		vec.x = x + other.x;
 		vec.y = y + other.y;
@@ -122,7 +140,8 @@ public:
 		return vec;
 	}
 
-	inline Vector operator-(const Vector& other) const {
+	inline Vector operator-(const Vector& other) const
+	{
 		Vector vec;
 		vec.x = x - other.x;
 		vec.y = y - other.y;
@@ -130,7 +149,8 @@ public:
 		return vec;
 	}
 
-	inline Vector operator*(const Vector& other) const {
+	inline Vector operator*(const Vector& other) const
+	{
 		Vector vec;
 		vec.x = x * other.x;
 		vec.y = y * other.y;
@@ -138,7 +158,8 @@ public:
 		return vec;
 	}
 
-	inline Vector operator/(const Vector& other) const {
+	inline Vector operator/(const Vector& other) const
+	{
 		Vector vec;
 		vec.x = x / other.x;
 		vec.y = y / other.y;
@@ -147,7 +168,8 @@ public:
 	}
 
 	// Arithmetic with floating-point number
-	inline Vector operator+(float other) const {
+	inline Vector operator+(float other) const
+	{
 		Vector vec;
 		vec.x = x + other;
 		vec.y = y + other;
@@ -155,7 +177,8 @@ public:
 		return vec;
 	}
 
-	inline Vector operator-(float other) const {
+	inline Vector operator-(float other) const
+	{
 		Vector vec;
 		vec.x = x - other;
 		vec.y = y - other;
@@ -163,7 +186,8 @@ public:
 		return vec;
 	}
 
-	inline Vector operator*(float other) const {
+	inline Vector operator*(float other) const
+	{
 		Vector vec;
 		vec.x = x * other;
 		vec.y = y * other;
@@ -171,7 +195,8 @@ public:
 		return vec;
 	}
 
-	inline Vector operator/(float other) const {
+	inline Vector operator/(float other) const
+	{
 		Vector vec;
 		vec.x = x / other;
 		vec.y = y / other;
@@ -179,19 +204,23 @@ public:
 		return vec;
 	}
 
-	[[nodiscard]] inline float LengthSquared() const {
+	[[nodiscard]] inline float LengthSquared() const
+	{
 		return x * x + y * y + z * z;
 	}
 
-	[[nodiscard]] inline float Length() const {
+	[[nodiscard]] inline float Length() const
+	{
 		return sqrt(LengthSquared());
 	}
 
-	[[nodiscard]] inline float Dot(const Vector& other) const {
+	[[nodiscard]] inline float Dot(const Vector& other) const
+	{
 		return this->x * other.x + this->y * other.y + this->z * other.z;
 	}
 
-	[[nodiscard]] inline Vector Normalized() const {
+	[[nodiscard]] inline Vector Normalized() const
+	{
 		float len = Length();
 		return {
 			this->x / len,
@@ -200,7 +229,8 @@ public:
 		};
 	}
 
-	inline Vector Wrap() {
+	inline Vector Wrap()
+	{
 		while (this->x > 90.0f)
 			this->x -= 180.f;
 
@@ -222,14 +252,16 @@ public:
 class __attribute__((aligned(16))) AlignedVector : public Vector {
 public:
 	inline AlignedVector() = default;
-	inline AlignedVector(float x, float y, float z) {
+	inline AlignedVector(float x, float y, float z)
+	{
 		this->x = x;
 		this->y = y;
 		this->z = z;
 		this->w = 0;
 	}
 
-	AlignedVector& operator=(const Vector& vOther) {
+	AlignedVector& operator=(const Vector& vOther)
+	{
 		this->x = vOther.x;
 		this->y = vOther.y;
 		this->z = vOther.z;

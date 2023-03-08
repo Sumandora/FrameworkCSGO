@@ -5,12 +5,12 @@
 
 class ClientClass {
 public:
-	void*		 m_pCreateFn;
-	void*		 m_pCreateEventFn;
-	char*		 m_pNetworkName;
-	RecvTable*	 m_pRecvTable;
+	void* m_pCreateFn;
+	void* m_pCreateEventFn;
+	char* m_pNetworkName;
+	RecvTable* m_pRecvTable;
 	ClientClass* m_pNext;
-	int			 m_ClassID;
+	int m_ClassID;
 };
 
 #endif

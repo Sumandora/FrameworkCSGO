@@ -1,22 +1,23 @@
 #include "RecoilAssistance.hpp"
 
+#include "../../ConVarStorage.hpp"
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
-#include "../../ConVarStorage.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
 #include "imgui.h"
 
-bool  Features::Semirage::RecoilAssistance::enabled				 = false;
+bool Features::Semirage::RecoilAssistance::enabled = false;
 float Features::Semirage::RecoilAssistance::horizontalAdjustment = 1.0f;
-float Features::Semirage::RecoilAssistance::verticalAdjustment	 = 1.0f;
-bool  Features::Semirage::RecoilAssistance::silent				 = false;
-int	  Features::Semirage::RecoilAssistance::minShots			 = 1;
+float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0f;
+bool Features::Semirage::RecoilAssistance::silent = false;
+int Features::Semirage::RecoilAssistance::minShots = 1;
 
 Vector lastAimPunch;
 
-bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd) {
+bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
+{
 	if (!enabled || !(cmd->buttons & IN_ATTACK)) {
 		lastAimPunch = Vector();
 		return false;
@@ -50,7 +51,8 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd) {
 	return silent;
 }
 
-void Features::Semirage::RecoilAssistance::SetupGUI() {
+void Features::Semirage::RecoilAssistance::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Horizontal adjustment"), &horizontalAdjustment, 0.0f, 1.0f);
 	ImGui::SliderFloat(xorstr_("Vertical adjustment"), &verticalAdjustment, 0.0f, 1.0f);

@@ -6,7 +6,7 @@
 
 class IMoveHelper {
 public:
-	VIRTUAL_METHOD(1, SetHost, void, (CBaseEntity* player), (this, player))
+	VIRTUAL_METHOD(1, SetHost, void, (CBaseEntity * player), (this, player))
 };
 
 #endif

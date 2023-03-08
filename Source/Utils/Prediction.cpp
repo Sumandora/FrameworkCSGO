@@ -1,18 +1,19 @@
 #include "Prediction.hpp"
 
+#include "../GameCache.hpp"
 #include "../Interfaces.hpp"
 #include "../Memory.hpp"
-#include "../GameCache.hpp"
 
 float oldCurtime;
 float oldFrametime;
 
-bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData) {
+bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData)
+{
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	if(!localPlayer)
+	if (!localPlayer)
 		return false;
-	
+
 	oldCurtime = Memory::globalVars->curtime;
 	oldFrametime = Memory::globalVars->frametime;
 
@@ -29,12 +30,13 @@ bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData) {
 	return true;
 }
 
-void Utils::EndPrediction() {
+void Utils::EndPrediction()
+{
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	if(!localPlayer)
+	if (!localPlayer)
 		return;
-	
+
 	Interfaces::gameMovement->FinishTrackPredictionErrors(localPlayer);
 	Memory::moveHelper->SetHost(nullptr);
 

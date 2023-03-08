@@ -1,13 +1,13 @@
 #ifndef FEATURES_GENERAL_EVENTLOG
 #define FEATURES_GENERAL_EVENTLOG
 
-#include "SDL.h"
 #include "imgui.h"
+#include "SDL.h"
 
 namespace Features::General::EventLog {
 	// Settings
-	extern bool	enabled;
-	extern int	duration;
+	extern bool enabled;
+	extern int duration;
 
 	void ImGuiRender(ImDrawList* drawList);
 

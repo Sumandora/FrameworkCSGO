@@ -3,7 +3,8 @@
 
 namespace Utils {
 	// This really only exists, because it makes code more readable
-	static inline void** GetVTable(void* gameClass) {
+	static inline void** GetVTable(void* gameClass)
+	{
 		return *reinterpret_cast<void***>(gameClass);
 	}
 }

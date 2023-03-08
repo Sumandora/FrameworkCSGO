@@ -2,8 +2,8 @@
 #define SDK_RAYTRACE_SURFACE
 
 struct Surface {
-	const char*	   name;
-	short		   surfaceProps;
+	const char* name;
+	short surfaceProps;
 	unsigned short flags;
 };
 

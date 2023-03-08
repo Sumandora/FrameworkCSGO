@@ -9,22 +9,25 @@
 
 bool Features::General::EnginePrediction::enabled = true;
 
-CMoveData Features::General::EnginePrediction::moveData{};
+CMoveData Features::General::EnginePrediction::moveData {};
 
-void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd) {
+void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
+{
 	moveData = {};
-	if(!enabled)
+	if (!enabled)
 		return;
 	Utils::StartPrediction(cmd, moveData);
 }
 
-void Features::General::EnginePrediction::EndPrediction() {
+void Features::General::EnginePrediction::EndPrediction()
+{
 	Utils::EndPrediction();
 }
 
-void Features::General::EnginePrediction::SetupGUI() {
+void Features::General::EnginePrediction::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	if(!enabled) {
+	if (!enabled) {
 		ImGui::Text(xorstr_("Warning: Disabling engine prediction may result in massive accuracy loss"));
 	}
 }

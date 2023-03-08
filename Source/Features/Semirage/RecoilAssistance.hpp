@@ -5,11 +5,11 @@
 
 namespace Features::Semirage::RecoilAssistance {
 	// Settings
-	extern bool	 enabled;
+	extern bool enabled;
 	extern float horizontalAdjustment;
 	extern float verticalAdjustment;
-	extern bool	 silent;
-	extern int	 minShots;
+	extern bool silent;
+	extern int minShots;
 
 	bool CreateMove(CUserCmd* cmd);
 

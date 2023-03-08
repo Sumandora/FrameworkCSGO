@@ -4,7 +4,8 @@
 
 #include "../SDK/Raytrace/Definitions/MaskFlags.hpp"
 
-Trace Utils::TraceRay(Vector start, Vector end, ITraceFilter* filter) {
+Trace Utils::TraceRay(Vector start, Vector end, ITraceFilter* filter)
+{
 	Ray ray;
 	ray.Init(start, end);
 

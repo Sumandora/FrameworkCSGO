@@ -5,7 +5,7 @@ class CBasePlayer;
 
 namespace GameCache {
 	CBasePlayer* GetLocalPlayer();
-	void		 ClearLocalPlayer();
+	void ClearLocalPlayer();
 }
 
 #endif

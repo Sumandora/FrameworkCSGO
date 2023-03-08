@@ -3,8 +3,8 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../Interfaces.hpp"
 #include "../../ConVarStorage.hpp"
+#include "../../Interfaces.hpp"
 
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
@@ -14,10 +14,11 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Legit::Triggerbot::enabled	= false;
-int	 Features::Legit::Triggerbot::input		= 0;
+bool Features::Legit::Triggerbot::enabled = false;
+int Features::Legit::Triggerbot::input = 0;
 
-void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
+void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
+{
 	if (!enabled || !IsInputDown(input, false))
 		return;
 
@@ -29,8 +30,8 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
 		return;
 
-	Vector playerEye  = localPlayer->GetEyePosition();
-	auto   viewangles = Vector(cmd->viewangles);
+	Vector playerEye = localPlayer->GetEyePosition();
+	auto viewangles = Vector(cmd->viewangles);
 
 	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat() / 2.0f;
 
@@ -54,7 +55,8 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 	cmd->buttons |= IN_ATTACK;
 }
 
-void Features::Legit::Triggerbot::SetupGUI() {
+void Features::Legit::Triggerbot::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }

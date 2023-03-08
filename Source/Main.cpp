@@ -3,14 +3,15 @@
 #include "GUI/GUI.hpp"
 #include "Hooks/Hooks.hpp"
 
+#include "ConVarStorage.hpp"
 #include "Interfaces.hpp"
 #include "Memory.hpp"
 #include "Netvars.hpp"
-#include "ConVarStorage.hpp"
 
 #include "xorstr.hpp"
 
-void Initializer() {
+void Initializer()
+{
 	srand(time(nullptr));
 
 	Interfaces::GetInterfaces();
@@ -25,14 +26,16 @@ void Initializer() {
 	Hooks::InstallHooks();
 }
 
-int __attribute__((constructor)) Startup() {
+int __attribute__((constructor)) Startup()
+{
 	std::thread t(Initializer);
 	t.detach();
 
 	return 0;
 }
 
-void __attribute__((destructor)) Shutdown() {
+void __attribute__((destructor)) Shutdown()
+{
 	Hooks::UninstallHooks();
 	Gui::Destroy();
 }

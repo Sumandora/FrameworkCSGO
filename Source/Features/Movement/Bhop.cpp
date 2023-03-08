@@ -8,10 +8,11 @@
 #include "../../GameCache.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
-bool Features::Movement::Bhop::enabled		 = false;
-int	 Features::Movement::Bhop::humanization = 0;
+bool Features::Movement::Bhop::enabled = false;
+int Features::Movement::Bhop::humanization = 0;
 
-void Features::Movement::Bhop::CreateMove(CUserCmd* cmd) {
+void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
+{
 	if (!enabled)
 		return;
 
@@ -36,7 +37,8 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd) {
 	}
 }
 
-void Features::Movement::Bhop::SetupGUI() {
+void Features::Movement::Bhop::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderInt(xorstr_("Humanize"), &humanization, 0, 4);
 }

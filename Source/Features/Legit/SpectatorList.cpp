@@ -5,8 +5,8 @@
 
 #include "../../Utils/PlayerIds.hpp"
 
-#include "../../GUI/ImGuiColors.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
+#include "../../GUI/ImGuiColors.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
@@ -16,7 +16,8 @@
 
 bool Features::Legit::SpectatorList::enabled = false;
 
-void MapObservers(std::map<int, int>& map) {
+void MapObservers(std::map<int, int>& map)
+{
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player)
@@ -33,7 +34,8 @@ void MapObservers(std::map<int, int>& map) {
 	}
 }
 
-const char* LocalizeObserverMode(ObserverMode observerMode) {
+const char* LocalizeObserverMode(ObserverMode observerMode)
+{
 	switch (observerMode) {
 	case ObserverMode::OBS_MODE_NONE:
 		return xorstr_("None");
@@ -52,7 +54,8 @@ const char* LocalizeObserverMode(ObserverMode observerMode) {
 	}
 }
 
-void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
+void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
+{
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
@@ -60,7 +63,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 	MapObservers(map);
 
 	CBaseEntity* currentTarget;
-	auto		 localPlayer = GameCache::GetLocalPlayer();
+	auto localPlayer = GameCache::GetLocalPlayer();
 
 	if (localPlayer) {
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
@@ -75,11 +78,11 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 
 	int playerTarget = -1;
 
-	if(!currentTarget)
+	if (!currentTarget)
 		playerTarget = Utils::GetEntityId(currentTarget);
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-	float  offset	   = 0;
+	float offset = 0;
 
 	for (auto entry : map) {
 		PlayerInfo first {};
@@ -89,7 +92,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 		Interfaces::engine->GetPlayerInfo(entry.second, &second);
 
 		CBaseEntity* otherEntity = Interfaces::entityList->GetClientEntity(entry.first);
-		if(!otherEntity)
+		if (!otherEntity)
 			continue;
 
 		ObserverMode observerMode = *reinterpret_cast<CBasePlayer*>(otherEntity)->ObserverMode();
@@ -106,6 +109,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 	}
 }
 
-void Features::Legit::SpectatorList::SetupGUI() {
+void Features::Legit::SpectatorList::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }
