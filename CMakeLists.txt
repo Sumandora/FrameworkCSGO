@@ -39,8 +39,8 @@ list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/
 target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_definitions(Framework_Example PUBLIC IM_ASSERT\(x\))
-    target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
+	target_compile_definitions(Framework_Example PUBLIC IM_ASSERT\(x\))
+	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
 endif()
 
 # Setup xorstr

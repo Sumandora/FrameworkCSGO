@@ -27,7 +27,7 @@ if [ -z "$MAKEOPTS" ]; then
 	
 	MAKE_CONF=/etc/portage/make.conf
 	if test -f "$MAKE_CONF"; then
-	    source $MAKE_CONF
+		source $MAKE_CONF
 	fi
 fi
 

@@ -19,9 +19,9 @@ namespace VirtualMethod {
 	}
 }
 
-#define VIRTUAL_METHOD(index, name, returnType, argsType, argsCall) \
-	returnType name argsType {                                      \
-		return VirtualMethod::invoke<returnType, index> argsCall;   \
+#define VIRTUAL_METHOD(index, name, returnType, argsType, argsCall)	\
+	returnType name argsType {										\
+		return VirtualMethod::invoke<returnType, index> argsCall;	\
 	}
 
 #endif

@@ -5,8 +5,8 @@
 #include "../SDK/GameClass/CMoveData.hpp"
 
 namespace Utils {
-    bool StartPrediction(CUserCmd* cmd, CMoveData& moveData);
-    void EndPrediction();
+	bool StartPrediction(CUserCmd* cmd, CMoveData& moveData);
+	void EndPrediction();
 }
 
 #endif
