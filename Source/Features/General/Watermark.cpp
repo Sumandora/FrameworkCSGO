@@ -21,5 +21,5 @@ void Features::General::Watermark::ImGuiRender(ImDrawList* drawList) {
 }
 
 void Features::General::Watermark::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##GeneralWatermark"), &enabled);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }

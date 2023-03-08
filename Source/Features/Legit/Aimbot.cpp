@@ -96,8 +96,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 }
 
 void Features::Legit::Aimbot::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##LegitAimbot"), &enabled);
-	ImGui::SliderFloat(xorstr_("FOV##LegitAimbot"), &fov, 0.0f, 10.0f, "%.2f");
-	ImGui::SliderFloat(xorstr_("Smoothness##LegitAimbot"), &smoothness, 1.0f, 5.0f, "%.2f");
-	ImGui::SliderInt(xorstr_("Clamp##LegitAimbot"), &clamp, 1, 5);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%.2f");
+	ImGui::SliderInt(xorstr_("Clamp"), &clamp, 1, 5);
 }

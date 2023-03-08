@@ -51,9 +51,9 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd) {
 }
 
 void Features::Semirage::RecoilAssistance::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##SemirageRecoilAssistance"), &enabled);
-	ImGui::SliderFloat(xorstr_("Horizontal adjustment##SemirageRecoilAssistance"), &horizontalAdjustment, 0.0f, 1.0f);
-	ImGui::SliderFloat(xorstr_("Vertical adjustment##SemirageRecoilAssistance"), &verticalAdjustment, 0.0f, 1.0f);
-	ImGui::Checkbox(xorstr_("Silent##SemirageRecoilAssistance"), &silent);
-	ImGui::SliderInt(xorstr_("Min shots##SemirageRecoilAssistance"), &minShots, 0, 10);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::SliderFloat(xorstr_("Horizontal adjustment"), &horizontalAdjustment, 0.0f, 1.0f);
+	ImGui::SliderFloat(xorstr_("Vertical adjustment"), &verticalAdjustment, 0.0f, 1.0f);
+	ImGui::Checkbox(xorstr_("Silent"), &silent);
+	ImGui::SliderInt(xorstr_("Min shots"), &minShots, 0, 10);
 }

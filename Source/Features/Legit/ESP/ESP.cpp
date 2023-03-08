@@ -22,7 +22,7 @@
 
 bool 				Features::Legit::Esp::enabled			= false;
 int 				Features::Legit::Esp::onKey				= 0;
-int 				Features::Legit::Esp::drawDistance		= 1024 * 32;
+int 				Features::Legit::Esp::drawDistance		= 1024 * 8;
 PlayerSettings		Features::Legit::Esp::players			{};
 WeaponSettings		Features::Legit::Esp::weapons			{};
 BoxNameSetting		Features::Legit::Esp::projectiles		{};
@@ -286,10 +286,10 @@ void ShowPlayerSettings(const char* tag, PlayerSettings& playerSettings) {
 }
 
 void Features::Legit::Esp::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##LegitESP"), &enabled);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SameLine();
-	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 64);
-	ImGui::InputSelector(xorstr_("Hold key (%s)##LegitESP"), onKey);
+	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 16);
+	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
 
 	if (ImGui::BeginTabBar(xorstr_("#Config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Players"))) {

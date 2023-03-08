@@ -41,6 +41,6 @@ void Features::Movement::HighJump::CreateMove(CUserCmd* cmd) {
 }
 
 void Features::Movement::HighJump::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##MovementHighJump"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)##MovementHighJump"), input);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
