@@ -4,7 +4,7 @@
 #include "imgui.h"
 
 #define TABBAR(name, constructor)			\
-    if (ImGui::BeginTabBar(name)) {			\
+	if (ImGui::BeginTabBar(name)) {			\
 		ImGui::PushID(name);				\
 		constructor();						\
 		ImGui::PopID();						\
@@ -12,7 +12,7 @@
 	}
 
 #define TABITEM(name, item)					\
-    if (ImGui::BeginTabItem(name)) {		\
+	if (ImGui::BeginTabItem(name)) {		\
 		ImGui::PushID(name);				\
 		item();								\
 		ImGui::PopID();						\

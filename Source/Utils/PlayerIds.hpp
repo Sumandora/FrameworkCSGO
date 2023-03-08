@@ -4,7 +4,7 @@
 #include "../SDK/GameClass/CBaseEntity.hpp"
 
 namespace Utils {
-    int GetEntityId(CBaseEntity* entity);
+	int GetEntityId(CBaseEntity* entity);
 }
 
 #endif

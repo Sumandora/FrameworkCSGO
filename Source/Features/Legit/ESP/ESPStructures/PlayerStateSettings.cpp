@@ -45,9 +45,9 @@ void PlayerStateSettings::SetupGUI(const char* tag) {
 		ImGui::EndPopup();
 	}
 
-    boxName.SetupGUI(tag);
-    healthbar.SetupGUI(xorstr_("Healthbar"));
-    weapon.SetupGUI(xorstr_("Weapon"));
-    flashDuration.SetupGUI(xorstr_("Flash duration"));
+	boxName.SetupGUI(tag);
+	healthbar.SetupGUI(xorstr_("Healthbar"));
+	weapon.SetupGUI(xorstr_("Weapon"));
+	flashDuration.SetupGUI(xorstr_("Flash duration"));
 	ImGui::PopID();
 }

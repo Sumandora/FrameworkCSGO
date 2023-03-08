@@ -5,13 +5,13 @@
 
 class ConVar {
 public:
-    VIRTUAL_METHOD(15, GetFloat, float, (), (this))
-    VIRTUAL_METHOD(16, GetInt, int, (), (this))
-    // Setting convars is discouraged
+	VIRTUAL_METHOD(15, GetFloat, float, (), (this))
+	VIRTUAL_METHOD(16, GetInt, int, (), (this))
+	// Setting convars is discouraged
 
-    inline bool GetBool() {
-        return GetInt();
-    }
+	inline bool GetBool() {
+		return GetInt();
+	}
 };
 
 #endif

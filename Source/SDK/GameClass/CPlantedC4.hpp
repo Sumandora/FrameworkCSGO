@@ -11,7 +11,7 @@
 class CPlantedC4 : public CBaseEntity {
 public:
 	NETVAR_FUNCTION(float, BombTime, xorstr_("DT_PlantedC4"), xorstr_("m_flC4Blow"))
-    //TODO
+	//TODO
 };
 
 #endif

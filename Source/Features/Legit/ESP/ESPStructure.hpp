@@ -19,8 +19,8 @@ public:
 	bool	fill = false;
 	ImColor	fillColor = ImGuiColors::white;
 
-    void Draw(ImDrawList* drawList, ImVec4 rectangle);
-    void SetupGUI(const char* id);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle);
+	void SetupGUI(const char* id);
 };
 
 class HealthbarSettings {
@@ -36,8 +36,8 @@ public:
 	ImColor	outlineColor = ImGuiColors::black;
 	float	outlineThickness = 1.0f;
 
-    void Draw(ImDrawList* drawList, ImVec4 rectangle, float health);
-    void SetupGUI(const char* id);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, float health);
+	void SetupGUI(const char* id);
 };
 
 class TextSetting {
@@ -48,8 +48,8 @@ public:
 	bool	shadow = false;
 	ImColor	shadowColor = ImGuiColors::black;
 
-    void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height);
-    void SetupGUI(const char* id);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height);
+	void SetupGUI(const char* id);
 };
 
 class BoxNameSetting {
@@ -57,36 +57,36 @@ public:
 	BoxSettings	box{};
 	TextSetting	nametag{};
 
-    void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text);
-    void SetupGUI(const char* id);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text);
+	void SetupGUI(const char* id);
 };
 
 class PlayerStateSettings {
 public:
-    BoxNameSetting      boxName{};
+	BoxNameSetting	  boxName{};
 	HealthbarSettings	healthbar{};
 	TextSetting			weapon{};
 	TextSetting			flashDuration{};
 
-    void SetupGUI(const char* id);
+	void SetupGUI(const char* id);
 };
 
 class WeaponSettings {
 public:
-    BoxNameSetting  boxName{};
-	TextSetting     ammo{};
+	BoxNameSetting  boxName{};
+	TextSetting	 ammo{};
 
-    void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon);
-    void SetupGUI(const char* id);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon);
+	void SetupGUI(const char* id);
 };
 
 class PlantedC4Settings {
 public:
-    BoxNameSetting  boxName{};
-	TextSetting     timer{};
+	BoxNameSetting  boxName{};
+	TextSetting	 timer{};
 
-    void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb);
-    void SetupGUI(const char* id);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb);
+	void SetupGUI(const char* id);
 };
 
 #endif

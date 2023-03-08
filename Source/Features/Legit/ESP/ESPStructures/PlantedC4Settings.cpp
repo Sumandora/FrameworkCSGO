@@ -11,7 +11,7 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4*
 
 void PlantedC4Settings::SetupGUI(const char* tag) {
 	ImGui::PushID(tag);
-    boxName.SetupGUI(tag);
-    timer.SetupGUI(xorstr_("Timer"));
+	boxName.SetupGUI(tag);
+	timer.SetupGUI(xorstr_("Timer"));
 	ImGui::PopID();
 }
