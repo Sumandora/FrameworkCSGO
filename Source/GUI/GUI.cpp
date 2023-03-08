@@ -5,30 +5,20 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "ImGuiMacros.hpp"
+
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
-
 
 #include "../Hooks/SDL/SDLHook.hpp"
 
 #include "../Features/General/Watermark.hpp"
-#include "../Features/General/EnginePrediction.hpp"
 #include "../Features/General/EventLog.hpp"
 
-#include "../Features/Legit/Aimbot.hpp"
 #include "../Features/Legit/ESP/ESP.hpp"
 #include "../Features/Legit/SpectatorList.hpp"
-#include "../Features/Legit/Triggerbot.hpp"
 
-#include "../Features/Semirage/Aimbot.hpp"
-#include "../Features/Semirage/RecoilAssistance.hpp"
-#include "../Features/Semirage/Backtrack.hpp"
-
-#include "../Features/Movement/Bhop.hpp"
-#include "../Features/Movement/HighJump.hpp"
-
-#include "../Netvars.hpp"
-#include "../Interfaces.hpp"
+#include "Construction/Settings.hpp"
 
 bool Gui::visible = false;
 
@@ -50,19 +40,20 @@ void Gui::Destroy() {
 }
 
 void Gui::SwapWindow(SDL_Window* window) {
-	// This hack is also used by Osiris, because of the 'static' keyword it is only executed once
-	[[maybe_unused]] static const auto _1 = ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
-	[[maybe_unused]] static const auto _2 = ImGui_ImplOpenGL3_Init();
+	static std::once_flag init;
+	std::call_once(init, [&]() {
+		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
+		ImGui_ImplOpenGL3_Init();
+	});
 
 	ImGuiIO& io				= ImGui::GetIO();
 	io.SetPlatformImeDataFn = nullptr;
 
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
-	io.DisplaySize = ImVec2((float)w, (float)h);
 
-	io.MousePos.x = std::clamp(io.MousePos.x, 0.0f, (float)w);
-	io.MousePos.y = std::clamp(io.MousePos.y, 0.0f, (float)h);
+	io.DisplaySize	= ImVec2((float)w, (float)h);
+	io.MousePos		= ImVec2(std::clamp(io.MousePos.x, 0.0f, (float)w), std::clamp(io.MousePos.y, 0.0f, (float)h));
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
@@ -73,105 +64,8 @@ void Gui::SwapWindow(SDL_Window* window) {
 
 		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
 
-		if (ImGui::BeginTabBar(xorstr_("#Settings"), ImGuiTabBarFlags_Reorderable)) {
-			if (ImGui::BeginTabItem(xorstr_("General"))) {
-				if (ImGui::BeginTabBar(xorstr_("#General Settings"), ImGuiTabBarFlags_Reorderable)) {
-					if (ImGui::BeginTabItem(xorstr_("Watermark"))) {
-						Features::General::Watermark::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Engine prediction"))) {
-						Features::General::EnginePrediction::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Event log"))) {
-						Features::General::EventLog::SetupGUI();
-						ImGui::EndTabItem();
-					}
-
-					ImGui::EndTabBar();
-				}
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::BeginTabItem(xorstr_("Legit"))) {
-				if (ImGui::BeginTabBar(xorstr_("#Legit Settings"), ImGuiTabBarFlags_Reorderable)) {
-					if (ImGui::BeginTabItem(xorstr_("Aimbot"))) {
-						Features::Legit::Aimbot::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("ESP"))) {
-						Features::Legit::Esp::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Triggerbot"))) {
-						Features::Legit::Triggerbot::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Spectator List"))) {
-						Features::Legit::SpectatorList::SetupGUI();
-						ImGui::EndTabItem();
-					}
-
-					ImGui::EndTabBar();
-				}
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::BeginTabItem(xorstr_("Semirage"))) {
-				if (ImGui::BeginTabBar(xorstr_("#Semirage Settings"), ImGuiTabBarFlags_Reorderable)) {
-					if (ImGui::BeginTabItem(xorstr_("Aimbot"))) {
-						Features::Semirage::Aimbot::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Recoil assistance"))) {
-						Features::Semirage::RecoilAssistance::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Backtrack"))) {
-						Features::Semirage::Backtrack::SetupGUI();
-						ImGui::EndTabItem();
-					}
-
-					ImGui::EndTabBar();
-				}
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::BeginTabItem(xorstr_("Movement"))) {
-				if (ImGui::BeginTabBar(xorstr_("#Movement Settings"), ImGuiTabBarFlags_Reorderable)) {
-					if (ImGui::BeginTabItem(xorstr_("Bhop"))) {
-						Features::Movement::Bhop::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("HighJump"))) {
-						Features::Movement::HighJump::SetupGUI();
-						ImGui::EndTabItem();
-					}
-
-					ImGui::EndTabBar();
-				}
-				ImGui::EndTabItem();
-			}
-
-			if (ImGui::BeginTabItem(xorstr_("Debug"))) {
-				if (ImGui::BeginTabBar(xorstr_("#Debug Settings"), ImGuiTabBarFlags_Reorderable)) {
-					if (ImGui::BeginTabItem(xorstr_("Netvars"))) {
-						Netvars::SetupGUI();
-						ImGui::EndTabItem();
-					}
-					if (ImGui::BeginTabItem(xorstr_("Interfaces"))) {
-						Interfaces::SetupGUI();
-						ImGui::EndTabItem();
-					}
-
-					ImGui::EndTabBar();
-				}
-				ImGui::EndTabItem();
-			}
-
-			ImGui::EndTabBar();
-		}
+		Construction::SetupConstruction();
+		
 		ImGui::End();
 	}
 

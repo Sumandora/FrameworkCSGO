@@ -55,6 +55,6 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd) {
 }
 
 void Features::Legit::Triggerbot::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##LegitTriggerbot"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)##LegitTriggerbot"), input);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }

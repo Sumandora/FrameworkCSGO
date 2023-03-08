@@ -107,5 +107,5 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList) {
 }
 
 void Features::Legit::SpectatorList::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##LegitSpectatorList"), &enabled);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }

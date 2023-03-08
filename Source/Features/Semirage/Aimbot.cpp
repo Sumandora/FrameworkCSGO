@@ -111,14 +111,14 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd) {
 }
 
 void Features::Semirage::Aimbot::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##SemirageAimbot"), &enabled);
-	ImGui::Checkbox(xorstr_("Only when shooting##SemirageAimbot"), &onlyWhenShooting);
-	ImGui::SliderFloat(xorstr_("FOV##SemirageAimbot"), &fov, 0.0f, 10.0f, "%.2f");
-	ImGui::SliderFloat(xorstr_("Aim speed##SemirageAimbot"), &aimSpeed, 0.0f, 1.0f, "%.2f");
-	ImGui::Checkbox(xorstr_("Silent##SemirageAimbot"), &silent);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Aim speed"), &aimSpeed, 0.0f, 1.0f, "%.2f");
+	ImGui::Checkbox(xorstr_("Silent"), &silent);
 	if (silent) {
-		ImGui::SliderFloat(xorstr_("Snapback##SemirageAimbot"), &snapBack, 0.0f, 1.0f, "%.2f");
+		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, "%.2f");
 		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip("%s", xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
+			ImGui::SetTooltip(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
 	}
 }

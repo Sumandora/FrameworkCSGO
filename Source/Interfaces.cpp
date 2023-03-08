@@ -1,5 +1,7 @@
 #include "Interfaces.hpp"
 
+#include "PatternScan/PatternScan.hpp"
+
 #include <cstring>
 #include <dlfcn.h>
 #include <link.h>
@@ -151,7 +153,7 @@ void Interfaces::SetupGUI() {
 								value2.realAddress = reinterpret_cast<void*(*)()>(value2.reg->m_CreateFn)();
 							}
 							if (ImGui::IsItemHovered())
-								ImGui::SetTooltip("%s", xorstr_("Warning: This is considered unsafe"));
+								ImGui::SetTooltip(xorstr_("Warning: This is considered unsafe"));
 						}
 
 						ImGui::TreePop();

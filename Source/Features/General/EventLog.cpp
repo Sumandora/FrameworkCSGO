@@ -62,11 +62,11 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList) {
 }
 
 void Features::General::EventLog::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##GeneralEventLog"), &enabled);
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	if(!enabled) {
         ImGui::Text(xorstr_("Warning: Certain features may use the event log as communication"));
     }
-	ImGui::SliderInt(xorstr_("Duration##GeneralEventLog"), &duration, 0, 10000);
+	ImGui::SliderInt(xorstr_("Duration"), &duration, 0, 10000);
 }
 
 void Features::General::EventLog::CreateReport(const char* fmt, ...) {

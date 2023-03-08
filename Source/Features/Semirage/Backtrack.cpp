@@ -111,6 +111,6 @@ void Features::Semirage::Backtrack::FrameStageNotify() {
 }
 
 void Features::Semirage::Backtrack::SetupGUI() {
-	ImGui::Checkbox(xorstr_("Enabled##SemirageBacktrack"), &enabled);
-	ImGui::SliderFloat(xorstr_("Time delta##SemirageBacktrack"), &timeDelta, 0.0f, 0.2f, "%.2f");
+	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::SliderFloat(xorstr_("Time delta"), &timeDelta, 0.0f, 0.2f, "%.2f");
 }

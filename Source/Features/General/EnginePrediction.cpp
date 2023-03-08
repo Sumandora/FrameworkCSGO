@@ -23,7 +23,7 @@ void Features::General::EnginePrediction::EndPrediction() {
 }
 
 void Features::General::EnginePrediction::SetupGUI() {
-    ImGui::Checkbox(xorstr_("Enabled##GeneralEnginePrediction"), &enabled);
+    ImGui::Checkbox(xorstr_("Enabled"), &enabled);
     if(!enabled) {
         ImGui::Text(xorstr_("Warning: Disabling engine prediction may result in massive accuracy loss"));
     }
