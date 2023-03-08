@@ -6,7 +6,7 @@
 namespace Features::Legit::Triggerbot {
 	// Settings
 	extern bool enabled;
-	extern int	input;
+	extern int input;
 
 	void CreateMove(CUserCmd* cmd);
 

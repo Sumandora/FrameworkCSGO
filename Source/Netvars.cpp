@@ -5,8 +5,8 @@
 #include <map>
 #include <vector>
 
-#include "Interfaces.hpp"
 #include "imgui.h"
+#include "Interfaces.hpp"
 #include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
@@ -19,7 +19,8 @@
 
 std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars;
 
-void ReadTable(ClientClass* clientClass, RecvTable* recvTable) {
+void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
+{
 	for (int i = 0; i < recvTable->m_nProps; i++) {
 		RecvProp* prop = &recvTable->m_pProps[i];
 		if (!prop)
@@ -32,7 +33,7 @@ void ReadTable(ClientClass* clientClass, RecvTable* recvTable) {
 
 		if (!netvars[clientClass].contains(recvTable))
 			netvars[clientClass][recvTable] = {};
-		
+
 		netvars[clientClass][recvTable].push_back(prop);
 
 		if (prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
@@ -40,7 +41,8 @@ void ReadTable(ClientClass* clientClass, RecvTable* recvTable) {
 	}
 }
 
-void Netvars::DumpNetvars() {
+void Netvars::DumpNetvars()
+{
 	/**
 	 * GetAllClasses assembly:
 	 *	lea	0x23c9fc1(%rip),%rax		# 0x7f44ff24df08
@@ -51,9 +53,9 @@ void Netvars::DumpNetvars() {
 	 * 	ret
 	 */
 
-	void*		 getAllClasses	 = Utils::GetVTable(Interfaces::baseClient)[8];
-	char*		 relativeAddress = static_cast<char*>(getAllClasses) + 3;
-	ClientClass* rootClass		 = *reinterpret_cast<ClientClass**>(Memory::RelativeToAbsolute(relativeAddress));
+	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
+	char* relativeAddress = static_cast<char*>(getAllClasses) + 3;
+	ClientClass* rootClass = *reinterpret_cast<ClientClass**>(Memory::RelativeToAbsolute(relativeAddress));
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
@@ -61,11 +63,12 @@ void Netvars::DumpNetvars() {
 	}
 }
 
-int Netvars::GetOffset(const char* table, const char* name) {
+int Netvars::GetOffset(const char* table, const char* name)
+{
 	for (const auto& [key, value] : netvars) {
 		for (const auto& [key2, value2] : value) {
-			if(strcmp(key2->m_pNetTableName, table) == 0)
-				for(const auto& variable : value2) {
+			if (strcmp(key2->m_pNetTableName, table) == 0)
+				for (const auto& variable : value2) {
 					if (strcmp(name, variable->m_pVarName) == 0)
 						return variable->m_Offset;
 				}
@@ -76,11 +79,12 @@ int Netvars::GetOffset(const char* table, const char* name) {
 	return 0;
 }
 
-void Netvars::SetupGUI() {
+void Netvars::SetupGUI()
+{
 	for (const auto& [clientClass, table] : netvars) {
 		if (ImGui::TreeNode(clientClass->m_pNetworkName)) {
 			ImGui::Text(xorstr_("Class Id: %d"), clientClass->m_ClassID);
-			for(const auto& [table, variables] : table) {
+			for (const auto& [table, variables] : table) {
 				if (ImGui::TreeNode(table->m_pNetTableName)) {
 					ImGui::Text(xorstr_("Main list: %d"), table->m_bInMainList);
 					for (const auto& variable : variables) {

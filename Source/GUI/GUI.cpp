@@ -12,8 +12,8 @@
 
 #include "../Hooks/SDL/SDLHook.hpp"
 
-#include "../Features/General/Watermark.hpp"
 #include "../Features/General/EventLog.hpp"
+#include "../Features/General/Watermark.hpp"
 
 #include "../Features/Legit/ESP/ESP.hpp"
 #include "../Features/Legit/SpectatorList.hpp"
@@ -22,7 +22,8 @@
 
 bool Gui::visible = false;
 
-void Gui::Create() {
+void Gui::Create()
+{
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -33,27 +34,29 @@ void Gui::Create() {
 	io.LogFilename = nullptr;
 }
 
-void Gui::Destroy() {
+void Gui::Destroy()
+{
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 }
 
-void Gui::SwapWindow(SDL_Window* window) {
+void Gui::SwapWindow(SDL_Window* window)
+{
 	static std::once_flag init;
 	std::call_once(init, [&]() {
 		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 		ImGui_ImplOpenGL3_Init();
 	});
 
-	ImGuiIO& io				= ImGui::GetIO();
+	ImGuiIO& io = ImGui::GetIO();
 	io.SetPlatformImeDataFn = nullptr;
 
 	int w, h;
 	SDL_GetWindowSize(window, &w, &h);
 
-	io.DisplaySize	= ImVec2((float)w, (float)h);
-	io.MousePos		= ImVec2(std::clamp(io.MousePos.x, 0.0f, (float)w), std::clamp(io.MousePos.y, 0.0f, (float)h));
+	io.DisplaySize = ImVec2((float)w, (float)h);
+	io.MousePos = ImVec2(std::clamp(io.MousePos.x, 0.0f, (float)w), std::clamp(io.MousePos.y, 0.0f, (float)h));
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
@@ -65,7 +68,7 @@ void Gui::SwapWindow(SDL_Window* window) {
 		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
 
 		Construction::SetupConstruction();
-		
+
 		ImGui::End();
 	}
 
@@ -80,8 +83,8 @@ void Gui::SwapWindow(SDL_Window* window) {
 	Features::Legit::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::Legit::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());
 
-	io.MouseDrawCursor	   = visible;
-	io.WantCaptureMouse	   = visible;
+	io.MouseDrawCursor = visible;
+	io.WantCaptureMouse = visible;
 	io.WantCaptureKeyboard = visible;
 
 	ImGui::Render();
@@ -91,7 +94,8 @@ void Gui::SwapWindow(SDL_Window* window) {
 // I don't even want to know why I have to do this
 unsigned int lastTextInput;
 
-void Gui::PollEvent(SDL_Event* event) {
+void Gui::PollEvent(SDL_Event* event)
+{
 	if (event->type == SDL_TEXTINPUT && lastTextInput >= event->text.timestamp)
 		return;
 
@@ -102,7 +106,7 @@ void Gui::PollEvent(SDL_Event* event) {
 		io.MousePos.y += (float)event->motion.yrel;
 	} else if (event->type == SDL_MOUSEWHEEL) {
 		io.MouseWheelH += (float)event->wheel.x;
-		io.MouseWheel  += (float)event->wheel.y;
+		io.MouseWheel += (float)event->wheel.y;
 	} else
 		ImGui_ImplSDL2_ProcessEvent(event);
 
@@ -116,7 +120,8 @@ void Gui::PollEvent(SDL_Event* event) {
 		event->type = -1; // Change type to an invalid event to make the game ignore it.
 }
 
-bool Gui::WarpMouseInWindow() {
+bool Gui::WarpMouseInWindow()
+{
 	// lol no
 	return visible;
 }

@@ -110,102 +110,291 @@ enum class WeaponID : short {
 };
 
 // I need to make huge functions like this one, because the xorstr lib produces dangling pointers otherwise
-inline constexpr void LocalizeWeaponID(WeaponID weaponID, char weaponName[256]) {
-	switch(weaponID) {
-	case WeaponID::WEAPON_INVALID:				strcpy(weaponName, xorstr_("Invalid weapon")); break;
-	case WeaponID::WEAPON_NONE:					strcpy(weaponName, xorstr_("None")); break;
-	case WeaponID::WEAPON_DEAGLE:				strcpy(weaponName, xorstr_("Desert Eagle")); break;
-	case WeaponID::WEAPON_ELITE:				strcpy(weaponName, xorstr_("Dual Berettas")); break;
-	case WeaponID::WEAPON_FIVESEVEN:			strcpy(weaponName, xorstr_("Five-SeveN")); break;
-	case WeaponID::WEAPON_GLOCK:				strcpy(weaponName, xorstr_("Glock-18")); break;
-	case WeaponID::WEAPON_AK47:					strcpy(weaponName, xorstr_("AK-47")); break;
-	case WeaponID::WEAPON_AUG:					strcpy(weaponName, xorstr_("AUG")); break;
-	case WeaponID::WEAPON_AWP:					strcpy(weaponName, xorstr_("AWP")); break;
-	case WeaponID::WEAPON_FAMAS:				strcpy(weaponName, xorstr_("FAMAS")); break;
-	case WeaponID::WEAPON_G3SG1:				strcpy(weaponName, xorstr_("G3SG1")); break;
-	case WeaponID::WEAPON_GALILAR:				strcpy(weaponName, xorstr_("Galil AR")); break;
-	case WeaponID::WEAPON_M249:					strcpy(weaponName, xorstr_("M249")); break;
-	case WeaponID::WEAPON_M4A1:					strcpy(weaponName, xorstr_("M4A4")); break; // Don't know why the game calls it M4A1 even though the its M4A4
-	case WeaponID::WEAPON_MAC10:				strcpy(weaponName, xorstr_("MAC-10")); break;
-	case WeaponID::WEAPON_P90:					strcpy(weaponName, xorstr_("P90")); break;
-	case WeaponID::WEAPON_ZONE_REPULSOR:		strcpy(weaponName, xorstr_("Zone Repulsor")); break;
-	case WeaponID::WEAPON_MP5SD:				strcpy(weaponName, xorstr_("MP5-SD")); break;
-	case WeaponID::WEAPON_UMP45:				strcpy(weaponName, xorstr_("UMP-45")); break;
-	case WeaponID::WEAPON_XM1014:				strcpy(weaponName, xorstr_("XM1014")); break;
-	case WeaponID::WEAPON_BIZON:				strcpy(weaponName, xorstr_("PP-Bizon")); break;
-	case WeaponID::WEAPON_MAG7:					strcpy(weaponName, xorstr_("MAG-7")); break;
-	case WeaponID::WEAPON_NEGEV:				strcpy(weaponName, xorstr_("Negev")); break;
-	case WeaponID::WEAPON_SAWEDOFF:				strcpy(weaponName, xorstr_("Sawed-Off")); break;
-	case WeaponID::WEAPON_TEC9:					strcpy(weaponName, xorstr_("Tec-9")); break;
-	case WeaponID::WEAPON_TASER:				strcpy(weaponName, xorstr_("Zeus x27")); break;
-	case WeaponID::WEAPON_HKP2000:				strcpy(weaponName, xorstr_("P2000")); break;
-	case WeaponID::WEAPON_MP7:					strcpy(weaponName, xorstr_("MP7")); break;
-	case WeaponID::WEAPON_MP9:					strcpy(weaponName, xorstr_("MP9")); break;
-	case WeaponID::WEAPON_NOVA:					strcpy(weaponName, xorstr_("Nova")); break;
-	case WeaponID::WEAPON_P250:					strcpy(weaponName, xorstr_("P250")); break;
-	case WeaponID::WEAPON_SHIELD:				strcpy(weaponName, xorstr_("Riot Shield")); break;
-	case WeaponID::WEAPON_SCAR20:				strcpy(weaponName, xorstr_("SCAR-20")); break;
-	case WeaponID::WEAPON_SG556:				strcpy(weaponName, xorstr_("SG 553")); break; // I don't know why the game calls it WEAPON_SG556 but its not 556 but 553
-	case WeaponID::WEAPON_SSG08:				strcpy(weaponName, xorstr_("SSG 08")); break;
-	case WeaponID::WEAPON_KNIFEGG:				strcpy(weaponName, xorstr_("Golden Knife")); break;
-	case WeaponID::WEAPON_KNIFE:				strcpy(weaponName, xorstr_("Knife")); break;
-	case WeaponID::WEAPON_FLASHBANG:			strcpy(weaponName, xorstr_("Flashbang")); break;
-	case WeaponID::WEAPON_HEGRENADE:			strcpy(weaponName, xorstr_("High Explosive Grenade")); break;
-	case WeaponID::WEAPON_SMOKEGRENADE:			strcpy(weaponName, xorstr_("Smoke Grenade")); break;
-	case WeaponID::WEAPON_MOLOTOV:				strcpy(weaponName, xorstr_("Molotov")); break;
-	case WeaponID::WEAPON_DECOY:				strcpy(weaponName, xorstr_("Decoy Grenade")); break;
-	case WeaponID::WEAPON_INCGRENADE:			strcpy(weaponName, xorstr_("Incendiary Grenade")); break;
-	case WeaponID::WEAPON_C4:					strcpy(weaponName, xorstr_("C4 Explosive")); break;
-	case WeaponID::WEAPON_HEALTHSHOT:			strcpy(weaponName, xorstr_("Medi-Shot")); break;
-	case WeaponID::WEAPON_KNIFE_T:				strcpy(weaponName, xorstr_("Knife")); break;
-	case WeaponID::WEAPON_M4A1_SILENCER:		strcpy(weaponName, xorstr_("M4A1-S")); break;
-	case WeaponID::WEAPON_USP_SILENCER:			strcpy(weaponName, xorstr_("USP-S")); break;
-	case WeaponID::WEAPON_CZ75A:				strcpy(weaponName, xorstr_("CZ75-Auto")); break;
-	case WeaponID::WEAPON_REVOLVER:				strcpy(weaponName, xorstr_("R8 Revolver")); break;
-	case WeaponID::WEAPON_TAGRENADE:			strcpy(weaponName, xorstr_("Tactical Awareness Grenade")); break;
-	case WeaponID::WEAPON_FISTS:				strcpy(weaponName, xorstr_("Bare Hands")); break;
-	case WeaponID::WEAPON_BREACHCHARGE:			strcpy(weaponName, xorstr_("Breach charge")); break;
-	case WeaponID::WEAPON_TABLET:				strcpy(weaponName, xorstr_("Tablet")); break;
-	case WeaponID::WEAPON_MELEE:				strcpy(weaponName, xorstr_("Knife")); break; // A broken and throwable variant...
-	case WeaponID::WEAPON_AXE:					strcpy(weaponName, xorstr_("Axe")); break;
-	case WeaponID::WEAPON_HAMMER:				strcpy(weaponName, xorstr_("Hammer")); break;
-	case WeaponID::WEAPON_SPANNER:				strcpy(weaponName, xorstr_("Wrench")); break;
-	case WeaponID::WEAPON_KNIFE_GHOST:			strcpy(weaponName, xorstr_("Spectral Shiv")); break; // Shoutout to whatever valve employee is responsible for this one, it's awesome
-	case WeaponID::WEAPON_FIREBOMB:				strcpy(weaponName, xorstr_("Fire Bomb")); break; // Literally the same as a molotov?
-	case WeaponID::WEAPON_DIVERSION:			strcpy(weaponName, xorstr_("Diversion")); break; // Decoy, but footsteps instead of gunshots? (lmao thats cool, why don't we have that in comp)
-	case WeaponID::WEAPON_FRAG_GRENADE:			strcpy(weaponName, xorstr_("Frag Grenade")); break;
-	case WeaponID::WEAPON_SNOWBALL:				strcpy(weaponName, xorstr_("Snowball")); break;
-	case WeaponID::WEAPON_BUMPMINE:				strcpy(weaponName, xorstr_("Bump Mine")); break;
-	case WeaponID::WEAPON_BAYONET:				strcpy(weaponName, xorstr_("Bayonet")); break;
-	case WeaponID::WEAPON_KNIFE_CSS:			strcpy(weaponName, xorstr_("Classic Knife")); break;
-	case WeaponID::WEAPON_KNIFE_FLIP:			strcpy(weaponName, xorstr_("Flip Knife")); break;
-	case WeaponID::WEAPON_KNIFE_GUT:			strcpy(weaponName, xorstr_("Gut Knife")); break;
-	case WeaponID::WEAPON_KNIFE_KARAMBIT:		strcpy(weaponName, xorstr_("Karambit")); break;
-	case WeaponID::WEAPON_KNIFE_M9_BAYONET:		strcpy(weaponName, xorstr_("M9 Bayonet")); break;
-	case WeaponID::WEAPON_KNIFE_TACTICAL:		strcpy(weaponName, xorstr_("Huntsman Knife")); break;
-	case WeaponID::WEAPON_KNIFE_FALCHION:		strcpy(weaponName, xorstr_("Falchion Knife")); break;
-	case WeaponID::WEAPON_KNIFE_SURVIVAL_BOWIE: strcpy(weaponName, xorstr_("Bowie Knife")); break;
-	case WeaponID::WEAPON_KNIFE_BUTTERFLY:		strcpy(weaponName, xorstr_("Butterfly Knife")); break;
-	case WeaponID::WEAPON_KNIFE_PUSH:			strcpy(weaponName, xorstr_("Shadow daggers")); break;
-	case WeaponID::WEAPON_KNIFE_CORD:			strcpy(weaponName, xorstr_("Paracord Knife")); break;
-	case WeaponID::WEAPON_KNIFE_CANIS:			strcpy(weaponName, xorstr_("Survival Knife")); break;
-	case WeaponID::WEAPON_KNIFE_URSUS:			strcpy(weaponName, xorstr_("Ursus Knife")); break;
-	case WeaponID::WEAPON_KNIFE_GYPSY_JACKKNIFE:strcpy(weaponName, xorstr_("Navaja Knife")); break;
-	case WeaponID::WEAPON_KNIFE_OUTDOOR:		strcpy(weaponName, xorstr_("Nomad Knife")); break;
-	case WeaponID::WEAPON_KNIFE_STILETTO:		strcpy(weaponName, xorstr_("Stiletto Knife")); break;
-	case WeaponID::WEAPON_KNIFE_WIDOWMAKER:		strcpy(weaponName, xorstr_("Talon Knife")); break;
-	case WeaponID::WEAPON_KNIFE_SKELETON:		strcpy(weaponName, xorstr_("Skeleton Knife")); break;
-	case WeaponID::STUDDED_BROKENFANG_GLOVES:	strcpy(weaponName, xorstr_("Broken Fang Gloves")); break;
-	case WeaponID::STUDDED_BLOODHOUND_GLOVES:	strcpy(weaponName, xorstr_("Bloodhound Gloves")); break;
-	case WeaponID::T_GLOVES:					strcpy(weaponName, xorstr_("T Gloves")); break;
-	case WeaponID::CT_GLOVES:					strcpy(weaponName, xorstr_("CT Gloves")); break;
-	case WeaponID::SPORTY_GLOVES:				strcpy(weaponName, xorstr_("Sport Gloves")); break;
-	case WeaponID::SLICK_GLOVES:				strcpy(weaponName, xorstr_("Slick Gloves")); break; // Seem to be unused content (or go by different name)
-	case WeaponID::LEATHER_HANDWRAPS:			strcpy(weaponName, xorstr_("Hand Wraps")); break;
-	case WeaponID::MOTORCYCLE_GLOVES:			strcpy(weaponName, xorstr_("Motorcycle Gloves")); break; // Seem to be unused content (or go by different name)
-	case WeaponID::SPECIALIST_GLOVES:			strcpy(weaponName, xorstr_("Specialist Gloves")); break;
-	case WeaponID::STUDDED_HYDRA_GLOVES:		strcpy(weaponName, xorstr_("Hydra Gloves")); break;
-	default:									strcpy(weaponName, xorstr_("Invalid weapon ID")); break;
+inline constexpr void LocalizeWeaponID(WeaponID weaponID, char weaponName[256])
+{
+	switch (weaponID) {
+	case WeaponID::WEAPON_INVALID:
+		strcpy(weaponName, xorstr_("Invalid weapon"));
+		break;
+	case WeaponID::WEAPON_NONE:
+		strcpy(weaponName, xorstr_("None"));
+		break;
+	case WeaponID::WEAPON_DEAGLE:
+		strcpy(weaponName, xorstr_("Desert Eagle"));
+		break;
+	case WeaponID::WEAPON_ELITE:
+		strcpy(weaponName, xorstr_("Dual Berettas"));
+		break;
+	case WeaponID::WEAPON_FIVESEVEN:
+		strcpy(weaponName, xorstr_("Five-SeveN"));
+		break;
+	case WeaponID::WEAPON_GLOCK:
+		strcpy(weaponName, xorstr_("Glock-18"));
+		break;
+	case WeaponID::WEAPON_AK47:
+		strcpy(weaponName, xorstr_("AK-47"));
+		break;
+	case WeaponID::WEAPON_AUG:
+		strcpy(weaponName, xorstr_("AUG"));
+		break;
+	case WeaponID::WEAPON_AWP:
+		strcpy(weaponName, xorstr_("AWP"));
+		break;
+	case WeaponID::WEAPON_FAMAS:
+		strcpy(weaponName, xorstr_("FAMAS"));
+		break;
+	case WeaponID::WEAPON_G3SG1:
+		strcpy(weaponName, xorstr_("G3SG1"));
+		break;
+	case WeaponID::WEAPON_GALILAR:
+		strcpy(weaponName, xorstr_("Galil AR"));
+		break;
+	case WeaponID::WEAPON_M249:
+		strcpy(weaponName, xorstr_("M249"));
+		break;
+	case WeaponID::WEAPON_M4A1:
+		strcpy(weaponName, xorstr_("M4A4"));
+		break; // Don't know why the game calls it M4A1 even though the its M4A4
+	case WeaponID::WEAPON_MAC10:
+		strcpy(weaponName, xorstr_("MAC-10"));
+		break;
+	case WeaponID::WEAPON_P90:
+		strcpy(weaponName, xorstr_("P90"));
+		break;
+	case WeaponID::WEAPON_ZONE_REPULSOR:
+		strcpy(weaponName, xorstr_("Zone Repulsor"));
+		break;
+	case WeaponID::WEAPON_MP5SD:
+		strcpy(weaponName, xorstr_("MP5-SD"));
+		break;
+	case WeaponID::WEAPON_UMP45:
+		strcpy(weaponName, xorstr_("UMP-45"));
+		break;
+	case WeaponID::WEAPON_XM1014:
+		strcpy(weaponName, xorstr_("XM1014"));
+		break;
+	case WeaponID::WEAPON_BIZON:
+		strcpy(weaponName, xorstr_("PP-Bizon"));
+		break;
+	case WeaponID::WEAPON_MAG7:
+		strcpy(weaponName, xorstr_("MAG-7"));
+		break;
+	case WeaponID::WEAPON_NEGEV:
+		strcpy(weaponName, xorstr_("Negev"));
+		break;
+	case WeaponID::WEAPON_SAWEDOFF:
+		strcpy(weaponName, xorstr_("Sawed-Off"));
+		break;
+	case WeaponID::WEAPON_TEC9:
+		strcpy(weaponName, xorstr_("Tec-9"));
+		break;
+	case WeaponID::WEAPON_TASER:
+		strcpy(weaponName, xorstr_("Zeus x27"));
+		break;
+	case WeaponID::WEAPON_HKP2000:
+		strcpy(weaponName, xorstr_("P2000"));
+		break;
+	case WeaponID::WEAPON_MP7:
+		strcpy(weaponName, xorstr_("MP7"));
+		break;
+	case WeaponID::WEAPON_MP9:
+		strcpy(weaponName, xorstr_("MP9"));
+		break;
+	case WeaponID::WEAPON_NOVA:
+		strcpy(weaponName, xorstr_("Nova"));
+		break;
+	case WeaponID::WEAPON_P250:
+		strcpy(weaponName, xorstr_("P250"));
+		break;
+	case WeaponID::WEAPON_SHIELD:
+		strcpy(weaponName, xorstr_("Riot Shield"));
+		break;
+	case WeaponID::WEAPON_SCAR20:
+		strcpy(weaponName, xorstr_("SCAR-20"));
+		break;
+	case WeaponID::WEAPON_SG556:
+		strcpy(weaponName, xorstr_("SG 553"));
+		break; // I don't know why the game calls it WEAPON_SG556 but its not 556 but 553
+	case WeaponID::WEAPON_SSG08:
+		strcpy(weaponName, xorstr_("SSG 08"));
+		break;
+	case WeaponID::WEAPON_KNIFEGG:
+		strcpy(weaponName, xorstr_("Golden Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE:
+		strcpy(weaponName, xorstr_("Knife"));
+		break;
+	case WeaponID::WEAPON_FLASHBANG:
+		strcpy(weaponName, xorstr_("Flashbang"));
+		break;
+	case WeaponID::WEAPON_HEGRENADE:
+		strcpy(weaponName, xorstr_("High Explosive Grenade"));
+		break;
+	case WeaponID::WEAPON_SMOKEGRENADE:
+		strcpy(weaponName, xorstr_("Smoke Grenade"));
+		break;
+	case WeaponID::WEAPON_MOLOTOV:
+		strcpy(weaponName, xorstr_("Molotov"));
+		break;
+	case WeaponID::WEAPON_DECOY:
+		strcpy(weaponName, xorstr_("Decoy Grenade"));
+		break;
+	case WeaponID::WEAPON_INCGRENADE:
+		strcpy(weaponName, xorstr_("Incendiary Grenade"));
+		break;
+	case WeaponID::WEAPON_C4:
+		strcpy(weaponName, xorstr_("C4 Explosive"));
+		break;
+	case WeaponID::WEAPON_HEALTHSHOT:
+		strcpy(weaponName, xorstr_("Medi-Shot"));
+		break;
+	case WeaponID::WEAPON_KNIFE_T:
+		strcpy(weaponName, xorstr_("Knife"));
+		break;
+	case WeaponID::WEAPON_M4A1_SILENCER:
+		strcpy(weaponName, xorstr_("M4A1-S"));
+		break;
+	case WeaponID::WEAPON_USP_SILENCER:
+		strcpy(weaponName, xorstr_("USP-S"));
+		break;
+	case WeaponID::WEAPON_CZ75A:
+		strcpy(weaponName, xorstr_("CZ75-Auto"));
+		break;
+	case WeaponID::WEAPON_REVOLVER:
+		strcpy(weaponName, xorstr_("R8 Revolver"));
+		break;
+	case WeaponID::WEAPON_TAGRENADE:
+		strcpy(weaponName, xorstr_("Tactical Awareness Grenade"));
+		break;
+	case WeaponID::WEAPON_FISTS:
+		strcpy(weaponName, xorstr_("Bare Hands"));
+		break;
+	case WeaponID::WEAPON_BREACHCHARGE:
+		strcpy(weaponName, xorstr_("Breach charge"));
+		break;
+	case WeaponID::WEAPON_TABLET:
+		strcpy(weaponName, xorstr_("Tablet"));
+		break;
+	case WeaponID::WEAPON_MELEE:
+		strcpy(weaponName, xorstr_("Knife"));
+		break; // A broken and throwable variant...
+	case WeaponID::WEAPON_AXE:
+		strcpy(weaponName, xorstr_("Axe"));
+		break;
+	case WeaponID::WEAPON_HAMMER:
+		strcpy(weaponName, xorstr_("Hammer"));
+		break;
+	case WeaponID::WEAPON_SPANNER:
+		strcpy(weaponName, xorstr_("Wrench"));
+		break;
+	case WeaponID::WEAPON_KNIFE_GHOST:
+		strcpy(weaponName, xorstr_("Spectral Shiv"));
+		break; // Shoutout to whatever valve employee is responsible for this one, it's awesome
+	case WeaponID::WEAPON_FIREBOMB:
+		strcpy(weaponName, xorstr_("Fire Bomb"));
+		break; // Literally the same as a molotov?
+	case WeaponID::WEAPON_DIVERSION:
+		strcpy(weaponName, xorstr_("Diversion"));
+		break; // Decoy, but footsteps instead of gunshots? (lmao thats cool, why don't we have that in comp)
+	case WeaponID::WEAPON_FRAG_GRENADE:
+		strcpy(weaponName, xorstr_("Frag Grenade"));
+		break;
+	case WeaponID::WEAPON_SNOWBALL:
+		strcpy(weaponName, xorstr_("Snowball"));
+		break;
+	case WeaponID::WEAPON_BUMPMINE:
+		strcpy(weaponName, xorstr_("Bump Mine"));
+		break;
+	case WeaponID::WEAPON_BAYONET:
+		strcpy(weaponName, xorstr_("Bayonet"));
+		break;
+	case WeaponID::WEAPON_KNIFE_CSS:
+		strcpy(weaponName, xorstr_("Classic Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_FLIP:
+		strcpy(weaponName, xorstr_("Flip Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_GUT:
+		strcpy(weaponName, xorstr_("Gut Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_KARAMBIT:
+		strcpy(weaponName, xorstr_("Karambit"));
+		break;
+	case WeaponID::WEAPON_KNIFE_M9_BAYONET:
+		strcpy(weaponName, xorstr_("M9 Bayonet"));
+		break;
+	case WeaponID::WEAPON_KNIFE_TACTICAL:
+		strcpy(weaponName, xorstr_("Huntsman Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_FALCHION:
+		strcpy(weaponName, xorstr_("Falchion Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_SURVIVAL_BOWIE:
+		strcpy(weaponName, xorstr_("Bowie Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_BUTTERFLY:
+		strcpy(weaponName, xorstr_("Butterfly Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_PUSH:
+		strcpy(weaponName, xorstr_("Shadow daggers"));
+		break;
+	case WeaponID::WEAPON_KNIFE_CORD:
+		strcpy(weaponName, xorstr_("Paracord Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_CANIS:
+		strcpy(weaponName, xorstr_("Survival Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_URSUS:
+		strcpy(weaponName, xorstr_("Ursus Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_GYPSY_JACKKNIFE:
+		strcpy(weaponName, xorstr_("Navaja Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_OUTDOOR:
+		strcpy(weaponName, xorstr_("Nomad Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_STILETTO:
+		strcpy(weaponName, xorstr_("Stiletto Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_WIDOWMAKER:
+		strcpy(weaponName, xorstr_("Talon Knife"));
+		break;
+	case WeaponID::WEAPON_KNIFE_SKELETON:
+		strcpy(weaponName, xorstr_("Skeleton Knife"));
+		break;
+	case WeaponID::STUDDED_BROKENFANG_GLOVES:
+		strcpy(weaponName, xorstr_("Broken Fang Gloves"));
+		break;
+	case WeaponID::STUDDED_BLOODHOUND_GLOVES:
+		strcpy(weaponName, xorstr_("Bloodhound Gloves"));
+		break;
+	case WeaponID::T_GLOVES:
+		strcpy(weaponName, xorstr_("T Gloves"));
+		break;
+	case WeaponID::CT_GLOVES:
+		strcpy(weaponName, xorstr_("CT Gloves"));
+		break;
+	case WeaponID::SPORTY_GLOVES:
+		strcpy(weaponName, xorstr_("Sport Gloves"));
+		break;
+	case WeaponID::SLICK_GLOVES:
+		strcpy(weaponName, xorstr_("Slick Gloves"));
+		break; // Seem to be unused content (or go by different name)
+	case WeaponID::LEATHER_HANDWRAPS:
+		strcpy(weaponName, xorstr_("Hand Wraps"));
+		break;
+	case WeaponID::MOTORCYCLE_GLOVES:
+		strcpy(weaponName, xorstr_("Motorcycle Gloves"));
+		break; // Seem to be unused content (or go by different name)
+	case WeaponID::SPECIALIST_GLOVES:
+		strcpy(weaponName, xorstr_("Specialist Gloves"));
+		break;
+	case WeaponID::STUDDED_HYDRA_GLOVES:
+		strcpy(weaponName, xorstr_("Hydra Gloves"));
+		break;
+	default:
+		strcpy(weaponName, xorstr_("Invalid weapon ID"));
+		break;
 	}
 }
 

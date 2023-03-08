@@ -2,8 +2,8 @@
 
 #include "imgui.h"
 
-#include "../../Interfaces.hpp"
 #include "../../ConVarStorage.hpp"
+#include "../../Interfaces.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Utils/Raytrace.hpp"
@@ -12,12 +12,13 @@
 #include <algorithm>
 #include <cmath>
 
-bool  Features::Legit::Aimbot::enabled	  = false;
-float Features::Legit::Aimbot::fov		  = 3.0f;
+bool Features::Legit::Aimbot::enabled = false;
+float Features::Legit::Aimbot::fov = 3.0f;
 float Features::Legit::Aimbot::smoothness = 4.0f;
-int	  Features::Legit::Aimbot::clamp	  = 1;
+int Features::Legit::Aimbot::clamp = 1;
 
-void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
+void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
+{
 	if (!enabled)
 		return;
 
@@ -41,8 +42,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	Interfaces::engine->GetViewAngles(&viewAngles);
 
 	CBasePlayer* target = nullptr;
-	float		 bestDistance;
-	Vector		 bestRotation;
+	float bestDistance;
+	Vector bestRotation;
 
 	CTraceFilterEntity filter(localPlayer);
 
@@ -64,13 +65,13 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 			continue; // The enemy is behind something...
 
 		Vector rotation = Utils::CalculateView(playerEye, head);
-		rotation		-= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
-		rotation		-= viewAngles;
-		rotation		= rotation.Wrap();
+		rotation -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
+		rotation -= viewAngles;
+		rotation = rotation.Wrap();
 
 		float delta = rotation.Length();
 		if (!target || bestDistance > delta) {
-			target		 = player;
+			target = player;
 			bestDistance = delta;
 			bestRotation = rotation;
 		}
@@ -85,7 +86,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	bestRotation /= smoothness;
 
 	Vector before = Vector(event->motion.xrel, event->motion.yrel, 0);
-	Vector goal	  = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
+	Vector goal = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
 
 	float dir = before.Normalized().Dot(goal.Normalized());
 	if (dir < 0)
@@ -95,7 +96,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event) {
 	event->motion.yrel += std::clamp(static_cast<int>(goal.y), -clamp, clamp);
 }
 
-void Features::Legit::Aimbot::SetupGUI() {
+void Features::Legit::Aimbot::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
 	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%.2f");

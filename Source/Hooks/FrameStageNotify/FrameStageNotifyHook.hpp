@@ -6,7 +6,7 @@
 #include "../Hooks.hpp"
 
 namespace Hooks::FrameStageNotify {
-	inline Hook*	 hook;
+	inline Hook* hook;
 	inline Matrix4x4 worldToScreenMatrix;
 
 	void Hook();

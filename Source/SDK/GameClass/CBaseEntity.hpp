@@ -23,8 +23,8 @@ public:
 	NETVAR_FUNCTION(float, SimulationTime, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
 	NETVAR_FUNCTION(int, OwnerEntity, xorstr_("DT_BaseEntity"), xorstr_("m_hOwnerEntity"))
 
-	//https://github.com/danielkrupinski/Osiris/blob/444d7dd9daeb0f46de412dbb524c91dfdedf1723/Source/CSGO/Entity.h#L79
-	// IClientNetworkable
+	// https://github.com/danielkrupinski/Osiris/blob/444d7dd9daeb0f46de412dbb524c91dfdedf1723/Source/CSGO/Entity.h#L79
+	//  IClientNetworkable
 	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
 

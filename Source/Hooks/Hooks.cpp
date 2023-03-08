@@ -11,25 +11,29 @@
 #include "Hooking/Hooking.hpp"
 #include "Memory/Memory.hpp"
 
-void Hooks::InstallHooks() {
+void Hooks::InstallHooks()
+{
 	FrameStageNotify::Hook();
 	CreateMove::Hook();
 	SDL::Hook();
 }
 
-void Hooks::UninstallHooks() {
+void Hooks::UninstallHooks()
+{
 	SDL::Unhook();
 	CreateMove::Unhook();
 	FrameStageNotify::Unhook();
 }
 
-Hook::Hook(void* original, void* hook, int len) {
+Hook::Hook(void* original, void* hook, int len)
+{
 	this->original = original;
-	this->len	   = len;
-	this->proxy	   = Framework::Hooking::detour(original, hook, len);
+	this->len = len;
+	this->proxy = Framework::Hooking::detour(original, hook, len);
 }
 
-Hook::~Hook() {
+Hook::~Hook()
+{
 	Framework::Memory::protect(original, PROT_READ | PROT_WRITE | PROT_EXEC);
 	memcpy(original, proxy, len);
 	Framework::Memory::protect(original, PROT_READ | PROT_EXEC);

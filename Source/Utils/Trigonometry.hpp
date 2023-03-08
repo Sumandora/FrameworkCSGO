@@ -9,8 +9,8 @@
 #define RAD2DEG(rad) ((rad)*180.0 / M_PI)
 
 namespace Utils {
-	void   AngleVectors(Vector angles, Vector* forward);
-	void   VectorAngles(Vector& forward, Vector& angles);
+	void AngleVectors(Vector angles, Vector* forward);
+	void VectorAngles(Vector& forward, Vector& angles);
 	Vector CalculateView(const Vector& a, const Vector& b);
 }
 

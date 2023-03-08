@@ -7,8 +7,8 @@
 #include "../../GameCache.hpp"
 #include "../../Memory.hpp"
 
-#include "../../Utils/VMT.hpp"
 #include "../../Utils/Prediction.hpp"
+#include "../../Utils/VMT.hpp"
 
 #include "../../Features/General/EnginePrediction.hpp"
 
@@ -18,10 +18,11 @@
 #include "../../Features/Legit/Triggerbot.hpp"
 
 #include "../../Features/Semirage/Aimbot.hpp"
-#include "../../Features/Semirage/RecoilAssistance.hpp"
 #include "../../Features/Semirage/Backtrack.hpp"
+#include "../../Features/Semirage/RecoilAssistance.hpp"
 
-bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd) {
+bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
+{
 	GameCache::ClearLocalPlayer();
 
 	bool silent = Framework::ReturnAddr::invoke<bool, void*, float, CUserCmd*>(Hooks::CreateMove::hook->proxy, Memory::ret_instruction_addr, thisptr, flInputSampleTime, cmd);
@@ -47,7 +48,7 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	Features::General::EnginePrediction::EndPrediction();
 
 	cmd->viewangles_copy = cmd->viewangles;
-	cmd->buttons_copy	 = cmd->buttons;
+	cmd->buttons_copy = cmd->buttons;
 
 	// We can't just move the cmd into lastCmd, because it will be deleted by the original process
 	if (Hooks::CreateMove::lastCmd != nullptr)
@@ -58,10 +59,12 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	return silent;
 }
 
-void Hooks::CreateMove::Hook() {
+void Hooks::CreateMove::Hook()
+{
 	hook = new class Hook(Utils::GetVTable(Memory::clientMode)[25], reinterpret_cast<void*>(CreateMoveHook), 6);
 }
 
-void Hooks::CreateMove::Unhook() {
+void Hooks::CreateMove::Unhook()
+{
 	delete hook;
 }

@@ -6,9 +6,9 @@
 
 #include "../General/EventLog.hpp"
 
+#include "../../ConVarStorage.hpp"
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
-#include "../../ConVarStorage.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../Utils/Trigonometry.hpp"
@@ -17,17 +17,18 @@ bool Features::Semirage::Backtrack::enabled = false;
 float Features::Semirage::Backtrack::timeDelta = 0.2f;
 
 struct Tick {
-	float simulationTime{};
-	int tickCount{};
+	float simulationTime {};
+	int tickCount {};
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 };
 
 std::map<int, std::vector<Tick>> ticks;
 int currentTickCount;
 
-void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd) {
+void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
+{
 	currentTickCount = cmd->tick_count;
-	if(!enabled || !(cmd->buttons & IN_ATTACK))
+	if (!enabled || !(cmd->buttons & IN_ATTACK))
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
@@ -54,20 +55,21 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd) {
 
 			float delta = requiredView.Length();
 
-			if(bestDistance > delta) {
+			if (bestDistance > delta) {
 				bestDistance = delta;
 				bestTick = tick;
 			}
 		}
 	}
 
-	if(bestDistance < 5.0f) {
-		//Gui::EventLog::CreateReport("Trying to backtrack %d ticks", bestTick.tickCount - cmd->tick_count);
+	if (bestDistance < 5.0f) {
+		// Gui::EventLog::CreateReport("Trying to backtrack %d ticks", bestTick.tickCount - cmd->tick_count);
 		cmd->tick_count = bestTick.tickCount;
 	}
 }
 
-void Features::Semirage::Backtrack::FrameStageNotify() {
+void Features::Semirage::Backtrack::FrameStageNotify()
+{
 	if (!enabled || !Interfaces::engine->IsInGame()) {
 		ticks.clear();
 		return;
@@ -83,7 +85,7 @@ void Features::Semirage::Backtrack::FrameStageNotify() {
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		if(!ticks.contains(i))
+		if (!ticks.contains(i))
 			ticks[i] = {};
 
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
@@ -93,12 +95,13 @@ void Features::Semirage::Backtrack::FrameStageNotify() {
 		}
 
 		float currentSimulationTime = *player->SimulationTime();
-		if(!ticks[i].empty()) {
-			if(ticks[i].back().simulationTime == currentSimulationTime)
+		if (!ticks[i].empty()) {
+			if (ticks[i].back().simulationTime == currentSimulationTime)
 				continue; // We don't have a new position yet
 			ticks[i].erase(std::remove_if(ticks[i].begin(), ticks[i].end(), [&](const auto& tick) {
 				return currentSimulationTime - tick.simulationTime > timeDelta;
-			}), ticks[i].end());
+			}),
+				ticks[i].end());
 		}
 
 		Tick tick;
@@ -110,7 +113,8 @@ void Features::Semirage::Backtrack::FrameStageNotify() {
 	}
 }
 
-void Features::Semirage::Backtrack::SetupGUI() {
+void Features::Semirage::Backtrack::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Time delta"), &timeDelta, 0.0f, 0.2f, "%.2f");
 }

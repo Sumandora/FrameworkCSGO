@@ -16,28 +16,29 @@
 #include "../../../SDK/ClientClassIDs.hpp"
 #include "../../../SDK/Definitions/LifeState.hpp"
 
-#include <vector>
 #include <bits/stdc++.h>
 #include <cstdint>
+#include <vector>
 
-bool 				Features::Legit::Esp::enabled			= false;
-int 				Features::Legit::Esp::onKey				= 0;
-int 				Features::Legit::Esp::drawDistance		= 1024 * 8;
-PlayerSettings		Features::Legit::Esp::players			{};
-WeaponSettings		Features::Legit::Esp::weapons			{};
-BoxNameSetting		Features::Legit::Esp::projectiles		{};
-PlantedC4Settings	Features::Legit::Esp::plantedC4			{};
-BoxNameSetting		Features::Legit::Esp::dzLootCrates		{};
-BoxNameSetting		Features::Legit::Esp::dzAmmoBoxes		{};
-BoxNameSetting		Features::Legit::Esp::dzSentries		{};
+bool Features::Legit::Esp::enabled = false;
+int Features::Legit::Esp::onKey = 0;
+int Features::Legit::Esp::drawDistance = 1024 * 8;
+PlayerSettings Features::Legit::Esp::players {};
+WeaponSettings Features::Legit::Esp::weapons {};
+BoxNameSetting Features::Legit::Esp::projectiles {};
+PlantedC4Settings Features::Legit::Esp::plantedC4 {};
+BoxNameSetting Features::Legit::Esp::dzLootCrates {};
+BoxNameSetting Features::Legit::Esp::dzAmmoBoxes {};
+BoxNameSetting Features::Legit::Esp::dzSentries {};
 
-bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition) {
+bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
+{
 	float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
 	float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
 	if (z <= 0.0f || w <= 0.0f)
 		return false;
 
-	screenPosition	 = ImVec2(ImGui::GetIO().DisplaySize);
+	screenPosition = ImVec2(ImGui::GetIO().DisplaySize);
 	screenPosition.x /= 2.0f;
 	screenPosition.y /= 2.0f;
 
@@ -46,9 +47,10 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 	return true;
 }
 
-void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings& settings) {
+void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings& settings)
+{
 	char name[128];
-	if(settings.boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+	if (settings.boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		int index = Utils::GetEntityId(player);
 
 		PlayerInfo info {};
@@ -58,11 +60,11 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 	settings.boxName.Draw(drawList, rectangle, name);
 
 	settings.healthbar.Draw(drawList, rectangle, std::clamp(*player->Health() / 100.0f, 0.0f, 1.0f));
-	if(settings.weapon.enabled) { // Don't ask for the weapon, if we don't have to
+	if (settings.weapon.enabled) { // Don't ask for the weapon, if we don't have to
 		CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
-		if(weapon) {
+		if (weapon) {
 			WeaponID weaponID = *weapon->WeaponDefinitionIndex();
-			if(weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
+			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
 				char weaponName[256];
 				LocalizeWeaponID(weaponID, weaponName);
 				settings.weapon.Draw(drawList, rectangle, weaponName, 1.0f);
@@ -71,17 +73,18 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 	}
 
 	float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
-	if(flashDuration > 0.0) {
+	if (flashDuration > 0.0) {
 		settings.flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5f);
 	}
 }
 
-PlayerStateSettings SelectPlayerState(CBasePlayer* player, PlayerTeamSettings settings) {
-	if(player->GetDormant())
+PlayerStateSettings SelectPlayerState(CBasePlayer* player, PlayerTeamSettings settings)
+{
+	if (player->GetDormant())
 		return settings.dormant;
 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-	if(!player->SetupBones(boneMatrix))
+	if (!player->SetupBones(boneMatrix))
 		return settings.dormant; // Setup bones is broken??
 
 	Vector head = boneMatrix[8].Origin();
@@ -91,13 +94,14 @@ PlayerStateSettings SelectPlayerState(CBasePlayer* player, PlayerTeamSettings se
 	CTraceFilterEntity filter(localPlayer);
 	Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
 
-	if(trace.m_pEnt != player)
+	if (trace.m_pEnt != player)
 		return settings.occluded;
 	else
 		return settings.visible;
 }
 
-void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
+void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
+{
 	if (!enabled || !IsInputDown(onKey, true))
 		return;
 
@@ -116,7 +120,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 		auto entity = reinterpret_cast<CBaseEntity*>(Interfaces::entityList->GetClientEntity(i));
 		if (!entity)
 			continue;
-		if((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > drawDistance * drawDistance)
+		if ((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > drawDistance * drawDistance)
 			continue;
 
 		CCollideable* collideable = entity->Collision();
@@ -137,8 +141,8 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 			Vector(min.x, max.y, max.z)
 		};
 
-		ImVec4	rectangle(FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX);
-		bool	visible = true;
+		ImVec4 rectangle(FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX);
+		bool visible = true;
 
 		for (const auto& point : points) {
 			ImVec2 point2D;
@@ -160,14 +164,14 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 		}
 
 		if (visible) {
-			if(entity->IsPlayer()) {
+			if (entity->IsPlayer()) {
 				auto player = reinterpret_cast<CBasePlayer*>(entity);
 				PlayerStateSettings settings;
-				if(entity == GameCache::GetLocalPlayer()) // TODO Check for third person
+				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
 					settings = players.local;
-				else if(!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || *player->LifeState() != LIFE_ALIVE)) {
+				else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || *player->LifeState() != LIFE_ALIVE)) {
 					char name[128];
-					if(players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+					if (players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 						int index = Utils::GetEntityId(player);
 
 						PlayerInfo info {};
@@ -176,29 +180,28 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 					}
 					players.spectators.Draw(drawList, rectangle, name);
 					continue;
-				}
-				else if(*player->LifeState() == LIFE_ALIVE) {
-					if(!player->IsEnemy())
+				} else if (*player->LifeState() == LIFE_ALIVE) {
+					if (!player->IsEnemy())
 						settings = SelectPlayerState(player, players.teammate);
 					else
 						settings = SelectPlayerState(player, players.enemy);
 				}
 
 				DrawPlayer(drawList, rectangle, player, settings);
-			} else if(entity->IsWeapon()) {
+			} else if (entity->IsWeapon()) {
 				auto weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
-				if(*weapon->OwnerEntity() == -1)
+				if (*weapon->OwnerEntity() == -1)
 					weapons.Draw(drawList, rectangle, weapon);
 			} else {
 				ClientClass clientClass = *entity->GetClientClass();
-				switch(static_cast<ClientClassID>(clientClass.m_ClassID)) {
+				switch (static_cast<ClientClassID>(clientClass.m_ClassID)) {
 				case ClientClassID::CPlantedC4: {
 					auto bomb = reinterpret_cast<CPlantedC4*>(entity);
 					plantedC4.Draw(drawList, rectangle, bomb);
 					break;
 				}
 				case ClientClassID::CBaseCSGrenadeProjectile:
-					//TODO Seperate
+					// TODO Seperate
 					projectiles.Draw(drawList, rectangle, xorstr_("Base grenade"));
 					break;
 				case ClientClassID::CBreachChargeProjectile:
@@ -232,16 +235,16 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList) {
 					dzSentries.Draw(drawList, rectangle, xorstr_("Sentry"));
 					break;
 				default:
-					//TODO?
+					// TODO?
 					break;
 				}
 			}
-
 		}
 	}
 }
 
-void ShowPlayerTeamSettings(const char* tag, PlayerTeamSettings& playerTeamSettings) {
+void ShowPlayerTeamSettings(const char* tag, PlayerTeamSettings& playerTeamSettings)
+{
 	ImGui::PushID(tag);
 	if (ImGui::BeginTabBar(xorstr_("#Player team config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Visible"))) {
@@ -261,7 +264,8 @@ void ShowPlayerTeamSettings(const char* tag, PlayerTeamSettings& playerTeamSetti
 	ImGui::PopID();
 }
 
-void ShowPlayerSettings(const char* tag, PlayerSettings& playerSettings) {
+void ShowPlayerSettings(const char* tag, PlayerSettings& playerSettings)
+{
 	ImGui::PushID(tag);
 	if (ImGui::BeginTabBar(xorstr_("#Player config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Enemy"))) {
@@ -285,7 +289,8 @@ void ShowPlayerSettings(const char* tag, PlayerSettings& playerSettings) {
 	ImGui::PopID();
 }
 
-void Features::Legit::Esp::SetupGUI() {
+void Features::Legit::Esp::SetupGUI()
+{
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SameLine();
 	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 16);

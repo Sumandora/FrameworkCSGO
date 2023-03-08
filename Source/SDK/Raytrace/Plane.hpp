@@ -4,8 +4,8 @@
 #include "../Math/Vector.hpp"
 
 struct Plane {
-	Vector		  normal;
-	float		  dist;
+	Vector normal;
+	float dist;
 	unsigned char type;
 	unsigned char signbits;
 

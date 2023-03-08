@@ -5,30 +5,31 @@
 #include <cstring>
 #include <dlfcn.h>
 #include <link.h>
-#include <mutex>
 #include <map>
+#include <mutex>
 
-#include "xorstr.hpp"
 #include "imgui.h"
+#include "xorstr.hpp"
 
 struct InterfaceReg {
-	void*		  m_CreateFn;
-	const char*	  m_pName;
+	void* m_CreateFn;
+	const char* m_pName;
 	InterfaceReg* m_pNext;
 };
 
-void* UncoverCreateFunction(void* createFunc) {
+void* UncoverCreateFunction(void* createFunc)
+{
 	/**
 	 * These functions look like this:
 	 * push rbp ; Stack frame - we don't care
 	 * lea rax, [rip + address] ; We want this address
 	 * yadda yadda yadda
-	 * 
+	 *
 	 * Heyyy, me from the future here.
 	 * Man life changed, blah blah.
 	 * Basically the function looks different sometimes...
 	 * We are walking through the function and emulate all instructions we need.
-	 * 
+	 *
 	 * Just in case someone wonders why I was sure back then, that the instructions would never change is the following:
 	 * There is a preprocessor definition in the source engine which creates these exported interface functions.
 	 * But hey who could imagine that the same code also produces the same assembly right?
@@ -36,25 +37,26 @@ void* UncoverCreateFunction(void* createFunc) {
 	static Pattern leaRax = Pattern("\x48\x8d\x05", "xxx");
 	static Pattern movRaxRax = Pattern("\x48\x8b\x00", "xxx");
 	static Pattern ret = Pattern("\xc3", "x"); // Unnecessary but to follow the style
-	
+
 	char* rip = reinterpret_cast<char*>(createFunc);
 	void* interfacePtr;
-	while(true) {
-		if(leaRax.matchPattern(rip)) { // LEA rax, [rip + offset]
+	while (true) {
+		if (leaRax.matchPattern(rip)) { // LEA rax, [rip + offset]
 			interfacePtr = Memory::RelativeToAbsolute(reinterpret_cast<char*>(rip) + 3 /* skip the lea */);
 			rip += 7;
-		} else if(movRaxRax.matchPattern(rip)) { // MOV rax, [rax]
+		} else if (movRaxRax.matchPattern(rip)) { // MOV rax, [rax]
 			interfacePtr = *reinterpret_cast<void**>(interfacePtr);
 			rip += 3;
-		} else if(ret.matchPattern(rip)) { // RET
+		} else if (ret.matchPattern(rip)) { // RET
 			break;
 		}
 		rip++;
 	}
-	return interfacePtr;	
+	return interfacePtr;
 }
 
-void* GetInterface(const char* file, const char* name) {
+void* GetInterface(const char* file, const char* name)
+{
 	void* library = dlopen(file, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	if (!library)
 		return nullptr;
@@ -78,17 +80,19 @@ void* GetInterface(const char* file, const char* name) {
 	return nullptr;
 }
 
-void Interfaces::GetInterfaces() {
-	baseClient	= GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
-	engine		= reinterpret_cast<CEngineClient*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
-	entityList	= reinterpret_cast<CClientEntityList*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
+void Interfaces::GetInterfaces()
+{
+	baseClient = GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
+	engine = reinterpret_cast<CEngineClient*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
+	entityList = reinterpret_cast<CClientEntityList*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
 	engineTrace = reinterpret_cast<CEngineTrace*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
-	icvar 		= reinterpret_cast<ICvar*>(GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
-	prediction	= reinterpret_cast<IPrediction*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction")));
-	gameMovement= reinterpret_cast<CGameMovement*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement")));
+	icvar = reinterpret_cast<ICvar*>(GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
+	prediction = reinterpret_cast<IPrediction*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction")));
+	gameMovement = reinterpret_cast<CGameMovement*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement")));
 }
 
-void Interfaces::SetupGUI() {
+void Interfaces::SetupGUI()
+{
 	struct Interface {
 		InterfaceReg* reg;
 		mutable void* uncoveredAddress;
@@ -101,16 +105,16 @@ void Interfaces::SetupGUI() {
 	std::call_once(init, []() {
 		dl_iterate_phdr([](struct dl_phdr_info* info, size_t size, void* data) {
 			void* library = dlopen(info->dlpi_name, RTLD_NOLOAD | RTLD_NOW);
-			if(!library)
+			if (!library)
 				return 0;
 
 			void* interfaces = dlsym(library, xorstr_("s_pInterfaceRegs"));
 			dlclose(library);
 			if (!interfaces)
 				return 0;
-			
+
 			interfaceStorage[info->dlpi_name] = {};
-			
+
 			InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfaces);
 
 			while (interface != nullptr) {
@@ -122,7 +126,8 @@ void Interfaces::SetupGUI() {
 				interface = interface->m_pNext;
 			}
 			return 0;
-		}, nullptr);
+		},
+			nullptr);
 	});
 
 	for (const auto& [key, value] : interfaceStorage) {
@@ -135,22 +140,22 @@ void Interfaces::SetupGUI() {
 						ImGui::Text(xorstr_("Next: %p"), value2.reg->m_pNext);
 
 						ImGui::Spacing();
-						
+
 						ImGui::Text(xorstr_("The next two addresses should line up, if they don't, we have to adjust the uncover function."));
 
-						if(value2.uncoveredAddress) {
+						if (value2.uncoveredAddress) {
 							ImGui::Text(xorstr_("Uncovered address: %p"), value2.uncoveredAddress);
 						} else {
-							if(ImGui::Button(xorstr_("Uncover create function"))) {
+							if (ImGui::Button(xorstr_("Uncover create function"))) {
 								value2.uncoveredAddress = UncoverCreateFunction(value2.reg->m_CreateFn);
 							}
 						}
-						
-						if(value2.realAddress) {
+
+						if (value2.realAddress) {
 							ImGui::Text(xorstr_("Real address: %p"), value2.realAddress);
 						} else {
-							if(ImGui::Button(xorstr_("Invoke create function"))) {
-								value2.realAddress = reinterpret_cast<void*(*)()>(value2.reg->m_CreateFn)();
+							if (ImGui::Button(xorstr_("Invoke create function"))) {
+								value2.realAddress = reinterpret_cast<void* (*)()>(value2.reg->m_CreateFn)();
 							}
 							if (ImGui::IsItemHovered())
 								ImGui::SetTooltip(xorstr_("Warning: This is considered unsafe"));

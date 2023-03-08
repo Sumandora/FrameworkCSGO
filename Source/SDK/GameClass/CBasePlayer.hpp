@@ -35,25 +35,28 @@ public:
 
 	NETVAR_FUNCTION(float, FlashMaxAlpha, xorstr_("DT_CSPlayer"), xorstr_("m_flFlashMaxAlpha"))
 
-	inline Vector GetEyePosition() {
+	inline Vector GetEyePosition()
+	{
 		return *this->VecOrigin() + *this->VecViewOffset();
 	}
 
-	inline bool SetupBones(Matrix3x4 (&boneMatrix)[]) {
+	inline bool SetupBones(Matrix3x4 (&boneMatrix)[])
+	{
 		return CBaseEntity::SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
 	}
 
-	inline bool IsEnemy() {
+	inline bool IsEnemy()
+	{
 		CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-		if(localPlayer != this) {
-			if(ConVarStorage::mp_teammates_are_enemies->GetBool())
+		if (localPlayer != this) {
+			if (ConVarStorage::mp_teammates_are_enemies->GetBool())
 				return true;
 			else {
-				if(Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {
+				if (Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {
 					int localSurvivalTeam = *localPlayer->SurvivalTeam();
-					if(localSurvivalTeam < 0) // DZ without teams
+					if (localSurvivalTeam < 0) // DZ without teams
 						return true;
-					
+
 					return localSurvivalTeam != *SurvivalTeam();
 				} else
 					return *localPlayer->Team() != *Team();

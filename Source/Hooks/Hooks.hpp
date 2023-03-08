@@ -3,7 +3,7 @@
 
 class Hook {
 	void* original;
-	int	  len;
+	int len;
 
 public:
 	Hook(void* original, void* hook, int len);

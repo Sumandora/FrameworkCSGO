@@ -3,12 +3,12 @@
 
 #include "imgui.h"
 
-#include "../../SDK/CUserCmd.hpp"
 #include "../../SDK/ClientFrameStage.hpp"
+#include "../../SDK/CUserCmd.hpp"
 
 namespace Features::Semirage::Backtrack {
 	// Settings
-	extern bool	 enabled;
+	extern bool enabled;
 	extern float timeDelta;
 
 	void CreateMove(CUserCmd* cmd);

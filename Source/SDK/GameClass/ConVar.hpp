@@ -9,7 +9,8 @@ public:
 	VIRTUAL_METHOD(16, GetInt, int, (), (this))
 	// Setting convars is discouraged
 
-	inline bool GetBool() {
+	inline bool GetBool()
+	{
 		return GetInt();
 	}
 };

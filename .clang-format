@@ -1,16 +1,6 @@
-Language: Cpp
+---
 BasedOnStyle: WebKit
+NamespaceIndentation: All
+SortIncludes: CaseInsensitive
 TabWidth: 4
 UseTab: Always
-NamespaceIndentation: All
-AlignConsecutiveAssignments:
-  Enabled: true
-  AcrossComments: true
-  AlignCompound: true
-  PadOperators: true
-AlignConsecutiveDeclarations:
-  Enabled: true
-  AcrossComments: true
-  AlignCompound: true
-  PadOperators: true
-BreakBeforeBraces: Attach

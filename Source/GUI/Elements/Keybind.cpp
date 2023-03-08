@@ -7,20 +7,22 @@
 
 #include <cstdlib>
 
-bool IsInputDown(int key, bool _default) {
-	if(!Gui::visible) {
+bool IsInputDown(int key, bool _default)
+{
+	if (!Gui::visible) {
 		if (key > 0)
 			return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
 		else if (key < 0)
 			return ImGui::IsMouseDown(abs(key) - 1);
-		else if(key == 0)
+		else if (key == 0)
 			return _default;
 		return false;
 	}
 	return _default;
 }
 
-IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size) {
+IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size)
+{
 	static const char* waiting = nullptr;
 
 	char newLabel[128];
@@ -46,7 +48,7 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 			for (int i = 0; i < 5; i++) {
 				if (buttons[i]) {
 					waiting = nullptr;
-					key		= -1 - i; // Negative ids indicate mouse buttons (LMB has id 0, in order to not conflict with unset which is also zero, we do that)
+					key = -1 - i; // Negative ids indicate mouse buttons (LMB has id 0, in order to not conflict with unset which is also zero, we do that)
 					break;
 				}
 			}
