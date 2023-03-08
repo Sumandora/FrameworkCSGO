@@ -38,6 +38,11 @@ list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
 target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
 
+if(CMAKE_BUILD_TYPE matches Release)
+    target_compile_definitions(Framework_Example PUBLIC IM_ASSERT\(x\))
+    target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
+endif()
+
 # Setup xorstr
 target_include_directories(Framework_Example PUBLIC Dependencies/xorstr/include)
 
