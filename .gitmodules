@@ -8,3 +8,6 @@
 [submodule "Dependencies/xorstr"]
 	path = Dependencies/xorstr
 	url = https://github.com/JustasMasiulis/xorstr.git
+[submodule "Dependencies/mINI"]
+	path = Dependencies/mINI
+	url = https://github.com/pulzed/mINI.git
