@@ -302,6 +302,7 @@ BEGIN_SERIALIZED_STRUCT(Features::Legit::Esp::Serializer, xorstr_("Esp"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
 SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
+SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
 
 SERIALIZED_STRUCTURE(players)
 SERIALIZED_STRUCTURE(weapons)
