@@ -23,6 +23,7 @@
 bool Features::Legit::Esp::enabled = false;
 int Features::Legit::Esp::onKey = 0;
 int Features::Legit::Esp::drawDistance = 1024 * 8;
+bool Features::Legit::Esp::considerSpottedEntitiesAsVisible = false;
 PlayerSettings Features::Legit::Esp::players { strdup(xorstr_("Players")) };
 WeaponSettings Features::Legit::Esp::weapons { strdup(xorstr_("Weapons")) };
 BoxNameSetting Features::Legit::Esp::projectiles { strdup(xorstr_("Projectiles")) };
@@ -86,6 +87,9 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings& 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 	if (!player->SetupBones(boneMatrix))
 		return &settings.dormant; // Setup bones is broken??
+
+	if (Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
+		return &settings.visible; // Don't even have to raytrace for that.
 
 	Vector head = boneMatrix[8].Origin();
 
@@ -249,6 +253,9 @@ void Features::Legit::Esp::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SameLine();
 	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 16);
+
+	ImGui::Checkbox(xorstr_("Consider spotted entities as visible"), &considerSpottedEntitiesAsVisible);
+
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
 
 	if (ImGui::BeginTabBar(xorstr_("#Config selection"), ImGuiTabBarFlags_Reorderable)) {

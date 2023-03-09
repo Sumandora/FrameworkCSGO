@@ -9,6 +9,7 @@ namespace Features::Legit::Esp {
 	extern bool enabled;
 	extern int onKey;
 	extern int drawDistance;
+	extern bool considerSpottedEntitiesAsVisible;
 	extern PlayerSettings players;
 	extern WeaponSettings weapons;
 	extern BoxNameSetting projectiles;
