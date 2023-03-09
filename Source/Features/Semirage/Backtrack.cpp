@@ -118,3 +118,8 @@ void Features::Semirage::Backtrack::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Time delta"), &timeDelta, 0.0f, 0.2f, "%.2f");
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer, xorstr_("Backtrack"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Time delta"), timeDelta)
+END_SERIALIZED_STRUCT

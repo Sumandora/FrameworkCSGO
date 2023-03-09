@@ -3,6 +3,8 @@
 
 #include "imgui.h"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::Legit::SpectatorList {
 	// Settings
 	extern bool enabled;
@@ -11,6 +13,9 @@ namespace Features::Legit::SpectatorList {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

@@ -4,6 +4,8 @@
 #include "../../SDK/CUserCmd.hpp"
 #include "../../SDK/GameClass/CMoveData.hpp"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::General::EnginePrediction {
 	// Settings
 	extern bool enabled;
@@ -14,6 +16,9 @@ namespace Features::General::EnginePrediction {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

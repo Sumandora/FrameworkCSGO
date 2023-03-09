@@ -23,13 +23,13 @@
 bool Features::Legit::Esp::enabled = false;
 int Features::Legit::Esp::onKey = 0;
 int Features::Legit::Esp::drawDistance = 1024 * 8;
-PlayerSettings Features::Legit::Esp::players {};
-WeaponSettings Features::Legit::Esp::weapons {};
-BoxNameSetting Features::Legit::Esp::projectiles {};
-PlantedC4Settings Features::Legit::Esp::plantedC4 {};
-BoxNameSetting Features::Legit::Esp::dzLootCrates {};
-BoxNameSetting Features::Legit::Esp::dzAmmoBoxes {};
-BoxNameSetting Features::Legit::Esp::dzSentries {};
+PlayerSettings Features::Legit::Esp::players { strdup(xorstr_("Players")) };
+WeaponSettings Features::Legit::Esp::weapons { strdup(xorstr_("Weapons")) };
+BoxNameSetting Features::Legit::Esp::projectiles { strdup(xorstr_("Projectiles")) };
+PlantedC4Settings Features::Legit::Esp::plantedC4 { strdup(xorstr_("Planted C4")) };
+BoxNameSetting Features::Legit::Esp::dzLootCrates { strdup(xorstr_("Loot crates")) };
+BoxNameSetting Features::Legit::Esp::dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
+BoxNameSetting Features::Legit::Esp::dzSentries { strdup(xorstr_("Sentries")) };
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -47,45 +47,45 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 	return true;
 }
 
-void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings& settings)
+void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings* settings)
 {
 	char name[128];
-	if (settings.boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+	if (settings->boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		int index = Utils::GetEntityId(player);
 
 		PlayerInfo info {};
 		Interfaces::engine->GetPlayerInfo(index, &info);
 		strcpy(name, info.name);
 	}
-	settings.boxName.Draw(drawList, rectangle, name);
+	settings->boxName.Draw(drawList, rectangle, name);
 
-	settings.healthbar.Draw(drawList, rectangle, std::clamp(*player->Health() / 100.0f, 0.0f, 1.0f));
-	if (settings.weapon.enabled) { // Don't ask for the weapon, if we don't have to
+	settings->healthbar.Draw(drawList, rectangle, std::clamp(*player->Health() / 100.0f, 0.0f, 1.0f));
+	if (settings->weapon.enabled) { // Don't ask for the weapon, if we don't have to
 		CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
 		if (weapon) {
 			WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
 				char weaponName[256];
 				LocalizeWeaponID(weaponID, weaponName);
-				settings.weapon.Draw(drawList, rectangle, weaponName, 1.0f);
+				settings->weapon.Draw(drawList, rectangle, weaponName, 1.0f);
 			}
 		}
 	}
 
 	float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
 	if (flashDuration > 0.0) {
-		settings.flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5f);
+		settings->flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5f);
 	}
 }
 
-PlayerStateSettings SelectPlayerState(CBasePlayer* player, PlayerTeamSettings settings)
+PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings& settings)
 {
 	if (player->GetDormant())
-		return settings.dormant;
+		return &settings.dormant;
 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 	if (!player->SetupBones(boneMatrix))
-		return settings.dormant; // Setup bones is broken??
+		return &settings.dormant; // Setup bones is broken??
 
 	Vector head = boneMatrix[8].Origin();
 
@@ -95,9 +95,9 @@ PlayerStateSettings SelectPlayerState(CBasePlayer* player, PlayerTeamSettings se
 	Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
 
 	if (trace.m_pEnt != player)
-		return settings.occluded;
+		return &settings.occluded;
 	else
-		return settings.visible;
+		return &settings.visible;
 }
 
 void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
@@ -166,9 +166,9 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 		if (visible) {
 			if (entity->IsPlayer()) {
 				auto player = reinterpret_cast<CBasePlayer*>(entity);
-				PlayerStateSettings settings;
+				PlayerStateSettings* settings = nullptr;
 				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
-					settings = players.local;
+					settings = &players.local;
 				else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || *player->LifeState() != LIFE_ALIVE)) {
 					char name[128];
 					if (players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
@@ -187,7 +187,8 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 						settings = SelectPlayerState(player, players.enemy);
 				}
 
-				DrawPlayer(drawList, rectangle, player, settings);
+				if (settings)
+					DrawPlayer(drawList, rectangle, player, settings);
 			} else if (entity->IsWeapon()) {
 				auto weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
 				if (*weapon->OwnerEntity() == -1)
@@ -243,52 +244,6 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void ShowPlayerTeamSettings(const char* tag, PlayerTeamSettings& playerTeamSettings)
-{
-	ImGui::PushID(tag);
-	if (ImGui::BeginTabBar(xorstr_("#Player team config selection"), ImGuiTabBarFlags_Reorderable)) {
-		if (ImGui::BeginTabItem(xorstr_("Visible"))) {
-			playerTeamSettings.visible.SetupGUI(xorstr_("Visible"));
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(xorstr_("Occluded"))) {
-			playerTeamSettings.occluded.SetupGUI(xorstr_("Occluded"));
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(xorstr_("Dormant"))) {
-			playerTeamSettings.dormant.SetupGUI(xorstr_("Dormant"));
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
-	}
-	ImGui::PopID();
-}
-
-void ShowPlayerSettings(const char* tag, PlayerSettings& playerSettings)
-{
-	ImGui::PushID(tag);
-	if (ImGui::BeginTabBar(xorstr_("#Player config selection"), ImGuiTabBarFlags_Reorderable)) {
-		if (ImGui::BeginTabItem(xorstr_("Enemy"))) {
-			ShowPlayerTeamSettings(xorstr_("Enemy"), playerSettings.enemy);
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(xorstr_("Teammate"))) {
-			ShowPlayerTeamSettings(xorstr_("Teammate"), playerSettings.teammate);
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(xorstr_("Local"))) {
-			playerSettings.local.SetupGUI(xorstr_("Local"));
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(xorstr_("Spectators"))) {
-			playerSettings.spectators.SetupGUI(xorstr_("Spectators"));
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
-	}
-	ImGui::PopID();
-}
-
 void Features::Legit::Esp::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
@@ -298,33 +253,33 @@ void Features::Legit::Esp::SetupGUI()
 
 	if (ImGui::BeginTabBar(xorstr_("#Config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Players"))) {
-			ShowPlayerSettings(xorstr_("Players"), players);
+			players.SetupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Weapons"))) {
-			weapons.SetupGUI(xorstr_("Weapons"));
+			weapons.SetupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Projectiles"))) {
-			projectiles.SetupGUI(xorstr_("Projectiles"));
+			projectiles.SetupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Planted C4"))) {
-			plantedC4.SetupGUI(xorstr_("Planted C4"));
+			plantedC4.SetupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
 			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
 				if (ImGui::BeginTabItem(xorstr_("Loot crates"))) {
-					dzLootCrates.SetupGUI(xorstr_("Loot crates"));
+					dzLootCrates.SetupGUI();
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(xorstr_("Ammo boxes"))) {
-					dzAmmoBoxes.SetupGUI(xorstr_("Ammo boxes"));
+					dzAmmoBoxes.SetupGUI();
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(xorstr_("Sentries"))) {
-					dzSentries.SetupGUI(xorstr_("Sentries"));
+					dzSentries.SetupGUI();
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();
@@ -335,3 +290,17 @@ void Features::Legit::Esp::SetupGUI()
 		ImGui::EndTabBar();
 	}
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Legit::Esp::Serializer, xorstr_("Esp"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
+SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
+
+SERIALIZED_STRUCTURE(players)
+SERIALIZED_STRUCTURE(weapons)
+SERIALIZED_STRUCTURE(projectiles)
+SERIALIZED_STRUCTURE(plantedC4)
+SERIALIZED_STRUCTURE(dzLootCrates)
+SERIALIZED_STRUCTURE(dzAmmoBoxes)
+SERIALIZED_STRUCTURE(dzSentries)
+END_SERIALIZED_STRUCT

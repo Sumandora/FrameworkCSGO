@@ -59,3 +59,11 @@ void Features::Semirage::RecoilAssistance::SetupGUI()
 	ImGui::Checkbox(xorstr_("Silent"), &silent);
 	ImGui::SliderInt(xorstr_("Min shots"), &minShots, 0, 10);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Semirage::RecoilAssistance::Serializer, xorstr_("Recoil assistance"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Horizontal adjustment"), horizontalAdjustment)
+SERIALIZED_TYPE(xorstr_("Vertical adjustment"), verticalAdjustment)
+SERIALIZED_TYPE(xorstr_("Silent"), silent)
+SERIALIZED_TYPE(xorstr_("Min shots"), minShots)
+END_SERIALIZED_STRUCT

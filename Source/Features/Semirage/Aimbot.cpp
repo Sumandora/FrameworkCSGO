@@ -124,3 +124,12 @@ void Features::Semirage::Aimbot::SetupGUI()
 			ImGui::SetTooltip(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
 	}
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer, xorstr_("Semirage Aimbot"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
+SERIALIZED_TYPE(xorstr_("FOV"), fov)
+SERIALIZED_TYPE(xorstr_("Aim speed"), aimSpeed)
+SERIALIZED_TYPE(xorstr_("Silent"), silent)
+SERIALIZED_TYPE(xorstr_("Snapback"), snapBack)
+END_SERIALIZED_STRUCT

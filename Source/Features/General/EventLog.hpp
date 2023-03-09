@@ -4,6 +4,8 @@
 #include "imgui.h"
 #include "SDL.h"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::General::EventLog {
 	// Settings
 	extern bool enabled;
@@ -16,6 +18,9 @@ namespace Features::General::EventLog {
 
 	// API
 	void CreateReport(const char* fmt, ...);
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

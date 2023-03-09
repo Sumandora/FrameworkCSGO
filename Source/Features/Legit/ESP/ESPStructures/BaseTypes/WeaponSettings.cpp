@@ -1,8 +1,15 @@
-#include "../ESPStructure.hpp"
+#include "../../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+
+WeaponSettings::WeaponSettings(const char* id)
+	: id(id)
+	, boxName(BoxNameSetting(id))
+	, ammo(TextSetting(strdup(xorstr_("Ammo"))))
+{
+}
 
 void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon)
 {
@@ -21,10 +28,15 @@ void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWea
 	}
 }
 
-void WeaponSettings::SetupGUI(const char* tag)
+void WeaponSettings::SetupGUI()
 {
-	ImGui::PushID(tag);
-	boxName.SetupGUI(tag);
-	ammo.SetupGUI(xorstr_("Ammo"));
+	ImGui::PushID(id);
+	boxName.SetupGUI();
+	ammo.SetupGUI();
 	ImGui::PopID();
 }
+
+BEGIN_SERIALIZED_STRUCT(WeaponSettings::Serializer, id)
+SERIALIZED_STRUCTURE(boxName)
+SERIALIZED_STRUCTURE(ammo)
+END_SERIALIZED_STRUCT

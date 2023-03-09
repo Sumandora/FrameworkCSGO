@@ -113,3 +113,7 @@ void Features::Legit::SpectatorList::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Legit::SpectatorList::Serializer, xorstr_("Spectator list"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+END_SERIALIZED_STRUCT
