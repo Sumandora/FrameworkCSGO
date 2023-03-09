@@ -20,7 +20,7 @@
 
 #include "Construction/Settings.hpp"
 
-bool Gui::visible = false;
+bool Gui::visible = true;
 
 void Gui::Create()
 {
@@ -63,6 +63,10 @@ void Gui::SwapWindow(SDL_Window* window)
 	ImGui::NewFrame();
 
 	if (visible) {
+		ImVec2 size(800, 600);
+		ImGui::SetNextWindowSize(size, ImGuiCond_Once);
+		ImGui::SetNextWindowPos(ImVec2((w - size.x) / 2.0f, (h - size.y) / 2.0f), ImGuiCond_Once);
+
 		ImGui::Begin(xorstr_("Framework"));
 
 		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);

@@ -3,6 +3,8 @@
 
 #include "../../SDK/CUserCmd.hpp"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::Movement::HighJump {
 	// Settings
 	extern bool enabled;
@@ -12,6 +14,9 @@ namespace Features::Movement::HighJump {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

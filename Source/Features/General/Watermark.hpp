@@ -3,6 +3,8 @@
 
 #include "imgui.h"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::General::Watermark {
 	// Settings
 	extern bool enabled;
@@ -11,6 +13,9 @@ namespace Features::General::Watermark {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

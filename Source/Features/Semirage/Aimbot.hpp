@@ -3,6 +3,8 @@
 
 #include "../../SDK/CUserCmd.hpp"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::Semirage::Aimbot {
 	// Settings
 	extern bool enabled;
@@ -16,6 +18,9 @@ namespace Features::Semirage::Aimbot {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

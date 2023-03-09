@@ -3,6 +3,8 @@
 
 #include "SDL.h"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::Legit::Aimbot {
 	// Settings
 	extern bool enabled;
@@ -14,6 +16,9 @@ namespace Features::Legit::Aimbot {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

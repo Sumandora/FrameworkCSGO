@@ -40,5 +40,10 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 void Features::Movement::Bhop::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderInt(xorstr_("Humanize"), &humanization, 0, 4);
+	ImGui::SliderInt(xorstr_("Humanization"), &humanization, 0, 4);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Movement::Bhop::Serializer, xorstr_("Bhop"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Humanization"), humanization)
+END_SERIALIZED_STRUCT

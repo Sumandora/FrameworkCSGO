@@ -1,7 +1,9 @@
+#include <sys/stat.h>
 #include <thread>
 
 #include "GUI/GUI.hpp"
 #include "Hooks/Hooks.hpp"
+#include "Serialization/Serialization.hpp"
 
 #include "ConVarStorage.hpp"
 #include "Interfaces.hpp"
@@ -13,6 +15,8 @@
 void Initializer()
 {
 	srand(time(nullptr));
+
+	mkdir(Serialization::GetConfigDirectory(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	Interfaces::GetInterfaces();
 

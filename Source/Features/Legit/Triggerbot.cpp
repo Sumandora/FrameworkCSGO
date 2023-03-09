@@ -60,3 +60,8 @@ void Features::Legit::Triggerbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer, xorstr_("Spectator list"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Input"), input)
+END_SERIALIZED_STRUCT

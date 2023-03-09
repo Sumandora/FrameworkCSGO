@@ -3,6 +3,8 @@
 
 #include "../../SDK/CUserCmd.hpp"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::Semirage::RecoilAssistance {
 	// Settings
 	extern bool enabled;
@@ -15,6 +17,9 @@ namespace Features::Semirage::RecoilAssistance {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

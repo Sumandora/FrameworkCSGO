@@ -2,19 +2,7 @@
 #define FEATURES_LEGIT_ESP
 
 #include "ESPStructure.hpp"
-
-struct PlayerTeamSettings {
-	PlayerStateSettings visible {};
-	PlayerStateSettings occluded {};
-	PlayerStateSettings dormant {};
-};
-
-struct PlayerSettings {
-	PlayerTeamSettings teammate {};
-	PlayerTeamSettings enemy {};
-	PlayerStateSettings local {};
-	BoxNameSetting spectators {};
-};
+#include "xorstr.hpp"
 
 namespace Features::Legit::Esp {
 	// Settings
@@ -33,6 +21,9 @@ namespace Features::Legit::Esp {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

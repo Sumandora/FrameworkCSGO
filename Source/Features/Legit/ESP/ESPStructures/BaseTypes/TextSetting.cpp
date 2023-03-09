@@ -1,8 +1,18 @@
-#include "../ESPStructure.hpp"
+#include "../../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+
+TextSetting::TextSetting(const char* id)
+	: id(id)
+	, enabled(false)
+	, fontScale(1.0f)
+	, fontColor(ImGuiColors::white)
+	, shadow(false)
+	, shadowColor(ImGuiColors::black)
+{
+}
 
 void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height)
 {
@@ -29,16 +39,25 @@ void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text,
 	ImGui::GetFont()->Scale = fontScale;
 }
 
-void TextSetting::SetupGUI(const char* tag)
+void TextSetting::Copy(TextSetting& src)
 {
-	ImGui::PushID(tag);
-	ImGui::Checkbox(tag, &enabled);
+	enabled = src.enabled;
+	fontScale = src.fontScale;
+	fontColor = src.fontColor;
+	shadow = src.shadow;
+	shadowColor = src.shadowColor;
+}
+
+void TextSetting::SetupGUI()
+{
+	ImGui::PushID(id);
+	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
 	if (ImGui::Button("..."))
-		ImGui::OpenPopup(tag);
+		ImGui::OpenPopup(id);
 
-	if (ImGui::BeginPopup(tag)) {
+	if (ImGui::BeginPopup(id)) {
 		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, "%.2f");
 		ImGui::ClickableColorButton(xorstr_("Font color"), fontColor);
 		ImGui::Checkbox(xorstr_("Shadow"), &shadow);
@@ -50,3 +69,11 @@ void TextSetting::SetupGUI(const char* tag)
 
 	ImGui::PopID();
 }
+
+BEGIN_SERIALIZED_STRUCT(TextSetting::Serializer, id)
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Font scale"), fontScale)
+SERIALIZED_TYPE(xorstr_("Font color"), fontColor)
+SERIALIZED_TYPE(xorstr_("Shadow"), shadow)
+SERIALIZED_TYPE(xorstr_("Shadow color"), shadowColor)
+END_SERIALIZED_STRUCT

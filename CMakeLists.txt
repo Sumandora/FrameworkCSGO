@@ -48,3 +48,10 @@ target_include_directories(Framework_Example PUBLIC Dependencies/xorstr/include)
 
 file(GLOB_RECURSE XORSTR_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/xorstr/include")
 target_sources(Framework_Example PUBLIC ${XORSTR_SOURCE_FILES})
+
+# Setup mINI
+target_include_directories(Framework_Example PUBLIC Dependencies/mINI/src)
+
+file(GLOB_RECURSE MINI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/mINI/src")
+target_compile_definitions(Framework_Example PUBLIC MINI_CASE_SENSITIVE)
+target_sources(Framework_Example PUBLIC ${MINI_SOURCE_FILES})

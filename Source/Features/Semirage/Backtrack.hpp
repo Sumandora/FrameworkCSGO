@@ -6,6 +6,8 @@
 #include "../../SDK/ClientFrameStage.hpp"
 #include "../../SDK/CUserCmd.hpp"
 
+#include "../../Serialization/Serializer.hpp"
+
 namespace Features::Semirage::Backtrack {
 	// Settings
 	extern bool enabled;
@@ -16,6 +18,9 @@ namespace Features::Semirage::Backtrack {
 
 	// GUI
 	void SetupGUI();
+
+	// Serialization
+	DECLARE_SERIALIZER(Serializer)
 }
 
 #endif

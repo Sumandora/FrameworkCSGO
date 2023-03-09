@@ -46,3 +46,8 @@ void Features::Movement::HighJump::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Movement::HighJump::Serializer, xorstr_("High jump"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Input"), input)
+END_SERIALIZED_STRUCT

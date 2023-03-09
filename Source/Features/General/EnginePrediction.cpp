@@ -31,3 +31,7 @@ void Features::General::EnginePrediction::SetupGUI()
 		ImGui::Text(xorstr_("Warning: Disabling engine prediction may result in massive accuracy loss"));
 	}
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::General::EnginePrediction::Serializer, xorstr_("Engine prediction"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+END_SERIALIZED_STRUCT

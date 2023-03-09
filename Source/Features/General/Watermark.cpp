@@ -25,3 +25,7 @@ void Features::General::Watermark::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::General::Watermark::Serializer, xorstr_("Watermark"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+END_SERIALIZED_STRUCT

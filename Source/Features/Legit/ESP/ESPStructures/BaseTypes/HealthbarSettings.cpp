@@ -1,8 +1,23 @@
-#include "../ESPStructure.hpp"
+#include "../../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+
+HealthbarSettings::HealthbarSettings(const char* id)
+	: id(id)
+	, enabled(false)
+	, backgroundColor(ImGuiColors::black)
+	, rounding(0.0f)
+	, spacing(3.0f)
+	, width(5.0f)
+	, aliveColor(ImGuiColors::green)
+	, deadColor(ImGuiColors::red)
+	, outlined(false)
+	, outlineColor(ImGuiColors::black)
+	, outlineThickness(1.0f)
+{
+}
 
 void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, float health)
 {
@@ -50,16 +65,30 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, float healt
 	drawList->AddRectFilled(ImVec2(healthbar.x, healthbar.y + (healthbar.w - healthbar.y) * (1.0 - health)), ImVec2(healthbar.z, healthbar.w), color, rounding);
 }
 
-void HealthbarSettings::SetupGUI(const char* tag)
+void HealthbarSettings::Copy(HealthbarSettings& src)
 {
-	ImGui::PushID(tag);
-	ImGui::Checkbox(tag, &enabled);
+	enabled = src.enabled;
+	backgroundColor = src.backgroundColor;
+	rounding = src.rounding;
+	spacing = src.spacing;
+	width = src.width;
+	aliveColor = src.aliveColor;
+	deadColor = src.deadColor;
+	outlined = src.outlined;
+	outlineColor = src.outlineColor;
+	outlineThickness = src.outlineThickness;
+}
+
+void HealthbarSettings::SetupGUI()
+{
+	ImGui::PushID(id);
+	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
 	if (ImGui::Button("..."))
-		ImGui::OpenPopup(tag);
+		ImGui::OpenPopup(id);
 
-	if (ImGui::BeginPopup(tag)) {
+	if (ImGui::BeginPopup(id)) {
 		ImGui::ClickableColorButton(xorstr_("Background color"), backgroundColor);
 		ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, "%.2f");
 		ImGui::SliderFloat(xorstr_("Spacing"), &spacing, 0.0f, 10.0f, "%.2f");
@@ -79,3 +108,16 @@ void HealthbarSettings::SetupGUI(const char* tag)
 
 	ImGui::PopID();
 }
+
+BEGIN_SERIALIZED_STRUCT(HealthbarSettings::Serializer, id)
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Background color"), backgroundColor)
+SERIALIZED_TYPE(xorstr_("Rounding"), rounding)
+SERIALIZED_TYPE(xorstr_("Spacing"), spacing)
+SERIALIZED_TYPE(xorstr_("Width"), width)
+SERIALIZED_TYPE(xorstr_("Alive color"), aliveColor)
+SERIALIZED_TYPE(xorstr_("Dead color"), deadColor)
+SERIALIZED_TYPE(xorstr_("Outlined"), outlined)
+SERIALIZED_TYPE(xorstr_("Outline color"), outlineColor)
+SERIALIZED_TYPE(xorstr_("Outline thickness"), outlineThickness)
+END_SERIALIZED_STRUCT

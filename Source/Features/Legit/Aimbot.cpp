@@ -103,3 +103,10 @@ void Features::Legit::Aimbot::SetupGUI()
 	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%.2f");
 	ImGui::SliderInt(xorstr_("Clamp"), &clamp, 1, 5);
 }
+
+BEGIN_SERIALIZED_STRUCT(Features::Legit::Aimbot::Serializer, xorstr_("Legit Aimbot"))
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("FOV"), fov)
+SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
+SERIALIZED_TYPE(xorstr_("Clamp"), clamp)
+END_SERIALIZED_STRUCT
