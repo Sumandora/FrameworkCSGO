@@ -10,7 +10,8 @@ namespace Features::Legit::Aimbot {
 	extern bool enabled;
 	extern float fov;
 	extern float smoothness;
-	extern int clamp;
+	extern int maximalInfluence;
+	extern int maximalFlashAmount;
 
 	void PollEvent(SDL_Event* event);
 
