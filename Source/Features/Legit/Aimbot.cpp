@@ -15,7 +15,8 @@
 bool Features::Legit::Aimbot::enabled = false;
 float Features::Legit::Aimbot::fov = 3.0f;
 float Features::Legit::Aimbot::smoothness = 4.0f;
-int Features::Legit::Aimbot::clamp = 1;
+int Features::Legit::Aimbot::maximalInfluence = 1;
+int Features::Legit::Aimbot::maximalFlashAmount = 0;
 
 void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 {
@@ -34,6 +35,9 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 
 	TeamID localTeam = *localPlayer->Team();
 	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
+		return;
+
+	if (*reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) > maximalFlashAmount)
 		return;
 
 	Vector playerEye = localPlayer->GetEyePosition();
@@ -92,8 +96,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (dir < 0)
 		return; // We are trying to aim away
 
-	event->motion.xrel += std::clamp(static_cast<int>(goal.x), -clamp, clamp);
-	event->motion.yrel += std::clamp(static_cast<int>(goal.y), -clamp, clamp);
+	event->motion.xrel += std::clamp(static_cast<int>(goal.x), -maximalInfluence, maximalInfluence);
+	event->motion.yrel += std::clamp(static_cast<int>(goal.y), -maximalInfluence, maximalInfluence);
 }
 
 void Features::Legit::Aimbot::SetupGUI()
@@ -101,12 +105,14 @@ void Features::Legit::Aimbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
 	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%.2f");
-	ImGui::SliderInt(xorstr_("Clamp"), &clamp, 1, 5);
+	ImGui::SliderInt(xorstr_("Maximal influence"), &maximalInfluence, 1, 5);
+	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Aimbot::Serializer, xorstr_("Legit Aimbot"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
-SERIALIZED_TYPE(xorstr_("Clamp"), clamp)
+SERIALIZED_TYPE(xorstr_("Maximal influence"), maximalInfluence)
+SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
 END_SERIALIZED_STRUCT

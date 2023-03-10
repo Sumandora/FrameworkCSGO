@@ -40,7 +40,7 @@ void Utils::VectorAngles(Vector& forward, Vector& angles)
 	angles[2] = 0;
 }
 
-Vector Utils::CalculateView(const Vector& a, const Vector& b)
+Vector Utils::CalculateView(const Vector a, const Vector b)
 {
 	Vector delta = b - a;
 	Vector rotation = {};

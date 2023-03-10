@@ -17,6 +17,7 @@ bool Features::Semirage::Aimbot::enabled = false;
 bool Features::Semirage::Aimbot::onlyWhenShooting = false;
 float Features::Semirage::Aimbot::fov = 3.0f;
 float Features::Semirage::Aimbot::aimSpeed = 0.2f;
+int Features::Semirage::Aimbot::maximalFlashAmount = 255;
 bool Features::Semirage::Aimbot::silent = false;
 float Features::Semirage::Aimbot::snapBack = 0.1f;
 
@@ -35,8 +36,6 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
 		return false;
 
-	Vector playerEye = localPlayer->GetEyePosition();
-
 	Vector viewAngles;
 	if (silent && wasFaked && Hooks::CreateMove::lastCmd)
 		viewAngles = Hooks::CreateMove::lastCmd->viewangles;
@@ -48,7 +47,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	float bestDistance;
 
 	// For compatibility’s sake, play it off like we didn't find a target
-	if (cmd->buttons & IN_ATTACK || !onlyWhenShooting) {
+	if ((cmd->buttons & IN_ATTACK || !onlyWhenShooting) && *reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) <= maximalFlashAmount) {
 		CTraceFilterEntity filter(localPlayer);
 
 		// The first object is always the WorldObj
@@ -56,6 +55,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 			CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 			if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
 				continue;
+
+			Vector playerEye = localPlayer->GetEyePosition();
 
 			Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 			if (!player->SetupBones(boneMatrix))
@@ -117,6 +118,7 @@ void Features::Semirage::Aimbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
 	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
 	ImGui::SliderFloat(xorstr_("Aim speed"), &aimSpeed, 0.0f, 1.0f, "%.2f");
+	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Silent"), &silent);
 	if (silent) {
 		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, "%.2f");
@@ -129,6 +131,7 @@ BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer, xorstr_("Semirag
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
 SERIALIZED_TYPE(xorstr_("FOV"), fov)
+SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
 SERIALIZED_TYPE(xorstr_("Aim speed"), aimSpeed)
 SERIALIZED_TYPE(xorstr_("Silent"), silent)
 SERIALIZED_TYPE(xorstr_("Snapback"), snapBack)
