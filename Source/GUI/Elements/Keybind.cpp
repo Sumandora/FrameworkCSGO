@@ -7,9 +7,9 @@
 
 #include <cstdlib>
 
-bool IsInputDown(int key, bool _default)
+bool IsInputDown(int key, bool _default, bool disableInMenu)
 {
-	if (!Gui::visible) {
+	if (!Gui::visible || !disableInMenu) {
 		if (key > 0)
 			return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
 		else if (key < 0)

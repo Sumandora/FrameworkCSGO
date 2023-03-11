@@ -7,6 +7,7 @@
 
 #include "../../../Features/General/EnginePrediction.hpp"
 #include "../../../Features/General/EventLog.hpp"
+#include "../../../Features/General/Menu.hpp"
 #include "../../../Features/General/Watermark.hpp"
 
 #include "../../../Serialization/Serialization.hpp"
@@ -14,6 +15,7 @@
 void Gui::Construction::SetupGeneral()
 {
 	TABBAR(xorstr_("#General settings"), []() {
+		TABITEM(xorstr_("Menu"), Features::General::Menu::SetupGUI);
 		TABITEM(xorstr_("Watermark"), Features::General::Watermark::SetupGUI);
 		TABITEM(xorstr_("Engine prediction"), Features::General::EnginePrediction::SetupGUI);
 		TABITEM(xorstr_("Event log"), Features::General::EventLog::SetupGUI);

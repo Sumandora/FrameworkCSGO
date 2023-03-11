@@ -32,16 +32,20 @@ target_include_directories(Framework_Example PUBLIC Dependencies/imgui)
 target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
 
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
-list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
+
 
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl2.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
-target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
+	list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
+	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
+
 	target_compile_definitions(Framework_Example PUBLIC IM_ASSERT\(x\))
 	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
 endif()
+
+target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
 
 # Setup xorstr
 target_include_directories(Framework_Example PUBLIC Dependencies/xorstr/include)
