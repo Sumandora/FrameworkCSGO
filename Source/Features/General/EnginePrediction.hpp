@@ -10,6 +10,7 @@ namespace Features::General::EnginePrediction {
 	// Settings
 	extern bool enabled;
 	extern CMoveData moveData;
+	extern int prePredictionFlags;
 
 	void StartPrediction(CUserCmd* cmd);
 	void EndPrediction();
