@@ -13,6 +13,7 @@
 #include "../Hooks/SDL/SDLHook.hpp"
 
 #include "../Features/General/EventLog.hpp"
+#include "../Features/General/Menu.hpp"
 #include "../Features/General/Watermark.hpp"
 
 #include "../Features/Legit/ESP/ESP.hpp"
@@ -76,10 +77,7 @@ void Gui::SwapWindow(SDL_Window* window)
 		ImGui::End();
 	}
 
-	if (ImGui::IsKeyPressed(ImGuiKey_Insert, false) || (ImGui::IsKeyDown(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_I, false))) {
-		visible = !visible;
-		Features::General::EventLog::CreateReport(xorstr_("%s the menu"), visible ? xorstr_("Opened") : xorstr_("Closed"));
-	}
+	Features::General::Menu::ImGuiLoop(); // Will take care of the menu key
 
 	Features::General::Watermark::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::General::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());
