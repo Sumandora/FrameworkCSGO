@@ -16,7 +16,6 @@ bool isShowingDebugLogWindow = false;
 bool isShowingStackToolWindow = false;
 bool isShowingAboutWindow = false;
 bool isShowingStyleEditor = false;
-bool isShowingFontSelector = false;
 bool isShowingUserGuide = false;
 #endif
 
