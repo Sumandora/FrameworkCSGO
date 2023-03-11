@@ -4,24 +4,29 @@
 #include "xorstr.hpp"
 
 #include "../../Utils/Prediction.hpp"
+#include "../../GameCache.hpp"
+#include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include <cstring>
 
 bool Features::General::EnginePrediction::enabled = true;
 
 CMoveData Features::General::EnginePrediction::moveData {};
+int Features::General::EnginePrediction::prePredictionFlags = 0;
 
 void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 {
 	moveData = {};
 	if (!enabled)
 		return;
+	prePredictionFlags = *GameCache::GetLocalPlayer()->Flags();
 	Utils::StartPrediction(cmd, moveData);
 }
 
 void Features::General::EnginePrediction::EndPrediction()
 {
 	Utils::EndPrediction();
+	prePredictionFlags = 0;
 }
 
 void Features::General::EnginePrediction::SetupGUI()

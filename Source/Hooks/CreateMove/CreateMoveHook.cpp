@@ -14,6 +14,7 @@
 
 #include "../../Features/Movement/Bhop.hpp"
 #include "../../Features/Movement/HighJump.hpp"
+#include "../../Features/Movement/JumpBug.hpp"
 
 #include "../../Features/Legit/Triggerbot.hpp"
 
@@ -34,17 +35,19 @@ bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSa
 	Features::Movement::HighJump::CreateMove(cmd);
 
 	Features::General::EnginePrediction::StartPrediction(cmd);
+	{
+		Features::Movement::JumpBug::CreateMove(cmd);
 
-	Features::Legit::Triggerbot::CreateMove(cmd);
+		Features::Legit::Triggerbot::CreateMove(cmd);
 
-	silent = !Features::Semirage::RecoilAssistance::CreateMove(cmd) && silent;
-	silent = !Features::Semirage::Aimbot::CreateMove(cmd) && silent;
+		silent = !Features::Semirage::RecoilAssistance::CreateMove(cmd) && silent;
+		silent = !Features::Semirage::Aimbot::CreateMove(cmd) && silent;
 
-	// We have to keep in mind that our angles might differ from the client view at this point,
-	// because of that we need to take the cmd at the last point before actually telling the server, that we shot,
-	// so we have the viewangles, which is being told to the server
-	Features::Semirage::Backtrack::CreateMove(cmd);
-
+		// We have to keep in mind that our angles might differ from the client view at this point,
+		// because of that we need to take the cmd at the last point before actually telling the server, that we shot,
+		// so we have the viewangles, which is being told to the server
+		Features::Semirage::Backtrack::CreateMove(cmd);
+	}
 	Features::General::EnginePrediction::EndPrediction();
 
 	cmd->viewangles_copy = cmd->viewangles;

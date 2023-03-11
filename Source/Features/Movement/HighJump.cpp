@@ -14,7 +14,7 @@
 bool Features::Movement::HighJump::enabled = false;
 int Features::Movement::HighJump::input = 0;
 
-bool performing = false;
+static bool performing = false;
 
 void Features::Movement::HighJump::CreateMove(CUserCmd* cmd)
 {
