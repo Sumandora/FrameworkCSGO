@@ -49,6 +49,7 @@ rm -f gdb.log
 
 $SU $DEBUGGER -p $csgo_pid -n -q -batch \
   -ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib/libMangoHud.so\", 1)" \
+  -ex "call ((char*(*)(void)) dlerror)()" \
   -ex "detach" \
   -ex "quit" >> gdb.log 2>&1 || {
 	echo "A error has appeared"

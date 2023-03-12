@@ -9,6 +9,7 @@ namespace Features::Movement::JumpBug {
 	// Settings
 	extern bool enabled;
 	extern int input;
+	extern bool preDuck;
 
 	void CreateMove(CUserCmd* cmd);
 

@@ -4,6 +4,7 @@
 
 #include "../Features/General/EnginePrediction.hpp"
 #include "../Features/General/EventLog.hpp"
+#include "../Features/General/Menu.hpp"
 #include "../Features/General/Watermark.hpp"
 
 #include "../Features/Legit/Aimbot.hpp"
@@ -13,6 +14,7 @@
 
 #include "../Features/Movement/Bhop.hpp"
 #include "../Features/Movement/HighJump.hpp"
+#include "../Features/Movement/JumpBug.hpp"
 
 #include "../Features/Semirage/Aimbot.hpp"
 #include "../Features/Semirage/Backtrack.hpp"
@@ -28,6 +30,7 @@ bool Serialization::Load(const char* filename)
 	Serializer serializer(ini);
 
 	// TODO make a list
+	Features::General::Menu::Serializer(serializer, Direction::DESERIALIZE);
 	Features::General::Watermark::Serializer(serializer, Direction::DESERIALIZE);
 	Features::General::EnginePrediction::Serializer(serializer, Direction::DESERIALIZE);
 	Features::General::EventLog::Serializer(serializer, Direction::DESERIALIZE);
@@ -43,6 +46,7 @@ bool Serialization::Load(const char* filename)
 
 	Features::Movement::Bhop::Serializer(serializer, Direction::DESERIALIZE);
 	Features::Movement::HighJump::Serializer(serializer, Direction::DESERIALIZE);
+	Features::Movement::JumpBug::Serializer(serializer, Direction::DESERIALIZE);
 
 	return true;
 }
@@ -54,6 +58,7 @@ bool Serialization::Save(const char* filename)
 
 	Serializer serializer(ini);
 
+	Features::General::Menu::Serializer(serializer, Direction::SERIALIZE);
 	Features::General::Watermark::Serializer(serializer, Direction::SERIALIZE);
 	Features::General::EnginePrediction::Serializer(serializer, Direction::SERIALIZE);
 	Features::General::EventLog::Serializer(serializer, Direction::SERIALIZE);
@@ -69,6 +74,7 @@ bool Serialization::Save(const char* filename)
 
 	Features::Movement::Bhop::Serializer(serializer, Direction::SERIALIZE);
 	Features::Movement::HighJump::Serializer(serializer, Direction::SERIALIZE);
+	Features::Movement::JumpBug::Serializer(serializer, Direction::SERIALIZE);
 
 	return file.write(ini, true);
 }

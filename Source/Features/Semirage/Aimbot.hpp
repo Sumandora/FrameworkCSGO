@@ -15,6 +15,7 @@ namespace Features::Semirage::Aimbot {
 	extern bool dontAimThroughSmoke;
 	extern bool silent;
 	extern float snapBack;
+	extern bool friendlyFire;
 
 	bool CreateMove(CUserCmd* cmd);
 

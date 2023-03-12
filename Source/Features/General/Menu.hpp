@@ -9,6 +9,7 @@
 namespace Features::General::Menu {
 	// Settings
 	extern int menuKey;
+	extern int style;
 
 	void ImGuiLoop();
 

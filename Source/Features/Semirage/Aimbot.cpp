@@ -21,6 +21,7 @@ int Features::Semirage::Aimbot::maximalFlashAmount = 255;
 bool Features::Semirage::Aimbot::dontAimThroughSmoke = false;
 bool Features::Semirage::Aimbot::silent = false;
 float Features::Semirage::Aimbot::snapBack = 0.1f;
+bool Features::Semirage::Aimbot::friendlyFire = false;
 
 bool wasFaked = false;
 
@@ -54,7 +55,15 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		// The first object is always the WorldObj
 		for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 			CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-			if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
+			if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
+				continue;
+
+			TeamID team = *player->Team();
+
+			if (team == TeamID::TEAM_UNASSIGNED || team == TeamID::TEAM_SPECTATOR)
+				continue;
+
+			if (!(friendlyFire || player->IsEnemy()))
 				continue;
 
 			Vector playerEye = localPlayer->GetEyePosition();
@@ -130,6 +139,7 @@ void Features::Semirage::Aimbot::SetupGUI()
 		if (ImGui::IsItemHovered())
 			ImGui::SetTooltip(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
 	}
+	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer, xorstr_("Semirage Aimbot"))
@@ -141,4 +151,5 @@ SERIALIZED_TYPE(xorstr_("Aim speed"), aimSpeed)
 SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
 SERIALIZED_TYPE(xorstr_("Silent"), silent)
 SERIALIZED_TYPE(xorstr_("Snapback"), snapBack)
+SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
 END_SERIALIZED_STRUCT
