@@ -16,6 +16,8 @@
 #include "../../../SDK/ClientClassIDs.hpp"
 #include "../../../SDK/Definitions/LifeState.hpp"
 
+#include "../../../Memory.hpp"
+
 #include <bits/stdc++.h>
 #include <cstdint>
 #include <vector>
@@ -24,6 +26,7 @@ bool Features::Legit::Esp::enabled = false;
 int Features::Legit::Esp::onKey = 0;
 int Features::Legit::Esp::drawDistance = 1024 * 8;
 bool Features::Legit::Esp::considerSpottedEntitiesAsVisible = false;
+bool Features::Legit::Esp::considerSmokedOffEntitiesAsOccluded = true;
 PlayerSettings Features::Legit::Esp::players { strdup(xorstr_("Players")) };
 WeaponSettings Features::Legit::Esp::weapons { strdup(xorstr_("Weapons")) };
 BoxNameSetting Features::Legit::Esp::projectiles { strdup(xorstr_("Projectiles")) };
@@ -79,29 +82,32 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 	}
 }
 
-PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings& settings)
+PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* settings)
 {
 	if (player->GetDormant())
-		return &settings.dormant;
+		return &settings->dormant;
 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 	if (!player->SetupBones(boneMatrix))
-		return &settings.dormant; // Setup bones is broken??
+		return &settings->dormant; // Setup bones is broken??
 
-	if (Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
-		return &settings.visible; // Don't even have to raytrace for that.
+	if (settings == &Features::Legit::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
+		return &settings->visible; // Don't even have to raytrace for that.
 
 	Vector head = boneMatrix[8].Origin();
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
+	if (Features::Legit::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
+		return &settings->occluded;
+
 	CTraceFilterEntity filter(localPlayer);
 	Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
 
 	if (trace.m_pEnt != player)
-		return &settings.occluded;
+		return &settings->occluded;
 	else
-		return &settings.visible;
+		return &settings->visible;
 }
 
 void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
@@ -186,9 +192,9 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 					continue;
 				} else if (*player->LifeState() == LIFE_ALIVE) {
 					if (!player->IsEnemy())
-						settings = SelectPlayerState(player, players.teammate);
+						settings = SelectPlayerState(player, &players.teammate);
 					else
-						settings = SelectPlayerState(player, players.enemy);
+						settings = SelectPlayerState(player, &players.enemy);
 				}
 
 				if (settings)
@@ -255,6 +261,7 @@ void Features::Legit::Esp::SetupGUI()
 	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 16);
 
 	ImGui::Checkbox(xorstr_("Consider spotted entities as visible"), &considerSpottedEntitiesAsVisible);
+	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
 
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
 
@@ -303,6 +310,7 @@ SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
 SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
 SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
+SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
 
 SERIALIZED_STRUCTURE(players)
 SERIALIZED_STRUCTURE(weapons)

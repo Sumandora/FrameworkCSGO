@@ -52,6 +52,8 @@ void Features::General::Menu::ImGuiLoop()
 void Features::General::Menu::SetupGUI()
 {
 	ImGui::InputSelector(xorstr_("Menu key (%s)"), menuKey);
+	if (menuKey == 0)
+		menuKey = static_cast<int>(ImGuiKey_Insert);
 #ifdef DEBUG
 	ImGui::Checkbox("Show Demo Window", &isShowingDemoWindow);
 	ImGui::Checkbox("Show Metrics Window", &isShowingMetricsWindow);
@@ -74,6 +76,7 @@ void Features::General::Menu::SetupGUI()
 	if (ImGui::Button(xorstr_("Set style to classic"))) {
 		ImGui::StyleColorsClassic(&ImGui::GetStyle());
 	}
+	// TODO Save style
 
 	ImGui::Text(xorstr_("ImGui Version: %s"), ImGui::GetVersion());
 }

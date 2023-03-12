@@ -13,6 +13,8 @@ namespace Memory {
 
 	void Create();
 	void* RelativeToAbsolute(void* addr);
+
+	bool LineGoesThroughSmoke(Vector from, Vector to, short _);
 }
 
 #endif

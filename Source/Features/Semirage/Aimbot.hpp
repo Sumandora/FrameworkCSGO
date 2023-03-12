@@ -12,6 +12,7 @@ namespace Features::Semirage::Aimbot {
 	extern float fov;
 	extern float aimSpeed;
 	extern int maximalFlashAmount;
+	extern bool dontAimThroughSmoke;
 	extern bool silent;
 	extern float snapBack;
 
