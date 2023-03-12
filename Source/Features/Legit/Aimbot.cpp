@@ -18,6 +18,7 @@ float Features::Legit::Aimbot::smoothness = 4.0f;
 int Features::Legit::Aimbot::maximalInfluence = 1;
 int Features::Legit::Aimbot::maximalFlashAmount = 0;
 bool Features::Legit::Aimbot::dontAimThroughSmoke = true;
+bool Features::Legit::Aimbot::friendlyFire = false;
 
 void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 {
@@ -55,7 +56,15 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
+		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
+			continue;
+
+		TeamID team = *player->Team();
+
+		if (team == TeamID::TEAM_UNASSIGNED || team == TeamID::TEAM_SPECTATOR)
+			continue;
+
+		if (!(friendlyFire || player->IsEnemy()))
 			continue;
 
 		Matrix3x4 boneMatrix[MAXSTUDIOBONES];
@@ -112,6 +121,7 @@ void Features::Legit::Aimbot::SetupGUI()
 	ImGui::SliderInt(xorstr_("Maximal influence"), &maximalInfluence, 1, 5);
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
+	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Aimbot::Serializer, xorstr_("Legit Aimbot"))
@@ -121,4 +131,5 @@ SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
 SERIALIZED_TYPE(xorstr_("Maximal influence"), maximalInfluence)
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
 SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
+SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
 END_SERIALIZED_STRUCT

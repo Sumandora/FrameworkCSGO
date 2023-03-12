@@ -8,6 +8,7 @@
 #include "EventLog.hpp"
 
 int Features::General::Menu::menuKey = static_cast<int>(ImGuiKey_Insert);
+int Features::General::Menu::style = 0;
 
 #ifdef DEBUG
 bool isShowingDemoWindow = false;
@@ -23,6 +24,19 @@ bool wasPressed = false;
 
 void Features::General::Menu::ImGuiLoop()
 {
+	printf("%d\n", style);
+	switch (style) {
+	case 0:
+		ImGui::StyleColorsDark(&ImGui::GetStyle());
+		break;
+	case 1:
+		ImGui::StyleColorsLight(&ImGui::GetStyle());
+		break;
+	case 2:
+		ImGui::StyleColorsClassic(&ImGui::GetStyle());
+		break;
+	}
+
 #ifdef DEBUG
 	if (isShowingDemoWindow)
 		ImGui::ShowDemoWindow();
@@ -66,17 +80,16 @@ void Features::General::Menu::SetupGUI()
 	ImGui::Checkbox("Show User Guide", &isShowingUserGuide);
 #endif
 	if (ImGui::Button(xorstr_("Set style to dark"))) {
-		ImGui::StyleColorsDark(&ImGui::GetStyle());
+		style = 0;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(xorstr_("Set style to light"))) {
-		ImGui::StyleColorsLight(&ImGui::GetStyle());
+		style = 1;
 	}
 	ImGui::SameLine();
 	if (ImGui::Button(xorstr_("Set style to classic"))) {
-		ImGui::StyleColorsClassic(&ImGui::GetStyle());
+		style = 2;
 	}
-	// TODO Save style
 
 	ImGui::Text(xorstr_("ImGui Version: %s"), ImGui::GetVersion());
 }
@@ -84,4 +97,5 @@ void Features::General::Menu::SetupGUI()
 BEGIN_SERIALIZED_STRUCT(Features::General::Menu::Serializer, xorstr_("Menu"))
 SERIALIZED_TYPE(xorstr_("Menu key"), menuKey)
 // Intentionally not saving the showing...window because nobody needs those
+SERIALIZED_TYPE(xorstr_("Style"), style)
 END_SERIALIZED_STRUCT

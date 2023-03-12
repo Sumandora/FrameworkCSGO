@@ -13,6 +13,8 @@
 
 #include "../../Utils/GameMode.hpp"
 
+#include "../Math/Vector.hpp"
+
 class CBasePlayer : public CBaseEntity {
 public:
 	NETVAR_FUNCTION(int, Flags, xorstr_("DT_BasePlayer"), xorstr_("m_fFlags"))
@@ -34,6 +36,8 @@ public:
 	NETVAR_FUNCTION(unsigned int, TickBase, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_nTickBase"))
 
 	NETVAR_FUNCTION(float, FlashMaxAlpha, xorstr_("DT_CSPlayer"), xorstr_("m_flFlashMaxAlpha"))
+
+	NETVAR_FUNCTION(Vector, Velocity, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_vecVelocity[0]"))
 
 	inline Vector GetEyePosition()
 	{

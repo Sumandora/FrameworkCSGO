@@ -62,10 +62,12 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 	std::map<int, int> map;
 	MapObservers(map);
 
-	CBaseEntity* currentTarget;
 	auto localPlayer = GameCache::GetLocalPlayer();
 
+	int targetIndex;
+
 	if (localPlayer) {
+		CBaseEntity* currentTarget;
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
 			currentTarget = localPlayer;
 		else {
@@ -74,12 +76,9 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 		}
-	}
-
-	int playerTarget = -1;
-
-	if (!currentTarget)
-		playerTarget = Utils::GetEntityId(currentTarget);
+		targetIndex = Utils::GetEntityId(currentTarget);
+	} else
+		targetIndex = -1;
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float offset = 0;
@@ -103,7 +102,9 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		ShadowString::AddText(drawList, position, playerTarget != -1 && entry.second == playerTarget ? ImGuiColors::red : ImGuiColors::white, text);
+		printf("%d == %d", targetIndex, entry.second);
+		printf("%f|%f|%f|%f", ImGuiColors::red.Value.x, ImGuiColors::red.Value.y, ImGuiColors::red.Value.z, ImGuiColors::red.Value.w);
+		ShadowString::AddText(drawList, position, targetIndex != -1 && entry.second == targetIndex ? ImGuiColors::red : ImGuiColors::white, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();
 	}
