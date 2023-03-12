@@ -56,12 +56,14 @@ void Serialization::SetupGUI()
 	bool addedConfig = false;
 
 	if (ImGui::Button(xorstr_("Save")) && name[0] != '\0') {
-		auto cfgName = strcat(name, ".ini");
+		auto cfgName = name;
+		if (!std::string(cfgName).ends_with(".ini"))
+			cfgName = strcat(cfgName, ".ini");
 
 		if (Save(GetConfigFile(cfgName)))
-			Features::General::EventLog::CreateReport("Saved config '%s'", cfgName);
+			Features::General::EventLog::CreateReport(xorstr_("Saved config '%s'"), cfgName);
 		else
-			Features::General::EventLog::CreateReport("Failed to saved config '%s'", cfgName);
+			Features::General::EventLog::CreateReport(xorstr_("Failed to saved config '%s'"), cfgName);
 
 		addedConfig = true;
 		name[0] = '\0';
@@ -89,9 +91,9 @@ void Serialization::SetupGUI()
 		if (configSelected >= 0 && configSelected < static_cast<int>(configs.size())) {
 			const char* configName = configs.at(configSelected).c_str();
 			if (Load(GetConfigFile(configName)))
-				Features::General::EventLog::CreateReport("Loaded config '%s'", configName);
+				Features::General::EventLog::CreateReport(xorstr_("Loaded config '%s'"), configName);
 			else
-				Features::General::EventLog::CreateReport("Failed to load config '%s'", configName);
+				Features::General::EventLog::CreateReport(xorstr_("Failed to load config '%s'"), configName);
 		}
 	}
 	ImGui::PopItemWidth();

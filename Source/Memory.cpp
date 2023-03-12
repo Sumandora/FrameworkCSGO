@@ -11,6 +11,16 @@
 
 #include "Utils/VMT.hpp"
 
+static void* lineGoesThroughSmoke;
+
+void* GetBaseAddress(const char* name)
+{
+	void* handle = dlopen(name, RTLD_NOLOAD | RTLD_NOW);
+	void* baseAddress = *reinterpret_cast<void**>(handle);
+	dlclose(handle); // Reset ref count
+	return baseAddress;
+}
+
 void* Memory::RelativeToAbsolute(void* addr)
 {
 	// RIP-Relatives start after the instruction using it
@@ -45,4 +55,31 @@ void Memory::Create()
 
 	void* leaInstr = Pattern(xorstr_("\x48\x8d\x05") /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
 	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
+
+	lineGoesThroughSmoke = Pattern(xorstr_("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\xCC\xCC\xCC\xCC\x66"), xorstr_("xxxxxxxxxxxxxxxxx????x"))
+							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
+}
+
+bool Memory::LineGoesThroughSmoke(Vector from, Vector to, short _)
+{
+	// Little explanation why I make this struct here:
+	// GCC for some reason decides that pushing the from and to Vector (class) over general purpose registers is a good idea.
+	// It basically creates pointers for these which are then pushed.
+	// We want the XMM registers though, so it ends up completely destroying this function.
+	// I create these VectorStructs in order to make GCC think, that XMM registers are the better choice.
+	struct VectorStruct {
+		float x, y, z;
+	};
+
+	VectorStruct fromStruct;
+	fromStruct.x = from.x;
+	fromStruct.y = from.y;
+	fromStruct.z = from.z;
+
+	VectorStruct toStruct;
+	toStruct.x = to.x;
+	toStruct.y = to.y;
+	toStruct.z = to.z;
+
+	return Framework::ReturnAddr::invoke<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, ret_instruction_addr, fromStruct, toStruct, _);
 }

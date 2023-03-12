@@ -12,6 +12,7 @@ namespace Features::Legit::Aimbot {
 	extern float smoothness;
 	extern int maximalInfluence;
 	extern int maximalFlashAmount;
+	extern bool dontAimThroughSmoke;
 
 	void PollEvent(SDL_Event* event);
 

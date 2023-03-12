@@ -17,6 +17,7 @@ float Features::Legit::Aimbot::fov = 3.0f;
 float Features::Legit::Aimbot::smoothness = 4.0f;
 int Features::Legit::Aimbot::maximalInfluence = 1;
 int Features::Legit::Aimbot::maximalFlashAmount = 0;
+bool Features::Legit::Aimbot::dontAimThroughSmoke = true;
 
 void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 {
@@ -63,6 +64,9 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 
 		Vector head = boneMatrix[8].Origin();
 
+		if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
+			continue;
+
 		Trace trace = Utils::TraceRay(playerEye, head, &filter);
 
 		if (trace.m_pEnt != player)
@@ -107,6 +111,7 @@ void Features::Legit::Aimbot::SetupGUI()
 	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%.2f");
 	ImGui::SliderInt(xorstr_("Maximal influence"), &maximalInfluence, 1, 5);
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
+	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Aimbot::Serializer, xorstr_("Legit Aimbot"))
@@ -115,4 +120,5 @@ SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
 SERIALIZED_TYPE(xorstr_("Maximal influence"), maximalInfluence)
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
+SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
 END_SERIALIZED_STRUCT

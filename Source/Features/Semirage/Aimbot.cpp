@@ -18,6 +18,7 @@ bool Features::Semirage::Aimbot::onlyWhenShooting = false;
 float Features::Semirage::Aimbot::fov = 3.0f;
 float Features::Semirage::Aimbot::aimSpeed = 0.2f;
 int Features::Semirage::Aimbot::maximalFlashAmount = 255;
+bool Features::Semirage::Aimbot::dontAimThroughSmoke = false;
 bool Features::Semirage::Aimbot::silent = false;
 float Features::Semirage::Aimbot::snapBack = 0.1f;
 
@@ -63,6 +64,9 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 				continue;
 
 			Vector head = boneMatrix[8].Origin();
+
+			if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
+				continue;
 
 			Trace trace = Utils::TraceRay(playerEye, head, &filter);
 
@@ -119,6 +123,7 @@ void Features::Semirage::Aimbot::SetupGUI()
 	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
 	ImGui::SliderFloat(xorstr_("Aim speed"), &aimSpeed, 0.0f, 1.0f, "%.2f");
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
+	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
 	ImGui::Checkbox(xorstr_("Silent"), &silent);
 	if (silent) {
 		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, "%.2f");
@@ -133,6 +138,7 @@ SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
 SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
 SERIALIZED_TYPE(xorstr_("Aim speed"), aimSpeed)
+SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
 SERIALIZED_TYPE(xorstr_("Silent"), silent)
 SERIALIZED_TYPE(xorstr_("Snapback"), snapBack)
 END_SERIALIZED_STRUCT
