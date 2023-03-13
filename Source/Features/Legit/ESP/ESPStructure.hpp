@@ -138,7 +138,7 @@ public:
 	BoxNameSetting boxName;
 	TextSetting timer;
 
-	// TODO Remove timer after defused & Add defuse timer
+	// TODO Add defuse timer
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb);
 	void SetupGUI();
