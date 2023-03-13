@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "../../ConVarStorage.hpp"
+
 class Vector {
 public:
 	float x, y, z;
@@ -231,20 +233,18 @@ public:
 
 	inline Vector Wrap()
 	{
-		while (this->x > 90.0f)
-			this->x -= 180.f;
+		// TODO Test if I'm a moron or not
 
-		while (this->x < -90.0f)
-			this->x += 180.f;
+		// Use 360 in the remainder call and then clamp it to [-89..89] to prevent it from flipping the view
+		this->x = std::remainderf(this->x, 360.0f);
+		this->x = std::clamp(this->x, -ConVarStorage::cl_pitchup->GetFloat(), ConVarStorage::cl_pitchdown->GetFloat());
 
-		this->x = std::clamp(this->x, -89.0f, 89.0f);
+		this->y = std::remainderf(this->y, 360.0f);
 
-		while (this->y > 180.f)
-			this->y -= 360.f;
-
-		while (this->y < -180.f)
-			this->y += 360.f;
+		// Technically this could be [-50..50] (used to be [-90..90]) but there is no real point in having one of these angles besides HvHs.
+		// There is no way to achieve such an angle under normal circumstances thus I rather zero it instead of going with something else.
 		this->z = 0.0f;
+
 		return *this;
 	}
 };

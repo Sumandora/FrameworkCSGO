@@ -102,8 +102,6 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		printf("%d == %d", targetIndex, entry.second);
-		printf("%f|%f|%f|%f", ImGuiColors::red.Value.x, ImGuiColors::red.Value.y, ImGuiColors::red.Value.z, ImGuiColors::red.Value.w);
 		ShadowString::AddText(drawList, position, targetIndex != -1 && entry.second == targetIndex ? ImGuiColors::red : ImGuiColors::white, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();

@@ -24,7 +24,6 @@ bool wasPressed = false;
 
 void Features::General::Menu::ImGuiLoop()
 {
-	printf("%d\n", style);
 	switch (style) {
 	case 0:
 		ImGui::StyleColorsDark(&ImGui::GetStyle());

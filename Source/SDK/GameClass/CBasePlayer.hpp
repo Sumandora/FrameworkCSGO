@@ -23,7 +23,9 @@ public:
 	NETVAR_FUNCTION(Vector, VecViewOffset, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_vecViewOffset[0]"))
 	NETVAR_FUNCTION(bool, SurvivalTeam, xorstr_("DT_CSPlayer"), xorstr_("m_nSurvivalTeam"))
 
-	NETVAR_FUNCTION(CBaseCombatWeapon, ActiveWeapon, xorstr_("DT_BaseCombatCharacter"), xorstr_("m_hActiveWeapon"))
+	// Use CClientEntityList::GetClientEntityFromHandle to get the weapon itself
+	NETVAR_FUNCTION(void*, ActiveWeapon, xorstr_("DT_BaseCombatCharacter"), xorstr_("m_hActiveWeapon"))
+	NETVAR_FUNCTION(bool, WaitForNoAttack, xorstr_("DT_CSPlayer"), xorstr_("m_bWaitForNoAttack"))
 
 	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngle, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_Local"), xorstr_("DT_Local"), xorstr_("m_aimPunchAngle"))
 

@@ -41,6 +41,9 @@ private:
 public:
 	HealthbarSettings(const char* id);
 
+	// TODO Add number
+	// TODO Gradient
+
 	bool enabled;
 	ImColor backgroundColor;
 	float rounding;
@@ -133,6 +136,8 @@ public:
 
 	BoxNameSetting boxName;
 	TextSetting timer;
+
+	// TODO Remove timer after defused & Add defuse timer
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb);
 	void SetupGUI();
