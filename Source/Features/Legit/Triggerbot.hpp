@@ -9,6 +9,8 @@ namespace Features::Legit::Triggerbot {
 	// Settings
 	extern bool enabled;
 	extern int input;
+	extern bool secondaryFireWithR8Revolver;
+	extern bool friendlyFire;
 
 	void CreateMove(CUserCmd* cmd);
 

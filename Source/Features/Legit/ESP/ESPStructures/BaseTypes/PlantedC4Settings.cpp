@@ -14,7 +14,8 @@ PlantedC4Settings::PlantedC4Settings(const char* id)
 void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb)
 {
 	boxName.Draw(drawList, rectangle, xorstr_("Planted C4"));
-	timer.Draw(drawList, rectangle, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str(), 1.0f);
+	if (!*bomb->Defused())
+		timer.Draw(drawList, rectangle, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str(), 1.0f);
 }
 
 void PlantedC4Settings::SetupGUI()
