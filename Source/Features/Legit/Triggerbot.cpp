@@ -16,7 +16,9 @@
 
 bool Features::Legit::Triggerbot::enabled = false;
 int Features::Legit::Triggerbot::input = 0;
-// TODO Friendly fire & Delay
+bool Features::Legit::Triggerbot::secondaryFireWithR8Revolver = true;
+bool Features::Legit::Triggerbot::friendlyFire = false;
+// TODO Delay
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 {
@@ -36,7 +38,9 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!weapon)
 		return;
 
-	if (*weapon->NextPrimaryAttack() > Memory::globalVars->curtime)
+	bool secondaryFire = *weapon->WeaponDefinitionIndex() == WeaponID::WEAPON_REVOLVER && secondaryFireWithR8Revolver;
+
+	if ((!secondaryFire ? *weapon->NextPrimaryAttack() : *weapon->NextSecondaryAttack()) > Memory::globalVars->curtime)
 		return;
 
 	Vector playerEye = localPlayer->GetEyePosition();
@@ -58,19 +62,34 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 		return;
 
 	auto player = reinterpret_cast<CBasePlayer*>(entity);
-	if (*player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
+	if (*player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
 		return;
 
-	cmd->buttons |= IN_ATTACK; // TODO Secondary fire with revolver
+	TeamID team = *player->Team();
+
+	if (team == TeamID::TEAM_UNASSIGNED || team == TeamID::TEAM_SPECTATOR)
+		return;
+
+	if (!(friendlyFire || player->IsEnemy()))
+		return;
+
+	if (secondaryFire)
+		cmd->buttons |= IN_ATTACK2;
+	else
+		cmd->buttons |= IN_ATTACK;
 }
 
 void Features::Legit::Triggerbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
+	ImGui::Checkbox(xorstr_("Secondary fire with R8 Revolver"), &secondaryFireWithR8Revolver);
+	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer, xorstr_("Spectator list"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Input"), input)
+SERIALIZED_TYPE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver)
+SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
 END_SERIALIZED_STRUCT
