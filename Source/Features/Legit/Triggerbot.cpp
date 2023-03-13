@@ -31,6 +31,14 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
 		return;
 
+	CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+
+	if (!weapon)
+		return;
+
+	if (*weapon->NextPrimaryAttack() > Memory::globalVars->curtime)
+		return;
+
 	Vector playerEye = localPlayer->GetEyePosition();
 	auto viewangles = Vector(cmd->viewangles);
 

@@ -34,33 +34,6 @@ public:
 	DECLARE_SERIALIZER(Serializer)
 };
 
-class HealthbarSettings {
-private:
-	const char* id;
-
-public:
-	HealthbarSettings(const char* id);
-
-	// TODO Add number
-	// TODO Gradient
-
-	bool enabled;
-	ImColor backgroundColor;
-	float rounding;
-	float spacing;
-	float width;
-	ImColor aliveColor;
-	ImColor deadColor;
-	bool outlined;
-	ImColor outlineColor;
-	float outlineThickness;
-
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, float health);
-	void Copy(HealthbarSettings& src);
-	void SetupGUI();
-	DECLARE_SERIALIZER(Serializer)
-};
-
 class TextSetting {
 private:
 	const char* id;
@@ -76,6 +49,33 @@ public:
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height);
 	void Copy(TextSetting& src);
+	void SetupGUI();
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class HealthbarSettings {
+private:
+	const char* id;
+
+public:
+	HealthbarSettings(const char* id);
+
+	bool enabled;
+	ImColor backgroundColor;
+	float rounding;
+	float spacing;
+	float width;
+	ImColor aliveColor;
+	ImColor deadColor;
+	bool gradient;
+	bool outlined;
+	ImColor outlineColor;
+	float outlineThickness;
+	TextSetting healthNumber;
+	bool onlyWhenDamaged;
+
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health);
+	void Copy(HealthbarSettings& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
 };
@@ -107,6 +107,7 @@ public:
 	HealthbarSettings healthbar;
 	TextSetting weapon;
 	TextSetting flashDuration;
+	// TODO Flags
 
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)

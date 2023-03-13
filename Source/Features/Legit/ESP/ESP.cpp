@@ -63,7 +63,7 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 	}
 	settings->boxName.Draw(drawList, rectangle, name);
 
-	settings->healthbar.Draw(drawList, rectangle, std::clamp(*player->Health() / 100.0f, 0.0f, 1.0f));
+	settings->healthbar.Draw(drawList, rectangle, *player->Health());
 	if (settings->weapon.enabled) { // Don't ask for the weapon, if we don't have to
 		CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
 		if (weapon) {
