@@ -63,6 +63,8 @@ void Gui::SwapWindow(SDL_Window* window)
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
+	Features::General::Menu::ImGuiLoop(); // Will take care of the menu key
+
 	if (visible) {
 		ImVec2 size(800, 600);
 		ImGui::SetNextWindowSize(size, ImGuiCond_Once);
@@ -76,8 +78,6 @@ void Gui::SwapWindow(SDL_Window* window)
 
 		ImGui::End();
 	}
-
-	Features::General::Menu::ImGuiLoop(); // Will take care of the menu key
 
 	Features::General::Watermark::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::General::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());

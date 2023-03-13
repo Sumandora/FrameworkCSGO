@@ -3,7 +3,7 @@
 
 class IMoveHelper;
 #include "SDK/GameClass/CGlobalVars.hpp"
-#include "SDK/Math/Vector.hpp"
+class Vector;
 
 namespace Memory {
 	inline void* ret_instruction_addr;

@@ -16,6 +16,7 @@
 
 bool Features::Legit::Triggerbot::enabled = false;
 int Features::Legit::Triggerbot::input = 0;
+// TODO Friendly fire & Delay
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 {
@@ -52,7 +53,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (*player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam)
 		return;
 
-	cmd->buttons |= IN_ATTACK;
+	cmd->buttons |= IN_ATTACK; // TODO Secondary fire with revolver
 }
 
 void Features::Legit::Triggerbot::SetupGUI()

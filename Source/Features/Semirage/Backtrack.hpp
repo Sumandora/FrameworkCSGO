@@ -11,7 +11,7 @@
 namespace Features::Semirage::Backtrack {
 	// Settings
 	extern bool enabled;
-	extern float timeDelta;
+	extern float time;
 
 	void CreateMove(CUserCmd* cmd);
 	void FrameStageNotify();

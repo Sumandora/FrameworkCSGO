@@ -27,7 +27,7 @@
 
 namespace Netvars {
 	void DumpNetvars();
-	RecvProp* GetOffset(const char* table, const char* name);
+	RecvProp* GetOffset(const char* table, const char* name); // TODO add client class as argument
 	void SetupGUI();
 }
 
