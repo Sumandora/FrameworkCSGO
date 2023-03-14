@@ -7,12 +7,13 @@
 void __attribute((optimize("O0"))) FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
+	case ClientFrameStage::FRAME_RENDER_START: {
+		Features::Semirage::Backtrack::FrameStageNotify();
+		break;
+	}
 	case ClientFrameStage::FRAME_RENDER_END: {
 		Hooks::FrameStageNotify::worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
 		break;
-	}
-	case ClientFrameStage::FRAME_RENDER_START: {
-		Features::Semirage::Backtrack::FrameStageNotify();
 	}
 	default:
 		// ignored

@@ -14,7 +14,6 @@
 
 // TODO Clantag
 // TODO Each category should move all hpp files together and create a serializer in them
-// TODO Use Highest Entity Index instead of maxclients
 
 void Initializer()
 {

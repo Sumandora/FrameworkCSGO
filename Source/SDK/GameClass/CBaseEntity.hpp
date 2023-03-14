@@ -27,6 +27,7 @@ public:
 	//  IClientNetworkable
 	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
+	VIRTUAL_METHOD(10, entindex, int, (), (this + sizeof(void*) * 2))
 
 	// IClientRenderable
 	VIRTUAL_METHOD(13, SetupBones, bool, (Matrix3x4 * pBoneMatrix, int nMaxBones, int nBoneMask, float flCurTime = 0), (this + sizeof(void*), pBoneMatrix, nMaxBones, nBoneMask, flCurTime))
