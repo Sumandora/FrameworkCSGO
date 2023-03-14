@@ -12,12 +12,8 @@
 
 #include "../Hooks/SDL/SDLHook.hpp"
 
-#include "../Features/General/EventLog.hpp"
-#include "../Features/General/Menu.hpp"
-#include "../Features/General/Watermark.hpp"
-
-#include "../Features/Legit/ESP/ESP.hpp"
-#include "../Features/Legit/SpectatorList.hpp"
+#include "../Features/General.hpp"
+#include "../Features/Legit.hpp"
 
 #include "Construction/Settings.hpp"
 

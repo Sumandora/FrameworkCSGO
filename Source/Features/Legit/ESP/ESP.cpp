@@ -1,4 +1,4 @@
-#include "ESP.hpp"
+#include "../../Legit.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -124,13 +124,17 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
-		auto entity = reinterpret_cast<CBaseEntity*>(Interfaces::entityList->GetClientEntity(i));
+		auto entity = Interfaces::entityList->GetClientEntity(i);
 		if (!entity)
-			continue;
-		if ((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > drawDistance * drawDistance)
 			continue;
 
 		CCollideable* collideable = entity->Collision();
+
+		if (!collideable)
+			continue;
+
+		if ((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > drawDistance * drawDistance)
+			continue;
 
 		Vector min = *entity->VecOrigin() + *collideable->ObbMins();
 		Vector max = *entity->VecOrigin() + *collideable->ObbMaxs();

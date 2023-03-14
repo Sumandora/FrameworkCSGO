@@ -1,11 +1,9 @@
-#include "EventLog.hpp"
+#include "../General.hpp"
 
 #include "xorstr.hpp"
 
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
-
-#include "Watermark.hpp"
 
 #include <chrono>
 #include <vector>

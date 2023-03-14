@@ -1,11 +1,9 @@
-#include "Menu.hpp"
+#include "../General.hpp"
 
 #include "xorstr.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../GUI/GUI.hpp"
-
-#include "EventLog.hpp"
 
 int Features::General::Menu::menuKey = static_cast<int>(ImGuiKey_Insert);
 int Features::General::Menu::style = 0;

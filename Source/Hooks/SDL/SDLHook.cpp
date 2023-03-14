@@ -3,7 +3,7 @@
 #include "SDLHook.hpp"
 #include "xorstr.hpp"
 
-#include "../../Features/Legit/Aimbot.hpp"
+#include "../../Features/Legit.hpp"
 #include "../../GUI/GUI.hpp"
 #include "../../Memory.hpp"
 

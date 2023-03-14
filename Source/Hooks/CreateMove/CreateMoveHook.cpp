@@ -10,17 +10,10 @@
 #include "../../Utils/Prediction.hpp"
 #include "../../Utils/VMT.hpp"
 
-#include "../../Features/General/EnginePrediction.hpp"
-
-#include "../../Features/Movement/Bhop.hpp"
-#include "../../Features/Movement/HighJump.hpp"
-#include "../../Features/Movement/JumpBug.hpp"
-
-#include "../../Features/Legit/Triggerbot.hpp"
-
-#include "../../Features/Semirage/Aimbot.hpp"
-#include "../../Features/Semirage/Backtrack.hpp"
-#include "../../Features/Semirage/RecoilAssistance.hpp"
+#include "../../Features/General.hpp"
+#include "../../Features/Legit.hpp"
+#include "../../Features/Movement.hpp"
+#include "../../Features/Semirage.hpp"
 
 bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
