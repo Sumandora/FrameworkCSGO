@@ -105,14 +105,14 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	float bestDistance = FLT_MAX;
 	Tick bestTick;
 
-	for (const auto& pair : ticks) {
+	std::erase_if(ticks, [&](const auto& pair) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
 		if (!player || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity()) {
-			continue;
+			return true;
 		}
 
 		if (*player->Team() == localTeam)
-			continue; // TODO Friendly fire
+			return true; // TODO Friendly fire
 
 		std::vector<Tick> records = pair.second;
 
@@ -130,7 +130,8 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 				bestTick = tick;
 			}
 		}
-	}
+		return false;
+	});
 
 	if (bestDistance < 5.0f) {
 		Features::General::EventLog::CreateReport("Trying to backtrack %d ticks", cmd->tick_count - bestTick.tickCount);

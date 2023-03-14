@@ -233,8 +233,6 @@ public:
 
 	inline Vector Wrap()
 	{
-		// TODO Test if I'm a moron or not
-
 		// Use 360 in the remainder call and then clamp it to [-89..89] to prevent it from flipping the view
 		this->x = std::remainderf(this->x, 360.0f);
 		this->x = std::clamp(this->x, -ConVarStorage::cl_pitchup->GetFloat(), ConVarStorage::cl_pitchdown->GetFloat());

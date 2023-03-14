@@ -3,8 +3,6 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../Utils/PlayerIds.hpp"
-
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
@@ -15,24 +13,6 @@
 #include <vector>
 
 bool Features::Legit::SpectatorList::enabled = false;
-
-void MapObservers(std::map<int, int>& map)
-{
-	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player)
-			continue;
-
-		if (player->GetDormant() || *player->LifeState() != LIFE_DEAD)
-			continue;
-
-		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());
-		if (!target)
-			continue;
-
-		map.emplace(i, Utils::GetEntityId(target));
-	}
-}
 
 const char* LocalizeObserverMode(ObserverMode observerMode)
 {
@@ -59,15 +39,10 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	std::map<int, int> map;
-	MapObservers(map);
-
 	auto localPlayer = GameCache::GetLocalPlayer();
 
-	int targetIndex;
-
+	CBaseEntity* currentTarget = nullptr;
 	if (localPlayer) {
-		CBaseEntity* currentTarget;
 		if (*localPlayer->LifeState() == LIFE_ALIVE)
 			currentTarget = localPlayer;
 		else {
@@ -76,25 +51,30 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 		}
-		targetIndex = Utils::GetEntityId(currentTarget);
-	} else
-		targetIndex = -1;
+	}
 
 	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float offset = 0;
 
-	for (auto entry : map) {
-		PlayerInfo first {};
-		Interfaces::engine->GetPlayerInfo(entry.first, &first);
-
-		PlayerInfo second {};
-		Interfaces::engine->GetPlayerInfo(entry.second, &second);
-
-		CBaseEntity* otherEntity = Interfaces::entityList->GetClientEntity(entry.first);
-		if (!otherEntity)
+	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
+		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		if (!player)
 			continue;
 
-		ObserverMode observerMode = *reinterpret_cast<CBasePlayer*>(otherEntity)->ObserverMode();
+		if (player->GetDormant() || *player->LifeState() != LIFE_DEAD)
+			continue;
+
+		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());
+		if (!target)
+			continue;
+
+		PlayerInfo first {};
+		Interfaces::engine->GetPlayerInfo(i, &first);
+
+		PlayerInfo second {};
+		Interfaces::engine->GetPlayerInfo(target->entindex(), &second);
+
+		ObserverMode observerMode = *player->ObserverMode();
 
 		char text[strlen(first.name) + 4 + strlen(second.name) + 1];
 		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, LocalizeObserverMode(observerMode));
@@ -102,7 +82,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		ImVec2 size = ImGui::CalcTextSize(text);
 		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		ShadowString::AddText(drawList, position, targetIndex != -1 && entry.second == targetIndex ? ImGuiColors::red : ImGuiColors::white, text);
+		ShadowString::AddText(drawList, position, currentTarget && currentTarget == target ? ImGuiColors::red : ImGuiColors::white, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();
 	}

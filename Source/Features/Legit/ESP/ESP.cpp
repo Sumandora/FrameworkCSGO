@@ -6,7 +6,6 @@
 #include "../../../GameCache.hpp"
 #include "../../../Interfaces.hpp"
 
-#include "../../../Utils/PlayerIds.hpp"
 #include "../../../Utils/Raytrace.hpp"
 
 #include "../../../GUI/Elements/Keybind.hpp"
@@ -55,10 +54,8 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 {
 	char name[128];
 	if (settings->boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-		int index = Utils::GetEntityId(player);
-
 		PlayerInfo info {};
-		Interfaces::engine->GetPlayerInfo(index, &info);
+		Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
 		strcpy(name, info.name);
 	}
 	settings->boxName.Draw(drawList, rectangle, name);
@@ -182,10 +179,8 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 				else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || *player->LifeState() != LIFE_ALIVE)) {
 					char name[128];
 					if (players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-						int index = Utils::GetEntityId(player);
-
 						PlayerInfo info {};
-						Interfaces::engine->GetPlayerInfo(index, &info);
+						Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
 						strcpy(name, info.name);
 					}
 					players.spectators.Draw(drawList, rectangle, name);

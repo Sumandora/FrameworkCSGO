@@ -14,7 +14,7 @@
 #include <algorithm>
 
 bool Features::Semirage::Aimbot::enabled = false;
-bool Features::Semirage::Aimbot::onlyWhenShooting = false;
+bool Features::Semirage::Aimbot::onlyWhenShooting = false; // TODO Separate key
 float Features::Semirage::Aimbot::fov = 3.0f;
 float Features::Semirage::Aimbot::aimSpeed = 0.2f;
 int Features::Semirage::Aimbot::maximalFlashAmount = 255;
