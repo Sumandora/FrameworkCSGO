@@ -1,4 +1,4 @@
-#include "Watermark.hpp"
+#include "../General.hpp"
 
 #include "xorstr.hpp"
 

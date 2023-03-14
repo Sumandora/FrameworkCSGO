@@ -1,4 +1,4 @@
-#include "SpectatorList.hpp"
+#include "../Legit.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"

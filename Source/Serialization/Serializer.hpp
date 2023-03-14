@@ -45,6 +45,9 @@ namespace Serialization {
 #define SERIALIZED_STRUCTURE(variable) \
 	variable.Serializer(serializer, direction);
 
+#define SERIALIZED_NAMESPACE(name) \
+	name::Serializer(serializer, direction);
+
 #define END_SERIALIZED_STRUCT  \
 	serializer.LeaveSection(); \
 	}

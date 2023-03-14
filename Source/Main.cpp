@@ -13,7 +13,6 @@
 #include "xorstr.hpp"
 
 // TODO Clantag
-// TODO Each category should move all hpp files together and create a serializer in them
 
 void Initializer()
 {

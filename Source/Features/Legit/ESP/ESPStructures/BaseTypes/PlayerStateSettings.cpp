@@ -3,7 +3,7 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../ESP.hpp"
+#include "../../../../Legit.hpp"
 
 PlayerStateSettings::PlayerStateSettings(const char* id)
 	: id(id)

@@ -14,8 +14,6 @@
 #include "SDK/Netvars/ClientClass.hpp"
 #include "SDK/Netvars/RecvTable.hpp"
 
-#include "Features/General/EventLog.hpp"
-
 std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars;
 
 void ReadTable(ClientClass* clientClass, RecvTable* recvTable)

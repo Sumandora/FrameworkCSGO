@@ -14,7 +14,7 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../Features/General/EventLog.hpp"
+#include "../Features/General.hpp"
 
 char* Serialization::GetConfigDirectory()
 {

@@ -1,11 +1,11 @@
 // https://github.com/seksea/gamesneeze/blob/ff795abb667979ea649973d4c80291b4071833a9/src/core/features/movement.cpp#L53
 
-#include "JumpBug.hpp"
+#include "../Movement.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../General/EnginePrediction.hpp"
+#include "../General.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
