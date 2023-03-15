@@ -9,8 +9,8 @@
 #include "imgui.h"
 
 bool Features::Semirage::RecoilAssistance::enabled = false;
-float Features::Semirage::RecoilAssistance::horizontalAdjustment = 1.0f;
-float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0f;
+float Features::Semirage::RecoilAssistance::horizontalAdjustment = 1.0F;
+float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0F;
 bool Features::Semirage::RecoilAssistance::silent = false;
 int Features::Semirage::RecoilAssistance::minShots = 1;
 
@@ -19,7 +19,6 @@ Vector lastAimPunch;
 bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !(cmd->buttons & IN_ATTACK)) {
-		lastAimPunch = Vector();
 		return false;
 	}
 
@@ -27,27 +26,28 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return false;
 
-	if (*localPlayer->ShotsFired() <= minShots)
-		return false;
+	const Vector currentAimPunch = *localPlayer->AimPunchAngle();
 
-	Vector currentAimPunch = *localPlayer->AimPunchAngle();
-	Vector recoil;
-	if (silent)
-		recoil = currentAimPunch * ConVarStorage::weapon_recoil_scale->GetFloat();
-	else
-		recoil = (currentAimPunch - lastAimPunch) * ConVarStorage::weapon_recoil_scale->GetFloat();
+	if (*localPlayer->ShotsFired() > minShots) {
+		Vector recoil;
+		if (silent)
+			recoil = currentAimPunch * ConVarStorage::weapon_recoil_scale->GetFloat();
+		else
+			recoil = (currentAimPunch - lastAimPunch) * ConVarStorage::weapon_recoil_scale->GetFloat();
+
+		recoil.x *= verticalAdjustment;
+		recoil.y *= horizontalAdjustment;
+
+		Vector correctedView = cmd->viewangles - recoil;
+		correctedView.Wrap();
+
+		cmd->viewangles = correctedView;
+
+		if (!silent)
+			Interfaces::engine->SetViewAngles(&cmd->viewangles);
+	}
+
 	lastAimPunch = currentAimPunch;
-
-	recoil.x *= verticalAdjustment;
-	recoil.y *= horizontalAdjustment;
-
-	Vector correctedView = cmd->viewangles - recoil;
-	correctedView.Wrap();
-
-	cmd->viewangles = correctedView;
-
-	if (!silent)
-		Interfaces::engine->SetViewAngles(&cmd->viewangles);
 	return silent;
 }
 

@@ -11,7 +11,7 @@ WeaponSettings::WeaponSettings(const char* id)
 {
 }
 
-void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon)
+void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const
 {
 	char weaponName[256] {};
 	if (boxName.nametag.enabled) { // Don't ask for the weapon, if we don't have to
@@ -20,11 +20,11 @@ void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWea
 
 	boxName.Draw(drawList, rectangle, weaponName);
 
-	int ammoClip = *weapon->Ammo();
+	const int ammoClip = *weapon->Ammo();
 	if (ammoClip != -1) { // Does this weapon even have a ammo capacity? (Knifes, Bombs etc...)
 		char buf[128];
 		sprintf(buf, xorstr_("%d/%d"), ammoClip, *weapon->ReserveAmmoCount());
-		ammo.Draw(drawList, rectangle, buf, 1.0f);
+		ammo.Draw(drawList, rectangle, buf, 1.0F);
 	}
 }
 

@@ -6,10 +6,11 @@ class Hook {
 	int len;
 
 public:
+	void* proxy;
+
+	Hook() = delete;
 	Hook(void* original, void* hook, int len);
 	~Hook();
-
-	void* proxy;
 };
 
 namespace Hooks {

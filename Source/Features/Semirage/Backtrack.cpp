@@ -17,7 +17,7 @@
 #include "../../Utils/Trigonometry.hpp"
 
 bool Features::Semirage::Backtrack::enabled = false;
-float Features::Semirage::Backtrack::time = 1.0f;
+float Features::Semirage::Backtrack::time = 1.0F;
 
 #define TIME_TO_TICKS(dt) ((int)(0.5f + (float)(dt) / Memory::globalVars->interval_per_tick))
 #define TICKS_TO_TIME(t) (Memory::globalVars->interval_per_tick * (t))
@@ -37,43 +37,43 @@ float CalculateLerpTime()
 	if (ConVarStorage::cl_interpolate->GetBool()) {
 		float flLerpRatio = ConVarStorage::cl_interp_ratio->GetFloat();
 		if (flLerpRatio == 0)
-			flLerpRatio = 1.0f;
-		float flLerpAmount = ConVarStorage::cl_interp->GetFloat();
+			flLerpRatio = 1.0F;
+		const float flLerpAmount = ConVarStorage::cl_interp->GetFloat();
 
-		float min = ConVarStorage::sv_client_min_interp_ratio->GetFloat();
+		const float min = ConVarStorage::sv_client_min_interp_ratio->GetFloat();
 		if (min != -1) { // They forgot to check for max != -1, didn't they?
 			flLerpRatio = std::clamp(flLerpRatio, min, ConVarStorage::sv_client_max_interp_ratio->GetFloat());
 		} else {
 			if (flLerpRatio == 0)
-				flLerpRatio = 1.0f;
+				flLerpRatio = 1.0F;
 		}
 		return std::max(flLerpAmount, flLerpRatio / flUpdateRateValue);
 	} else {
-		return 0.0f;
+		return 0.0F;
 	}
 }
 
 bool IsTickValid(Tick tick)
 {
 	// https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/server/player_lagcompensation.cpp#L246
-	float correct = 0.0f;
+	float correct = 0.0F;
 
 	CNetChan* chan = Interfaces::engine->GetNetChannel();
 	if (chan) {
 		correct += chan->GetLatency(FLOW_INCOMING); // The server asks for OUTGOING, we have to turn this around, since we are the client.
 	}
 
-	float m_fLerpTime = CalculateLerpTime();
+	const float m_fLerpTime = CalculateLerpTime();
 
 	correct += m_fLerpTime;
 
 	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag->GetFloat() * Features::Semirage::Backtrack::time);
 
-	float flTargetTime = TICKS_TO_TIME(tick.tickCount) - m_fLerpTime;
+	const float flTargetTime = TICKS_TO_TIME(tick.tickCount) - m_fLerpTime;
 
-	float deltaTime = correct - (Memory::globalVars->curtime - flTargetTime);
+	const float deltaTime = correct - (Memory::globalVars->curtime - flTargetTime);
 
-	return fabs(deltaTime) <= 0.2f; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
+	return fabs(deltaTime) <= 0.2F; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
 }
 
 std::map<int, std::vector<Tick>> ticks;
@@ -87,7 +87,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return;
 
-	CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 
 	if (!weapon)
 		return;
@@ -95,23 +95,22 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (*weapon->NextPrimaryAttack() > Memory::globalVars->curtime || *localPlayer->WaitForNoAttack()) // TODO Rebuild those https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/cstrike15/weapon_csbase.cpp#L990
 		return;
 
-	TeamID localTeam = *localPlayer->Team();
-	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
+	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
 
 	if (!(cmd->buttons & IN_ATTACK))
 		return;
 
 	float bestDistance = FLT_MAX;
-	Tick bestTick;
+	Tick bestTick {};
 
 	std::erase_if(ticks, [&](const auto& pair) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
-		if (!player || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity()) {
+		if (!player || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			return true;
 		}
 
-		if (*player->Team() == localTeam)
+		if (!player->IsEnemy())
 			return true; // TODO Friendly fire
 
 		std::vector<Tick> records = pair.second;
@@ -133,7 +132,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		return false;
 	});
 
-	if (bestDistance < 5.0f) {
+	if (bestDistance < 5.0F) {
 		Features::General::EventLog::CreateReport("Trying to backtrack %d ticks", cmd->tick_count - bestTick.tickCount);
 		cmd->tick_count = bestTick.tickCount;
 	}
@@ -150,8 +149,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 	if (!localPlayer)
 		return;
 
-	TeamID localTeam = *localPlayer->Team();
-	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
+	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
 
 	// The first object is always the WorldObj
@@ -159,13 +157,18 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		if (!ticks.contains(i))
 			ticks[i] = {};
 
-		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || *player->Team() == localTeam) {
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity()) {
 			ticks[i].clear();
 			continue;
 		}
 
-		float currentSimulationTime = *player->SimulationTime();
+		if (!IsParticipatingTeam(*player->Team()) || !player->IsEnemy()) {
+			ticks[i].clear();
+			continue;
+		}
+
+		const float currentSimulationTime = *player->SimulationTime();
 		if (!ticks[i].empty()) {
 			if (ticks[i].back().simulationTime == currentSimulationTime)
 				continue; // We don't have a new position yet

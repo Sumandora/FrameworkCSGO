@@ -39,7 +39,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	auto localPlayer = GameCache::GetLocalPlayer();
+	auto* localPlayer = GameCache::GetLocalPlayer();
 
 	CBaseEntity* currentTarget = nullptr;
 	if (localPlayer) {
@@ -53,11 +53,11 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		}
 	}
 
-	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float offset = 0;
 
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player)
 			continue;
 
@@ -74,13 +74,13 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		PlayerInfo second {};
 		Interfaces::engine->GetPlayerInfo(target->entindex(), &second);
 
-		ObserverMode observerMode = *player->ObserverMode();
+		const ObserverMode observerMode = *player->ObserverMode();
 
 		char text[strlen(first.name) + 4 + strlen(second.name) + 1];
 		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, LocalizeObserverMode(observerMode));
 
-		ImVec2 size = ImGui::CalcTextSize(text);
-		ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
+		const ImVec2 size = ImGui::CalcTextSize(text);
+		const ImVec2 position(displaySize.x - size.x - 10.0F, offset + 10.0F);
 
 		ShadowString::AddText(drawList, position, currentTarget && currentTarget == target ? ImGuiColors::red : ImGuiColors::white, text);
 

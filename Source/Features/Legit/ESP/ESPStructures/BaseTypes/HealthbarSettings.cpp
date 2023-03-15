@@ -24,15 +24,15 @@ HealthbarSettings::HealthbarSettings(const char* id)
 {
 }
 
-void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
+void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const
 {
 	if (!enabled)
 		return;
 
-	float healthPercentage = std::clamp(health / 100.0f, 0.0f, 1.0f);
+	const float healthPercentage = std::clamp(health / 100.0f, 0.0f, 1.0f);
 
-	ImVec4 healthbar(rectangle.x - spacing - width, rectangle.y, rectangle.x - spacing, rectangle.w);
-	ImVec4 outside(healthbar.x - outlineThickness, healthbar.y - outlineThickness, healthbar.z + outlineThickness, healthbar.w + outlineThickness);
+	const ImVec4 healthbar(rectangle.x - spacing - width, rectangle.y, rectangle.x - spacing, rectangle.w);
+	const ImVec4 outside(healthbar.x - outlineThickness, healthbar.y - outlineThickness, healthbar.z + outlineThickness, healthbar.w + outlineThickness);
 
 	ImVec4 background;
 
@@ -41,9 +41,9 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 	else
 		background = healthbar;
 
-	float effectiveRounding;
+	float effectiveRounding {};
 	if (gradient)
-		effectiveRounding = 0.0f; // ImGui Limitation
+		effectiveRounding = 0.0F; // ImGui Limitation
 	else
 		effectiveRounding = rounding;
 
@@ -52,7 +52,7 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 		drawList->AddRect(ImVec2(outside.x, outside.y), ImVec2(outside.z, outside.w), outlineColor, effectiveRounding, ImDrawFlags_None, outlineThickness);
 	}
 
-	float healthbarHeight = healthbar.y + (healthbar.w - healthbar.y) * (1.0f - healthPercentage);
+	const float healthbarHeight = healthbar.y + (healthbar.w - healthbar.y) * (1.0f - healthPercentage);
 
 	float aliveHsv[3];
 	ImGui::ColorConvertRGBtoHSV(
@@ -65,41 +65,41 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 		deadHsv[0], deadHsv[1], deadHsv[2]);
 
 	if (gradient) {
-		float transition = std::min(0.5f, healthPercentage); // At some point the second rect will become smaller than 50% means we have to adjust the color in order to not break the illusion of it being one long bar
-		float middleHsv[] = {
+		float transition = std::min(0.5F, healthPercentage); // At some point the second rect will become smaller than 50% means we have to adjust the color in order to not break the illusion of it being one long bar
+		const float middleHsv[] = {
 			deadHsv[0] + (aliveHsv[0] - deadHsv[0]) * transition,
 			deadHsv[1] + (aliveHsv[1] - deadHsv[1]) * transition,
 			deadHsv[2] + (aliveHsv[2] - deadHsv[2]) * transition
 		};
-		float alpha = deadColor.Value.w + (aliveColor.Value.w - deadColor.Value.w) * transition;
+		const float alpha = deadColor.Value.w + (aliveColor.Value.w - deadColor.Value.w) * transition;
 
 		float middleRgb[3];
 		ImGui::ColorConvertHSVtoRGB(
 			middleHsv[0], middleHsv[1], middleHsv[2],
 			middleRgb[0], middleRgb[1], middleRgb[2]);
 
-		ImColor middleColor(middleRgb[0], middleRgb[1], middleRgb[2], alpha);
+		const ImColor middleColor(middleRgb[0], middleRgb[1], middleRgb[2], alpha);
 
-		float halfHeight = healthbar.w + (healthbar.y - healthbar.w) * 0.5f;
+		const float halfHeight = healthbar.w + (healthbar.y - healthbar.w) * 0.5f;
 
 		if (healthPercentage > 0.5) {
 			drawList->AddRectFilledMultiColor(ImVec2(healthbar.x, healthbarHeight), ImVec2(healthbar.z, halfHeight), aliveColor, aliveColor, middleColor, middleColor);
 		}
 		drawList->AddRectFilledMultiColor(ImVec2(healthbar.x, std::max /* Remember that these are screen coords, not percentages (min -> max) */ (halfHeight, healthbarHeight)), ImVec2(healthbar.z, healthbar.w), middleColor, middleColor, deadColor, deadColor);
 	} else {
-		float desiredHsv[] = {
+		const float desiredHsv[] = {
 			deadHsv[0] + (aliveHsv[0] - deadHsv[0]) * healthPercentage,
 			deadHsv[1] + (aliveHsv[1] - deadHsv[1]) * healthPercentage,
 			deadHsv[2] + (aliveHsv[2] - deadHsv[2]) * healthPercentage
 		};
-		float alpha = deadColor.Value.w + (aliveColor.Value.w - deadColor.Value.w) * healthPercentage;
+		const float alpha = deadColor.Value.w + (aliveColor.Value.w - deadColor.Value.w) * healthPercentage;
 
 		float desiredRgb[3];
 		ImGui::ColorConvertHSVtoRGB(
 			desiredHsv[0], desiredHsv[1], desiredHsv[2],
 			desiredRgb[0], desiredRgb[1], desiredRgb[2]);
 
-		ImColor color(desiredRgb[0], desiredRgb[1], desiredRgb[2], alpha);
+		const ImColor color(desiredRgb[0], desiredRgb[1], desiredRgb[2], alpha);
 
 		drawList->AddRectFilled(ImVec2(healthbar.x, healthbarHeight), ImVec2(healthbar.z, healthbar.w), color, effectiveRounding);
 	}
@@ -109,17 +109,17 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 			return; // This might get in the way when we add more stuff
 		// Don't use TextSetting because we can't specify the x properly (TODO?)
 		// Hack
-		float fontScale = ImGui::GetFont()->Scale;
+		const float fontScale = ImGui::GetFont()->Scale;
 		ImGui::GetFont()->Scale = healthNumber.fontScale;
 		ImGui::PushFont(ImGui::GetFont());
 
 		const char* number = std::to_string(health).c_str();
 
-		ImVec2 size = ImGui::CalcTextSize(number);
-		ImVec2 position((healthbar.x + (healthbar.z - healthbar.x) * 0.5f) - size.x / 2.0f, healthbarHeight - size.y);
+		const ImVec2 size = ImGui::CalcTextSize(number);
+		const ImVec2 position((healthbar.x + (healthbar.z - healthbar.x) * 0.5F) - size.x / 2.0F, healthbarHeight - size.y);
 
 		if (healthNumber.shadow)
-			drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), healthNumber.shadowColor, number);
+			drawList->AddText(ImVec2(position.x + 1.0F, position.y + 1.0F), healthNumber.shadowColor, number);
 
 		drawList->AddText(position, healthNumber.fontColor, number);
 

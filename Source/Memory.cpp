@@ -11,7 +11,7 @@
 
 #include "Utils/VMT.hpp"
 
-static void* lineGoesThroughSmoke;
+static const void* lineGoesThroughSmoke;
 
 void* GetBaseAddress(const char* name)
 {
@@ -60,7 +60,7 @@ void Memory::Create()
 							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
 
-bool Memory::LineGoesThroughSmoke(Vector from, Vector to, short _)
+bool Memory::LineGoesThroughSmoke(const Vector from, const Vector to, const short _)
 {
 	// Little explanation why I make this struct here:
 	// GCC for some reason decides that pushing the from and to Vector (class) over general purpose registers is a good idea.
@@ -71,12 +71,12 @@ bool Memory::LineGoesThroughSmoke(Vector from, Vector to, short _)
 		float x, y, z;
 	};
 
-	VectorStruct fromStruct;
+	VectorStruct fromStruct {};
 	fromStruct.x = from.x;
 	fromStruct.y = from.y;
 	fromStruct.z = from.z;
 
-	VectorStruct toStruct;
+	VectorStruct toStruct {};
 	toStruct.x = to.x;
 	toStruct.y = to.y;
 	toStruct.z = to.z;

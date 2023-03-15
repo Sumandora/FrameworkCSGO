@@ -36,17 +36,17 @@ BoxNameSetting Features::Legit::Esp::dzSentries { strdup(xorstr_("Sentries")) };
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
-	float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
-	float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
-	if (z <= 0.0f || w <= 0.0f)
+	const float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
+	const float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
+	if (z <= 0.0F || w <= 0.0F)
 		return false;
 
 	screenPosition = ImVec2(ImGui::GetIO().DisplaySize);
-	screenPosition.x /= 2.0f;
-	screenPosition.y /= 2.0f;
+	screenPosition.x /= 2.0F;
+	screenPosition.y /= 2.0F;
 
-	screenPosition.x *= 1.0f + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
-	screenPosition.y *= 1.0f - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
+	screenPosition.x *= 1.0F + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
+	screenPosition.y *= 1.0F - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
 	return true;
 }
 
@@ -62,20 +62,20 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 
 	settings->healthbar.Draw(drawList, rectangle, *player->Health());
 	if (settings->weapon.enabled) { // Don't ask for the weapon, if we don't have to
-		CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
+		auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
 		if (weapon) {
-			WeaponID weaponID = *weapon->WeaponDefinitionIndex();
+			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
 				char weaponName[256];
 				LocalizeWeaponID(weaponID, weaponName);
-				settings->weapon.Draw(drawList, rectangle, weaponName, 1.0f);
+				settings->weapon.Draw(drawList, rectangle, weaponName, 1.0F);
 			}
 		}
 	}
 
-	float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
+	const float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
 	if (flashDuration > 0.0) {
-		settings->flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5f);
+		settings->flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5F);
 	}
 }
 
@@ -91,15 +91,18 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 	if (settings == &Features::Legit::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
-	Vector head = boneMatrix[8].Origin();
+	const Vector head = boneMatrix[8].Origin();
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
 	if (Features::Legit::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
 		return &settings->occluded;
 
+	if (head.y < 0)
+		return &settings->occluded; // Under the map?
+
 	CTraceFilterEntity filter(localPlayer);
-	Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
+	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
 
 	if (trace.m_pEnt != player)
 		return &settings->occluded;
@@ -124,7 +127,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
-		auto entity = Interfaces::entityList->GetClientEntity(i);
+		auto* entity = Interfaces::entityList->GetClientEntity(i);
 		if (!entity)
 			continue;
 
@@ -133,13 +136,13 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 		if (!collideable)
 			continue;
 
-		if ((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > drawDistance * drawDistance)
+		if ((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > (float)(drawDistance * drawDistance))
 			continue;
 
-		Vector min = *entity->VecOrigin() + *collideable->ObbMins();
-		Vector max = *entity->VecOrigin() + *collideable->ObbMaxs();
+		const Vector min = *entity->VecOrigin() + *collideable->ObbMins();
+		const Vector max = *entity->VecOrigin() + *collideable->ObbMaxs();
 
-		Vector points[] = {
+		const Vector points[] = {
 			// Lower
 			Vector(min.x, min.y, min.z),
 			Vector(max.x, min.y, min.z),
@@ -176,7 +179,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 
 		if (visible) {
 			if (entity->IsPlayer()) {
-				auto player = reinterpret_cast<CBasePlayer*>(entity);
+				auto* player = reinterpret_cast<CBasePlayer*>(entity);
 				PlayerStateSettings* settings = nullptr;
 				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
 					settings = &players.local;
@@ -199,14 +202,14 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 				if (settings)
 					DrawPlayer(drawList, rectangle, player, settings);
 			} else if (entity->IsWeapon()) {
-				auto weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
+				auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
 				if (*weapon->OwnerEntity() == -1)
 					weapons.Draw(drawList, rectangle, weapon);
 			} else {
-				ClientClass clientClass = *entity->GetClientClass();
+				const ClientClass clientClass = *entity->GetClientClass();
 				switch (static_cast<ClientClassID>(clientClass.m_ClassID)) {
 				case ClientClassID::CPlantedC4: {
-					auto bomb = reinterpret_cast<CPlantedC4*>(entity);
+					auto* bomb = reinterpret_cast<CPlantedC4*>(entity);
 					plantedC4.Draw(drawList, rectangle, bomb);
 					break;
 				}

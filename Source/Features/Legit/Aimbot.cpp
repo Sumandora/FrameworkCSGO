@@ -35,33 +35,29 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
 		return;
 
-	TeamID localTeam = *localPlayer->Team();
-	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
+	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
 
-	if (*reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) > maximalFlashAmount)
+	if (*reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) > (float)maximalFlashAmount)
 		return;
 
-	Vector playerEye = localPlayer->GetEyePosition();
+	const Vector playerEye = localPlayer->GetEyePosition();
 
 	Vector viewAngles;
 	Interfaces::engine->GetViewAngles(&viewAngles);
 
 	CBasePlayer* target = nullptr;
-	float bestDistance;
+	float bestDistance {};
 	Vector bestRotation;
 
 	CTraceFilterEntity filter(localPlayer);
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
 			continue;
-
-		TeamID team = *player->Team();
-
-		if (team == TeamID::TEAM_UNASSIGNED || team == TeamID::TEAM_SPECTATOR)
+		if (!IsParticipatingTeam(*player->Team()))
 			continue;
 
 		if (!(friendlyFire || player->IsEnemy()))
@@ -71,7 +67,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		if (!player->SetupBones(boneMatrix))
 			continue;
 
-		Vector head = boneMatrix[8].Origin();
+		const Vector head = boneMatrix[8].Origin();
 
 		if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
 			continue;

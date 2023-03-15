@@ -9,6 +9,7 @@ class SDLHook {
 public:
 	void* proxy;
 
+	SDLHook() = delete;
 	SDLHook(const char* name, void* hook);
 	~SDLHook();
 };

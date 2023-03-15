@@ -20,7 +20,7 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return;
 
-	int flags = *localPlayer->Flags();
+	const int flags = *localPlayer->Flags();
 
 	if (humanization > 0) {
 		if (!(flags & FL_ONGROUND)) {

@@ -35,7 +35,7 @@ void SDL_GL_SwapWindowHook(SDL_Window* window)
 
 int SDL_PollEventsHook(SDL_Event* event)
 {
-	int returnValue = reinterpret_cast<int (*)(SDL_Event*)>(Hooks::SDL::pollEvents->proxy)(event);
+	const int returnValue = reinterpret_cast<int (*)(SDL_Event*)>(Hooks::SDL::pollEvents->proxy)(event);
 
 	if (event->type >= SDL_FIRSTEVENT && event->type < SDL_KEYDOWN)
 		return returnValue; // These events are not important for our purposes
