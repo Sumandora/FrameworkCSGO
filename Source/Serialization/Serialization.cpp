@@ -6,12 +6,12 @@
 
 bool Serialization::Load(const char* filename)
 {
-	mINI::INIFile file(filename);
+	const mINI::INIFile file(filename);
 	mINI::INIStructure ini;
 	if (!file.read(ini))
 		return false;
 
-	Serializer serializer(ini);
+	const Serializer serializer(ini);
 
 	Features::Serializer(serializer, Direction::DESERIALIZE);
 
@@ -20,10 +20,10 @@ bool Serialization::Load(const char* filename)
 
 bool Serialization::Save(const char* filename)
 {
-	mINI::INIFile file(filename);
+	const mINI::INIFile file(filename);
 	mINI::INIStructure ini;
 
-	Serializer serializer(ini);
+	const Serializer serializer(ini);
 
 	Features::Serializer(serializer, Direction::SERIALIZE);
 

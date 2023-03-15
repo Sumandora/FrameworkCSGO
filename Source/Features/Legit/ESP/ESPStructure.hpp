@@ -15,9 +15,6 @@ class BoxSettings {
 private:
 	const char* id;
 
-public:
-	BoxSettings(const char* id);
-
 	bool enabled;
 	ImColor color;
 	float rounding;
@@ -28,7 +25,10 @@ public:
 	bool fill;
 	ImColor fillColor;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle);
+public:
+	BoxSettings(const char* id);
+
+	void Draw(ImDrawList* drawList, ImVec4 rectangle) const;
 	void Copy(BoxSettings& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -47,7 +47,7 @@ public:
 	bool shadow;
 	ImColor shadowColor;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height) const;
 	void Copy(TextSetting& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -56,9 +56,6 @@ public:
 class HealthbarSettings {
 private:
 	const char* id;
-
-public:
-	HealthbarSettings(const char* id);
 
 	bool enabled;
 	ImColor backgroundColor;
@@ -74,7 +71,10 @@ public:
 	TextSetting healthNumber;
 	bool onlyWhenDamaged;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health);
+public:
+	HealthbarSettings(const char* id);
+
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const;
 	void Copy(HealthbarSettings& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -90,7 +90,7 @@ public:
 	BoxSettings box;
 	TextSetting nametag;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const;
 	void Copy(BoxNameSetting& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -117,13 +117,13 @@ class WeaponSettings {
 private:
 	const char* id;
 
-public:
-	WeaponSettings(const char* id);
-
 	BoxNameSetting boxName;
 	TextSetting ammo;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon);
+public:
+	WeaponSettings(const char* id);
+
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const;
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
 };
@@ -132,15 +132,14 @@ class PlantedC4Settings {
 private:
 	const char* id;
 
+	BoxNameSetting boxName;
+	TextSetting timer;
+	// TODO Add defuse timer
+
 public:
 	PlantedC4Settings(const char* id);
 
-	BoxNameSetting boxName;
-	TextSetting timer;
-
-	// TODO Add defuse timer
-
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb);
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const;
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
 };

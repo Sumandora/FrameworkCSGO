@@ -29,7 +29,7 @@ void Features::Movement::HighJump::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
-	int flags = *localPlayer->Flags();
+	const int flags = *localPlayer->Flags();
 
 	cmd->buttons |= IN_DUCK;
 	if (flags & FL_ONGROUND) {

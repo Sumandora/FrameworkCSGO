@@ -21,7 +21,7 @@ bool IsInputDown(int key, bool _default, bool disableInMenu)
 	return _default;
 }
 
-IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size)
+IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& size)
 {
 	static const char* waiting = nullptr;
 
@@ -44,7 +44,7 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 		}
 		if (!found) {
 			// Maybe a mouse button?
-			auto buttons = ImGui::GetIO().MouseDown;
+			auto* buttons = ImGui::GetIO().MouseDown;
 			for (int i = 0; i < 5; i++) {
 				if (buttons[i]) {
 					waiting = nullptr;

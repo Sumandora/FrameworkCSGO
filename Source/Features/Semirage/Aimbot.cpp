@@ -15,12 +15,12 @@
 
 bool Features::Semirage::Aimbot::enabled = false;
 bool Features::Semirage::Aimbot::onlyWhenShooting = false; // TODO Separate key
-float Features::Semirage::Aimbot::fov = 3.0f;
-float Features::Semirage::Aimbot::aimSpeed = 0.2f;
+float Features::Semirage::Aimbot::fov = 3.0F;
+float Features::Semirage::Aimbot::aimSpeed = 0.2F;
 int Features::Semirage::Aimbot::maximalFlashAmount = 255;
 bool Features::Semirage::Aimbot::dontAimThroughSmoke = false;
 bool Features::Semirage::Aimbot::silent = false;
-float Features::Semirage::Aimbot::snapBack = 0.1f;
+float Features::Semirage::Aimbot::snapBack = 0.1F;
 bool Features::Semirage::Aimbot::friendlyFire = false;
 
 bool wasFaked = false;
@@ -34,8 +34,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return false;
 
-	TeamID localTeam = *localPlayer->Team();
-	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
+	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return false;
 
 	Vector viewAngles;
@@ -46,45 +45,43 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 	CBasePlayer* target = nullptr;
 	Vector bestRotation;
-	float bestDistance;
+	float bestDistance {};
 
 	// For compatibility’s sake, play it off like we didn't find a target
-	if ((cmd->buttons & IN_ATTACK || !onlyWhenShooting) && *reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) <= maximalFlashAmount) {
+	if ((cmd->buttons & IN_ATTACK || !onlyWhenShooting) && *reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) <= (float)maximalFlashAmount) {
 		CTraceFilterEntity filter(localPlayer);
 
 		// The first object is always the WorldObj
 		for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-			CBasePlayer* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+			auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 			if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
 				continue;
 
-			TeamID team = *player->Team();
-
-			if (team == TeamID::TEAM_UNASSIGNED || team == TeamID::TEAM_SPECTATOR)
+			if (!IsParticipatingTeam(*player->Team()))
 				continue;
 
 			if (!(friendlyFire || player->IsEnemy()))
 				continue;
 
-			Vector playerEye = localPlayer->GetEyePosition();
+			const Vector playerEye = localPlayer->GetEyePosition();
 
 			Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 			if (!player->SetupBones(boneMatrix))
 				continue;
 
-			Vector head = boneMatrix[8].Origin();
+			const Vector head = boneMatrix[8].Origin();
 
 			if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
 				continue;
 
-			Trace trace = Utils::TraceRay(playerEye, head, &filter);
+			const Trace trace = Utils::TraceRay(playerEye, head, &filter);
 
 			if (trace.m_pEnt != player)
 				continue; // The enemy is behind something...
 
 			Vector rotation = Utils::CalculateView(playerEye, head);
 			rotation -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
-			float delta = (rotation - cmd->viewangles).Wrap().Length(); // Use the real angle for the fov check
+			const float delta = (rotation - cmd->viewangles).Wrap().Length(); // Use the real angle for the fov check
 			rotation -= viewAngles;
 			rotation.Wrap();
 

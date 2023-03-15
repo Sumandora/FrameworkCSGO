@@ -11,10 +11,10 @@ BoxNameSetting::BoxNameSetting(const char* id)
 {
 }
 
-void BoxNameSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text)
+void BoxNameSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const
 {
 	box.Draw(drawList, rectangle);
-	nametag.Draw(drawList, rectangle, text, 0.0f);
+	nametag.Draw(drawList, rectangle, text, 0.0F);
 }
 
 void BoxNameSetting::Copy(BoxNameSetting& src)

@@ -11,7 +11,7 @@ void Serialization::Serializer::Serialize(const char* name, int& type, Direction
 		GetValue(name) = std::to_string(type);
 		break;
 	case DESERIALIZE:
-		std::string string = GetValue(name);
+		const std::string string = GetValue(name);
 		if (!string.empty())
 			type = std::stoi(string);
 		break;

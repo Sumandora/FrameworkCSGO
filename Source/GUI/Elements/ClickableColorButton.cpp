@@ -11,7 +11,7 @@ IMGUI_API void ImGui::ClickableColorButton(const char* desc_id, ImColor& col, Im
 {
 	ImGui::PushID(desc_id);
 
-	bool clicked = ImGui::ColorButton(desc_id, col.Value, flags, size);
+	const bool clicked = ImGui::ColorButton(desc_id, col.Value, flags, size);
 	if (ImGui::BeginPopupContextItem()) {
 		if (ImGui::Selectable(xorstr_("Copy"))) {
 			clipboard = col;
@@ -22,7 +22,7 @@ IMGUI_API void ImGui::ClickableColorButton(const char* desc_id, ImColor& col, Im
 		ImGui::EndPopup();
 	}
 	ImGui::SameLine();
-	ImGui::Text(desc_id);
+	ImGui::Text("%s", desc_id);
 
 	if (clicked)
 		ImGui::OpenPopup(xorstr_("##Picker"));

@@ -29,21 +29,20 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return;
 
-	TeamID localTeam = *localPlayer->Team();
-	if (localTeam == TeamID::TEAM_UNASSIGNED || localTeam == TeamID::TEAM_SPECTATOR)
+	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
 
-	CBaseCombatWeapon* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 
 	if (!weapon)
 		return;
 
-	bool secondaryFire = *weapon->WeaponDefinitionIndex() == WeaponID::WEAPON_REVOLVER && secondaryFireWithR8Revolver;
+	const bool secondaryFire = *weapon->WeaponDefinitionIndex() == WeaponID::WEAPON_REVOLVER && secondaryFireWithR8Revolver;
 
 	if ((!secondaryFire ? *weapon->NextPrimaryAttack() : *weapon->NextSecondaryAttack()) > Memory::globalVars->curtime)
 		return;
 
-	Vector playerEye = localPlayer->GetEyePosition();
+	const Vector playerEye = localPlayer->GetEyePosition();
 	auto viewangles = Vector(cmd->viewangles);
 
 	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat() / 2.0f;
@@ -67,7 +66,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 
 	TeamID team = *player->Team();
 
-	if (team == TeamID::TEAM_UNASSIGNED || team == TeamID::TEAM_SPECTATOR)
+	if (!IsParticipatingTeam(team))
 		return;
 
 	if (!(friendlyFire || player->IsEnemy()))

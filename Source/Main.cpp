@@ -18,7 +18,7 @@ void Initializer()
 {
 	srand(time(nullptr));
 
-	struct stat info;
+	struct stat info { };
 	if (!(stat(Serialization::GetConfigDirectory(), &info) == 0 && S_ISDIR(info.st_mode)))
 		mkdir(Serialization::GetConfigDirectory(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 

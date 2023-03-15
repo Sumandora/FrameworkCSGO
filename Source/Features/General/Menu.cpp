@@ -51,7 +51,7 @@ void Features::General::Menu::ImGuiLoop()
 		ImGui::ShowUserGuide();
 #endif
 
-	bool isPressed = IsInputDown(menuKey, false, false);
+	const bool isPressed = IsInputDown(menuKey, false, false);
 
 	if (isPressed && !wasPressed) {
 		Gui::visible = !Gui::visible;

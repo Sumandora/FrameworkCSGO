@@ -8,4 +8,9 @@ enum class TeamID : int {
 	TEAM_COUNTER_TERRORIST
 };
 
+inline constexpr bool IsParticipatingTeam(TeamID team)
+{
+	return team == TeamID::TEAM_TERRORIST || team == TeamID::TEAM_COUNTER_TERRORIST;
+}
+
 #endif

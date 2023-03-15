@@ -11,7 +11,7 @@
 namespace Utils {
 	void AngleVectors(Vector angles, Vector* forward);
 	void VectorAngles(Vector& forward, Vector& angles);
-	Vector CalculateView(const Vector a, const Vector b);
+	Vector CalculateView(Vector a, Vector b);
 }
 
 #endif

@@ -34,12 +34,12 @@ void* UncoverCreateFunction(void* createFunc)
 	 * There is a preprocessor definition in the source engine which creates these exported interface functions.
 	 * But hey who could imagine that the same code also produces the same assembly right?
 	 */
-	static Pattern leaRax = Pattern("\x48\x8d\x05", "xxx");
-	static Pattern movRaxRax = Pattern("\x48\x8b\x00", "xxx");
-	static Pattern ret = Pattern("\xc3", "x"); // Unnecessary but to follow the style
+	static const Pattern leaRax = Pattern("\x48\x8d\x05", "xxx");
+	static const Pattern movRaxRax = Pattern("\x48\x8b\x00", "xxx");
+	static const Pattern ret = Pattern("\xc3", "x"); // Unnecessary but to follow the style
 
 	char* rip = reinterpret_cast<char*>(createFunc);
-	void* interfacePtr;
+	void* interfacePtr {};
 	while (true) {
 		if (leaRax.matchPattern(rip)) { // LEA rax, [rip + offset]
 			interfacePtr = Memory::RelativeToAbsolute(reinterpret_cast<char*>(rip) + 3 /* skip the lea */);
@@ -118,7 +118,7 @@ void Interfaces::SetupGUI()
 			InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfaces);
 
 			while (interface != nullptr) {
-				Interface t;
+				Interface t {};
 				t.reg = interface;
 				t.uncoveredAddress = nullptr;
 				t.realAddress = nullptr;

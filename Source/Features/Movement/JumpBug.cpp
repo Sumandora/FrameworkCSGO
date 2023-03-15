@@ -38,11 +38,11 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
-	int realFlags = Features::General::EnginePrediction::prePredictionFlags;
-	int predFlags = *localPlayer->Flags();
+	const int realFlags = Features::General::EnginePrediction::prePredictionFlags;
+	const int predFlags = *localPlayer->Flags();
 
-	bool isOnGround = realFlags & FL_ONGROUND || realFlags & FL_PARTIALGROUND;
-	bool willBeOnGround = predFlags & FL_ONGROUND || predFlags & FL_PARTIALGROUND;
+	const bool isOnGround = realFlags & FL_ONGROUND || realFlags & FL_PARTIALGROUND;
+	const bool willBeOnGround = predFlags & FL_ONGROUND || predFlags & FL_PARTIALGROUND;
 
 	if (!isOnGround) {
 		if (willBeOnGround) {

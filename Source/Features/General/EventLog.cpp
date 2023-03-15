@@ -28,7 +28,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 	if (entries.empty())
 		return;
 
-	long currentTime = time();
+	const long currentTime = time();
 
 	while (!entries.empty() && currentTime - entries.front().time > duration)
 		entries.erase(entries.begin());
@@ -37,7 +37,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 	if (!enabled)
 		return;
 
-	float yOffset = 0;
+	double yOffset = 0;
 
 	if (Watermark::enabled) {
 		yOffset += ImGui::GetTextLineHeightWithSpacing();
@@ -45,15 +45,15 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 
 	for (Entry entry : entries) {
 		// Normalized from 0.0-1.0
-		float animation = (float)(currentTime - entry.time) / (float)duration;
+		double animation = (double)(currentTime - entry.time) / (double)duration;
 		// If you are curious, what this formula does, then just put it into geogebra or wolframalpha
 		// FYI: The `10` is the duration the notification stays visible (uneven numbers break it)
-		animation = 1.0f - pow(((animation - 0.5f) * 2.0f), 10.0f);
-		if (animation > 0.99f) // Because we are calculating everything using floats, we will see micro movements
-			animation = 1.0f; // If we are close to 1.0 then just set it to 1.0, we don't care about movements in the 0.99-1.0 range
+		animation = 1.0 - (float)pow(((animation - 0.5) * 2.0), 10.0);
+		if (animation > 0.99) // Because we are calculating everything using floats, we will see micro movements
+			animation = 1.0; // If we are close to 1.0 then just set it to 1.0, we don't care about movements in the 0.99-1.0 range
 
-		ImVec2 size = ImGui::CalcTextSize(entry.text);
-		ImVec2 position(-size.x * (1.0f - animation) + 10.0f, yOffset + 10.0f);
+		const ImVec2 size = ImGui::CalcTextSize(entry.text);
+		const ImVec2 position((float)(-size.x * (1.0 - animation) + 10.0), (float)(yOffset + 10.0));
 
 		ShadowString::AddText(drawList, position, ImGuiColors::white, entry.text);
 

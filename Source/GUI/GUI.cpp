@@ -49,11 +49,11 @@ void Gui::SwapWindow(SDL_Window* window)
 	ImGuiIO& io = ImGui::GetIO();
 	io.SetPlatformImeDataFn = nullptr;
 
-	int w, h;
-	SDL_GetWindowSize(window, &w, &h);
+	int width {}, height {};
+	SDL_GetWindowSize(window, &width, &height);
 
-	io.DisplaySize = ImVec2((float)w, (float)h);
-	io.MousePos = ImVec2(std::clamp(io.MousePos.x, 0.0f, (float)w), std::clamp(io.MousePos.y, 0.0f, (float)h));
+	io.DisplaySize = ImVec2((float)width, (float)height);
+	io.MousePos = ImVec2(std::clamp(io.MousePos.x, 0.0F, (float)width), std::clamp(io.MousePos.y, 0.0F, (float)height));
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
@@ -62,9 +62,9 @@ void Gui::SwapWindow(SDL_Window* window)
 	Features::General::Menu::ImGuiLoop(); // Will take care of the menu key
 
 	if (visible) {
-		ImVec2 size(800, 600);
+		const ImVec2 size(800, 600);
 		ImGui::SetNextWindowSize(size, ImGuiCond_Once);
-		ImGui::SetNextWindowPos(ImVec2((w - size.x) / 2.0f, (h - size.y) / 2.0f), ImGuiCond_Once);
+		ImGui::SetNextWindowPos(ImVec2(static_cast<float>(width) / 2.0F - size.x / 2.0F, static_cast<float>(height) / 2.0F - size.y / 2.0F), ImGuiCond_Once);
 
 		ImGui::Begin(xorstr_("Framework"));
 

@@ -7,31 +7,31 @@
 TextSetting::TextSetting(const char* id)
 	: id(id)
 	, enabled(false)
-	, fontScale(1.0f)
+	, fontScale(1.0F)
 	, fontColor(ImGuiColors::white)
 	, shadow(false)
 	, shadowColor(ImGuiColors::black)
 {
 }
 
-void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height)
+void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height) const
 {
 	if (!enabled)
 		return;
 
 	// Hack
-	float fontScale = ImGui::GetFont()->Scale;
+	const float fontScale = ImGui::GetFont()->Scale;
 	ImGui::GetFont()->Scale = fontScale;
 	ImGui::PushFont(ImGui::GetFont());
 
-	ImVec2 size = ImGui::CalcTextSize(text);
+	const ImVec2 size = ImGui::CalcTextSize(text);
 
-	float above = rectangle.y - size.y;
-	float below = rectangle.w;
-	ImVec2 position(rectangle.x + (rectangle.z - rectangle.x) * 0.5f - size.x / 2.0f, above + (below - above) * height);
+	const float above = rectangle.y - size.y;
+	const float below = rectangle.w;
+	const ImVec2 position(rectangle.x + (rectangle.z - rectangle.x) * 0.5F - size.x / 2.0F, above + (below - above) * height);
 
 	if (shadow)
-		drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), shadowColor, text);
+		drawList->AddText(ImVec2(position.x + 1.0F, position.y + 1.0F), shadowColor, text);
 
 	drawList->AddText(position, fontColor, text);
 

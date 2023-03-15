@@ -1,5 +1,5 @@
-#ifndef GUI_GUI
-#define GUI_GUI
+#ifndef GUI
+#define GUI
 
 #include "SDL.h"
 

@@ -2,13 +2,13 @@
 
 #include <cstdio>
 #include <cstring>
+#include <ctime>
 #include <string>
 #include <vector>
 
 #include <dirent.h>
 #include <pwd.h>
 #include <sys/types.h>
-#include <time.h>
 #include <unistd.h>
 
 #include "imgui.h"
@@ -32,13 +32,13 @@ bool GatherConfigs(std::vector<std::string>& configs)
 	if (dir == nullptr)
 		return false;
 
-	dirent* ent;
+	dirent* ent {};
 
 	while ((ent = readdir(dir))) {
 		if (ent->d_type != DT_REG)
 			continue;
 
-		configs.push_back(std::string(ent->d_name));
+		configs.emplace_back(std::string(ent->d_name));
 	}
 
 	closedir(dir);
@@ -56,7 +56,7 @@ void Serialization::SetupGUI()
 	bool addedConfig = false;
 
 	if (ImGui::Button(xorstr_("Save")) && name[0] != '\0') {
-		auto cfgName = name;
+		auto* cfgName = name;
 		if (!std::string(cfgName).ends_with(".ini"))
 			cfgName = strcat(cfgName, ".ini");
 
@@ -74,7 +74,7 @@ void Serialization::SetupGUI()
 	ImGui::PopItemWidth();
 
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-	long currTime = time(nullptr);
+	const long currTime = time(nullptr);
 
 	if (currTime - lastRefresh > 1 || addedConfig) {
 		configs.clear();

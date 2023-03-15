@@ -8,17 +8,17 @@ BoxSettings::BoxSettings(const char* id)
 	: id(id)
 	, enabled(false)
 	, color(ImGuiColors::white)
-	, rounding(0.0f)
-	, thickness(1.0f)
+	, rounding(0.0F)
+	, thickness(1.0F)
 	, outlined(false)
 	, outlineColor(ImGuiColors::black)
-	, outlineThickness(1.0f)
+	, outlineThickness(1.0F)
 	, fill(false)
 	, fillColor(ImGuiColors::white)
 {
 }
 
-void BoxSettings::Draw(ImDrawList* drawList, ImVec4 rectangle)
+void BoxSettings::Draw(ImDrawList* drawList, ImVec4 rectangle) const
 {
 	if (!enabled)
 		return;
