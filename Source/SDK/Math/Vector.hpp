@@ -213,7 +213,7 @@ public:
 
 	[[nodiscard]] inline float Length() const
 	{
-		return sqrt(LengthSquared());
+		return fsqrt(LengthSquared());
 	}
 
 	[[nodiscard]] inline float Dot(const Vector& other) const

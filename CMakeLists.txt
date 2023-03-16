@@ -35,16 +35,15 @@ target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
 
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
 
-
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl2.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
 	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
+	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
 
 	target_compile_definitions(Framework_Example PUBLIC IM_ASSERT\(x\))
-	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
 endif()
 
 target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})

@@ -4,12 +4,10 @@
 #include "xorstr.hpp"
 
 #include "../../GUI/Elements/ShadowString.hpp"
-#include "../../GUI/ImGuiColors.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
-#include <map>
 #include <vector>
 
 bool Features::Legit::SpectatorList::enabled = false;

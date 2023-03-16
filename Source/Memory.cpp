@@ -1,7 +1,6 @@
 #include "Memory.hpp"
 
 #include <dlfcn.h>
-#include <link.h>
 #include <vector>
 
 #include "Interfaces.hpp"
@@ -60,7 +59,7 @@ void Memory::Create()
 							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
 
-bool Memory::LineGoesThroughSmoke(const Vector from, const Vector to, const short _)
+bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
 {
 	// Little explanation why I make this struct here:
 	// GCC for some reason decides that pushing the from and to Vector (class) over general purpose registers is a good idea.

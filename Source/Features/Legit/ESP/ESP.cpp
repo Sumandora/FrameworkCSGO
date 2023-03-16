@@ -13,9 +13,6 @@
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
 #include "../../../SDK/ClientClassIDs.hpp"
-#include "../../../SDK/Definitions/LifeState.hpp"
-
-#include "../../../Memory.hpp"
 
 #include <bits/stdc++.h>
 #include <cstdint>
@@ -97,9 +94,6 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 
 	if (Features::Legit::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
 		return &settings->occluded;
-
-	if (head.y < 0)
-		return &settings->occluded; // Under the map?
 
 	CTraceFilterEntity filter(localPlayer);
 	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);

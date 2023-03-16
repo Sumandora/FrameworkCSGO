@@ -20,7 +20,7 @@ void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text,
 		return;
 
 	// Hack
-	const float fontScale = ImGui::GetFont()->Scale;
+	const float oldFontScale = ImGui::GetFont()->Scale;
 	ImGui::GetFont()->Scale = fontScale;
 	ImGui::PushFont(ImGui::GetFont());
 
@@ -36,7 +36,7 @@ void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text,
 	drawList->AddText(position, fontColor, text);
 
 	ImGui::PopFont();
-	ImGui::GetFont()->Scale = fontScale;
+	ImGui::GetFont()->Scale = oldFontScale;
 }
 
 void TextSetting::Copy(TextSetting& src)

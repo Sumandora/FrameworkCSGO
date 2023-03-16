@@ -13,7 +13,7 @@ enum Direction {
 namespace Serialization {
 	class Serializer {
 	public:
-		Serializer(mINI::INIStructure& structure);
+		explicit Serializer(mINI::INIStructure& structure);
 
 		void SetSection(const char* section);
 		void LeaveSection();

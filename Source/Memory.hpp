@@ -14,7 +14,7 @@ namespace Memory {
 	void Create();
 	void* RelativeToAbsolute(void* addr);
 
-	bool LineGoesThroughSmoke(Vector from, Vector to, short _);
+	bool LineGoesThroughSmoke(const Vector& from, const Vector& to, short _);
 }
 
 #endif

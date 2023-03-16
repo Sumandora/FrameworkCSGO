@@ -59,7 +59,7 @@ public:
 				return true;
 			else {
 				if (Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {
-					int localSurvivalTeam = *localPlayer->SurvivalTeam();
+					const int localSurvivalTeam = *localPlayer->SurvivalTeam();
 					if (localSurvivalTeam < 0) // DZ without teams
 						return true;
 

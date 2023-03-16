@@ -5,8 +5,6 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "ImGuiMacros.hpp"
-
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
 

@@ -1,9 +1,5 @@
 #include "../Serializer.hpp"
 
-#include <algorithm>
-
-#include "xorstr.hpp"
-
 void Serialization::Serializer::Serialize(const char* name, float& type, Direction direction)
 {
 	switch (direction) {

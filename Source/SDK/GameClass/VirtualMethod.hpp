@@ -9,8 +9,6 @@
 // Inspired by danielkrupinski/Osiris
 
 namespace VirtualMethod {
-	extern void* ret_instruction_addr;
-
 	template <typename Ret, std::size_t Index, typename... Args>
 	auto invoke(void* gameClass, Args... args) -> Ret
 	{

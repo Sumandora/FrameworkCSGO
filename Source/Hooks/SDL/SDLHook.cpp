@@ -5,7 +5,6 @@
 
 #include "../../Features/Legit.hpp"
 #include "../../GUI/GUI.hpp"
-#include "../../Memory.hpp"
 
 SDLHook::SDLHook(const char* name, void* hook)
 {

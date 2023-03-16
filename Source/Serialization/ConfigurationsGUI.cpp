@@ -1,6 +1,5 @@
 #include "Serialization.hpp"
 
-#include <cstdio>
 #include <cstring>
 #include <ctime>
 #include <string>
@@ -8,7 +7,6 @@
 
 #include <dirent.h>
 #include <pwd.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include "imgui.h"
@@ -32,13 +30,13 @@ bool GatherConfigs(std::vector<std::string>& configs)
 	if (dir == nullptr)
 		return false;
 
-	dirent* ent {};
+	dirent* ent;
 
 	while ((ent = readdir(dir))) {
 		if (ent->d_type != DT_REG)
 			continue;
 
-		configs.emplace_back(std::string(ent->d_name));
+		configs.emplace_back(ent->d_name);
 	}
 
 	closedir(dir);
@@ -87,7 +85,7 @@ void Serialization::SetupGUI()
 		configsArray[i] = configs.at(i).c_str();
 	}
 
-	if (ImGui::ListBox(xorstr_("##Configs"), &configSelected, configsArray, configs.size(), configs.size())) {
+	if (ImGui::ListBox(xorstr_("##Configs"), &configSelected, configsArray, (int) configs.size(), (int) configs.size())) {
 		if (configSelected >= 0 && configSelected < static_cast<int>(configs.size())) {
 			const char* configName = configs.at(configSelected).c_str();
 			if (Load(GetConfigFile(configName)))
