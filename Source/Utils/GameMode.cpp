@@ -21,8 +21,9 @@ Gamemode Utils::CalculateGamemode()
 			return Gamemode::WINGMAN;
 		case 3:
 			return Gamemode::WEAPONS_EXPERT;
+		default:
+			return Gamemode::UNKNOWN;
 		}
-		break;
 	case 1:
 		switch (game_mode) {
 		case 0:
@@ -31,22 +32,26 @@ Gamemode Utils::CalculateGamemode()
 			return Gamemode::GUN_GAME_DEMOLITION;
 		case 2:
 			return Gamemode::GUN_GAME_DEATHMATCH;
+		default:
+			return Gamemode::UNKNOWN;
 		}
-		break;
 	case 2:
 		if (game_mode == 0)
 			return Gamemode::TRAINING;
-		break;
+		else
+			return Gamemode::UNKNOWN;
 	case 3:
 		if (game_mode == 0)
 			return Gamemode::CUSTOM;
-		break;
+		else
+			return Gamemode::UNKNOWN;
 	case 4:
 		if (game_mode == 0)
 			return Gamemode::GUARDIAN;
 		else if (game_mode == 1)
 			return Gamemode::COOP_STRIKE;
-		break;
+		else
+			return Gamemode::UNKNOWN;
 	case 5:
 		if (game_mode == 0) {
 			switch (sv_skirmish_id) {
@@ -58,13 +63,17 @@ Gamemode Utils::CalculateGamemode()
 				return Gamemode::SKIRMISH_DEMOLITION;
 			case 12:
 				return Gamemode::SKIRMISH_RETAKES;
+			default:
+				return Gamemode::UNKNOWN;
 			}
-		}
-		break;
+		} else
+			return Gamemode::UNKNOWN;
 	case 6:
 		if (game_mode == 0)
 			return Gamemode::DANGER_ZONE;
-		break;
+		else
+			return Gamemode::UNKNOWN;
+	default:
+		return Gamemode::UNKNOWN;
 	}
-	return Gamemode::UNKNOWN;
 }

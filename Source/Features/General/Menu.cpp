@@ -24,6 +24,7 @@ void Features::General::Menu::ImGuiLoop()
 {
 	switch (style) {
 	case 0:
+	default:
 		ImGui::StyleColorsDark(&ImGui::GetStyle());
 		break;
 	case 1:
@@ -35,20 +36,22 @@ void Features::General::Menu::ImGuiLoop()
 	}
 
 #ifdef DEBUG
-	if (isShowingDemoWindow)
-		ImGui::ShowDemoWindow();
-	if (isShowingMetricsWindow)
-		ImGui::ShowMetricsWindow();
-	if (isShowingDebugLogWindow)
-		ImGui::ShowDebugLogWindow();
-	if (isShowingStackToolWindow)
-		ImGui::ShowStackToolWindow();
-	if (isShowingAboutWindow)
-		ImGui::ShowAboutWindow();
-	if (isShowingStyleEditor)
-		ImGui::ShowStyleEditor();
-	if (isShowingUserGuide)
-		ImGui::ShowUserGuide();
+	if(Gui::visible) {
+		if (isShowingDemoWindow)
+			ImGui::ShowDemoWindow();
+		if (isShowingMetricsWindow)
+			ImGui::ShowMetricsWindow();
+		if (isShowingDebugLogWindow)
+			ImGui::ShowDebugLogWindow();
+		if (isShowingStackToolWindow)
+			ImGui::ShowStackToolWindow();
+		if (isShowingAboutWindow)
+			ImGui::ShowAboutWindow();
+		if (isShowingStyleEditor)
+			ImGui::ShowStyleEditor();
+		if (isShowingUserGuide)
+			ImGui::ShowUserGuide();
+	}
 #endif
 
 	const bool isPressed = IsInputDown(menuKey, false, false);

@@ -6,7 +6,6 @@
 #include "../../ImGuiMacros.hpp"
 
 #include "../../../Interfaces.hpp"
-#include "../../../Netvars.hpp"
 
 void Gui::Construction::SetupDebug()
 {

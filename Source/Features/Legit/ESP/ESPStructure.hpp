@@ -26,7 +26,7 @@ private:
 	ImColor fillColor;
 
 public:
-	BoxSettings(const char* id);
+	explicit BoxSettings(const char* id);
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle) const;
 	void Copy(BoxSettings& src);
@@ -39,7 +39,7 @@ private:
 	const char* id;
 
 public:
-	TextSetting(const char* id);
+	explicit TextSetting(const char* id);
 
 	bool enabled;
 	float fontScale;
@@ -72,7 +72,7 @@ private:
 	bool onlyWhenDamaged;
 
 public:
-	HealthbarSettings(const char* id);
+	explicit HealthbarSettings(const char* id);
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const;
 	void Copy(HealthbarSettings& src);
@@ -85,7 +85,7 @@ private:
 	const char* id;
 
 public:
-	BoxNameSetting(const char* id);
+	explicit BoxNameSetting(const char* id);
 
 	BoxSettings box;
 	TextSetting nametag;
@@ -101,7 +101,7 @@ private:
 	const char* id;
 
 public:
-	PlayerStateSettings(const char* id);
+	explicit PlayerStateSettings(const char* id);
 
 	BoxNameSetting boxName;
 	HealthbarSettings healthbar;
@@ -121,7 +121,7 @@ private:
 	TextSetting ammo;
 
 public:
-	WeaponSettings(const char* id);
+	explicit WeaponSettings(const char* id);
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const;
 	void SetupGUI();
@@ -137,7 +137,7 @@ private:
 	// TODO Add defuse timer
 
 public:
-	PlantedC4Settings(const char* id);
+	explicit PlantedC4Settings(const char* id);
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const;
 	void SetupGUI();
@@ -151,7 +151,7 @@ private:
 	const char* id;
 
 public:
-	PlayerTeamSettings(const char* id);
+	explicit PlayerTeamSettings(const char* id);
 
 	PlayerStateSettings visible;
 	PlayerStateSettings occluded;
@@ -166,7 +166,7 @@ private:
 	const char* id;
 
 public:
-	PlayerSettings(const char* id);
+	explicit PlayerSettings(const char* id);
 
 	PlayerTeamSettings teammate;
 	PlayerTeamSettings enemy;

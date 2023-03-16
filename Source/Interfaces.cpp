@@ -131,41 +131,39 @@ void Interfaces::SetupGUI()
 	});
 
 	for (const auto& [key, value] : interfaceStorage) {
-		if (true) {
-			if (ImGui::TreeNode(key)) {
-				for (const auto& [key2, value2] : value) {
-					if (ImGui::TreeNode(key2)) {
-						ImGui::Text(xorstr_("Create function: %p"), value2.reg->m_CreateFn);
-						ImGui::Text(xorstr_("Name: %s"), value2.reg->m_pName);
-						ImGui::Text(xorstr_("Next: %p"), value2.reg->m_pNext);
+		if (ImGui::TreeNode(key)) {
+			for (const auto& [key2, value2] : value) {
+				if (ImGui::TreeNode(key2)) {
+					ImGui::Text(xorstr_("Create function: %p"), value2.reg->m_CreateFn);
+					ImGui::Text(xorstr_("Name: %s"), value2.reg->m_pName);
+					ImGui::Text(xorstr_("Next: %p"), value2.reg->m_pNext);
 
-						ImGui::Spacing();
+					ImGui::Spacing();
 
-						ImGui::Text(xorstr_("The next two addresses should line up, if they don't, we have to adjust the uncover function."));
+					ImGui::Text(xorstr_("The next two addresses should line up, if they don't, we have to adjust the uncover function."));
 
-						if (value2.uncoveredAddress) {
-							ImGui::Text(xorstr_("Uncovered address: %p"), value2.uncoveredAddress);
-						} else {
-							if (ImGui::Button(xorstr_("Uncover create function"))) {
-								value2.uncoveredAddress = UncoverCreateFunction(value2.reg->m_CreateFn);
-							}
+					if (value2.uncoveredAddress) {
+						ImGui::Text(xorstr_("Uncovered address: %p"), value2.uncoveredAddress);
+					} else {
+						if (ImGui::Button(xorstr_("Uncover create function"))) {
+							value2.uncoveredAddress = UncoverCreateFunction(value2.reg->m_CreateFn);
 						}
-
-						if (value2.realAddress) {
-							ImGui::Text(xorstr_("Real address: %p"), value2.realAddress);
-						} else {
-							if (ImGui::Button(xorstr_("Invoke create function"))) {
-								value2.realAddress = reinterpret_cast<void* (*)()>(value2.reg->m_CreateFn)();
-							}
-							if (ImGui::IsItemHovered())
-								ImGui::SetTooltip(xorstr_("Warning: This is considered unsafe"));
-						}
-
-						ImGui::TreePop();
 					}
+
+					if (value2.realAddress) {
+						ImGui::Text(xorstr_("Real address: %p"), value2.realAddress);
+					} else {
+						if (ImGui::Button(xorstr_("Invoke create function"))) {
+							value2.realAddress = reinterpret_cast<void* (*)()>(value2.reg->m_CreateFn)();
+						}
+						if (ImGui::IsItemHovered())
+							ImGui::SetTooltip(xorstr_("Warning: This is considered unsafe"));
+					}
+
+					ImGui::TreePop();
 				}
-				ImGui::TreePop();
 			}
+			ImGui::TreePop();
 		}
 	}
 }

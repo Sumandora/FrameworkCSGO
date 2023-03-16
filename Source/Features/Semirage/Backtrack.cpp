@@ -2,12 +2,11 @@
 
 #include <deque>
 #include <map>
-#include <ranges>
 #include <vector>
+#include <ranges>
 
 #include "../General.hpp"
 
-#include "../../ConVarStorage.hpp"
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
@@ -115,8 +114,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 		std::vector<Tick> records = pair.second;
 
-		for (int i = records.size() - 1; i >= 0; i--) {
-			Tick tick = records[i];
+		for (auto& tick : std::ranges::views::reverse(records)) {
 			Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), tick.boneMatrix[8].Origin());
 			requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
 			requiredView -= cmd->viewangles;
@@ -132,7 +130,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		return false;
 	});
 
-	if (bestDistance < 5.0F) {
+	if (bestDistance < 5.0F && cmd->tick_count != bestTick.tickCount) {
 		Features::General::EventLog::CreateReport("Trying to backtrack %d ticks", cmd->tick_count - bestTick.tickCount);
 		cmd->tick_count = bestTick.tickCount;
 	}

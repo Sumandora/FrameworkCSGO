@@ -2,10 +2,8 @@
 
 #include "imgui.h"
 
-#include "../../ConVarStorage.hpp"
 #include "../../Interfaces.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
@@ -98,15 +96,15 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 
 	bestRotation /= smoothness;
 
-	Vector before = Vector(event->motion.xrel, event->motion.yrel, 0);
+	Vector before = Vector((float) event->motion.xrel, (float) event->motion.yrel, 0);
 	Vector goal = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
 
 	float dir = before.Normalized().Dot(goal.Normalized());
 	if (dir < 0)
 		return; // We are trying to aim away
 
-	event->motion.xrel += std::clamp(static_cast<int>(goal.x), -maximalInfluence, maximalInfluence);
-	event->motion.yrel += std::clamp(static_cast<int>(goal.y), -maximalInfluence, maximalInfluence);
+	event->motion.xrel += std::clamp((int) goal.x, -maximalInfluence, maximalInfluence);
+	event->motion.yrel += std::clamp((int) goal.y, -maximalInfluence, maximalInfluence);
 }
 
 void Features::Legit::Aimbot::SetupGUI()

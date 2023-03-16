@@ -6,10 +6,11 @@
 
 Trace Utils::TraceRay(Vector start, Vector end, ITraceFilter* filter)
 {
-	Ray ray;
+	Ray ray {};
 	ray.Init(start, end);
 
-	Trace trace;
+	Trace trace {};
+
 	Interfaces::engineTrace->TraceRay(&ray, MASK_SHOT, filter, &trace);
 
 	return trace;

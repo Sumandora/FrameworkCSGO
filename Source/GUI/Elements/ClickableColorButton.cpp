@@ -1,6 +1,5 @@
 #include "ClickableColorButton.hpp"
 
-#include "SDL.h"
 #include "xorstr.hpp"
 
 #include <cstdlib>

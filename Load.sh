@@ -58,7 +58,7 @@ $SU $DEBUGGER -p $csgo_pid -n -q -batch \
 	if [ $DEBUGGER != "gdb" ]; then
 		echo "- Make sure that $DEBUGGER supports the same usage as GDB"
 	fi
-	
+
 	echo "- A possible error could be this"
 	echo "https://github.com/LWSS/Fuzion/issues/621#issuecomment-777815272"
 }
@@ -86,7 +86,7 @@ $SU $DEBUGGER -p $csgo_pid -n -q -batch \
 # And that's why we all love him so much
 
 # You have to restart your kernel to reinject btw ^^
-echo "3" | $SU tee /proc/sys/kernel/yama/ptrace_scope
+#echo "3" | $SU tee /proc/sys/kernel/yama/ptrace_scope
 
 sleep 1
 $SU killall -18 steamwebhelper

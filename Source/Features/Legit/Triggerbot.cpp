@@ -3,13 +3,11 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../ConVarStorage.hpp"
 #include "../../Interfaces.hpp"
 
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../SDK/Definitions/InputFlags.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
