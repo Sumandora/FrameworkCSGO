@@ -31,7 +31,7 @@ if [ -z "$csgo_pid" ]; then
 fi
 
 # Pretty weak disguise as MangoHud
-$SU cp Build/libFramework_Example.so /usr/lib/libMangoHud.so
+$SU cp Build/libFrameworkCSGO.so /usr/lib/libMangoHud.so
 
 # The following is copied from Fuzion (https://github.com/LWSS/Fuzion/blob/0a4d775e17aba7a723aadce5b80898705e0bd6ff/load#L25); Thanks LWSS and contributors
 # pBypass for crash dumps being sent

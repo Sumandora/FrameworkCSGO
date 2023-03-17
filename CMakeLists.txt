@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(Framework_Example)
+project(FrameworkCSGO)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -14,24 +14,24 @@ file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library(Framework_Example SHARED ${SOURCE_FILES})
-target_link_libraries(Framework_Example dl SDL2 GL)
+add_library(FrameworkCSGO SHARED ${SOURCE_FILES})
+target_link_libraries(FrameworkCSGO dl SDL2 GL)
 
 # Setup Framework
-target_include_directories(Framework_Example PUBLIC Dependencies/Framework/Source/Framework)
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/Framework/Source/Framework)
 
 file(GLOB_RECURSE FRAMEWORK_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/Framework/Source/Framework/*.cpp")
-target_sources(Framework_Example PUBLIC ${FRAMEWORK_SOURCE_FILES})
+target_sources(FrameworkCSGO PUBLIC ${FRAMEWORK_SOURCE_FILES})
 
-target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_HOOKING_DETOUR)
-target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
-target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_PATTERN_SCANNING)
-target_compile_definitions(Framework_Example PUBLIC FRAMEWORK_ENABLE_RETURN_ADDRESS)
+target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_HOOKING_DETOUR)
+target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
+target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_PATTERN_SCANNING)
+target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_RETURN_ADDRESS)
 
 # Setup ImGui
-target_include_directories(Framework_Example PUBLIC Dependencies/imgui)
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/imgui)
 # SDL
-target_include_directories(Framework_Example PUBLIC /usr/include/SDL2)
+target_include_directories(FrameworkCSGO PUBLIC /usr/include/SDL2)
 
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
 
@@ -40,23 +40,23 @@ list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
-	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
-	target_compile_definitions(Framework_Example PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
+	target_compile_definitions(FrameworkCSGO PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
+	target_compile_definitions(FrameworkCSGO PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
 
-	target_compile_definitions(Framework_Example PUBLIC IM_ASSERT\(x\))
+	target_compile_definitions(FrameworkCSGO PUBLIC IM_ASSERT\(x\))
 endif()
 
-target_sources(Framework_Example PUBLIC ${IMGUI_SOURCE_FILES})
+target_sources(FrameworkCSGO PUBLIC ${IMGUI_SOURCE_FILES})
 
 # Setup xorstr
-target_include_directories(Framework_Example PUBLIC Dependencies/xorstr/include)
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/xorstr/include)
 
 file(GLOB_RECURSE XORSTR_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/xorstr/include")
-target_sources(Framework_Example PUBLIC ${XORSTR_SOURCE_FILES})
+target_sources(FrameworkCSGO PUBLIC ${XORSTR_SOURCE_FILES})
 
 # Setup mINI
-target_include_directories(Framework_Example PUBLIC Dependencies/mINI/src)
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/mINI/src)
 
 file(GLOB_RECURSE MINI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/mINI/src")
-target_compile_definitions(Framework_Example PUBLIC MINI_CASE_SENSITIVE)
-target_sources(Framework_Example PUBLIC ${MINI_SOURCE_FILES})
+target_compile_definitions(FrameworkCSGO PUBLIC MINI_CASE_SENSITIVE)
+target_sources(FrameworkCSGO PUBLIC ${MINI_SOURCE_FILES})
