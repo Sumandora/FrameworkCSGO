@@ -45,7 +45,7 @@ if [ -z "$csgo_pid" ]; then
 	exit 1
 fi
 
-$SU cp Build-Debug/libFramework_Example.so /usr/lib/libMangoHud.so
+$SU cp Build-Debug/libFrameworkCSGO.so /usr/lib/libMangoHud.so
 
 # https://www.kernel.org/doc/Documentation/security/Yama.txt
 echo "2" | $SU tee /proc/sys/kernel/yama/ptrace_scope # Only allows root to inject code. This is temporary until reboot.

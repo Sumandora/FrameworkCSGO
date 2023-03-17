@@ -12,23 +12,30 @@
 
 bool Features::Legit::SpectatorList::enabled = false;
 
-const char* LocalizeObserverMode(ObserverMode observerMode)
+void LocalizeObserverMode(ObserverMode observerMode, char name[16])
 {
 	switch (observerMode) {
 	case ObserverMode::OBS_MODE_NONE:
-		return xorstr_("None");
+		strcpy(name, xorstr_("None"));
+		break;
 	case ObserverMode::OBS_MODE_DEATHCAM:
-		return xorstr_("Deathcam");
+		strcpy(name, xorstr_("Deathcam"));
+		break;
 	case ObserverMode::OBS_MODE_FREEZECAM:
-		return xorstr_("Freezecam");
+		strcpy(name, xorstr_("Freezecam"));
+		break;
 	case ObserverMode::OBS_MODE_FIXED:
-		return xorstr_("Fixed");
+		strcpy(name, xorstr_("Fixed"));
+		break;
 	case ObserverMode::OBS_MODE_IN_EYE:
-		return xorstr_("In Eye");
+		strcpy(name, xorstr_("In Eye"));
+		break;
 	case ObserverMode::OBS_MODE_CHASE:
-		return xorstr_("Chase");
+		strcpy(name, xorstr_("Chase"));
+		break;
 	case ObserverMode::OBS_MODE_ROAMING:
-		return xorstr_("Roaming");
+		strcpy(name, xorstr_("Roaming"));
+		break;
 	}
 }
 
@@ -75,7 +82,9 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		const ObserverMode observerMode = *player->ObserverMode();
 
 		char text[strlen(first.name) + 4 + strlen(second.name) + 1];
-		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, LocalizeObserverMode(observerMode));
+		char name[16];
+		LocalizeObserverMode(observerMode, name);
+		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, name);
 
 		const ImVec2 size = ImGui::CalcTextSize(text);
 		const ImVec2 position(displaySize.x - size.x - 10.0F, offset + 10.0F);

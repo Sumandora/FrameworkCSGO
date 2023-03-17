@@ -1,4 +1,4 @@
-# FrameworkExample
+# FrameworkCSGO
 A fully-featured training software for Counter Strike: Global Offensive, made for Linux with [Framework](https://github.com/Sumandora/Framework)
 ### WARNING: This program is being detected by Valve. Usage on official, custom or private servers will most likely result in punishment from Valve!
 ## Installation
@@ -24,7 +24,7 @@ These might be outdated, in that please open an issue or a pull request, which u
 ### Download
 Make sure to download the submodules.
 ```sh
-git clone --recurse-submodules https://github.com/Sumandora/FrameworkExample.git
+git clone --recurse-submodules https://github.com/Sumandora/FrameworkCSGO.git
 ```
 
 The build script can be used to build the program.

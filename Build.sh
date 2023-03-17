@@ -38,8 +38,8 @@ fi
 LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release . >> build.log 2>&1 || error
 LANG=en make $MAKEOPTS -C Build >> build.log 2>&1 || error
 
-strip -x -s Build/libFramework_Example.so >> build.log 2>&1 || error
-patchelf --set-soname "libMangoHud.so" Build/libFramework_Example.so >> build.log 2>&1 || error # May be unneeded because of the following line?
-sed -i 's/libFramework_Example.so/libMangoHud.so         /' Build/libFramework_Example.so >> build.log 2>&1 || error # This should never happen; We are not allowed to change the file size
+strip -x -s Build/libFrameworkCSGO.so >> build.log 2>&1 || error
+patchelf --set-soname "libMangoHud.so" Build/libFrameworkCSGO.so >> build.log 2>&1 || error # May be unneeded because of the following line?
+sed -i 's/libFrameworkCSGO.so/                   /' Build/libFrameworkCSGO.so >> build.log 2>&1 || error # This should never happen; We are not allowed to change the file size
 
 echo "The ELF-Binary has been built in the \"Build\"-directory"
