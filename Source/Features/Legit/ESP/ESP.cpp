@@ -31,6 +31,7 @@ BoxNameSetting Features::Legit::Esp::hostages { strdup(xorstr_("Hostages")) };
 BoxNameSetting Features::Legit::Esp::dzLootCrates { strdup(xorstr_("Loot crates")) };
 BoxNameSetting Features::Legit::Esp::dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
 BoxNameSetting Features::Legit::Esp::dzSentries { strdup(xorstr_("Sentries")) };
+BoxNameSetting Features::Legit::Esp::other { strdup(xorstr_("Other")) };
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -244,7 +245,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 					dzSentries.Draw(drawList, rectangle, xorstr_("Sentry"));
 					break;
 				default:
-					// TODO?
+					other.Draw(drawList, rectangle, clientClass.m_pNetworkName);
 					break;
 				}
 			}
@@ -284,7 +285,6 @@ void Features::Legit::Esp::SetupGUI()
 			hostages.SetupGUI();
 			ImGui::EndTabItem();
 		}
-		// TODO Hostages
 		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
 			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
 				if (ImGui::BeginTabItem(xorstr_("Loot crates"))) {
@@ -301,6 +301,10 @@ void Features::Legit::Esp::SetupGUI()
 				}
 				ImGui::EndTabBar();
 			}
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem(xorstr_("Other"))) {
+			other.SetupGUI();
 			ImGui::EndTabItem();
 		}
 
@@ -323,4 +327,5 @@ SERIALIZED_STRUCTURE(hostages)
 SERIALIZED_STRUCTURE(dzLootCrates)
 SERIALIZED_STRUCTURE(dzAmmoBoxes)
 SERIALIZED_STRUCTURE(dzSentries)
+SERIALIZED_STRUCTURE(other)
 END_SERIALIZED_STRUCT
