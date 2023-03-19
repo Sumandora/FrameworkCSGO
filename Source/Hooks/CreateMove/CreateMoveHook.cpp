@@ -25,6 +25,7 @@ bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 
 	Features::General::EnginePrediction::StartPrediction(cmd);
 	{
+		Features::Movement::AutoStrafer::CreateMove(cmd);
 		Features::Movement::JumpBug::CreateMove(cmd);
 		Features::Movement::EdgeJump::CreateMove(cmd);
 

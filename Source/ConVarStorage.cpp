@@ -29,4 +29,8 @@ void ConVarStorage::FindAll()
 	cl_interp = Interfaces::icvar->FindVar(xorstr_("cl_interp"));
 	sv_client_min_interp_ratio = Interfaces::icvar->FindVar(xorstr_("sv_client_min_interp_ratio"));
 	sv_client_max_interp_ratio = Interfaces::icvar->FindVar(xorstr_("sv_client_max_interp_ratio"));
+
+	sv_maxspeed = Interfaces::icvar->FindVar(xorstr_("sv_maxspeed"));
+	sv_airaccelerate = Interfaces::icvar->FindVar(xorstr_("sv_airaccelerate"));
+	sv_air_max_wishspeed = Interfaces::icvar->FindVar(xorstr_("sv_air_max_wishspeed"));
 }

@@ -41,6 +41,8 @@
 // TODO Color Correction
 // TODO Preserve Killfeed
 
+// TODO Third person
+
 void Initializer()
 {
 	srand(time(nullptr));
