@@ -52,6 +52,7 @@ namespace Features::Legit {
 		extern BoxNameSetting dzLootCrates;
 		extern BoxNameSetting dzAmmoBoxes;
 		extern BoxNameSetting dzSentries;
+		extern BoxNameSetting other;
 
 		void ImGuiRender(ImDrawList* drawList);
 
