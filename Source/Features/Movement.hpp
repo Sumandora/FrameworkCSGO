@@ -19,7 +19,7 @@ namespace Features::Movement {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
-	namespace HighJump {
+	namespace CrouchJump {
 		// Settings
 		extern bool enabled;
 		extern int input;
@@ -46,6 +46,23 @@ namespace Features::Movement {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
+	namespace EdgeJump {
+		// Settings
+		extern bool enabled;
+		extern int input;
+
+		void CreateMove(CUserCmd* cmd);
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
+	// TODO Auto Strafer
+	// TODO Fast Duck
+	// TODO Auto Ladder
+	// TODO Slow walk
 
 	// GUI
 	void SetupGUI();

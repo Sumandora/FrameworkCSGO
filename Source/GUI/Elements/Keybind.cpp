@@ -21,9 +21,9 @@ bool IsInputDown(int key, bool _default, bool disableInMenu)
 	return _default;
 }
 
-IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* label, int& key, const ImVec2& size)
+IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& size)
 {
-	static const char* waiting = nullptr;
+	static char* waiting = nullptr;
 
 	char newLabel[128];
 
@@ -70,6 +70,8 @@ IMGUI_API bool __attribute((optimize("O0"))) ImGui::InputSelector(const char* la
 	}
 
 	if (ImGui::Button(newLabel, size)) {
-		waiting = label;
+		strcpy(waiting, label);
+		return true;
 	}
+	return false;
 }

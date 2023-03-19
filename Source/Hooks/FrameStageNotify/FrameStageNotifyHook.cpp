@@ -4,7 +4,7 @@
 
 #include "../../Features/Semirage.hpp"
 
-void __attribute((optimize("O0"))) FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
+void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
 	case ClientFrameStage::FRAME_RENDER_START: {
@@ -19,7 +19,7 @@ void __attribute((optimize("O0"))) FrameStageNotifyHook(void* thisptr, ClientFra
 		// ignored
 		break;
 	}
-	return Framework::ReturnAddr::invoke<void, void*, ClientFrameStage>(Hooks::FrameStageNotify::hook->proxy, Memory::ret_instruction_addr, thisptr, stage);
+	return invokeFunction<void, void*, ClientFrameStage>(Hooks::FrameStageNotify::hook->proxy, thisptr, stage);
 }
 
 void Hooks::FrameStageNotify::Hook()

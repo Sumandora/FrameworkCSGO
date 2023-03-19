@@ -1,6 +1,7 @@
 #include "GUI.hpp"
 
 #include <algorithm>
+#include <mutex>
 
 #include "imgui.h"
 #include "xorstr.hpp"
