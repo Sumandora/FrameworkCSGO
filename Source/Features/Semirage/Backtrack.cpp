@@ -2,8 +2,8 @@
 
 #include <deque>
 #include <map>
-#include <vector>
 #include <ranges>
+#include <vector>
 
 #include "../General.hpp"
 
@@ -59,7 +59,7 @@ bool IsTickValid(Tick tick)
 	CNetChan* chan = Interfaces::engine->GetNetChannel();
 	if (chan) {
 		correct += chan->GetLatency(FLOW_INCOMING); // The server asks for OUTGOING, we have to turn this around, since we are the client.
-		if(Features::Semirage::Backtrack::accountForOutgoingPing)
+		if (Features::Semirage::Backtrack::accountForOutgoingPing)
 			correct += chan->GetLatency(FLOW_OUTGOING); // The server should account for this.
 	}
 
@@ -76,7 +76,8 @@ bool IsTickValid(Tick tick)
 	return fabs(deltaTime) <= 0.2F; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
 }
 
-float CalculateFOVDistance(CBasePlayer* localPlayer, Vector viewangles, Vector b) {
+float CalculateFOVDistance(CBasePlayer* localPlayer, Vector viewangles, Vector b)
+{
 	Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), b);
 	requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
 	requiredView -= viewangles;

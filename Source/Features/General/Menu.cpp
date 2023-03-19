@@ -38,7 +38,7 @@ void Features::General::Menu::ImGuiLoop()
 	}
 
 #ifdef DEBUG
-	if(Gui::visible) {
+	if (Gui::visible) {
 		if (isShowingDemoWindow)
 			ImGui::ShowDemoWindow();
 		if (isShowingMetricsWindow)
