@@ -59,7 +59,20 @@ namespace Features::Movement {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
-	// TODO Auto Strafer
+	namespace AutoStrafer {
+		// Settings
+		extern bool enabled;
+		extern bool directional;
+		extern bool onlyWhenIdle;
+
+		void CreateMove(CUserCmd* cmd);
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
 	// TODO Fast Duck
 	// TODO Auto Ladder
 	// TODO Slow walk

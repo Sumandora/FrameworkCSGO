@@ -40,6 +40,7 @@ void Features::Movement::SetupGUI()
 		TABITEM(xorstr_("Crouch jump"), Features::Movement::CrouchJump::SetupGUI);
 		TABITEM(xorstr_("Jump bug"), Features::Movement::JumpBug::SetupGUI);
 		TABITEM(xorstr_("Edge bug"), Features::Movement::EdgeJump::SetupGUI);
+		TABITEM(xorstr_("Auto strafer"), Features::Movement::AutoStrafer::SetupGUI);
 	})
 }
 

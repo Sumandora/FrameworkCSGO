@@ -32,6 +32,11 @@ namespace ConVarStorage {
 	inline ConVar* sv_client_min_interp_ratio;
 	inline ConVar* sv_client_max_interp_ratio;
 
+	// Movement
+	inline ConVar* sv_maxspeed;
+	inline ConVar* sv_airaccelerate;
+	inline ConVar* sv_air_max_wishspeed;
+
 	void FindAll();
 }
 

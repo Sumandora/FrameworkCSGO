@@ -30,6 +30,8 @@ namespace Features::Semirage {
 		// Settings
 		extern bool enabled;
 		extern float time;
+		extern bool accountForOutgoingPing;
+		extern bool friendlyFire;
 
 		void CreateMove(CUserCmd* cmd);
 		void FrameStageNotify();

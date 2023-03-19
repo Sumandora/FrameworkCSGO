@@ -206,6 +206,16 @@ public:
 		return vec;
 	}
 
+	[[nodiscard]] inline float HorizontalLengthSquared() const
+	{
+		return x * x + y * y;
+	}
+
+	[[nodiscard]] inline float HorizontalLength() const
+	{
+		return fsqrt(HorizontalLengthSquared());
+	}
+
 	[[nodiscard]] inline float LengthSquared() const
 	{
 		return x * x + y * y + z * z;

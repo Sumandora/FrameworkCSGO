@@ -17,6 +17,8 @@
 
 bool Features::Semirage::Backtrack::enabled = false;
 float Features::Semirage::Backtrack::time = 1.0F;
+bool Features::Semirage::Backtrack::accountForOutgoingPing = false;
+bool Features::Semirage::Backtrack::friendlyFire = false;
 
 #define TIME_TO_TICKS(dt) ((int)(0.5f + (float)(dt) / Memory::globalVars->interval_per_tick))
 #define TICKS_TO_TIME(t) (Memory::globalVars->interval_per_tick * (t))
@@ -42,9 +44,6 @@ float CalculateLerpTime()
 		const float min = ConVarStorage::sv_client_min_interp_ratio->GetFloat();
 		if (min != -1) { // They forgot to check for max != -1, didn't they?
 			flLerpRatio = std::clamp(flLerpRatio, min, ConVarStorage::sv_client_max_interp_ratio->GetFloat());
-		} else {
-			if (flLerpRatio == 0)
-				flLerpRatio = 1.0F;
 		}
 		return std::max(flLerpAmount, flLerpRatio / flUpdateRateValue);
 	} else {
@@ -60,6 +59,8 @@ bool IsTickValid(Tick tick)
 	CNetChan* chan = Interfaces::engine->GetNetChannel();
 	if (chan) {
 		correct += chan->GetLatency(FLOW_INCOMING); // The server asks for OUTGOING, we have to turn this around, since we are the client.
+		if(Features::Semirage::Backtrack::accountForOutgoingPing)
+			correct += chan->GetLatency(FLOW_OUTGOING); // The server should account for this.
 	}
 
 	const float m_fLerpTime = CalculateLerpTime();
@@ -73,6 +74,15 @@ bool IsTickValid(Tick tick)
 	const float deltaTime = correct - (Memory::globalVars->curtime - flTargetTime);
 
 	return fabs(deltaTime) <= 0.2F; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
+}
+
+float CalculateFOVDistance(CBasePlayer* localPlayer, Vector viewangles, Vector b) {
+	Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), b);
+	requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
+	requiredView -= viewangles;
+	requiredView.Wrap();
+
+	return requiredView.Length();
 }
 
 std::map<int, std::vector<Tick>> ticks;
@@ -109,25 +119,25 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 			return true;
 		}
 
-		if (!player->IsEnemy())
-			return true; // TODO Friendly fire
+		if (!(friendlyFire || player->IsEnemy()))
+			return true;
 
 		std::vector<Tick> records = pair.second;
 
+		Matrix3x4 boneMatrix[MAXSTUDIOBONES];
+		if (!player->SetupBones(boneMatrix))
+			return true;
+
+		float currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
 #ifdef __clang__
 		for (unsigned int index = records.size(); index > 0; index--) {
 			auto& tick = records[index];
 #else
 		for (auto& tick : std::ranges::views::reverse(records)) {
 #endif
-			Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), tick.boneMatrix[8].Origin());
-			requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
-			requiredView -= cmd->viewangles;
-			requiredView.Wrap();
+			float delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
 
-			float delta = requiredView.Length();
-
-			if (bestDistance > delta) {
+			if (currentDistance > delta && bestDistance > delta) {
 				bestDistance = delta;
 				bestTick = tick;
 			}
@@ -193,12 +203,16 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 void Features::Semirage::Backtrack::SetupGUI()
 {
 	if (!ConVarStorage::cl_lagcompensation->GetBool() || !ConVarStorage::sv_unlag->GetBool())
-		ImGui::Text(xorstr_("Warning: Lag compensation convars are disabled"));
+		ImGui::Text(xorstr_("Warning: Judging by convars, lag compensation is disabled."));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Time"), &time, 0.0f, 1.0f, "%.2f");
+	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
+	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer, xorstr_("Backtrack"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Time"), time)
+SERIALIZED_TYPE(xorstr_("Account for outgoing ping"), accountForOutgoingPing)
+SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
 END_SERIALIZED_STRUCT
