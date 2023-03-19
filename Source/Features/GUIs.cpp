@@ -41,6 +41,7 @@ void Features::Movement::SetupGUI()
 		TABITEM(xorstr_("Jump bug"), Features::Movement::JumpBug::SetupGUI);
 		TABITEM(xorstr_("Edge bug"), Features::Movement::EdgeJump::SetupGUI);
 		TABITEM(xorstr_("Auto strafer"), Features::Movement::AutoStrafer::SetupGUI);
+		TABITEM(xorstr_("Fast duck"), Features::Movement::FastDuck::SetupGUI);
 	})
 }
 
