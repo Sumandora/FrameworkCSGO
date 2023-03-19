@@ -2,14 +2,9 @@
 
 #include <cstring>
 
-#include "../../Utils/Platform/CompilerSupport.hpp"
-
 #include "../../GameCache.hpp"
 
-#include "../../Features/General.hpp"
-#include "../../Features/Legit.hpp"
-#include "../../Features/Movement.hpp"
-#include "../../Features/Semirage.hpp"
+#include "../../Features/Features.hpp"
 
 bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
@@ -22,6 +17,7 @@ bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 
 	Features::Movement::Bhop::CreateMove(cmd);
 	Features::Movement::CrouchJump::CreateMove(cmd);
+	Features::Movement::FastDuck::CreateMove(cmd);
 
 	Features::General::EnginePrediction::StartPrediction(cmd);
 	{

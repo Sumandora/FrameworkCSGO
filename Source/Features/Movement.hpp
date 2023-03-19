@@ -73,7 +73,18 @@ namespace Features::Movement {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
-	// TODO Fast Duck
+	namespace FastDuck {
+		// Settings
+		extern bool enabled;
+
+		void CreateMove(CUserCmd* cmd);
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
 	// TODO Auto Ladder
 	// TODO Slow walk
 
