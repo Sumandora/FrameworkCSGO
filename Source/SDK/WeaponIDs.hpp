@@ -3,8 +3,8 @@
 
 #include "xorstr.hpp"
 
-#include <map>
 #include <cstring>
+#include <map>
 
 // Dumped using https://www.unknowncheats.me/forum/counterstrike-global-offensive/334782-weapon-id-dumper.html
 // Porting it to linux is easy, download his code: https://github.com/DucaRii/csgo_weaponid_dumper

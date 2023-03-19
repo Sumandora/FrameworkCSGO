@@ -74,7 +74,7 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 
 	const float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
 	if (flashDuration > 0.0) {
-		settings->flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(),
+		settings->flashDuration.Draw(drawList, rectangle, std::to_string((int)flashDuration).c_str(),
 			0.5F);
 	}
 }

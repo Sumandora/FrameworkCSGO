@@ -85,8 +85,8 @@ void Serialization::SetupGUI()
 		configsArray[i] = configs.at(i).c_str();
 	}
 
-	if (ImGui::ListBox(xorstr_("##Configs"), &configSelected, configsArray, (int) configs.size(), (int) configs.size())) {
-		if (configSelected >= 0 && configSelected < static_cast<int>(configs.size())) {
+	if (ImGui::ListBox(xorstr_("##Configs"), &configSelected, configsArray, (int)configs.size(), (int)configs.size())) {
+		if (configSelected >= 0 && configSelected < (int)configs.size()) {
 			const char* configName = configs.at(configSelected).c_str();
 			if (Load(GetConfigFile(configName)))
 				Features::General::EventLog::CreateReport(xorstr_("Loaded config '%s'"), configName);

@@ -63,7 +63,7 @@ void Gui::SwapWindow(SDL_Window* window)
 	if (visible) {
 		const ImVec2 size(800, 600);
 		ImGui::SetNextWindowSize(size, ImGuiCond_Once);
-		ImGui::SetNextWindowPos(ImVec2(static_cast<float>(width) / 2.0F - size.x / 2.0F, static_cast<float>(height) / 2.0F - size.y / 2.0F), ImGuiCond_Once);
+		ImGui::SetNextWindowPos(ImVec2((float)width * 0.1f, (float)height * 0.1f), ImGuiCond_Once);
 
 		ImGui::Begin(xorstr_("Framework"));
 

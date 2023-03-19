@@ -48,6 +48,6 @@ void Features::Movement::EdgeJump::SetupGUI()
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Movement::EdgeJump::Serializer, xorstr_("Edge jump"))
-	SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-	SERIALIZED_TYPE(xorstr_("Input"), input)
+SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Input"), input)
 END_SERIALIZED_STRUCT
