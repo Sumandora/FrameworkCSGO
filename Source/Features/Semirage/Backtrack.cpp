@@ -114,7 +114,12 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 		std::vector<Tick> records = pair.second;
 
+#ifdef __clang__
+		for (unsigned int index = records.size(); index > 0; index--) {
+			auto& tick = records[index];
+#else
 		for (auto& tick : std::ranges::views::reverse(records)) {
+#endif
 			Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), tick.boneMatrix[8].Origin());
 			requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
 			requiredView -= cmd->viewangles;

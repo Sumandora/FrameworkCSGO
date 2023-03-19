@@ -10,7 +10,7 @@
 
 #include "Utils/VMT.hpp"
 
-static const void* lineGoesThroughSmoke;
+static void* lineGoesThroughSmoke;
 
 void* GetBaseAddress(const char* name)
 {
@@ -80,5 +80,5 @@ bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const sh
 	toStruct.y = to.y;
 	toStruct.z = to.z;
 
-	return Framework::ReturnAddr::invoke<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, ret_instruction_addr, fromStruct, toStruct, _);
+	return invokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, fromStruct, toStruct, _);
 }

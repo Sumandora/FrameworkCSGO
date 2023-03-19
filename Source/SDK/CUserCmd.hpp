@@ -17,7 +17,7 @@ struct CUserCmd {
 	int weaponselect;
 	int weaponsubtype;
 	int random_seed;
-	short mousedx;
+	short mousedx; // TODO Fix these
 	short mousedy;
 	bool hasbeenpredicted;
 	Vector viewangles_copy;

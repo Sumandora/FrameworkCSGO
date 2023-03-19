@@ -7,6 +7,7 @@
 #include <link.h>
 #include <map>
 #include <mutex>
+#include <mutex>
 
 #include "imgui.h"
 #include "xorstr.hpp"

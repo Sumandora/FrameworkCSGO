@@ -15,13 +15,10 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Movement::JumpBug::enabled = false;
-int Features::Movement::JumpBug::input = 0;
-bool Features::Movement::JumpBug::preDuck = false;
+bool Features::Movement::EdgeJump::enabled = false;
+int Features::Movement::EdgeJump::input = 0;
 
-static bool performing = false;
-
-void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
+void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !IsInputDown(input, false)) {
 		return;
@@ -32,41 +29,25 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
-	if (performing) {
-		cmd->buttons |= IN_JUMP; // Cancel the bhop out
-		performing = false;
-		return;
-	}
-
+	// How familiar
 	const int realFlags = Features::General::EnginePrediction::prePredictionFlags;
 	const int predFlags = *localPlayer->Flags();
 
 	const bool isOnGround = realFlags & FL_ONGROUND || realFlags & FL_PARTIALGROUND;
 	const bool willBeOnGround = predFlags & FL_ONGROUND || predFlags & FL_PARTIALGROUND;
 
-	if (!isOnGround) {
-		if (willBeOnGround) {
-			cmd->buttons |= IN_DUCK;
-			cmd->buttons &= ~IN_JUMP;
-
-			performing = true;
-		} else if (preDuck && localPlayer->Velocity()->z < 0.0 /* falling */) {
-			// It is important when we release Duck, not when we press it,
-			// so lets press it before we have to to make it look more legit
-			cmd->buttons |= IN_DUCK;
-		}
+	if (isOnGround && !willBeOnGround) {
+		cmd->buttons |= IN_JUMP;
 	}
 }
 
-void Features::Movement::JumpBug::SetupGUI()
+void Features::Movement::EdgeJump::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
-	ImGui::Checkbox(xorstr_("Pre duck"), &preDuck);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::JumpBug::Serializer, xorstr_("Crouch jump"))
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Input"), input)
-SERIALIZED_TYPE(xorstr_("Pre duck"), preDuck)
+BEGIN_SERIALIZED_STRUCT(Features::Movement::EdgeJump::Serializer, xorstr_("Edge jump"))
+	SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+	SERIALIZED_TYPE(xorstr_("Input"), input)
 END_SERIALIZED_STRUCT

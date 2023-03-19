@@ -13,6 +13,33 @@
 #include "xorstr.hpp"
 
 // TODO Clantag
+// TODO Offscreen ESP
+// TODO Force Crosshair
+// TODO Radar
+
+// TODO Glow & Chams
+
+// TODO No Aim/View Punch
+// TODO No Sleeves
+// TODO No Scope Overlay
+// TODO No Smoke
+// TODO Flash Reducer
+
+// TODO FOV
+// TODO ViewModel
+
+// TODO World & Sky Color
+
+// TODO Reveal ranks, money, suspect, votes
+// TODO Auto accept
+// TODO Auto pistol & reload
+
+// TODO Moonwalk
+// TODO Thirdperson
+
+// TODO Grenade Prediction & Brightness
+// TODO Color Correction
+// TODO Preserve Killfeed
 
 void Initializer()
 {

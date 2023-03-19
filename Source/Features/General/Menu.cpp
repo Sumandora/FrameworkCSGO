@@ -5,6 +5,8 @@
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../GUI/GUI.hpp"
 
+#include "../../Utils/Platform/CompilerSupport.hpp"
+
 int Features::General::Menu::menuKey = static_cast<int>(ImGuiKey_Insert);
 int Features::General::Menu::style = 0;
 
@@ -92,6 +94,7 @@ void Features::General::Menu::SetupGUI()
 	}
 
 	ImGui::Text(xorstr_("ImGui Version: %s"), ImGui::GetVersion());
+	ImGui::Text(xorstr_("Compiled using: " COMPILER_NAME));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::General::Menu::Serializer, xorstr_("Menu"))

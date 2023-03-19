@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "ReturnAddr/ReturnAddr.hpp"
+#include "../../Utils/Platform/CompilerSupport.hpp"
 
 #include "../../GameCache.hpp"
 
@@ -11,21 +11,22 @@
 #include "../../Features/Movement.hpp"
 #include "../../Features/Semirage.hpp"
 
-bool __attribute((optimize("O0"))) CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
+bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
 	GameCache::ClearLocalPlayer();
 
-	bool silent = Framework::ReturnAddr::invoke<bool, void*, float, CUserCmd*>(Hooks::CreateMove::hook->proxy, Memory::ret_instruction_addr, thisptr, flInputSampleTime, cmd);
+	bool silent = invokeFunction<bool, void*, float, CUserCmd*>(Hooks::CreateMove::hook->proxy, thisptr, flInputSampleTime, cmd);
 
 	if (!cmd || !cmd->command_number)
 		return silent;
 
 	Features::Movement::Bhop::CreateMove(cmd);
-	Features::Movement::HighJump::CreateMove(cmd);
+	Features::Movement::CrouchJump::CreateMove(cmd);
 
 	Features::General::EnginePrediction::StartPrediction(cmd);
 	{
 		Features::Movement::JumpBug::CreateMove(cmd);
+		Features::Movement::EdgeJump::CreateMove(cmd);
 
 		Features::Legit::Triggerbot::CreateMove(cmd);
 

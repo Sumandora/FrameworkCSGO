@@ -278,6 +278,7 @@ void Features::Legit::Esp::SetupGUI()
 			plantedC4.SetupGUI();
 			ImGui::EndTabItem();
 		}
+		// TODO Hostages
 		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
 			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
 				if (ImGui::BeginTabItem(xorstr_("Loot crates"))) {

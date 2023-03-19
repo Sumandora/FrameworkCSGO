@@ -37,8 +37,9 @@ void Features::Movement::SetupGUI()
 {
 	TABBAR(xorstr_("#Movement settings"), []() {
 		TABITEM(xorstr_("Bhop"), Features::Movement::Bhop::SetupGUI);
-		TABITEM(xorstr_("High jump"), Features::Movement::HighJump::SetupGUI);
+		TABITEM(xorstr_("Crouch jump"), Features::Movement::CrouchJump::SetupGUI);
 		TABITEM(xorstr_("Jump bug"), Features::Movement::JumpBug::SetupGUI);
+		TABITEM(xorstr_("Edge bug"), Features::Movement::EdgeJump::SetupGUI);
 	})
 }
 

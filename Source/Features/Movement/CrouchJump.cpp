@@ -11,12 +11,12 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Movement::HighJump::enabled = false;
-int Features::Movement::HighJump::input = 0;
+bool Features::Movement::CrouchJump::enabled = false;
+int Features::Movement::CrouchJump::input = 0;
 
 static bool performing = false;
 
-void Features::Movement::HighJump::CreateMove(CUserCmd* cmd)
+void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !IsInputDown(input, false)) {
 		performing = false;
@@ -41,13 +41,13 @@ void Features::Movement::HighJump::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::HighJump::SetupGUI()
+void Features::Movement::CrouchJump::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::HighJump::Serializer, xorstr_("High jump"))
+BEGIN_SERIALIZED_STRUCT(Features::Movement::CrouchJump::Serializer, xorstr_("Crouch jump"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Input"), input)
 END_SERIALIZED_STRUCT
