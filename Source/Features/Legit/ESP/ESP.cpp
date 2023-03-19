@@ -27,6 +27,7 @@ PlayerSettings Features::Legit::Esp::players { strdup(xorstr_("Players")) };
 WeaponSettings Features::Legit::Esp::weapons { strdup(xorstr_("Weapons")) };
 BoxNameSetting Features::Legit::Esp::projectiles { strdup(xorstr_("Projectiles")) };
 PlantedC4Settings Features::Legit::Esp::plantedC4 { strdup(xorstr_("Planted C4")) };
+BoxNameSetting Features::Legit::Esp::hostages { strdup(xorstr_("Hostages")) };
 BoxNameSetting Features::Legit::Esp::dzLootCrates { strdup(xorstr_("Loot crates")) };
 BoxNameSetting Features::Legit::Esp::dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
 BoxNameSetting Features::Legit::Esp::dzSentries { strdup(xorstr_("Sentries")) };
@@ -59,7 +60,8 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 
 	settings->healthbar.Draw(drawList, rectangle, *player->Health());
 	if (settings->weapon.enabled) { // Don't ask for the weapon, if we don't have to
-		auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(player->ActiveWeapon()));
+		auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(
+			player->ActiveWeapon()));
 		if (weapon) {
 			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
@@ -72,7 +74,8 @@ void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, Pla
 
 	const float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
 	if (flashDuration > 0.0) {
-		settings->flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(), 0.5F);
+		settings->flashDuration.Draw(drawList, rectangle, std::to_string(static_cast<int>(flashDuration)).c_str(),
+			0.5F);
 	}
 }
 
@@ -138,14 +141,10 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 
 		const Vector points[] = {
 			// Lower
-			Vector(min.x, min.y, min.z),
-			Vector(max.x, min.y, min.z),
-			Vector(max.x, min.y, max.z),
+			Vector(min.x, min.y, min.z), Vector(max.x, min.y, min.z), Vector(max.x, min.y, max.z),
 			Vector(min.x, min.y, max.z),
 			// Higher
-			Vector(min.x, max.y, min.z),
-			Vector(max.x, max.y, min.z),
-			Vector(max.x, max.y, max.z),
+			Vector(min.x, max.y, min.z), Vector(max.x, max.y, min.z), Vector(max.x, max.y, max.z),
 			Vector(min.x, max.y, max.z)
 		};
 
@@ -232,6 +231,9 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 				case ClientClassID::CSnowballProjectile:
 					projectiles.Draw(drawList, rectangle, xorstr_("Snowball"));
 					break;
+				case ClientClassID::CHostage:
+					hostages.Draw(drawList, rectangle, xorstr_("Hostage"));
+					break;
 				case ClientClassID::CPhysPropLootCrate:
 					dzLootCrates.Draw(drawList, rectangle, xorstr_("Loot crate"));
 					break;
@@ -278,6 +280,10 @@ void Features::Legit::Esp::SetupGUI()
 			plantedC4.SetupGUI();
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem(xorstr_("Hostages"))) {
+			hostages.SetupGUI();
+			ImGui::EndTabItem();
+		}
 		// TODO Hostages
 		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
 			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
@@ -313,6 +319,7 @@ SERIALIZED_STRUCTURE(players)
 SERIALIZED_STRUCTURE(weapons)
 SERIALIZED_STRUCTURE(projectiles)
 SERIALIZED_STRUCTURE(plantedC4)
+SERIALIZED_STRUCTURE(hostages)
 SERIALIZED_STRUCTURE(dzLootCrates)
 SERIALIZED_STRUCTURE(dzAmmoBoxes)
 SERIALIZED_STRUCTURE(dzSentries)

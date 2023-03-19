@@ -37,21 +37,6 @@ namespace Features::Legit {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
-	namespace Triggerbot {
-		// Settings
-		extern bool enabled;
-		extern int input;
-		extern bool secondaryFireWithR8Revolver;
-		extern bool friendlyFire;
-
-		void CreateMove(CUserCmd* cmd);
-
-		// GUI
-		void SetupGUI();
-
-		// Serialization
-		DECLARE_SERIALIZER(Serializer)
-	}
 	namespace Esp {
 		// Settings
 		extern bool enabled;
@@ -63,11 +48,27 @@ namespace Features::Legit {
 		extern WeaponSettings weapons;
 		extern BoxNameSetting projectiles;
 		extern PlantedC4Settings plantedC4;
+		extern BoxNameSetting hostages;
 		extern BoxNameSetting dzLootCrates;
 		extern BoxNameSetting dzAmmoBoxes;
 		extern BoxNameSetting dzSentries;
 
 		void ImGuiRender(ImDrawList* drawList);
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
+	namespace Triggerbot {
+		// Settings
+		extern bool enabled;
+		extern int input;
+		extern bool secondaryFireWithR8Revolver;
+		extern bool friendlyFire;
+
+		void CreateMove(CUserCmd* cmd);
 
 		// GUI
 		void SetupGUI();
