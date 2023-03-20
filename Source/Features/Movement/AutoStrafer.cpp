@@ -60,12 +60,12 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	Vector velocity = *localPlayer->Velocity();
 	float speed = velocity.HorizontalLength();
 
-	if (speed < 5.0F)
+	if (speed < 5.0f)
 		return;
 
 	float term = ConVarStorage::sv_air_max_wishspeed->GetFloat() / ConVarStorage::sv_airaccelerate->GetFloat() / ConVarStorage::sv_maxspeed->GetFloat() * 100.0f / speed;
 
-	if (term <= -1.0F || term >= 1.0F)
+	if (term <= -1.0f || term >= 1.0f)
 		return;
 
 	float perfectDelta = acosf(term);

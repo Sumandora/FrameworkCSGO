@@ -52,7 +52,7 @@ void Gui::SwapWindow(SDL_Window* window)
 	SDL_GetWindowSize(window, &width, &height);
 
 	io.DisplaySize = ImVec2((float)width, (float)height);
-	io.MousePos = ImVec2(std::clamp(io.MousePos.x, 0.0F, (float)width), std::clamp(io.MousePos.y, 0.0F, (float)height));
+	io.MousePos = ImVec2(std::clamp(io.MousePos.x, 0.0f, (float)width), std::clamp(io.MousePos.y, 0.0f, (float)height));
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);

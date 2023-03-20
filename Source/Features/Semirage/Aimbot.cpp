@@ -14,12 +14,12 @@
 
 bool Features::Semirage::Aimbot::enabled = false;
 bool Features::Semirage::Aimbot::onlyWhenShooting = false; // TODO Separate key
-float Features::Semirage::Aimbot::fov = 3.0F;
-float Features::Semirage::Aimbot::aimSpeed = 0.2F;
+float Features::Semirage::Aimbot::fov = 3.0f;
+float Features::Semirage::Aimbot::aimSpeed = 0.2f;
 int Features::Semirage::Aimbot::maximalFlashAmount = 255;
 bool Features::Semirage::Aimbot::dontAimThroughSmoke = false;
 bool Features::Semirage::Aimbot::silent = false;
-float Features::Semirage::Aimbot::snapBack = 0.1F;
+float Features::Semirage::Aimbot::snapBack = 0.1f;
 bool Features::Semirage::Aimbot::friendlyFire = false;
 
 bool wasFaked = false;

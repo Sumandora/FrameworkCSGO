@@ -7,14 +7,14 @@
 TextSetting::TextSetting(const char* id)
 	: id(id)
 	, enabled(false)
-	, fontScale(1.0F)
+	, fontScale(1.0f)
 	, fontColor(ImGuiColors::white)
 	, shadow(false)
 	, shadowColor(ImGuiColors::black)
 {
 }
 
-void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height) const
+void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const
 {
 	if (!enabled)
 		return;
@@ -26,17 +26,20 @@ void TextSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text,
 
 	const ImVec2 size = ImGui::CalcTextSize(text);
 
-	const float above = rectangle.y - size.y;
-	const float below = rectangle.w;
-	const ImVec2 position(rectangle.x + (rectangle.z - rectangle.x) * 0.5F - size.x / 2.0F, above + (below - above) * height);
+	const ImVec2 position(x - (centered ? size.x / 2.0f : 0.0f), y);
 
 	if (shadow)
-		drawList->AddText(ImVec2(position.x + 1.0F, position.y + 1.0F), shadowColor, text);
+		drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), shadowColor, text);
 
 	drawList->AddText(position, fontColor, text);
 
 	ImGui::PopFont();
 	ImGui::GetFont()->Scale = oldFontScale;
+}
+
+float TextSetting::GetLineHeight() const
+{
+	return ImGui::GetTextLineHeightWithSpacing() * fontScale;
 }
 
 void TextSetting::Copy(TextSetting& src)

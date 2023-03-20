@@ -87,7 +87,7 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, name);
 
 		const ImVec2 size = ImGui::CalcTextSize(text);
-		const ImVec2 position(displaySize.x - size.x - 10.0F, offset + 10.0F);
+		const ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
 		ShadowString::AddText(drawList, position, currentTarget && currentTarget == target ? ImGuiColors::red : ImGuiColors::white, text);
 

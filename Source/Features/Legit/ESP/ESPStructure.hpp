@@ -7,6 +7,7 @@
 #include "../../../SDK/GameClass/CBaseCombatWeapon.hpp"
 #include "../../../SDK/GameClass/CPlantedC4.hpp"
 
+#include "../../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../../Serialization/Serializer.hpp"
 
 // Base Types
@@ -47,7 +48,9 @@ public:
 	bool shadow;
 	ImColor shadowColor;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text, float height) const;
+	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const;
+	float GetLineHeight() const;
+
 	void Copy(TextSetting& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -109,6 +112,7 @@ public:
 	TextSetting flashDuration;
 	// TODO Flags
 
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const;
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
 };
@@ -134,7 +138,7 @@ private:
 
 	BoxNameSetting boxName;
 	TextSetting timer;
-	// TODO Add defuse timer
+	bool showDefuseTimer;
 
 public:
 	explicit PlantedC4Settings(const char* id);
