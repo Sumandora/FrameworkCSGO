@@ -61,24 +61,5 @@ void Memory::Create()
 
 bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
 {
-	// Little explanation why I make this struct here:
-	// GCC for some reason decides that pushing the from and to Vector (class) over general purpose registers is a good idea.
-	// It basically creates pointers for these which are then pushed.
-	// We want the XMM registers though, so it ends up completely destroying this function.
-	// I create these VectorStructs in order to make GCC think, that XMM registers are the better choice.
-	struct VectorStruct {
-		float x, y, z;
-	};
-
-	VectorStruct fromStruct {};
-	fromStruct.x = from.x;
-	fromStruct.y = from.y;
-	fromStruct.z = from.z;
-
-	VectorStruct toStruct {};
-	toStruct.x = to.x;
-	toStruct.y = to.y;
-	toStruct.z = to.z;
-
-	return invokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, fromStruct, toStruct, _);
+	return invokeFunction<bool, Vector, Vector, short>(lineGoesThroughSmoke, from, to, _);
 }

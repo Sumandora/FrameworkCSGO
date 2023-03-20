@@ -6,8 +6,7 @@
 
 #include "../../ConVarStorage.hpp"
 
-class Vector {
-public:
+struct Vector {
 	float x, y, z;
 
 	inline Vector()
