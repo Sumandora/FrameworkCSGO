@@ -2,7 +2,15 @@
 
 #include "Serializer.hpp"
 
+#include <pwd.h>
+#include <unistd.h>
+
 #include "../Features/Features.hpp"
+
+char* Serialization::GetConfigDirectory()
+{
+	return strcat(getpwuid(getuid())->pw_dir, xorstr_("/.config/Framework"));
+}
 
 bool Serialization::Load(const char* filename)
 {

@@ -13,15 +13,15 @@
 
 class CBaseEntity {
 public:
-	NETVAR_FUNCTION(TeamID, Team, xorstr_("DT_BaseEntity"), xorstr_("m_iTeamNum"))
-	NETVAR_FUNCTION(bool, Spotted, xorstr_("DT_BaseEntity"), xorstr_("m_bSpotted"))
-	NETVAR_FUNCTION(int, SpottedByMask, xorstr_("DT_BaseEntity"), xorstr_("m_bSpottedByMask"))
-	NETVAR_FUNCTION(Vector, VecOrigin, xorstr_("DT_BaseEntity"), xorstr_("m_vecOrigin"))
+	NETVAR_FUNCTION(TeamID, Team, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_iTeamNum"))
+	NETVAR_FUNCTION(bool, Spotted, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_bSpotted"))
+	NETVAR_FUNCTION(int, SpottedByMask, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_bSpottedByMask"))
+	NETVAR_FUNCTION(Vector, Origin, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_vecOrigin"))
 
-	NETVAR_FUNCTION(CCollideable, Collision, xorstr_("DT_BaseEntity"), xorstr_("m_Collision"))
+	NETVAR_FUNCTION(CCollideable, Collision, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_Collision"))
 
-	NETVAR_FUNCTION(float, SimulationTime, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
-	NETVAR_FUNCTION(int, OwnerEntity, xorstr_("DT_BaseEntity"), xorstr_("m_hOwnerEntity"))
+	NETVAR_FUNCTION(float, SimulationTime, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
+	NETVAR_FUNCTION(int, OwnerEntity, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_hOwnerEntity"))
 
 	// https://github.com/danielkrupinski/Osiris/blob/444d7dd9daeb0f46de412dbb524c91dfdedf1723/Source/CSGO/Entity.h#L79
 	//  IClientNetworkable

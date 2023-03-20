@@ -134,11 +134,11 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 		if (!collideable)
 			continue;
 
-		if ((*entity->VecOrigin() - *localPlayer->VecOrigin()).LengthSquared() > (float)(drawDistance * drawDistance))
+		if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
 			continue;
 
-		const Vector min = *entity->VecOrigin() + *collideable->ObbMins();
-		const Vector max = *entity->VecOrigin() + *collideable->ObbMaxs();
+		const Vector min = *entity->Origin() + *collideable->ObbMins();
+		const Vector max = *entity->Origin() + *collideable->ObbMaxs();
 
 		const Vector points[] = {
 			// Lower
