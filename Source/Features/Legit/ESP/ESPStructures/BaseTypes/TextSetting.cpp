@@ -33,8 +33,8 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 
 	drawList->AddText(position, fontColor, text);
 
-	ImGui::PopFont();
 	ImGui::GetFont()->Scale = oldFontScale;
+	ImGui::PopFont();
 }
 
 float TextSetting::GetLineHeight() const
