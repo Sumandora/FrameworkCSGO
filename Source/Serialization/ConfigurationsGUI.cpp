@@ -14,7 +14,7 @@
 
 char* GetConfigFile(const char* filename)
 {
-	return strcat(strcat(Serialization::GetConfigDirectory(), "/"), filename);
+	return strcat(strcat(Serialization::GetConfigDirectory(), xorstr_("/")), filename);
 }
 
 bool GatherConfigs(std::vector<std::string>& configs)
