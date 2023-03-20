@@ -33,6 +33,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return false;
 
+	// TODO Add Alive check
+
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return false;
 

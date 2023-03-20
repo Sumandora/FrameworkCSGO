@@ -48,6 +48,8 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return;
 
+	// TODO Add Alive check
+
 	if (*localPlayer->Flags() & FL_ONGROUND && Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND) {
 		// Only abort if we are not going to be in air again (if bhopping don't abort)
 		if (cmd->forwardmove == 0.0f && cmd->sidemove == 0.0f)
