@@ -54,12 +54,12 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 	if (player->GetDormant())
 		return &settings->dormant;
 
+	if (settings == &Features::Legit::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
+		return &settings->visible; // Don't even have to raytrace for that.
+
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 	if (!player->SetupBones(boneMatrix))
 		return &settings->dormant; // Setup bones is broken??
-
-	if (settings == &Features::Legit::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
-		return &settings->visible; // Don't even have to raytrace for that.
 
 	const Vector head = boneMatrix[8].Origin();
 
@@ -84,7 +84,10 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	if (!Interfaces::engine->IsInGame() || localPlayer == nullptr)
+	if (!Interfaces::engine->IsInGame())
+		return;
+
+	if (!localPlayer)
 		return;
 
 	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;

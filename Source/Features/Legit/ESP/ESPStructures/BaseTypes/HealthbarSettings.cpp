@@ -105,7 +105,7 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 	}
 
 	if (healthNumber.enabled) {
-		if (!onlyWhenDamaged || healthPercentage <= 1.0f)
+		if (!onlyWhenDamaged || healthPercentage < 1.0f)
 			healthNumber.Draw(drawList, healthbar.x + (healthbar.z - healthbar.x) * 0.5f, healthbarHeight - healthNumber.GetLineHeight(), true, std::to_string(health).c_str());
 	}
 }
