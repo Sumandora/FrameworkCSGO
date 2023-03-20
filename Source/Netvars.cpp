@@ -14,7 +14,7 @@
 #include "SDK/Netvars/ClientClass.hpp"
 #include "SDK/Netvars/RecvTable.hpp"
 
-std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars;
+static std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars{};
 
 void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
 {
@@ -25,13 +25,7 @@ void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
 		if (strcmp(prop->m_pVarName, xorstr_("baseclass")) == 0)
 			continue;
 
-		if (!netvars.contains(clientClass)) // It should never already exist, but I don't trust Source
-			netvars[clientClass] = {};
-
-		if (!netvars[clientClass].contains(recvTable))
-			netvars[clientClass][recvTable] = {};
-
-		netvars[clientClass][recvTable].push_back(prop);
+		netvars[clientClass][recvTable].emplace_back(prop);
 
 		if (prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
 			ReadTable(clientClass, prop->m_pDataTable);
