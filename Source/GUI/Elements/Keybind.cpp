@@ -6,6 +6,7 @@
 #include "../GUI.hpp"
 
 #include <cstdlib>
+#include <optional>
 
 bool IsInputDown(int key, bool _default, bool disableInMenu)
 {
@@ -23,17 +24,18 @@ bool IsInputDown(int key, bool _default, bool disableInMenu)
 
 IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& size)
 {
-	static char* waiting = nullptr;
+	static std::optional<ImGuiID> waiting;
+	ImGuiID currentID = ImGui::GetID(label);
 
 	char newLabel[128];
 
-	if (waiting == label) {
+	if (waiting == currentID) {
 		strcpy(newLabel, xorstr_("Waiting for input"));
 
 		bool found = false;
 		for (int imguikey = ImGuiKey_Tab; imguikey != ImGuiKey_KeypadEqual; imguikey++) {
 			if (ImGui::IsKeyDown(static_cast<ImGuiKey>(imguikey))) {
-				waiting = nullptr;
+				waiting.reset();
 				if (imguikey == ImGuiKey_Escape)
 					key = 0; // Unset
 				else
@@ -47,7 +49,7 @@ IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& s
 			auto* buttons = ImGui::GetIO().MouseDown;
 			for (int i = 0; i < 5; i++) {
 				if (buttons[i]) {
-					waiting = nullptr;
+					waiting.reset();
 					key = -1 - i; // Negative ids indicate mouse buttons (LMB has id 0, in order to not conflict with unset which is also zero, we do that)
 					break;
 				}
@@ -70,7 +72,7 @@ IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& s
 	}
 
 	if (ImGui::Button(newLabel, size)) {
-		strcpy(waiting, label);
+		waiting = currentID;
 		return true;
 	}
 	return false;
