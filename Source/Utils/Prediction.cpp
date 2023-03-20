@@ -19,7 +19,7 @@ bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData)
 	Memory::globalVars->curtime = (float)*localPlayer->TickBase() * Memory::globalVars->interval_per_tick;
 	Memory::globalVars->frametime = Memory::globalVars->interval_per_tick;
 
-	Interfaces::gameMovement->StartTrackpredictionErrors(localPlayer);
+	Interfaces::gameMovement->StartTrackPredictionErrors(localPlayer);
 
 	Memory::moveHelper->SetHost(localPlayer);
 	Interfaces::prediction->SetupMove(localPlayer, cmd, Memory::moveHelper, &moveData);

@@ -3,6 +3,7 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../Interfaces.hpp"
 
 PlantedC4Settings::PlantedC4Settings(const char* id)
 	: id(id)
@@ -14,8 +15,12 @@ PlantedC4Settings::PlantedC4Settings(const char* id)
 void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const
 {
 	boxName.Draw(drawList, rectangle, xorstr_("Planted C4"));
-	if (!*bomb->Defused())
+	if (!*bomb->Defused() && *bomb->BombTicking()) {
 		timer.Draw(drawList, rectangle, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str(), 1.0F);
+		if(Interfaces::entityList->GetClientEntityFromHandle(bomb->Defuser()))
+			timer.Draw(drawList, rectangle, std::to_string(*bomb->DefuseCountDown() - Memory::globalVars->curtime).c_str(), 1.1F);
+
+	}
 }
 
 void PlantedC4Settings::SetupGUI()

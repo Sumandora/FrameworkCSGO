@@ -60,16 +60,17 @@ void Netvars::DumpNetvars()
 	}
 }
 
-RecvProp* Netvars::GetOffset(const char* table, const char* name)
+RecvProp* Netvars::GetOffset(ClientClassID clientClass, const char* table, const char* name)
 {
 	for (const auto& [key, value] : netvars) {
-		for (const auto& [key2, value2] : value) {
-			if (strcmp(key2->m_pNetTableName, table) == 0)
-				for (const auto& variable : value2) {
-					if (strcmp(name, variable->m_pVarName) == 0)
-						return variable;
-				}
-		}
+		if (key->m_ClassID == static_cast<int>(clientClass))
+			for (const auto& [key2, value2] : value) {
+				if (strcmp(key2->m_pNetTableName, table) == 0)
+					for (const auto& variable : value2) {
+						if (strcmp(name, variable->m_pVarName) == 0)
+							return variable;
+					}
+			}
 	}
 
 	printf(xorstr_("Couldn't find netvar %s in %s\n"), name, table);

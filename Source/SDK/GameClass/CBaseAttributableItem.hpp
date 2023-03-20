@@ -8,9 +8,12 @@
 
 #include "CBaseEntity.hpp"
 
-class CBaseAttributableItem {
+class CBaseAttributableItem : public CBaseEntity {
 public:
-	NETVAR_FUNCTION(WeaponID, WeaponDefinitionIndex, xorstr_("DT_ScriptCreatedItem"), xorstr_("m_iItemDefinitionIndex"))
+	TRIPLE_COMBINED_NETVAR_FUNCTION(WeaponID, WeaponDefinitionIndex,
+		ClientClassID::CBaseAttributableItem, xorstr_("DT_BaseAttributableItem"), xorstr_("m_AttributeManager"),
+		ClientClassID::CBaseAttributableItem, xorstr_("DT_AttributeContainer"), xorstr_("m_Item"),
+		ClientClassID::CBaseAttributableItem, xorstr_("DT_ScriptCreatedItem"), xorstr_("m_iItemDefinitionIndex"))
 };
 
 #endif

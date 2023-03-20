@@ -6,18 +6,11 @@
 #include <vector>
 
 #include <dirent.h>
-#include <pwd.h>
-#include <unistd.h>
 
 #include "imgui.h"
 #include "xorstr.hpp"
 
 #include "../Features/General.hpp"
-
-char* Serialization::GetConfigDirectory()
-{
-	return strcat(getpwuid(getuid())->pw_dir, xorstr_("/.config/Framework"));
-}
 
 char* GetConfigFile(const char* filename)
 {
