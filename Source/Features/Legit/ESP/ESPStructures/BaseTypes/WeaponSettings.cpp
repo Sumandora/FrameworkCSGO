@@ -24,7 +24,7 @@ void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWea
 	if (ammoClip != -1) { // Does this weapon even have an ammo capacity? (Knifes, Bombs etc...)
 		char buf[128];
 		sprintf(buf, xorstr_("%d/%d"), ammoClip, *weapon->ReserveAmmoCount());
-		ammo.Draw(drawList, rectangle, buf, 1.0F);
+		ammo.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, buf);
 	}
 }
 

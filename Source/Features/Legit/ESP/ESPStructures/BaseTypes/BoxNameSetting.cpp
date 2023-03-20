@@ -14,7 +14,7 @@ BoxNameSetting::BoxNameSetting(const char* id)
 void BoxNameSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const
 {
 	box.Draw(drawList, rectangle);
-	nametag.Draw(drawList, rectangle, text, 0.0F);
+	nametag.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y - nametag.GetLineHeight(), true, text);
 }
 
 void BoxNameSetting::Copy(BoxNameSetting& src)

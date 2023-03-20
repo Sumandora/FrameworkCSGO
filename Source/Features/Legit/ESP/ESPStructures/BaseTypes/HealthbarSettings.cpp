@@ -43,7 +43,7 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 
 	float effectiveRounding;
 	if (gradient)
-		effectiveRounding = 0.0F; // ImGui Limitation
+		effectiveRounding = 0.0f; // ImGui Limitation
 	else
 		effectiveRounding = rounding;
 
@@ -65,7 +65,7 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 		deadHsv[0], deadHsv[1], deadHsv[2]);
 
 	if (gradient) {
-		float transition = std::min(0.5F, healthPercentage); // At some point the second rect will become smaller than 50% means we have to adjust the color in order to not break the illusion of it being one long bar
+		float transition = std::min(0.5f, healthPercentage); // At some point the second rect will become smaller than 50% means we have to adjust the color in order to not break the illusion of it being one long bar
 		const float middleHsv[] = {
 			deadHsv[0] + (aliveHsv[0] - deadHsv[0]) * transition,
 			deadHsv[1] + (aliveHsv[1] - deadHsv[1]) * transition,
@@ -105,26 +105,8 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 	}
 
 	if (healthNumber.enabled) {
-		if (onlyWhenDamaged && healthPercentage >= 1.0f)
-			return; // This might get in the way when we add more stuff
-		// Don't use TextSetting because we can't specify the x properly (TODO?)
-		// Hack
-		const float fontScale = ImGui::GetFont()->Scale;
-		ImGui::GetFont()->Scale = healthNumber.fontScale;
-		ImGui::PushFont(ImGui::GetFont());
-
-		const char* number = std::to_string(health).c_str();
-
-		const ImVec2 size = ImGui::CalcTextSize(number);
-		const ImVec2 position((healthbar.x + (healthbar.z - healthbar.x) * 0.5F) - size.x / 2.0F, healthbarHeight - size.y);
-
-		if (healthNumber.shadow)
-			drawList->AddText(ImVec2(position.x + 1.0F, position.y + 1.0F), healthNumber.shadowColor, number);
-
-		drawList->AddText(position, healthNumber.fontColor, number);
-
-		ImGui::PopFont();
-		ImGui::GetFont()->Scale = fontScale;
+		if (!onlyWhenDamaged || healthPercentage <= 1.0f)
+			healthNumber.Draw(drawList, healthbar.x + (healthbar.z - healthbar.x) * 0.5f, healthbarHeight - healthNumber.GetLineHeight(), true, std::to_string(health).c_str());
 	}
 }
 

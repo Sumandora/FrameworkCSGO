@@ -8,8 +8,8 @@
 #include "imgui.h"
 
 bool Features::Semirage::RecoilAssistance::enabled = false;
-float Features::Semirage::RecoilAssistance::horizontalAdjustment = 1.0F;
-float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0F;
+float Features::Semirage::RecoilAssistance::horizontalAdjustment = 1.0f;
+float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0f;
 bool Features::Semirage::RecoilAssistance::silent = false;
 int Features::Semirage::RecoilAssistance::minShots = 1;
 

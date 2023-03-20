@@ -16,7 +16,7 @@
 #include "../../Utils/Trigonometry.hpp"
 
 bool Features::Semirage::Backtrack::enabled = false;
-float Features::Semirage::Backtrack::time = 1.0F;
+float Features::Semirage::Backtrack::time = 1.0f;
 bool Features::Semirage::Backtrack::accountForOutgoingPing = false;
 bool Features::Semirage::Backtrack::friendlyFire = false;
 
@@ -38,7 +38,7 @@ float CalculateLerpTime()
 	if (ConVarStorage::cl_interpolate->GetBool()) {
 		float flLerpRatio = ConVarStorage::cl_interp_ratio->GetFloat();
 		if (flLerpRatio == 0)
-			flLerpRatio = 1.0F;
+			flLerpRatio = 1.0f;
 		const float flLerpAmount = ConVarStorage::cl_interp->GetFloat();
 
 		const float min = ConVarStorage::sv_client_min_interp_ratio->GetFloat();
@@ -47,14 +47,14 @@ float CalculateLerpTime()
 		}
 		return std::max(flLerpAmount, flLerpRatio / flUpdateRateValue);
 	} else {
-		return 0.0F;
+		return 0.0f;
 	}
 }
 
 bool IsTickValid(Tick tick)
 {
 	// https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/server/player_lagcompensation.cpp#L246
-	float correct = 0.0F;
+	float correct = 0.0f;
 
 	CNetChan* chan = Interfaces::engine->GetNetChannel();
 	if (chan) {
@@ -73,7 +73,7 @@ bool IsTickValid(Tick tick)
 
 	const float deltaTime = correct - (Memory::globalVars->curtime - flTargetTime);
 
-	return fabs(deltaTime) <= 0.2F; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
+	return fabs(deltaTime) <= 0.2f; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
 }
 
 float CalculateFOVDistance(CBasePlayer* localPlayer, Vector viewangles, Vector b)
@@ -146,7 +146,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		return false;
 	});
 
-	if (bestDistance < 5.0F && cmd->tick_count != bestTick.tickCount) {
+	if (bestDistance < 5.0f && cmd->tick_count != bestTick.tickCount) {
 		Features::General::EventLog::CreateReport("Trying to backtrack %d ticks", cmd->tick_count - bestTick.tickCount);
 		cmd->tick_count = bestTick.tickCount;
 	}

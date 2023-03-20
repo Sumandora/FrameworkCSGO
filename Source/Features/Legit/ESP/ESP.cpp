@@ -37,47 +37,16 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 {
 	const float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
 	const float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
-	if (z <= 0.0F || w <= 0.0F)
+	if (z <= 0.0f || w <= 0.0f)
 		return false;
 
 	screenPosition = ImVec2(ImGui::GetIO().DisplaySize);
-	screenPosition.x /= 2.0F;
-	screenPosition.y /= 2.0F;
+	screenPosition.x /= 2.0f;
+	screenPosition.y /= 2.0f;
 
-	screenPosition.x *= 1.0F + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
-	screenPosition.y *= 1.0F - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
+	screenPosition.x *= 1.0f + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
+	screenPosition.y *= 1.0f - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
 	return true;
-}
-
-void DrawPlayer(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player, PlayerStateSettings* settings)
-{
-	char name[128];
-	if (settings->boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-		PlayerInfo info {};
-		Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
-		strcpy(name, info.name);
-	}
-	settings->boxName.Draw(drawList, rectangle, name);
-
-	settings->healthbar.Draw(drawList, rectangle, *player->Health());
-	if (settings->weapon.enabled) { // Don't ask for the weapon, if we don't have to
-		auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(
-			player->ActiveWeapon()));
-		if (weapon) {
-			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
-			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
-				char weaponName[256];
-				LocalizeWeaponID(weaponID, weaponName);
-				settings->weapon.Draw(drawList, rectangle, weaponName, 1.0F);
-			}
-		}
-	}
-
-	const float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
-	if (flashDuration > 0.0) {
-		settings->flashDuration.Draw(drawList, rectangle, std::to_string((int)flashDuration).c_str(),
-			0.5F);
-	}
 }
 
 PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* settings)
@@ -194,7 +163,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 				}
 
 				if (settings)
-					DrawPlayer(drawList, rectangle, player, settings);
+					settings->Draw(drawList, rectangle, player);
 			} else if (entity->IsWeapon()) {
 				auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
 				if (*weapon->OwnerEntity() == -1)

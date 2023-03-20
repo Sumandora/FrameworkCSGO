@@ -3,6 +3,7 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../Interfaces.hpp"
 #include "../../../../Legit.hpp"
 
 PlayerStateSettings::PlayerStateSettings(const char* id)
@@ -12,6 +13,36 @@ PlayerStateSettings::PlayerStateSettings(const char* id)
 	, weapon(TextSetting(strdup(xorstr_("Weapon"))))
 	, flashDuration(TextSetting(strdup(xorstr_("Flash duration"))))
 {
+}
+
+void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const
+{
+	char name[128];
+	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+		PlayerInfo info {};
+		Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
+		strcpy(name, info.name);
+	}
+	boxName.Draw(drawList, rectangle, name);
+
+	healthbar.Draw(drawList, rectangle, *player->Health());
+	if (weapon.enabled) { // Don't ask for the weapon, if we don't have to
+		auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(
+			player->ActiveWeapon()));
+		if (weapon) {
+			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
+			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
+				char weaponName[256];
+				LocalizeWeaponID(weaponID, weaponName);
+				this->weapon.Draw(drawList,rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, weaponName);
+			}
+		}
+	}
+
+	const float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
+	if (flashDuration > 0.0) {
+		this->flashDuration.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y + (rectangle.w - rectangle.y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)flashDuration).c_str());
+	}
 }
 
 void CopyPlayerStateSettings(PlayerStateSettings from, PlayerStateSettings* to)
