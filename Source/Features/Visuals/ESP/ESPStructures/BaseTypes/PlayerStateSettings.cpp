@@ -4,7 +4,7 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../Interfaces.hpp"
-#include "../../../../Legit.hpp"
+#include "../../../../Visuals.hpp"
 
 PlayerStateSettings::PlayerStateSettings(const char* id)
 	: id(id)
@@ -74,15 +74,15 @@ void PlayerStateSettings::SetupGUI()
 
 	if (ImGui::BeginPopup(xorstr_("##Copy from"))) {
 		if (ImGui::BeginMenu(xorstr_("Teammate"))) {
-			BuildMenu(this, Features::Legit::Esp::players.teammate);
+			BuildMenu(this, Features::Visuals::Esp::players.teammate);
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu(xorstr_("Enemy"))) {
-			BuildMenu(this, Features::Legit::Esp::players.enemy);
+			BuildMenu(this, Features::Visuals::Esp::players.enemy);
 			ImGui::EndMenu();
 		}
 		if (ImGui::Selectable(xorstr_("Local"))) {
-			CopyPlayerStateSettings(Features::Legit::Esp::players.local, this);
+			CopyPlayerStateSettings(Features::Visuals::Esp::players.local, this);
 		}
 		ImGui::EndPopup();
 	}

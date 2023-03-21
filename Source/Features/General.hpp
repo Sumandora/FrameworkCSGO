@@ -7,9 +7,36 @@
 #include "../Serialization/Serializer.hpp"
 
 namespace Features::General {
+	namespace Menu {
+		// Settings
+		extern int menuKey;
+		extern int style;
+
+		void ImGuiLoop();
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
+	namespace Watermark {
+		// Settings
+		extern bool enabled;
+
+		void ImGuiRender(ImDrawList* drawList);
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
 	namespace EnginePrediction {
 		// Settings
 		extern bool enabled;
+		extern bool forceResetVelocityModifier;
+
 		extern CMoveData moveData;
 		extern int prePredictionFlags;
 
@@ -34,31 +61,6 @@ namespace Features::General {
 
 		// API
 		void CreateReport(const char* fmt, ...);
-
-		// Serialization
-		DECLARE_SERIALIZER(Serializer)
-	}
-	namespace Menu {
-		// Settings
-		extern int menuKey;
-		extern int style;
-
-		void ImGuiLoop();
-
-		// GUI
-		void SetupGUI();
-
-		// Serialization
-		DECLARE_SERIALIZER(Serializer)
-	}
-	namespace Watermark {
-		// Settings
-		extern bool enabled;
-
-		void ImGuiRender(ImDrawList* drawList);
-
-		// GUI
-		void SetupGUI();
 
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)

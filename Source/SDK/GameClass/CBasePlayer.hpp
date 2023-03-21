@@ -30,6 +30,9 @@ public:
 	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngle,
 		ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_Local"),
 		ClientClassID::CBasePlayer, xorstr_("DT_Local"), xorstr_("m_aimPunchAngle"))
+	COMBINED_NETVAR_FUNCTION(Vector, ViewPunchAngle,
+		ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_Local"),
+		ClientClassID::CBasePlayer, xorstr_("DT_Local"), xorstr_("m_viewPunchAngle"))
 
 	NETVAR_FUNCTION(int, ShotsFired, ClientClassID::CCSPlayer, xorstr_("DT_CSLocalPlayerExclusive"), xorstr_("m_iShotsFired"))
 	NETVAR_FUNCTION(int, Health, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_iHealth"))
@@ -42,6 +45,7 @@ public:
 	NETVAR_FUNCTION(float, FlashMaxAlpha, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_flFlashMaxAlpha"))
 
 	NETVAR_FUNCTION(Vector, Velocity, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_vecVelocity[0]"))
+	NETVAR_FUNCTION(float, VelocityModifier, ClientClassID::CCSPlayer, xorstr_("DT_CSLocalPlayerExclusive"), xorstr_("m_flVelocityModifier"))
 
 	inline Vector GetEyePosition()
 	{
