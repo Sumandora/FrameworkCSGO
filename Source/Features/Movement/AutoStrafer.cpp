@@ -54,7 +54,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (*localPlayer->Flags() & FL_ONGROUND && Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND) {
 		// Only abort if we are not going to be in air again (if bhopping don't abort)
 		if (cmd->forwardmove == 0.0f && cmd->sidemove == 0.0f)
-			lastWishDirection = 0.0; // atan2f(0.0f, 1.0f); // Play it off like we were walking forward
+			lastWishDirection = 0.0f; // atan2f(0.0f, 1.0f); // Play it off like we were walking forward
 		else
 			lastWishDirection = atan2f(-cmd->sidemove, cmd->forwardmove);
 		return;
@@ -81,7 +81,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		if (cmd->forwardmove != 0.0f || cmd->sidemove != 0.0f)
 			wishDirection = atan2f(-cmd->sidemove, cmd->forwardmove);
 		else
-			wishDirection = lastWishDirection; // If we release all keys go forward
+			wishDirection = lastWishDirection; // If we release all keys go to the last known direction
 		lastWishDirection = wishDirection;
 		float delta = std::remainderf(wishDirection - realDirection, 2.0f * M_PI);
 
