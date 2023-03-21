@@ -23,6 +23,13 @@ public:
 	NETVAR_FUNCTION(float, SimulationTime, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
 	NETVAR_FUNCTION(int, OwnerEntity, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_hOwnerEntity"))
 
+	NETVAR_FUNCTION(unsigned char, RenderMode, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_nRenderMode"))
+
+	// MoveType used to be a netvar but got removed, RenderMode is still there.
+	unsigned char GetMoveType() {
+		return *(RenderMode() + 1);
+	}
+
 	// https://github.com/danielkrupinski/Osiris/blob/444d7dd9daeb0f46de412dbb524c91dfdedf1723/Source/CSGO/Entity.h#L79
 	//  IClientNetworkable
 	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
