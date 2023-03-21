@@ -85,7 +85,7 @@ namespace Features::Movement {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
-	// TODO Auto Ladder
+	// TODO Auto ladder
 	// TODO Slow walk
 
 	// GUI

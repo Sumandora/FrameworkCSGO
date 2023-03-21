@@ -3,6 +3,7 @@
 
 #include "../SDK/CUserCmd.hpp"
 #include "../SDK/GameClass/CMoveData.hpp"
+#include "../SDK/MoveType.hpp"
 
 #include "../Serialization/Serializer.hpp"
 
@@ -39,6 +40,7 @@ namespace Features::General {
 
 		extern CMoveData moveData;
 		extern int prePredictionFlags;
+		extern MoveType prePredictionMoveType;
 
 		void StartPrediction(CUserCmd* cmd);
 		void EndPrediction();

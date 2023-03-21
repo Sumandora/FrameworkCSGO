@@ -23,14 +23,16 @@ static bool performing = false;
 
 void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 {
-	if (!enabled || !IsInputDown(input, false)) {
+	if (!enabled || !IsInputDown(input, true)) {
 		return;
 	}
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer) {
+	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
 		return;
-	}
+
+	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+		return;
 
 	if (performing) {
 		cmd->buttons |= IN_JUMP; // Cancel the bhop out
@@ -52,7 +54,7 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 			performing = true;
 		} else if (preDuck && localPlayer->Velocity()->z < 0.0 /* falling */) {
 			// It is important when we release Duck, not when we press it,
-			// so lets press it before we have to to make it look more legit
+			// so lets press it before we have to, to make it look more legit
 			cmd->buttons |= IN_DUCK;
 		}
 	}
@@ -60,6 +62,8 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 
 void Features::Movement::JumpBug::SetupGUI()
 {
+	if(!Features::General::EnginePrediction::enabled)
+		ImGui::Text(xorstr_("Warning: This feature expects engine prediction to be enabled"));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 	ImGui::Checkbox(xorstr_("Pre duck"), &preDuck);

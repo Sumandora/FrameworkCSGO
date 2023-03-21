@@ -8,6 +8,8 @@
 #include "../../GameCache.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
+#include "../../SDK/MoveType.hpp"
+
 bool Features::Movement::Bhop::enabled = false;
 int Features::Movement::Bhop::humanization = 0;
 
@@ -17,7 +19,10 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+		return;
+
+	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
 	const int flags = *localPlayer->Flags();

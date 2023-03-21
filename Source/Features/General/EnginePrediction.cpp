@@ -14,6 +14,7 @@ bool Features::General::EnginePrediction::forceResetVelocityModifier = false;
 
 CMoveData Features::General::EnginePrediction::moveData {};
 int Features::General::EnginePrediction::prePredictionFlags = 0;
+MoveType Features::General::EnginePrediction::prePredictionMoveType = MOVETYPE_NONE;
 
 static float previousVelocityModifer;
 
@@ -22,8 +23,16 @@ void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 	moveData = {};
 	if (!enabled)
 		return;
-	prePredictionFlags = *GameCache::GetLocalPlayer()->Flags();
-	previousVelocityModifer = *GameCache::GetLocalPlayer()->VelocityModifier();
+
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+
+	if(!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+		return;
+
+	prePredictionFlags = *localPlayer->Flags();
+	prePredictionMoveType = static_cast<MoveType>(localPlayer->GetMoveType());
+
+	previousVelocityModifer = *localPlayer->VelocityModifier();
 	Utils::StartPrediction(cmd, moveData);
 }
 
@@ -35,7 +44,9 @@ void Features::General::EnginePrediction::EndPrediction()
 	Utils::EndPrediction();
 
 	moveData = {};
+
 	prePredictionFlags = 0;
+	prePredictionMoveType = MOVETYPE_NONE;
 
 	if(forceResetVelocityModifier) // I'm curious why people on UC seem to have so many problems figuring this out... Does this have some major downside, which I haven't noticed yet?
 		*GameCache::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;

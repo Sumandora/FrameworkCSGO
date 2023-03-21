@@ -45,10 +45,11 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
 		return;
 
-	// TODO Add Alive check
+	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+		return;
 
 	if (*localPlayer->Flags() & FL_ONGROUND && Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND) {
 		// Only abort if we are not going to be in air again (if bhopping don't abort)
@@ -104,6 +105,8 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 
 void Features::Movement::AutoStrafer::SetupGUI()
 {
+	if(!Features::General::EnginePrediction::enabled)
+		ImGui::Text(xorstr_("Warning: This feature expects engine prediction to be enabled"));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Directional"), &directional);
 	if (!directional) {
