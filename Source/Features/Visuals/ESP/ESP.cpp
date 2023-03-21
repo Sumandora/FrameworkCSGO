@@ -1,4 +1,4 @@
-#include "../../Legit.hpp"
+#include "../../Visuals.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -18,20 +18,20 @@
 #include <cstdint>
 #include <vector>
 
-bool Features::Legit::Esp::enabled = false;
-int Features::Legit::Esp::onKey = 0;
-int Features::Legit::Esp::drawDistance = 1024 * 8;
-bool Features::Legit::Esp::considerSpottedEntitiesAsVisible = false;
-bool Features::Legit::Esp::considerSmokedOffEntitiesAsOccluded = true;
-PlayerSettings Features::Legit::Esp::players { strdup(xorstr_("Players")) };
-WeaponSettings Features::Legit::Esp::weapons { strdup(xorstr_("Weapons")) };
-BoxNameSetting Features::Legit::Esp::projectiles { strdup(xorstr_("Projectiles")) };
-PlantedC4Settings Features::Legit::Esp::plantedC4 { strdup(xorstr_("Planted C4")) };
-BoxNameSetting Features::Legit::Esp::hostages { strdup(xorstr_("Hostages")) };
-BoxNameSetting Features::Legit::Esp::dzLootCrates { strdup(xorstr_("Loot crates")) };
-BoxNameSetting Features::Legit::Esp::dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
-BoxNameSetting Features::Legit::Esp::dzSentries { strdup(xorstr_("Sentries")) };
-BoxNameSetting Features::Legit::Esp::other { strdup(xorstr_("Other")) };
+bool Features::Visuals::Esp::enabled = false;
+int Features::Visuals::Esp::onKey = 0;
+int Features::Visuals::Esp::drawDistance = 1024 * 8;
+bool Features::Visuals::Esp::considerSpottedEntitiesAsVisible = false;
+bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
+PlayerSettings Features::Visuals::Esp::players { strdup(xorstr_("Players")) };
+WeaponSettings Features::Visuals::Esp::weapons { strdup(xorstr_("Weapons")) };
+BoxNameSetting Features::Visuals::Esp::projectiles { strdup(xorstr_("Projectiles")) };
+PlantedC4Settings Features::Visuals::Esp::plantedC4 { strdup(xorstr_("Planted C4")) };
+BoxNameSetting Features::Visuals::Esp::hostages { strdup(xorstr_("Hostages")) };
+BoxNameSetting Features::Visuals::Esp::dzLootCrates { strdup(xorstr_("Loot crates")) };
+BoxNameSetting Features::Visuals::Esp::dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
+BoxNameSetting Features::Visuals::Esp::dzSentries { strdup(xorstr_("Sentries")) };
+BoxNameSetting Features::Visuals::Esp::other { strdup(xorstr_("Other")) };
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -54,7 +54,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 	if (player->GetDormant())
 		return &settings->dormant;
 
-	if (settings == &Features::Legit::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Legit::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
+	if (settings == &Features::Visuals::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Visuals::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
@@ -65,7 +65,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	if (Features::Legit::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
+	if (Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
 		return &settings->occluded;
 
 	CTraceFilterEntity filter(localPlayer);
@@ -77,7 +77,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 		return &settings->visible;
 }
 
-void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
+void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 {
 	if (!enabled || !IsInputDown(onKey, true))
 		return;
@@ -225,7 +225,7 @@ void Features::Legit::Esp::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void Features::Legit::Esp::SetupGUI()
+void Features::Visuals::Esp::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SameLine();
@@ -284,7 +284,7 @@ void Features::Legit::Esp::SetupGUI()
 	}
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Legit::Esp::Serializer, xorstr_("Esp"))
+BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer, xorstr_("Esp"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
 SERIALIZED_TYPE(xorstr_("Hold key"), onKey)

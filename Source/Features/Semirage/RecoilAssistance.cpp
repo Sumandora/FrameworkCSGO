@@ -13,7 +13,7 @@ float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0f;
 bool Features::Semirage::RecoilAssistance::silent = false;
 int Features::Semirage::RecoilAssistance::minShots = 1;
 
-Vector lastAimPunch;
+static Vector lastAimPunch;
 
 bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
 {

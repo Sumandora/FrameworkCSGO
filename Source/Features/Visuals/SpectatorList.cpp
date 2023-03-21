@@ -1,4 +1,4 @@
-#include "../Legit.hpp"
+#include "../Visuals.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -10,7 +10,7 @@
 
 #include <vector>
 
-bool Features::Legit::SpectatorList::enabled = false;
+bool Features::Visuals::SpectatorList::enabled = false;
 
 void LocalizeObserverMode(ObserverMode observerMode, char name[16])
 {
@@ -39,7 +39,7 @@ void LocalizeObserverMode(ObserverMode observerMode, char name[16])
 	}
 }
 
-void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
+void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 {
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
@@ -95,11 +95,11 @@ void Features::Legit::SpectatorList::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void Features::Legit::SpectatorList::SetupGUI()
+void Features::Visuals::SpectatorList::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Legit::SpectatorList::Serializer, xorstr_("Spectator list"))
+BEGIN_SERIALIZED_STRUCT(Features::Visuals::SpectatorList::Serializer, xorstr_("Spectator list"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 END_SERIALIZED_STRUCT

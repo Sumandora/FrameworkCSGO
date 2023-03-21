@@ -3,7 +3,6 @@
 
 #include "../SDK/CUserCmd.hpp"
 #include "../Serialization/Serializer.hpp"
-#include "Legit/ESP/ESPStructure.hpp"
 #include "SDL.h"
 
 namespace Features::Legit {
@@ -18,43 +17,6 @@ namespace Features::Legit {
 		extern bool friendlyFire;
 
 		void PollEvent(SDL_Event* event);
-
-		// GUI
-		void SetupGUI();
-
-		// Serialization
-		DECLARE_SERIALIZER(Serializer)
-	}
-	namespace SpectatorList {
-		// Settings
-		extern bool enabled;
-
-		void ImGuiRender(ImDrawList* drawList);
-
-		// GUI
-		void SetupGUI();
-
-		// Serialization
-		DECLARE_SERIALIZER(Serializer)
-	}
-	namespace Esp {
-		// Settings
-		extern bool enabled;
-		extern int onKey;
-		extern int drawDistance;
-		extern bool considerSpottedEntitiesAsVisible;
-		extern bool considerSmokedOffEntitiesAsOccluded;
-		extern PlayerSettings players;
-		extern WeaponSettings weapons;
-		extern BoxNameSetting projectiles;
-		extern PlantedC4Settings plantedC4;
-		extern BoxNameSetting hostages;
-		extern BoxNameSetting dzLootCrates;
-		extern BoxNameSetting dzAmmoBoxes;
-		extern BoxNameSetting dzSentries;
-		extern BoxNameSetting other;
-
-		void ImGuiRender(ImDrawList* drawList);
 
 		// GUI
 		void SetupGUI();

@@ -3,15 +3,20 @@
 #include "../../Interfaces.hpp"
 
 #include "../../Features/Semirage.hpp"
+#include "../../Features/Visuals.hpp"
 
 void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
 	case ClientFrameStage::FRAME_RENDER_START: {
 		Features::Semirage::Backtrack::FrameStageNotify();
+
+		Features::Visuals::NoPunch::HidePunch();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_END: {
+		Features::Visuals::NoPunch::RestorePunch();
+
 		Hooks::FrameStageNotify::worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
 		break;
 	}

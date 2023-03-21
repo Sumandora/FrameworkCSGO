@@ -7,6 +7,7 @@
 #include "Legit.hpp"
 #include "Movement.hpp"
 #include "Semirage.hpp"
+#include "Visuals.hpp"
 
 namespace Features {
 	// GUI

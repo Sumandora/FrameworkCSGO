@@ -18,9 +18,7 @@ void Features::Legit::SetupGUI()
 {
 	TABBAR(xorstr_("#Legit settings"), []() {
 		TABITEM(xorstr_("Aimbot"), Features::Legit::Aimbot::SetupGUI);
-		TABITEM(xorstr_("ESP"), Features::Legit::Esp::SetupGUI);
 		TABITEM(xorstr_("Triggerbot"), Features::Legit::Triggerbot::SetupGUI);
-		TABITEM(xorstr_("Spectator List"), Features::Legit::SpectatorList::SetupGUI);
 	})
 }
 
@@ -45,6 +43,15 @@ void Features::Movement::SetupGUI()
 	})
 }
 
+void Features::Visuals::SetupGUI()
+{
+	TABBAR(xorstr_("#Visuals settings"), []() {
+		TABITEM(xorstr_("ESP"), Features::Visuals::Esp::SetupGUI);
+		TABITEM(xorstr_("Spectator List"), Features::Visuals::SpectatorList::SetupGUI);
+		TABITEM(xorstr_("No punch"), Features::Visuals::NoPunch::SetupGUI);
+	})
+}
+
 void Features::SetupGUI()
 {
 	TABBAR(xorstr_("#Settings"), []() {
@@ -52,5 +59,6 @@ void Features::SetupGUI()
 		TABITEM(xorstr_("Legit"), Features::Legit::SetupGUI);
 		TABITEM(xorstr_("Semirage"), Features::Semirage::SetupGUI);
 		TABITEM(xorstr_("Movement"), Features::Movement::SetupGUI);
+		TABITEM(xorstr_("Visuals"), Features::Visuals::SetupGUI);
 	})
 }
