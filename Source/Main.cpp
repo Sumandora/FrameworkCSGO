@@ -19,14 +19,10 @@
 
 // TODO Glow & Chams
 
-// TODO No Aim/View Punch
 // TODO No Sleeves
 // TODO No Scope Overlay
 // TODO No Smoke
 // TODO Flash Reducer
-
-// TODO FOV
-// TODO ViewModel
 
 // TODO World & Sky Color
 

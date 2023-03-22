@@ -49,6 +49,7 @@ void Features::Visuals::SetupGUI()
 		TABITEM(xorstr_("ESP"), Features::Visuals::Esp::SetupGUI);
 		TABITEM(xorstr_("Spectator List"), Features::Visuals::SpectatorList::SetupGUI);
 		TABITEM(xorstr_("No punch"), Features::Visuals::NoPunch::SetupGUI);
+		TABITEM(xorstr_("FOV"), Features::Visuals::FOV::SetupGUI);
 	})
 }
 

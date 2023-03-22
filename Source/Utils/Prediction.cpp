@@ -3,6 +3,7 @@
 #include "../GameCache.hpp"
 #include "../Interfaces.hpp"
 
+// TODO Support predicting multiple ticks into the future
 float oldCurtime;
 float oldFrametime;
 
