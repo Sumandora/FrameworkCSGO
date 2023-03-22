@@ -5,6 +5,7 @@
 
 #include "CreateMove/CreateMoveHook.hpp"
 #include "FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "OverrideView/OverrideViewHook.hpp"
 #include "SDL/SDLHook.hpp"
 
 #include "Assembly/Assembly.hpp"
@@ -15,12 +16,14 @@ void Hooks::InstallHooks()
 {
 	FrameStageNotify::Hook();
 	CreateMove::Hook();
+	OverrideView::Hook();
 	SDL::Hook();
 }
 
 void Hooks::UninstallHooks()
 {
 	SDL::Unhook();
+	OverrideView::Unhook();
 	CreateMove::Unhook();
 	FrameStageNotify::Unhook();
 }

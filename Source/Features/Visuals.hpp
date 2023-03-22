@@ -1,6 +1,7 @@
 #ifndef FEATURES_VISUALS
 #define FEATURES_VISUALS
 
+#include "../SDK/GameClass/CViewSetup.hpp"
 #include "../Serialization/Serializer.hpp"
 #include "Visuals/ESP/ESPStructure.hpp"
 
@@ -49,6 +50,29 @@ namespace Features::Visuals {
 
 		void HidePunch();
 		void RestorePunch();
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
+	namespace FOV {
+		// Settings
+		extern bool forceFOV;
+		extern bool ignoreScoped;
+		extern float fov;
+		extern bool forceViewModel;
+		extern float viewModelFovOffset;
+		extern bool viewOffset;
+		extern float offsetX;
+		extern float offsetY;
+		extern float offsetZ;
+		extern float rotationOffsetX;
+		extern float rotationOffsetY;
+		extern float rotationOffsetZ;
+
+		void OverrideView(CViewSetup* pSetup);
 
 		// GUI
 		void SetupGUI();
