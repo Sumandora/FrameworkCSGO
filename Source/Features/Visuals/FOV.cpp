@@ -35,6 +35,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 		if (viewModel) {
 			bool isForcingFOV = viewModelFovOffset != 0;
 			bool isForcingOffset = offsetX != 0 || offsetY != 0 || offsetZ != 0;
+
 			if (isForcingFOV || isForcingOffset) {
 				Vector viewAngles {};
 				Interfaces::engine->GetViewAngles(&viewAngles);
@@ -59,6 +60,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 					}
 				}
 			}
+
 			if (rotationOffsetX != 0 || rotationOffsetY != 0 || rotationOffsetZ != 0) {
 				Vector& angles = viewModel->GetRenderAngles();
 				angles.x += rotationOffsetX;

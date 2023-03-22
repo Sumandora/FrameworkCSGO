@@ -63,13 +63,26 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 
 	const Vector head = boneMatrix[8].Origin();
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* viewer = GameCache::GetLocalPlayer();
 
-	if (Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
+	if(!viewer)
+		return &settings->dormant;
+
+	if(*viewer->LifeState() != LIFE_ALIVE) {
+		if (*viewer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && viewer->ObserverTarget())
+			viewer = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
+		else
+			return &settings->dormant;
+
+		if (!viewer || *viewer->LifeState() != LIFE_ALIVE)
+			return &settings->dormant;
+	}
+
+	if (Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(viewer->GetEyePosition(), head, 1))
 		return &settings->occluded;
 
-	CTraceFilterEntity filter(localPlayer);
-	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
+	CTraceFilterEntity filter(viewer);
+	const Trace trace = Utils::TraceRay(viewer->GetEyePosition(), head, &filter);
 
 	if (trace.m_pEnt != player)
 		return &settings->occluded;
