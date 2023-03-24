@@ -49,7 +49,7 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 	return true;
 }
 
-PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* settings)
+PlayerStateSettings* SelectPlayerState(CBasePlayer* viewer, CBasePlayer* player, PlayerTeamSettings* settings)
 {
 	if (player->GetDormant())
 		return &settings->dormant;
@@ -62,21 +62,6 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 		return &settings->dormant; // Setup bones is broken??
 
 	const Vector head = boneMatrix[8].Origin();
-
-	CBasePlayer* viewer = GameCache::GetLocalPlayer();
-
-	if(!viewer)
-		return &settings->dormant;
-
-	if(*viewer->LifeState() != LIFE_ALIVE) {
-		if (*viewer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && viewer->ObserverTarget())
-			viewer = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
-		else
-			return &settings->dormant;
-
-		if (!viewer || *viewer->LifeState() != LIFE_ALIVE)
-			return &settings->dormant;
-	}
 
 	if (Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(viewer->GetEyePosition(), head, 1))
 		return &settings->occluded;
@@ -95,13 +80,22 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if (!enabled || !IsInputDown(onKey, true))
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	if (!localPlayer)
+	CBasePlayer* viewer = GameCache::GetLocalPlayer();
+
+	if (!viewer)
 		return;
+
+	if (*viewer->LifeState() == LIFE_DEAD) {
+		if (*viewer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && viewer->ObserverTarget()) {
+			auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
+			if (observerTarget && *observerTarget->LifeState() == LIFE_ALIVE)
+				viewer = observerTarget;
+		} else
+			return;
+	}
 
 	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;
 
@@ -111,7 +105,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
 		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (!entity)
+		if (!entity || *viewer->LifeState() != LIFE_ALIVE)
 			continue;
 
 		CCollideable* collideable = entity->Collision();
@@ -119,7 +113,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (!collideable)
 			continue;
 
-		if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
+		if ((*entity->Origin() - *viewer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
 			continue;
 
 		const Vector min = *entity->Origin() + *collideable->ObbMins();
@@ -127,10 +121,14 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 
 		const Vector points[] = {
 			// Lower
-			Vector(min.x, min.y, min.z), Vector(max.x, min.y, min.z), Vector(max.x, min.y, max.z),
+			Vector(min.x, min.y, min.z),
+			Vector(max.x, min.y, min.z),
+			Vector(max.x, min.y, max.z),
 			Vector(min.x, min.y, max.z),
 			// Higher
-			Vector(min.x, max.y, min.z), Vector(max.x, max.y, min.z), Vector(max.x, max.y, max.z),
+			Vector(min.x, max.y, min.z),
+			Vector(max.x, max.y, min.z),
+			Vector(max.x, max.y, max.z),
 			Vector(min.x, max.y, max.z)
 		};
 
@@ -159,6 +157,8 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (visible) {
 			if (entity->IsPlayer()) {
 				auto* player = reinterpret_cast<CBasePlayer*>(entity);
+				if (*player->LifeState() != LIFE_ALIVE)
+					continue;
 				PlayerStateSettings* settings = nullptr;
 				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
 					settings = &players.local;
@@ -173,9 +173,9 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 					continue;
 				} else if (*player->LifeState() == LIFE_ALIVE) {
 					if (!player->IsEnemy())
-						settings = SelectPlayerState(player, &players.teammate);
+						settings = SelectPlayerState(viewer, player, &players.teammate);
 					else
-						settings = SelectPlayerState(player, &players.enemy);
+						settings = SelectPlayerState(viewer, player, &players.enemy);
 				}
 
 				if (settings)

@@ -8,6 +8,7 @@
 #include <map>
 #include <mutex>
 
+#include "GUI/Elements/HelpMarker.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
 
@@ -156,8 +157,7 @@ void Interfaces::SetupGUI()
 						if (ImGui::Button(xorstr_("Invoke create function"))) {
 							value2.realAddress = reinterpret_cast<void* (*)()>(value2.reg->m_CreateFn)();
 						}
-						if (ImGui::IsItemHovered())
-							ImGui::SetTooltip(xorstr_("Warning: This is considered unsafe"));
+						ImGui::HelpMarker(xorstr_("Warning: This is considered unsafe"));
 					}
 
 					ImGui::TreePop();

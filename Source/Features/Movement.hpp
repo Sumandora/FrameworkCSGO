@@ -1,7 +1,7 @@
 #ifndef FEATURES_MOVEMENT
 #define FEATURES_MOVEMENT
 
-#include "../SDK/CUserCmd.hpp"
+#include "../SDK/GameClass/CUserCmd.hpp"
 
 #include "../Serialization/Serializer.hpp"
 

@@ -55,14 +55,14 @@ void Memory::Create()
 	void* leaInstr = Pattern(xorstr_("\x48\x8d\x05") /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
 	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
 
-	lineGoesThroughSmoke = Pattern(xorstr_("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\xCC\xCC\xCC\xCC\x66"), xorstr_("xxxxxxxxxxxxxxxxx????x"))
+	lineGoesThroughSmoke = Pattern(xorstr_("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\x00\x00\x00\x00\x66"), xorstr_("xxxxxxxxxxxxxxxxx????x"))
 							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
 
 bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
 {
 	// Little explanation why I make this struct here:
-	// GCC for some reason decides that pushing the from and to Vector (class) over general purpose registers is a good idea.
+	// GCC for some reason decides that pushing the from and to Vector over general purpose registers is a good idea.
 	// It basically creates pointers for these which are then pushed.
 	// We want the XMM registers though, so it ends up completely destroying this function.
 	// I create these VectorStructs in order to make GCC think, that XMM registers are the better choice.

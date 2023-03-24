@@ -1,10 +1,11 @@
 #ifndef SDK_CUSERCMD
 #define SDK_CUSERCMD
 
-#include "Math/Vector.hpp"
+#include "../Math/Vector.hpp"
 
-struct CUserCmd {
-	virtual ~CUserCmd() {};
+class CUserCmd {
+	virtual ~CUserCmd() = default;;
+public:
 	int command_number;
 	int tick_count;
 	Vector viewangles;

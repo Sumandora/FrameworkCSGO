@@ -5,6 +5,7 @@
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
+#include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../Hooks/CreateMove/CreateMoveHook.hpp"
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../Utils/Raytrace.hpp"
@@ -134,8 +135,7 @@ void Features::Semirage::Aimbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Silent"), &silent);
 	if (silent) {
 		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, "%.2f");
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
+		ImGui::HelpMarker(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
 	}
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }

@@ -1,9 +1,9 @@
 #ifndef SDK_IPREDICTION
 #define SDK_IPREDICTION
 
-#include "../../CUserCmd.hpp"
 #include "../CBasePlayer.hpp"
 #include "../CMoveData.hpp"
+#include "../CUserCmd.hpp"
 #include "../IMoveHelper.hpp"
 
 class IPrediction {

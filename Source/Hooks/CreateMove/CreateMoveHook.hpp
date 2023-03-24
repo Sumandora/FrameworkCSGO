@@ -1,7 +1,7 @@
 #ifndef HOOKS_CREATEMOVE
 #define HOOKS_CREATEMOVE
 
-#include "../../SDK/CUserCmd.hpp"
+#include "../../SDK/GameClass/CUserCmd.hpp"
 #include "../Hooks.hpp"
 
 namespace Hooks::CreateMove {
