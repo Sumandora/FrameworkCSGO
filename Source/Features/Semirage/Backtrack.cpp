@@ -209,6 +209,10 @@ void Features::Semirage::Backtrack::SetupGUI()
 	ImGui::SliderFloat(xorstr_("Time"), &time, 0.0f, 1.0f, "%.2f");
 	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
+
+	ImGui::Separator();
+
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %.2f seconds"), ConVarStorage::sv_maxunlag->GetFloat() * Features::Semirage::Backtrack::time);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer, xorstr_("Backtrack"))

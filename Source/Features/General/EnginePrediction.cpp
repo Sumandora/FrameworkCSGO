@@ -4,6 +4,7 @@
 #include "xorstr.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../Utils/Prediction.hpp"
 
@@ -59,8 +60,7 @@ void Features::General::EnginePrediction::SetupGUI()
 		ImGui::Text(xorstr_("Warning: Disabling engine prediction may result in massive accuracy loss"));
 	}
 	ImGui::Checkbox(xorstr_("Force reset velocity modifier"), &forceResetVelocityModifier);
-	if(ImGui::IsItemHovered())
-		ImGui::SetTooltip(xorstr_("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine."));
+	ImGui::HelpMarker(xorstr_("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine."));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::General::EnginePrediction::Serializer, xorstr_("Engine prediction"))

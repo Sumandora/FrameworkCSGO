@@ -1,9 +1,10 @@
 #include "../Visuals.hpp"
 
-#include "../../Interfaces.hpp"
 #include "imgui.h"
+#include "../../GUI/Elements/HelpMarker.hpp"
 #include "xorstr.hpp"
 
+#include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
 #include <vector>
@@ -25,7 +26,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {
 	CBasePlayer* viewTarget = GameCache::GetLocalPlayer();
 	if (!viewTarget || *viewTarget->LifeState() != LIFE_ALIVE)
-		return;
+		return; // TODO Spectators
 
 	if (forceFOV && (!ignoreScoped || !*viewTarget->Scoped()))
 		pSetup->fov = fov;
@@ -47,10 +48,10 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 
 				Vector& origin = viewModel->GetRenderOrigin();
 
-				if(isForcingFOV) // This is technically the same as enabling viewOffset and setting offsetY to your fov
+				if (isForcingFOV) // This is technically the same as enabling viewOffset and setting offsetY to your fov
 					origin += (forward * viewModelFovOffset);
 
-				if(isForcingOffset) {
+				if (isForcingOffset) {
 					if (viewOffset) {
 						origin += (forward * offsetY) + (up * offsetZ) + (right * offsetX); // https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/baseviewmodel_shared.cpp#L478
 					} else {
@@ -84,8 +85,7 @@ void Features::Visuals::FOV::SetupGUI()
 		ImGui::SliderFloat(xorstr_("View model FOV offset"), &viewModelFovOffset, -90.0f, 90.0f);
 
 		ImGui::Checkbox(xorstr_("View offset"), &viewOffset);
-		if (ImGui::IsItemHovered())
-			ImGui::SetTooltip(xorstr_("Should the offset be a literal 3D movement?"));
+		ImGui::HelpMarker(xorstr_("Should the offset be a literal 3D movement?"));
 
 		ImGui::SliderFloat(xorstr_("Offset X"), &offsetX, -10.0f, 10.0f);
 		ImGui::SliderFloat(xorstr_("Offset Y"), &offsetY, -10.0f, 10.0f);

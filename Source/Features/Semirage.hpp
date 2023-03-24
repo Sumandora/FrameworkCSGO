@@ -1,7 +1,7 @@
 #ifndef FEATURES_SEMIRAGE
 #define FEATURES_SEMIRAGE
 
-#include "../SDK/CUserCmd.hpp"
+#include "../SDK/GameClass/CUserCmd.hpp"
 
 #include "../Serialization/Serializer.hpp"
 
