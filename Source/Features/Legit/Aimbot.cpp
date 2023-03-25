@@ -10,13 +10,13 @@
 #include <algorithm>
 #include <cmath>
 
-bool Features::Legit::Aimbot::enabled = false;
-float Features::Legit::Aimbot::fov = 3.0f;
-float Features::Legit::Aimbot::smoothness = 4.0f;
-int Features::Legit::Aimbot::maximalInfluence = 1;
-int Features::Legit::Aimbot::maximalFlashAmount = 0;
-bool Features::Legit::Aimbot::dontAimThroughSmoke = true;
-bool Features::Legit::Aimbot::friendlyFire = false;
+static bool enabled = false;
+static float fov = 3.0f;
+static float smoothness = 4.0f;
+static int maximalInfluence = 1;
+static int maximalFlashAmount = 0;
+static bool dontAimThroughSmoke = true;
+static bool friendlyFire = false;
 
 void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 {

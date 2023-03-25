@@ -15,9 +15,9 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Movement::JumpBug::enabled = false;
-int Features::Movement::JumpBug::input = 0;
-bool Features::Movement::JumpBug::preDuck = false;
+static bool enabled = false;
+static int input = 0;
+static bool preDuck = false;
 
 static bool performing = false;
 
@@ -62,8 +62,7 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 
 void Features::Movement::JumpBug::SetupGUI()
 {
-	if(!Features::General::EnginePrediction::enabled)
-		ImGui::Text(xorstr_("Warning: This feature expects engine prediction to be enabled"));
+	Features::General::EnginePrediction::ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 	ImGui::Checkbox(xorstr_("Pre duck"), &preDuck);

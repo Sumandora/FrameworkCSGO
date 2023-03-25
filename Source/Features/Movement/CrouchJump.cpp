@@ -11,9 +11,8 @@
 #include "../../SDK/MoveType.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
 
-
-bool Features::Movement::CrouchJump::enabled = false;
-int Features::Movement::CrouchJump::input = 0;
+static bool enabled = false;
+static int input = 0;
 
 static bool performing = false;
 

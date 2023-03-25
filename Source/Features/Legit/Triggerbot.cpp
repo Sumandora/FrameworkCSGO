@@ -12,10 +12,10 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Legit::Triggerbot::enabled = false;
-int Features::Legit::Triggerbot::input = 0;
-bool Features::Legit::Triggerbot::secondaryFireWithR8Revolver = true;
-bool Features::Legit::Triggerbot::friendlyFire = false;
+static bool enabled = false;
+static int input = 0;
+static bool secondaryFireWithR8Revolver = true;
+static bool friendlyFire = false;
 // TODO Delay
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)

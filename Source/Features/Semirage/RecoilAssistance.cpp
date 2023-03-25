@@ -7,11 +7,11 @@
 
 #include "imgui.h"
 
-bool Features::Semirage::RecoilAssistance::enabled = false;
-float Features::Semirage::RecoilAssistance::horizontalAdjustment = 1.0f;
-float Features::Semirage::RecoilAssistance::verticalAdjustment = 1.0f;
-bool Features::Semirage::RecoilAssistance::silent = false;
-int Features::Semirage::RecoilAssistance::minShots = 1;
+static bool enabled = false;
+static float horizontalAdjustment = 1.0f;
+static float verticalAdjustment = 1.0f;
+static bool silent = false;
+static int minShots = 1;
 
 static Vector lastAimPunch;
 

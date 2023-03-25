@@ -3,7 +3,6 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../../GameCache.hpp"
 #include "../../../Interfaces.hpp"
 
 #include "../../../Utils/Raytrace.hpp"
@@ -12,26 +11,23 @@
 
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
-#include "../../../SDK/ClientClassIDs.hpp"
-
-#include <bits/stdc++.h>
 #include <cstdint>
 #include <vector>
 
-bool Features::Visuals::Esp::enabled = false;
-int Features::Visuals::Esp::onKey = 0;
-int Features::Visuals::Esp::drawDistance = 1024 * 8;
-bool Features::Visuals::Esp::considerSpottedEntitiesAsVisible = false;
-bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
+static bool enabled = false;
+static int onKey = 0;
+static int drawDistance = 1024 * 8;
+static bool considerSpottedEntitiesAsVisible = false;
+static bool considerSmokedOffEntitiesAsOccluded = true;
 PlayerSettings Features::Visuals::Esp::players { strdup(xorstr_("Players")) };
-WeaponSettings Features::Visuals::Esp::weapons { strdup(xorstr_("Weapons")) };
-BoxNameSetting Features::Visuals::Esp::projectiles { strdup(xorstr_("Projectiles")) };
-PlantedC4Settings Features::Visuals::Esp::plantedC4 { strdup(xorstr_("Planted C4")) };
-BoxNameSetting Features::Visuals::Esp::hostages { strdup(xorstr_("Hostages")) };
-BoxNameSetting Features::Visuals::Esp::dzLootCrates { strdup(xorstr_("Loot crates")) };
-BoxNameSetting Features::Visuals::Esp::dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
-BoxNameSetting Features::Visuals::Esp::dzSentries { strdup(xorstr_("Sentries")) };
-BoxNameSetting Features::Visuals::Esp::other { strdup(xorstr_("Other")) };
+static WeaponSettings weapons { strdup(xorstr_("Weapons")) };
+static BoxNameSetting projectiles { strdup(xorstr_("Projectiles")) };
+static PlantedC4Settings plantedC4 { strdup(xorstr_("Planted C4")) };
+static BoxNameSetting hostages { strdup(xorstr_("Hostages")) };
+static BoxNameSetting dzLootCrates { strdup(xorstr_("Loot crates")) };
+static BoxNameSetting dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
+static BoxNameSetting dzSentries { strdup(xorstr_("Sentries")) };
+static BoxNameSetting other { strdup(xorstr_("Other")) };
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -57,7 +53,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* viewer, CBasePlayer* player,
 	if(settings->visible == settings->occluded)
 		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
 
-	if (settings == &Features::Visuals::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Visuals::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
+	if (settings == &Features::Visuals::Esp::players.enemy /* Teammates are always "spotted" */ && considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
@@ -66,7 +62,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* viewer, CBasePlayer* player,
 
 	const Vector head = boneMatrix[8].Origin();
 
-	if (Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(viewer->GetEyePosition(), head, 1))
+	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(viewer->GetEyePosition(), head, 1))
 		return &settings->occluded;
 
 	CTraceFilterEntity filter(viewer);

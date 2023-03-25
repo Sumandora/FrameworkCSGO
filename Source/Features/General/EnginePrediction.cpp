@@ -5,17 +5,24 @@
 
 #include "../../GameCache.hpp"
 #include "../../GUI/Elements/HelpMarker.hpp"
+#include "../../GUI/ImGuiColors.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../Utils/Prediction.hpp"
 
 #include <cstring>
 
-bool Features::General::EnginePrediction::enabled = true;
-bool Features::General::EnginePrediction::forceResetVelocityModifier = false;
+static bool enabled = true;
+static bool forceResetVelocityModifier = false;
 
 CMoveData Features::General::EnginePrediction::moveData {};
 int Features::General::EnginePrediction::prePredictionFlags = 0;
 MoveType Features::General::EnginePrediction::prePredictionMoveType = MOVETYPE_NONE;
+
+void Features::General::EnginePrediction::ImGuiWarning()
+{
+	if(!enabled)
+		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: This feature expects engine prediction to be enabled"));
+}
 
 static float previousVelocityModifer;
 

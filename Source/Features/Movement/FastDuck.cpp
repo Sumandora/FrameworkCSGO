@@ -6,7 +6,7 @@
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
-bool Features::Movement::FastDuck::enabled = false;
+static bool enabled = false;
 
 void Features::Movement::FastDuck::CreateMove(CUserCmd* cmd)
 {

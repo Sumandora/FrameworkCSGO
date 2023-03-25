@@ -89,7 +89,7 @@ void Gui::SwapWindow(SDL_Window* window)
 }
 
 // I don't even want to know why I have to do this
-unsigned int lastTextInput;
+static unsigned int lastTextInput;
 
 void Gui::PollEvent(SDL_Event* event)
 {

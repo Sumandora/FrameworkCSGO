@@ -15,8 +15,8 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-bool Features::Movement::EdgeJump::enabled = false;
-int Features::Movement::EdgeJump::input = 0;
+static bool enabled = false;
+static int input = 0;
 
 void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
 {
@@ -45,8 +45,7 @@ void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
 
 void Features::Movement::EdgeJump::SetupGUI()
 {
-	if(!Features::General::EnginePrediction::enabled)
-		ImGui::Text(xorstr_("Warning: This feature expects engine prediction to be enabled"));
+	Features::General::EnginePrediction::ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }

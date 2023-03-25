@@ -14,9 +14,11 @@
 
 #include "../../Hooks/CreateMove/CreateMoveHook.hpp"
 
-bool Features::Movement::AutoStrafer::enabled = false;
-bool Features::Movement::AutoStrafer::directional = true;
-bool Features::Movement::AutoStrafer::onlyWhenIdle = false;
+static bool enabled = false;
+static bool directional = true;
+static bool onlyWhenIdle = false;
+
+// TODO Allow hard turns
 
 static float lastWishDirection = 0.0f;
 
@@ -105,8 +107,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 
 void Features::Movement::AutoStrafer::SetupGUI()
 {
-	if(!Features::General::EnginePrediction::enabled)
-		ImGui::Text(xorstr_("Warning: This feature expects engine prediction to be enabled"));
+	Features::General::EnginePrediction::ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Directional"), &directional);
 	if (!directional) {
