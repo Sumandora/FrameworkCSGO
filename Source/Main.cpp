@@ -12,6 +12,8 @@
 
 #include "xorstr.hpp"
 
+#include "Features/General.hpp"
+
 // TODO Clantag
 // TODO Offscreen ESP
 // TODO Force Crosshair
@@ -57,6 +59,8 @@ void Initializer()
 	Gui::Create();
 
 	Hooks::InstallHooks();
+
+	Features::General::EventLog::CreateReport(xorstr_("Initialized!"));
 }
 
 int __attribute__((constructor)) Startup()

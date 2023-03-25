@@ -16,9 +16,9 @@
 
 static bool enabled = false;
 static bool directional = true;
+static bool allowHardTurns = false;
+static float hardTurnThreshold = 135.0f;
 static bool onlyWhenIdle = false;
-
-// TODO Allow hard turns
 
 static float lastWishDirection = 0.0f;
 
@@ -85,9 +85,15 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		else
 			wishDirection = lastWishDirection; // If we release all keys go to the last known direction
 		lastWishDirection = wishDirection;
+
 		float delta = std::remainderf(wishDirection - realDirection, 2.0f * M_PI);
 
-		float newDirection = realDirection + (delta > 0.0 ? perfectDelta : -perfectDelta);
+		float newDirection;
+		if (allowHardTurns && abs(delta) >= DEG2RAD(hardTurnThreshold))
+			newDirection = realDirection + delta; // User wants to make a hard turn, don't smooth it, he might jump into the line of sight of an enemy
+		else {
+			newDirection = realDirection + (delta > 0.0 ? perfectDelta : -perfectDelta);
+		}
 
 		cmd->forwardmove = cosf(newDirection) * 450.0f;
 		cmd->sidemove = -sinf(newDirection) * 450.0f;
@@ -110,7 +116,11 @@ void Features::Movement::AutoStrafer::SetupGUI()
 	Features::General::EnginePrediction::ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Directional"), &directional);
-	if (!directional) {
+	if(directional) {
+		ImGui::Checkbox(xorstr_("Allow hard turns"), &allowHardTurns);
+		if(allowHardTurns)
+			ImGui::SliderFloat(xorstr_("Hard turn threshold"), &hardTurnThreshold, 0.0f, 180.0f, "%.2f");
+	} else {
 		ImGui::Checkbox(xorstr_("Only when idle"), &onlyWhenIdle);
 	}
 }
@@ -118,5 +128,7 @@ void Features::Movement::AutoStrafer::SetupGUI()
 BEGIN_SERIALIZED_STRUCT(Features::Movement::AutoStrafer::Serializer, xorstr_("Auto strafer"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Directional"), directional)
+SERIALIZED_TYPE(xorstr_("Allow hard turns"), allowHardTurns)
+SERIALIZED_TYPE(xorstr_("Hard turn threshold"), hardTurnThreshold)
 SERIALIZED_TYPE(xorstr_("Only when idle"), onlyWhenIdle)
 END_SERIALIZED_STRUCT
