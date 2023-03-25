@@ -110,6 +110,26 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 	}
 }
 
+bool HealthbarSettings::operator==(const HealthbarSettings& other) const
+{
+	// clang-format off
+	return
+		enabled == other.enabled &&
+		backgroundColor == other.backgroundColor &&
+		rounding == other.rounding &&
+		spacing == other.spacing &&
+		width == other.width &&
+		aliveColor == other.aliveColor &&
+		deadColor == other.deadColor &&
+		gradient == other.gradient &&
+		outlined == other.outlined &&
+		outlineColor == other.outlineColor &&
+		outlineThickness == other.outlineThickness &&
+		healthNumber == other.healthNumber &&
+		onlyWhenDamaged == other.onlyWhenDamaged;
+	// clang-format on
+}
+
 void HealthbarSettings::Copy(HealthbarSettings& src)
 {
 	enabled = src.enabled;

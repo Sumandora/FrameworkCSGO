@@ -12,6 +12,7 @@
 
 // Base Types
 
+// TODO Generate the boilerplate for implementations
 class BoxSettings {
 private:
 	const char* id;
@@ -30,6 +31,7 @@ public:
 	explicit BoxSettings(const char* id);
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle) const;
+	bool operator==(const BoxSettings& other) const;
 	void Copy(BoxSettings& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -51,6 +53,7 @@ public:
 	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const;
 	float GetLineHeight() const;
 
+	bool operator==(const TextSetting& other) const;
 	void Copy(TextSetting& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -78,6 +81,7 @@ public:
 	explicit HealthbarSettings(const char* id);
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const;
+	bool operator==(const HealthbarSettings& other) const;
 	void Copy(HealthbarSettings& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -94,6 +98,7 @@ public:
 	TextSetting nametag;
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const;
+	bool operator==(const BoxNameSetting& other) const;
 	void Copy(BoxNameSetting& src);
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
@@ -113,6 +118,7 @@ public:
 	// TODO Flags
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const;
+	bool operator==(const PlayerStateSettings& other) const;
 	void SetupGUI();
 	DECLARE_SERIALIZER(Serializer)
 };

@@ -17,6 +17,15 @@ void BoxNameSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* te
 	nametag.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y - nametag.GetLineHeight(), true, text);
 }
 
+bool BoxNameSetting::operator==(const BoxNameSetting& other) const
+{
+	// clang-format off
+	return
+		box == other.box &&
+		nametag == other.nametag;
+	// clang-format on
+}
+
 void BoxNameSetting::Copy(BoxNameSetting& src)
 {
 	box.Copy(src.box);
