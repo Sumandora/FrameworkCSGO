@@ -8,8 +8,8 @@
 #include <chrono>
 #include <vector>
 
-bool Features::General::EventLog::enabled = true;
-int Features::General::EventLog::duration = 5000;
+static bool enabled = true;
+static int duration = 5000;
 
 struct Entry {
 	long time {};

@@ -9,10 +9,6 @@
 
 namespace Features::General {
 	namespace Menu {
-		// Settings
-		extern int menuKey;
-		extern int style;
-
 		void ImGuiLoop();
 
 		// GUI
@@ -34,13 +30,10 @@ namespace Features::General {
 		DECLARE_SERIALIZER(Serializer)
 	}
 	namespace EnginePrediction {
-		// Settings
-		extern bool enabled;
-		extern bool forceResetVelocityModifier;
-
 		extern CMoveData moveData;
 		extern int prePredictionFlags;
 		extern MoveType prePredictionMoveType;
+		void ImGuiWarning();
 
 		void StartPrediction(CUserCmd* cmd);
 		void EndPrediction();
@@ -52,10 +45,6 @@ namespace Features::General {
 		DECLARE_SERIALIZER(Serializer)
 	}
 	namespace EventLog {
-		// Settings
-		extern bool enabled;
-		extern int duration;
-
 		void ImGuiRender(ImDrawList* drawList);
 
 		// GUI

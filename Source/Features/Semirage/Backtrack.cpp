@@ -15,10 +15,10 @@
 
 #include "../../Utils/Trigonometry.hpp"
 
-bool Features::Semirage::Backtrack::enabled = false;
-float Features::Semirage::Backtrack::time = 1.0f;
-bool Features::Semirage::Backtrack::accountForOutgoingPing = false;
-bool Features::Semirage::Backtrack::friendlyFire = false;
+static bool enabled = false;
+static float scale = 1.0f;
+static bool accountForOutgoingPing = false;
+static bool friendlyFire = false;
 
 #define TIME_TO_TICKS(dt) ((int)(0.5f + (float)(dt) / Memory::globalVars->interval_per_tick))
 #define TICKS_TO_TIME(t) (Memory::globalVars->interval_per_tick * (t))
@@ -59,7 +59,7 @@ bool IsTickValid(Tick tick)
 	CNetChan* chan = Interfaces::engine->GetNetChannel();
 	if (chan) {
 		correct += chan->GetLatency(FLOW_INCOMING); // The server asks for OUTGOING, we have to turn this around, since we are the client.
-		if (Features::Semirage::Backtrack::accountForOutgoingPing)
+		if (accountForOutgoingPing)
 			correct += chan->GetLatency(FLOW_OUTGOING); // The server should account for this.
 	}
 
@@ -67,7 +67,7 @@ bool IsTickValid(Tick tick)
 
 	correct += m_fLerpTime;
 
-	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag->GetFloat() * Features::Semirage::Backtrack::time);
+	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag->GetFloat() * scale);
 
 	const float flTargetTime = TICKS_TO_TIME(tick.tickCount) - m_fLerpTime;
 
@@ -147,7 +147,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	});
 
 	if (bestDistance < 5.0f && cmd->tick_count != bestTick.tickCount) {
-		Features::General::EventLog::CreateReport("Trying to backtrack %d ticks", cmd->tick_count - bestTick.tickCount);
+		Features::General::EventLog::CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - bestTick.tickCount);
 		cmd->tick_count = bestTick.tickCount;
 	}
 }
@@ -206,18 +206,18 @@ void Features::Semirage::Backtrack::SetupGUI()
 	if (!ConVarStorage::cl_lagcompensation->GetBool() || !ConVarStorage::sv_unlag->GetBool())
 		ImGui::Text(xorstr_("Warning: Judging by convars, lag compensation is disabled."));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("Time"), &time, 0.0f, 1.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, "%.2f");
 	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %.2f seconds"), ConVarStorage::sv_maxunlag->GetFloat() * Features::Semirage::Backtrack::time);
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %.2f seconds"), ConVarStorage::sv_maxunlag->GetFloat() * scale);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer, xorstr_("Backtrack"))
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Time"), time)
+SERIALIZED_TYPE(xorstr_("Scale"), scale)
 SERIALIZED_TYPE(xorstr_("Account for outgoing ping"), accountForOutgoingPing)
 SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
 END_SERIALIZED_STRUCT

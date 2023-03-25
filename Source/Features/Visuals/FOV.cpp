@@ -9,18 +9,18 @@
 
 #include <vector>
 
-bool Features::Visuals::FOV::forceFOV = false;
-bool Features::Visuals::FOV::ignoreScoped = true;
-float Features::Visuals::FOV::fov = 90.0f;
-bool Features::Visuals::FOV::forceViewModel = false;
-float Features::Visuals::FOV::viewModelFovOffset = 0.0f;
-bool Features::Visuals::FOV::viewOffset = true;
-float Features::Visuals::FOV::offsetX = 0.0f;
-float Features::Visuals::FOV::offsetY = 0.0f;
-float Features::Visuals::FOV::offsetZ = 0.0f;
-float Features::Visuals::FOV::rotationOffsetX = 0.0f;
-float Features::Visuals::FOV::rotationOffsetY = 0.0f;
-float Features::Visuals::FOV::rotationOffsetZ = 0.0f;
+static bool forceFOV = false;
+static bool ignoreScoped = true;
+static float fov = 90.0f;
+static bool forceViewModel = false;
+static float viewModelFovOffset = 0.0f;
+static bool viewOffset = true;
+static float offsetX = 0.0f;
+static float offsetY = 0.0f;
+static float offsetZ = 0.0f;
+static float rotationOffsetX = 0.0f;
+static float rotationOffsetY = 0.0f;
+static float rotationOffsetZ = 0.0f;
 
 void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {

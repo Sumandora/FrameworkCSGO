@@ -10,8 +10,8 @@
 
 #include "../../SDK/MoveType.hpp"
 
-bool Features::Movement::Bhop::enabled = false;
-int Features::Movement::Bhop::humanization = 0;
+static bool enabled = false;
+static int humanization = 0;
 
 void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 {

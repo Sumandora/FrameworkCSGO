@@ -3,12 +3,10 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../GameCache.hpp"
-
 #include <vector>
 
-bool Features::Visuals::NoPunch::hideViewPunch = false;
-bool Features::Visuals::NoPunch::hideAimPunch = false;
+static bool hideViewPunch = false;
+static bool hideAimPunch = false;
 
 static Vector lastViewPunch;
 static Vector lastAimPunch;

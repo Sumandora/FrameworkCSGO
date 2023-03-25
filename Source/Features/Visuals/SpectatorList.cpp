@@ -5,12 +5,11 @@
 
 #include "../../GUI/Elements/ShadowString.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
 #include <vector>
 
-bool Features::Visuals::SpectatorList::enabled = false;
+static bool enabled = false;
 
 void LocalizeObserverMode(ObserverMode observerMode, char name[16])
 {

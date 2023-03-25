@@ -7,17 +7,17 @@
 
 #include "../../Utils/Platform/CompilerSupport.hpp"
 
-int Features::General::Menu::menuKey = static_cast<int>(ImGuiKey_Insert);
-int Features::General::Menu::style = 0;
+static int menuKey = static_cast<int>(ImGuiKey_Insert);
+static int style = 0;
 
 #ifdef DEBUG
-bool isShowingDemoWindow = false;
-bool isShowingMetricsWindow = false;
-bool isShowingDebugLogWindow = false;
-bool isShowingStackToolWindow = false;
-bool isShowingAboutWindow = false;
-bool isShowingStyleEditor = false;
-bool isShowingUserGuide = false;
+static bool isShowingDemoWindow = false;
+static bool isShowingMetricsWindow = false;
+static bool isShowingDebugLogWindow = false;
+static bool isShowingStackToolWindow = false;
+static bool isShowingAboutWindow = false;
+static bool isShowingStyleEditor = false;
+static bool isShowingUserGuide = false;
 #endif
 
 bool wasPressed = false;

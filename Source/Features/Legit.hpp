@@ -7,15 +7,6 @@
 
 namespace Features::Legit {
 	namespace Aimbot {
-		// Settings
-		extern bool enabled;
-		extern float fov;
-		extern float smoothness;
-		extern int maximalInfluence;
-		extern int maximalFlashAmount;
-		extern bool dontAimThroughSmoke;
-		extern bool friendlyFire;
-
 		void PollEvent(SDL_Event* event);
 
 		// GUI
@@ -25,12 +16,6 @@ namespace Features::Legit {
 		DECLARE_SERIALIZER(Serializer)
 	}
 	namespace Triggerbot {
-		// Settings
-		extern bool enabled;
-		extern int input;
-		extern bool secondaryFireWithR8Revolver;
-		extern bool friendlyFire;
-
 		void CreateMove(CUserCmd* cmd);
 
 		// GUI

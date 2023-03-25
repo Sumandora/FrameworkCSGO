@@ -13,15 +13,15 @@
 
 #include <algorithm>
 
-bool Features::Semirage::Aimbot::enabled = false;
-bool Features::Semirage::Aimbot::onlyWhenShooting = false; // TODO Separate key
-float Features::Semirage::Aimbot::fov = 3.0f;
-float Features::Semirage::Aimbot::aimSpeed = 0.2f;
-int Features::Semirage::Aimbot::maximalFlashAmount = 255;
-bool Features::Semirage::Aimbot::dontAimThroughSmoke = false;
-bool Features::Semirage::Aimbot::silent = false;
-float Features::Semirage::Aimbot::snapBack = 0.1f;
-bool Features::Semirage::Aimbot::friendlyFire = false;
+static bool enabled = false;
+static bool onlyWhenShooting = false; // TODO Separate key
+static float fov = 3.0f;
+static float aimSpeed = 0.2f;
+static int maximalFlashAmount = 255;
+static bool dontAimThroughSmoke = false;
+static bool silent = false;
+static float snapBack = 0.1f;
+static bool friendlyFire = false;
 
 bool wasFaked = false;
 
