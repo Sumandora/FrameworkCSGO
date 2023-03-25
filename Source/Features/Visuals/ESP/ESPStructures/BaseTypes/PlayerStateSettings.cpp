@@ -45,6 +45,17 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 	}
 }
 
+bool PlayerStateSettings::operator==(const PlayerStateSettings& other) const
+{
+	// clang-format off
+	return
+		boxName == other.boxName &&
+		healthbar == other.healthbar &&
+		weapon == other.weapon &&
+		flashDuration == other.flashDuration;
+	// clang-format on
+}
+
 void CopyPlayerStateSettings(PlayerStateSettings from, PlayerStateSettings* to)
 {
 	to->boxName.Copy(from.boxName);

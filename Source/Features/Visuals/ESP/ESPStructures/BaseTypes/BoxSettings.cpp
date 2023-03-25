@@ -29,6 +29,22 @@ void BoxSettings::Draw(ImDrawList* drawList, ImVec4 rectangle) const
 	drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), color, rounding, ImDrawFlags_None, thickness);
 }
 
+bool BoxSettings::operator==(const BoxSettings& other) const
+{
+	// clang-format off
+	return
+		enabled == other.enabled &&
+		color == other.color &&
+		rounding == other.rounding &&
+		thickness == other.thickness &&
+		outlined == other.outlined &&
+		outlineColor == other.outlineColor &&
+		outlineThickness == other.outlineThickness &&
+		fill == other.fill &&
+		fillColor == other.fillColor;
+	// clang-format on
+}
+
 void BoxSettings::Copy(BoxSettings& src)
 {
 	enabled = src.enabled;

@@ -37,6 +37,18 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 	ImGui::PopFont();
 }
 
+bool TextSetting::operator==(const TextSetting& other) const
+{
+	// clang-format off
+	return
+		enabled == other.enabled &&
+		fontScale == other.fontScale &&
+		fontColor == other.fontColor &&
+		shadow == other.shadow &&
+		shadowColor == other.shadowColor;
+	// clang-format on
+}
+
 float TextSetting::GetLineHeight() const
 {
 	return ImGui::GetTextLineHeightWithSpacing() * fontScale;

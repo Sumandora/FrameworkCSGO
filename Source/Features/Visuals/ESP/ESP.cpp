@@ -54,6 +54,9 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* viewer, CBasePlayer* player,
 	if (player->GetDormant())
 		return &settings->dormant;
 
+	if(settings->visible == settings->occluded)
+		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
+
 	if (settings == &Features::Visuals::Esp::players.enemy /* Teammates are always "spotted" */ && Features::Visuals::Esp::considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
