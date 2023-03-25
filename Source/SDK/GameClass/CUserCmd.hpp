@@ -4,7 +4,7 @@
 #include "../Math/Vector.hpp"
 
 class CUserCmd {
-	virtual ~CUserCmd() = default;;
+	void* vmt; // Force generate a vmt
 public:
 	int command_number;
 	int tick_count;

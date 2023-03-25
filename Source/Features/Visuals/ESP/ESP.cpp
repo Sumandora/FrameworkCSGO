@@ -88,13 +88,10 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if (!viewer)
 		return;
 
-	if (*viewer->LifeState() == LIFE_DEAD) {
-		if (*viewer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && viewer->ObserverTarget()) {
-			auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
-			if (observerTarget && *observerTarget->LifeState() == LIFE_ALIVE)
-				viewer = observerTarget;
-		} else
-			return;
+	if (*viewer->LifeState() == LIFE_DEAD && viewer->ObserverTarget()) {
+		auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
+		if (observerTarget && *observerTarget->LifeState() == LIFE_ALIVE)
+			viewer = observerTarget;
 	}
 
 	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;
@@ -105,7 +102,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
 		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (!entity || *viewer->LifeState() != LIFE_ALIVE)
+		if (!entity)
 			continue;
 
 		CCollideable* collideable = entity->Collision();
@@ -157,7 +154,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (visible) {
 			if (entity->IsPlayer()) {
 				auto* player = reinterpret_cast<CBasePlayer*>(entity);
-				if (*player->LifeState() != LIFE_ALIVE)
+				if (*player->LifeState() != LIFE_ALIVE || *player->Team() == TeamID::TEAM_UNASSIGNED)
 					continue;
 				PlayerStateSettings* settings = nullptr;
 				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
@@ -171,7 +168,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 					}
 					players.spectators.Draw(drawList, rectangle, name);
 					continue;
-				} else if (*player->LifeState() == LIFE_ALIVE) {
+				} else {
 					if (!player->IsEnemy())
 						settings = SelectPlayerState(viewer, player, &players.teammate);
 					else
