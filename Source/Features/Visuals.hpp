@@ -2,6 +2,7 @@
 #define FEATURES_VISUALS
 
 #include "../SDK/GameClass/CViewSetup.hpp"
+#include "../SDK/GameClass/CUserCmd.hpp"
 #include "../Serialization/Serializer.hpp"
 #include "Visuals/ESP/ESPStructure.hpp"
 

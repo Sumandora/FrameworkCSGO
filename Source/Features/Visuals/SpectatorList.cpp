@@ -47,7 +47,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 
 	CBaseEntity* currentTarget = nullptr;
 	if (localPlayer) {
-		if (*localPlayer->LifeState() == LIFE_ALIVE)
+		if (localPlayer->IsAlive())
 			currentTarget = localPlayer;
 		else {
 			// Intentionally not dereferenced, because game is weird
@@ -65,7 +65,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (!player)
 			continue;
 
-		if (player->GetDormant() || *player->LifeState() != LIFE_DEAD)
+		if (player->GetDormant() || !localPlayer->IsAlive())
 			continue;
 
 		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());

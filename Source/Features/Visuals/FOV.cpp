@@ -24,15 +24,28 @@ static float rotationOffsetZ = 0.0f;
 
 void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {
-	CBasePlayer* viewTarget = GameCache::GetLocalPlayer();
-	if (!viewTarget || *viewTarget->LifeState() != LIFE_ALIVE)
-		return; // TODO Spectators
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* viewer = localPlayer;
 
-	if (forceFOV && (!ignoreScoped || !*viewTarget->Scoped()))
+	if (!viewer)
+		return;
+
+	if (!localPlayer->IsAlive() && *viewer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && viewer->ObserverTarget()) {
+		auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
+		if (observerTarget && observerTarget->IsAlive())
+			viewer = observerTarget;
+		else
+			return;
+	}
+
+	if (forceFOV && (!ignoreScoped || !*viewer->Scoped()))
 		pSetup->fov = fov;
 
+	if(viewer != localPlayer)
+		return; // View model movement doesn't work when spectating (flickering)
+
 	if (forceViewModel) {
-		CBaseEntity* viewModel = Interfaces::entityList->GetClientEntityFromHandle(viewTarget->ViewModel());
+		CBaseEntity* viewModel = Interfaces::entityList->GetClientEntityFromHandle(viewer->ViewModel());
 		if (viewModel) {
 			bool isForcingFOV = viewModelFovOffset != 0;
 			bool isForcingOffset = offsetX != 0 || offsetY != 0 || offsetZ != 0;
@@ -87,9 +100,9 @@ void Features::Visuals::FOV::SetupGUI()
 		ImGui::Checkbox(xorstr_("View offset"), &viewOffset);
 		ImGui::HelpMarker(xorstr_("Should the offset be a literal 3D movement?"));
 
-		ImGui::SliderFloat(xorstr_("Offset X"), &offsetX, -10.0f, 10.0f);
-		ImGui::SliderFloat(xorstr_("Offset Y"), &offsetY, -10.0f, 10.0f);
-		ImGui::SliderFloat(xorstr_("Offset Z"), &offsetZ, -10.0f, 10.0f);
+		ImGui::DragFloat(xorstr_("Offset X"), &offsetX, 0.1f);
+		ImGui::DragFloat(xorstr_("Offset Y"), &offsetY, 0.1f);
+		ImGui::DragFloat(xorstr_("Offset Z"), &offsetZ, 0.1f);
 
 		ImGui::SliderFloat(xorstr_("Rotation offset X"), &rotationOffsetX, -90.0f, 90.0f);
 		ImGui::SliderFloat(xorstr_("Rotation offset Y"), &rotationOffsetY, -90.0f, 90.0f);

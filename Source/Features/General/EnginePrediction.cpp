@@ -34,7 +34,7 @@ void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	if(!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+	if(!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	prePredictionFlags = *localPlayer->Flags();

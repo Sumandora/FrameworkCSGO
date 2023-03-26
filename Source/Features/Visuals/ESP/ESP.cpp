@@ -45,12 +45,12 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 	return true;
 }
 
-PlayerStateSettings* SelectPlayerState(CBasePlayer* viewer, CBasePlayer* player, PlayerTeamSettings* settings)
+PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* settings)
 {
 	if (player->GetDormant())
 		return &settings->dormant;
 
-	if(settings->visible == settings->occluded)
+	if (settings->visible == settings->occluded)
 		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
 
 	if (settings == &Features::Visuals::Esp::players.enemy /* Teammates are always "spotted" */ && considerSpottedEntitiesAsVisible && *player->Spotted())
@@ -58,20 +58,40 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* viewer, CBasePlayer* player,
 
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 	if (!player->SetupBones(boneMatrix))
-		return &settings->dormant; // Setup bones is broken??
+		return &settings->dormant; // This is weird...
+
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+
+	Vector playerEye = localPlayer->GetEyePosition();
+	CTraceFilterEntity filter(localPlayer);
 
 	const Vector head = boneMatrix[8].Origin();
 
-	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(viewer->GetEyePosition(), head, 1))
+	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
 		return &settings->occluded;
 
-	CTraceFilterEntity filter(viewer);
-	const Trace trace = Utils::TraceRay(viewer->GetEyePosition(), head, &filter);
-
-	if (trace.m_pEnt != player)
-		return &settings->occluded;
-	else
+	const Trace trace = Utils::TraceRay(playerEye, head, &filter);
+	if (trace.m_pEnt == player)
 		return &settings->visible;
+	else
+		return &settings->occluded;
+}
+
+// TODO Expose for FOV
+CBasePlayer* GetViewer()
+{
+	CBasePlayer* viewer = GameCache::GetLocalPlayer();
+
+	if (!viewer)
+		return nullptr;
+
+	if (!viewer->IsAlive() && viewer->ObserverTarget()) {
+		auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
+		if (observerTarget && observerTarget->IsAlive())
+			viewer = observerTarget;
+	}
+
+	return viewer;
 }
 
 void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
@@ -82,16 +102,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* viewer = GameCache::GetLocalPlayer();
-
-	if (!viewer)
-		return;
-
-	if (*viewer->LifeState() == LIFE_DEAD && viewer->ObserverTarget()) {
-		auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
-		if (observerTarget && *observerTarget->LifeState() == LIFE_ALIVE)
-			viewer = observerTarget;
-	}
+	CBasePlayer* viewer = GetViewer();
 
 	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;
 
@@ -153,12 +164,12 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (visible) {
 			if (entity->IsPlayer()) {
 				auto* player = reinterpret_cast<CBasePlayer*>(entity);
-				if (*player->LifeState() != LIFE_ALIVE || *player->Team() == TeamID::TEAM_UNASSIGNED)
+				if (!player->IsAlive() || *player->Team() == TeamID::TEAM_UNASSIGNED)
 					continue;
-				PlayerStateSettings* settings = nullptr;
+				PlayerStateSettings* settings;
 				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
 					settings = &players.local;
-				else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || *player->LifeState() != LIFE_ALIVE)) {
+				else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || !player->IsAlive())) {
 					char name[128];
 					if (players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 						PlayerInfo info {};
@@ -169,9 +180,9 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 					continue;
 				} else {
 					if (!player->IsEnemy())
-						settings = SelectPlayerState(viewer, player, &players.teammate);
+						settings = SelectPlayerState(player, &players.teammate);
 					else
-						settings = SelectPlayerState(viewer, player, &players.enemy);
+						settings = SelectPlayerState(player, &players.enemy);
 				}
 
 				if (settings)
