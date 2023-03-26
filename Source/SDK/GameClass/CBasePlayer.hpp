@@ -59,6 +59,10 @@ public:
 		return CBaseEntity::SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
 	}
 
+	inline bool IsAlive() {
+		return *LifeState() == LIFE_ALIVE && *Health() > 0;
+	}
+
 	inline bool IsEnemy()
 	{
 		CBasePlayer* localPlayer = GameCache::GetLocalPlayer();

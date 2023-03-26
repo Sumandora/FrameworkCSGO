@@ -12,6 +12,8 @@
 
 #include "../Features/General.hpp"
 
+// TODO Remake GUI
+
 char* GetConfigFile(const char* filename)
 {
 	return strcat(strcat(Serialization::GetConfigDirectory(), xorstr_("/")), filename);

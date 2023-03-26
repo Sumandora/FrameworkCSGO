@@ -18,6 +18,8 @@
 
 bool Gui::visible = true;
 
+// TODO More aggressive mouse syncing
+
 void Gui::Create()
 {
 	ImGui::CreateContext();

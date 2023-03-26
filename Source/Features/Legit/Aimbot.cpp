@@ -30,7 +30,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
@@ -53,7 +53,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
+		if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
 			continue;
 		if (!IsParticipatingTeam(*player->Team()))
 			continue;

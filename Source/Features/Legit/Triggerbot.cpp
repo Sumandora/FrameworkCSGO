@@ -59,7 +59,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 		return;
 
 	auto player = reinterpret_cast<CBasePlayer*>(entity);
-	if (*player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
+	if (!player->IsAlive() || *player->GunGameImmunity())
 		return;
 
 	TeamID team = *player->Team();

@@ -116,7 +116,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 	std::erase_if(ticks, [&](const auto& pair) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
-		if (!player || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
+		if (!player || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			return true;
 		}
 
@@ -136,6 +136,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 #else
 		for (auto& tick : std::ranges::views::reverse(records)) {
 #endif
+			// TODO Support for Knifes
 			float delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
 
 			if (currentDistance > delta && bestDistance > delta) {
@@ -172,7 +173,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 			ticks[i] = {};
 
 		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity()) {
+		if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity()) {
 			ticks[i].clear();
 			continue;
 		}

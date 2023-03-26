@@ -13,7 +13,7 @@ static Vector lastAimPunch;
 
 void Features::Visuals::NoPunch::HidePunch() {
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if(!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+	if(!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if(hideViewPunch)
@@ -28,7 +28,7 @@ void Features::Visuals::NoPunch::HidePunch() {
 
 void Features::Visuals::NoPunch::RestorePunch() {
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if(!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+	if(!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if(hideViewPunch)

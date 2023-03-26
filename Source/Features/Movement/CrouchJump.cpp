@@ -24,7 +24,7 @@ void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
 	}
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE) {
+	if (!localPlayer || !localPlayer->IsAlive()) {
 		performing = false;
 		return;
 	}

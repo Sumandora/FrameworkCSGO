@@ -28,7 +28,7 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 	}
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer || *localPlayer->LifeState() != LIFE_ALIVE)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)

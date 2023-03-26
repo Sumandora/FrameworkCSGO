@@ -12,7 +12,7 @@
 #include "../../Utils/Trigonometry.hpp"
 
 #include <algorithm>
-
+// TODO Weapon configs
 static bool enabled = false;
 static bool onlyWhenShooting = false; // TODO Separate key
 static float fov = 3.0f;
@@ -56,7 +56,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		// The first object is always the WorldObj
 		for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 			auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-			if (!player || player == localPlayer || player->GetDormant() || *player->LifeState() != LIFE_ALIVE || *player->GunGameImmunity())
+			if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
 				continue;
 
 			if (!IsParticipatingTeam(*player->Team()))
