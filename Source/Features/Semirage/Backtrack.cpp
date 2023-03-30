@@ -216,7 +216,7 @@ void Features::Semirage::Backtrack::SetupGUI()
 	ImGui::Text(xorstr_("You are backtracking up to a maximum of %.2f seconds"), ConVarStorage::sv_maxunlag->GetFloat() * scale);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer, xorstr_("Backtrack"))
+BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Scale"), scale)
 SERIALIZED_TYPE(xorstr_("Account for outgoing ping"), accountForOutgoingPing)

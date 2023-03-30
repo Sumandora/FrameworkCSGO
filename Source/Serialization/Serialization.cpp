@@ -21,7 +21,8 @@ bool Serialization::Load(const char* filename)
 
 	const Serializer serializer(ini);
 
-	Features::Serializer(serializer, Direction::DESERIALIZE);
+	Direction direction = Direction::DESERIALIZE; // used inside macro
+	SERIALIZED_NAMESPACE(Features, xorstr_("Features"))
 
 	return true;
 }
@@ -33,7 +34,8 @@ bool Serialization::Save(const char* filename)
 
 	const Serializer serializer(ini);
 
-	Features::Serializer(serializer, Direction::SERIALIZE);
+	Direction direction = Direction::SERIALIZE; // used inside macro
+	SERIALIZED_NAMESPACE(Features, xorstr_("Features"))
 
 	return file.write(ini, true);
 }

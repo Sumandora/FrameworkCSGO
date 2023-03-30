@@ -68,7 +68,7 @@ void Features::Movement::JumpBug::SetupGUI()
 	ImGui::Checkbox(xorstr_("Pre duck"), &preDuck);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::JumpBug::Serializer, xorstr_("Crouch jump"))
+BEGIN_SERIALIZED_STRUCT(Features::Movement::JumpBug::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Input"), input)
 SERIALIZED_TYPE(xorstr_("Pre duck"), preDuck)

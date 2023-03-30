@@ -25,8 +25,25 @@ void Gui::Create()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 
+	float fontSize = 24.0f;
+
 	// Might not work on certain distros/configurations
-	io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), 24.0f);
+	io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize);
+
+	ImFontConfig fontConfig;
+	fontConfig.MergeMode = true;
+
+	for (auto glyphs : {
+			 io.Fonts->GetGlyphRangesGreek(),
+			 io.Fonts->GetGlyphRangesKorean(),
+			 io.Fonts->GetGlyphRangesJapanese(),
+			 io.Fonts->GetGlyphRangesChineseFull(),
+			 io.Fonts->GetGlyphRangesChineseSimplifiedCommon(),
+			 io.Fonts->GetGlyphRangesCyrillic(),
+			 io.Fonts->GetGlyphRangesThai(),
+			 io.Fonts->GetGlyphRangesVietnamese() }) {
+		io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize, &fontConfig, glyphs);
+	}
 
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;

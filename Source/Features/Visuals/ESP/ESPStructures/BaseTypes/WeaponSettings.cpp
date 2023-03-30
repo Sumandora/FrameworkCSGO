@@ -4,10 +4,9 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-WeaponSettings::WeaponSettings(const char* id)
-	: id(id)
-	, boxName(BoxNameSetting(id))
-	, ammo(TextSetting(strdup(xorstr_("Ammo"))))
+WeaponSettings::WeaponSettings()
+	: boxName(BoxNameSetting())
+	, ammo(TextSetting())
 {
 }
 
@@ -28,15 +27,15 @@ void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWea
 	}
 }
 
-void WeaponSettings::SetupGUI()
+void WeaponSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI();
-	ammo.SetupGUI();
+	boxName.SetupGUI(id);
+	ammo.SetupGUI(xorstr_("Ammo"));
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(WeaponSettings::Serializer, id)
-SERIALIZED_STRUCTURE(boxName)
-SERIALIZED_STRUCTURE(ammo)
+BEGIN_SERIALIZED_STRUCT(WeaponSettings::Serializer)
+SERIALIZED_STRUCTURE(boxName, name)
+SERIALIZED_STRUCTURE(ammo, xorstr_("Ammo"))
 END_SERIALIZED_STRUCT

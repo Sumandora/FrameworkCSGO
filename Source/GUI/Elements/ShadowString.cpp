@@ -2,6 +2,8 @@
 
 #include "../ImGuiColors.hpp"
 
+// TODO Transparency
+
 IMGUI_API void ShadowString::AddText(ImDrawList* drawList, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end)
 {
 	drawList->AddText(ImVec2(pos.x + 1.0f, pos.y + 1.0f), ImGuiColors::black, text_begin, text_end);

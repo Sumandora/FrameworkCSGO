@@ -48,7 +48,7 @@ void Features::Movement::Bhop::SetupGUI()
 	ImGui::SliderInt(xorstr_("Humanization"), &humanization, 0, 4);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::Bhop::Serializer, xorstr_("Bhop"))
+BEGIN_SERIALIZED_STRUCT(Features::Movement::Bhop::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Humanization"), humanization)
 END_SERIALIZED_STRUCT

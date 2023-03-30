@@ -125,7 +125,7 @@ void Features::Movement::AutoStrafer::SetupGUI()
 	}
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::AutoStrafer::Serializer, xorstr_("Auto strafer"))
+BEGIN_SERIALIZED_STRUCT(Features::Movement::AutoStrafer::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Directional"), directional)
 SERIALIZED_TYPE(xorstr_("Allow hard turns"), allowHardTurns)

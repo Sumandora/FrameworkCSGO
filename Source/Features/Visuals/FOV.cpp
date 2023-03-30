@@ -110,7 +110,7 @@ void Features::Visuals::FOV::SetupGUI()
 	}
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::FOV::Serializer, xorstr_("FOV"))
+BEGIN_SERIALIZED_STRUCT(Features::Visuals::FOV::Serializer)
 SERIALIZED_TYPE(xorstr_("Force FOV"), forceFOV)
 SERIALIZED_TYPE(xorstr_("Ignore scoped"), ignoreScoped)
 SERIALIZED_TYPE(xorstr_("FOV"), fov)

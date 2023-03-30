@@ -8,7 +8,7 @@
 
 class CEngineTrace {
 public:
-	VIRTUAL_METHOD(5, TraceRay, void, (Ray * ray, unsigned int fMask, ITraceFilter* pTraceFilter, Trace* pTrace), (this, ray, fMask, pTraceFilter, pTrace))
+	VIRTUAL_METHOD(5, TraceRay, void, (Ray& ray, unsigned int fMask, ITraceFilter* pTraceFilter, Trace* pTrace), (this, ray, fMask, pTraceFilter, pTrace))
 };
 
 #endif

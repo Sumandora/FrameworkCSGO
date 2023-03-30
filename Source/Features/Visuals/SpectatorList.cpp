@@ -99,6 +99,6 @@ void Features::Visuals::SpectatorList::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::SpectatorList::Serializer, xorstr_("Spectator list"))
+BEGIN_SERIALIZED_STRUCT(Features::Visuals::SpectatorList::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 END_SERIALIZED_STRUCT

@@ -83,7 +83,7 @@ void Features::General::EventLog::CreateReport(const char* fmt, ...)
 	entries.push_back(entry);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::EventLog::Serializer, xorstr_("Event log"))
+BEGIN_SERIALIZED_STRUCT(Features::General::EventLog::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Duration"), duration)
 END_SERIALIZED_STRUCT

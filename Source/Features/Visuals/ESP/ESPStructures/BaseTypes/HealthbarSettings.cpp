@@ -6,9 +6,8 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-HealthbarSettings::HealthbarSettings(const char* id)
-	: id(id)
-	, enabled(false)
+HealthbarSettings::HealthbarSettings()
+	: enabled(false)
 	, backgroundColor(ImGuiColors::black)
 	, rounding(0.0f)
 	, spacing(3.0f)
@@ -19,7 +18,7 @@ HealthbarSettings::HealthbarSettings(const char* id)
 	, outlined(false)
 	, outlineColor(ImGuiColors::black)
 	, outlineThickness(1.0f)
-	, healthNumber(TextSetting(strdup(xorstr_("Health number"))))
+	, healthNumber(TextSetting())
 	, onlyWhenDamaged(true)
 {
 }
@@ -110,44 +109,7 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 	}
 }
 
-bool HealthbarSettings::operator==(const HealthbarSettings& other) const
-{
-	// clang-format off
-	return
-		enabled == other.enabled &&
-		backgroundColor == other.backgroundColor &&
-		rounding == other.rounding &&
-		spacing == other.spacing &&
-		width == other.width &&
-		aliveColor == other.aliveColor &&
-		deadColor == other.deadColor &&
-		gradient == other.gradient &&
-		outlined == other.outlined &&
-		outlineColor == other.outlineColor &&
-		outlineThickness == other.outlineThickness &&
-		healthNumber == other.healthNumber &&
-		onlyWhenDamaged == other.onlyWhenDamaged;
-	// clang-format on
-}
-
-void HealthbarSettings::Copy(HealthbarSettings& src)
-{
-	enabled = src.enabled;
-	backgroundColor = src.backgroundColor;
-	rounding = src.rounding;
-	spacing = src.spacing;
-	width = src.width;
-	aliveColor = src.aliveColor;
-	deadColor = src.deadColor;
-	gradient = src.gradient;
-	outlined = src.outlined;
-	outlineColor = src.outlineColor;
-	outlineThickness = src.outlineThickness;
-	healthNumber.Copy(src.healthNumber);
-	onlyWhenDamaged = src.onlyWhenDamaged;
-}
-
-void HealthbarSettings::SetupGUI()
+void HealthbarSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -172,7 +134,7 @@ void HealthbarSettings::SetupGUI()
 			ImGui::ClickableColorButton(xorstr_("Outline color"), outlineColor);
 			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, "%.2f");
 		}
-		healthNumber.SetupGUI();
+		healthNumber.SetupGUI(xorstr_("Health number"));
 		if (healthNumber.enabled)
 			ImGui::Checkbox(xorstr_("Only when damaged"), &onlyWhenDamaged);
 
@@ -182,7 +144,7 @@ void HealthbarSettings::SetupGUI()
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(HealthbarSettings::Serializer, id)
+BEGIN_SERIALIZED_STRUCT(HealthbarSettings::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Background color"), backgroundColor)
 SERIALIZED_TYPE(xorstr_("Rounding"), rounding)
@@ -195,7 +157,7 @@ SERIALIZED_TYPE(xorstr_("Outlined"), outlined)
 SERIALIZED_TYPE(xorstr_("Outline color"), outlineColor)
 SERIALIZED_TYPE(xorstr_("Outline thickness"), outlineThickness)
 
-SERIALIZED_STRUCTURE(healthNumber)
+SERIALIZED_STRUCTURE(healthNumber, xorstr_("Health number"))
 
 SERIALIZED_TYPE(xorstr_("Only when damaged"), onlyWhenDamaged)
 END_SERIALIZED_STRUCT

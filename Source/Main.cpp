@@ -33,7 +33,6 @@
 // TODO Auto pistol & reload
 
 // TODO Moonwalk
-// TODO Thirdperson
 
 // TODO Grenade Prediction & Brightness
 // TODO Color Correction

@@ -4,28 +4,27 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-PlayerTeamSettings::PlayerTeamSettings(const char* id)
-	: id(id)
-	, visible(PlayerStateSettings(strdup(xorstr_("Visible"))))
-	, occluded(PlayerStateSettings(strdup(xorstr_("Occluded"))))
-	, dormant(PlayerStateSettings(strdup(xorstr_("Dormant"))))
+PlayerTeamSettings::PlayerTeamSettings()
+	: visible(PlayerStateSettings())
+	, occluded(PlayerStateSettings())
+	, dormant(PlayerStateSettings())
 {
 }
 
-void PlayerTeamSettings::SetupGUI()
+void PlayerTeamSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar(xorstr_("#Player team config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Visible"))) {
-			visible.SetupGUI();
+			visible.SetupGUI(xorstr_("Visible"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Occluded"))) {
-			occluded.SetupGUI();
+			occluded.SetupGUI(xorstr_("Occluded"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Dormant"))) {
-			dormant.SetupGUI();
+			dormant.SetupGUI(xorstr_("Dormant"));
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -33,8 +32,8 @@ void PlayerTeamSettings::SetupGUI()
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlayerTeamSettings::Serializer, id)
-SERIALIZED_STRUCTURE(visible)
-SERIALIZED_STRUCTURE(occluded)
-SERIALIZED_STRUCTURE(dormant)
+BEGIN_SERIALIZED_STRUCT(PlayerTeamSettings::Serializer)
+SERIALIZED_STRUCTURE(visible, xorstr_("Visible"))
+SERIALIZED_STRUCTURE(occluded, xorstr_("Occluded"))
+SERIALIZED_STRUCTURE(dormant, xorstr_("Dormant"))
 END_SERIALIZED_STRUCT

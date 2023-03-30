@@ -19,15 +19,15 @@ static int onKey = 0;
 static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
-PlayerSettings Features::Visuals::Esp::players { strdup(xorstr_("Players")) };
-static WeaponSettings weapons { strdup(xorstr_("Weapons")) };
-static BoxNameSetting projectiles { strdup(xorstr_("Projectiles")) };
-static PlantedC4Settings plantedC4 { strdup(xorstr_("Planted C4")) };
-static BoxNameSetting hostages { strdup(xorstr_("Hostages")) };
-static BoxNameSetting dzLootCrates { strdup(xorstr_("Loot crates")) };
-static BoxNameSetting dzAmmoBoxes { strdup(xorstr_("Ammo boxes")) };
-static BoxNameSetting dzSentries { strdup(xorstr_("Sentries")) };
-static BoxNameSetting other { strdup(xorstr_("Other")) };
+PlayerSettings Features::Visuals::Esp::players;
+static WeaponSettings weapons;
+static BoxNameSetting projectiles;
+static PlantedC4Settings plantedC4;
+static BoxNameSetting hostages;
+static BoxNameSetting dzLootCrates;
+static BoxNameSetting dzAmmoBoxes;
+static BoxNameSetting dzSentries;
+static BoxNameSetting other;
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -258,37 +258,37 @@ void Features::Visuals::Esp::SetupGUI()
 
 	if (ImGui::BeginTabBar(xorstr_("#Config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Players"))) {
-			players.SetupGUI();
+			players.SetupGUI(xorstr_("Players"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Weapons"))) {
-			weapons.SetupGUI();
+			weapons.SetupGUI(xorstr_("Weapons"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Projectiles"))) {
-			projectiles.SetupGUI();
+			projectiles.SetupGUI(xorstr_("Projectiles"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Planted C4"))) {
-			plantedC4.SetupGUI();
+			plantedC4.SetupGUI(xorstr_("Planted C4"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Hostages"))) {
-			hostages.SetupGUI();
+			hostages.SetupGUI(xorstr_("Hostages"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
 			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
 				if (ImGui::BeginTabItem(xorstr_("Loot crates"))) {
-					dzLootCrates.SetupGUI();
+					dzLootCrates.SetupGUI(xorstr_("Loot crates"));
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(xorstr_("Ammo boxes"))) {
-					dzAmmoBoxes.SetupGUI();
+					dzAmmoBoxes.SetupGUI(xorstr_("Ammo boxes"));
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem(xorstr_("Sentries"))) {
-					dzSentries.SetupGUI();
+					dzSentries.SetupGUI(xorstr_("Sentries"));
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();
@@ -296,7 +296,7 @@ void Features::Visuals::Esp::SetupGUI()
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Other"))) {
-			other.SetupGUI();
+			other.SetupGUI(xorstr_("Other"));
 			ImGui::EndTabItem();
 		}
 
@@ -304,20 +304,20 @@ void Features::Visuals::Esp::SetupGUI()
 	}
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer, xorstr_("Esp"))
+BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
 SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
 SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
 SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
 
-SERIALIZED_STRUCTURE(players)
-SERIALIZED_STRUCTURE(weapons)
-SERIALIZED_STRUCTURE(projectiles)
-SERIALIZED_STRUCTURE(plantedC4)
-SERIALIZED_STRUCTURE(hostages)
-SERIALIZED_STRUCTURE(dzLootCrates)
-SERIALIZED_STRUCTURE(dzAmmoBoxes)
-SERIALIZED_STRUCTURE(dzSentries)
-SERIALIZED_STRUCTURE(other)
+SERIALIZED_STRUCTURE(players, xorstr_("Players"))
+SERIALIZED_STRUCTURE(weapons, xorstr_("Weapons"))
+SERIALIZED_STRUCTURE(projectiles, xorstr_("Projectiles"))
+SERIALIZED_STRUCTURE(plantedC4, xorstr_("Planted C4"))
+SERIALIZED_STRUCTURE(hostages, xorstr_("Hostages"))
+SERIALIZED_STRUCTURE(dzLootCrates, xorstr_("Loot crates"))
+SERIALIZED_STRUCTURE(dzAmmoBoxes, xorstr_("Ammo boxes"))
+SERIALIZED_STRUCTURE(dzSentries, xorstr_("Sentries"))
+SERIALIZED_STRUCTURE(other, xorstr_("Other"))
 END_SERIALIZED_STRUCT

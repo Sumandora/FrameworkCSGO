@@ -15,8 +15,6 @@
 // TODO Generate the boilerplate for implementations
 class BoxSettings {
 private:
-	const char* id;
-
 	bool enabled;
 	ImColor color;
 	float rounding;
@@ -28,41 +26,37 @@ private:
 	ImColor fillColor;
 
 public:
-	explicit BoxSettings(const char* id);
+	BoxSettings();
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle) const;
-	bool operator==(const BoxSettings& other) const;
-	void Copy(BoxSettings& src);
-	void SetupGUI();
+	bool operator<=>(const BoxSettings& other) const = default;
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class TextSetting {
-private:
-	const char* id;
-
 public:
-	explicit TextSetting(const char* id);
-
 	bool enabled;
+
+private:
 	float fontScale;
 	ImColor fontColor;
 	bool shadow;
 	ImColor shadowColor;
 
-	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const;
-	float GetLineHeight() const;
+public:
+	TextSetting();
 
-	bool operator==(const TextSetting& other) const;
-	void Copy(TextSetting& src);
-	void SetupGUI();
+	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const;
+	[[nodiscard]] float GetLineHeight() const;
+
+	bool operator<=>(const TextSetting& other) const = default;
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class HealthbarSettings {
 private:
-	const char* id;
-
 	bool enabled;
 	ImColor backgroundColor;
 	float rounding;
@@ -78,38 +72,30 @@ private:
 	bool onlyWhenDamaged;
 
 public:
-	explicit HealthbarSettings(const char* id);
+	HealthbarSettings();
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const;
-	bool operator==(const HealthbarSettings& other) const;
-	void Copy(HealthbarSettings& src);
-	void SetupGUI();
+	bool operator<=>(const HealthbarSettings& other) const = default;
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class BoxNameSetting {
-private:
-	const char* id;
-
 public:
-	explicit BoxNameSetting(const char* id);
+	explicit BoxNameSetting();
 
 	BoxSettings box;
 	TextSetting nametag;
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const;
-	bool operator==(const BoxNameSetting& other) const;
-	void Copy(BoxNameSetting& src);
-	void SetupGUI();
+	bool operator<=>(const BoxNameSetting& other) const = default;
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class PlayerStateSettings {
-private:
-	const char* id;
-
 public:
-	explicit PlayerStateSettings(const char* id);
+	PlayerStateSettings();
 
 	BoxNameSetting boxName;
 	HealthbarSettings healthbar;
@@ -118,72 +104,62 @@ public:
 	// TODO Flags
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const;
-	bool operator==(const PlayerStateSettings& other) const;
-	void SetupGUI();
+	bool operator<=>(const PlayerStateSettings& other) const = default;
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class WeaponSettings {
 private:
-	const char* id;
-
 	BoxNameSetting boxName;
 	TextSetting ammo;
 
 public:
-	explicit WeaponSettings(const char* id);
+	WeaponSettings();
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const;
-	void SetupGUI();
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class PlantedC4Settings {
 private:
-	const char* id;
-
 	BoxNameSetting boxName;
 	TextSetting timer;
 	bool showDefuseTimer;
 
 public:
-	explicit PlantedC4Settings(const char* id);
+	PlantedC4Settings();
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const;
-	void SetupGUI();
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 // Combination
 
 class PlayerTeamSettings {
-private:
-	const char* id;
-
 public:
-	explicit PlayerTeamSettings(const char* id);
+	PlayerTeamSettings();
 
 	PlayerStateSettings visible;
 	PlayerStateSettings occluded;
 	PlayerStateSettings dormant;
 
-	void SetupGUI();
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class PlayerSettings {
-private:
-	const char* id;
-
 public:
-	explicit PlayerSettings(const char* id);
+	PlayerSettings();
 
 	PlayerTeamSettings teammate;
 	PlayerTeamSettings enemy;
 	PlayerStateSettings local;
 	BoxNameSetting spectators;
 
-	void SetupGUI();
+	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
