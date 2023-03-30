@@ -140,7 +140,7 @@ void Features::Semirage::Aimbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer, xorstr_("Semirage Aimbot"))
+BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
 SERIALIZED_TYPE(xorstr_("FOV"), fov)

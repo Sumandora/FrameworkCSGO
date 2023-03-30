@@ -6,12 +6,11 @@
 #include "../../../../../Interfaces.hpp"
 #include "../../../../Visuals.hpp"
 
-PlayerStateSettings::PlayerStateSettings(const char* id)
-	: id(id)
-	, boxName(BoxNameSetting(id))
-	, healthbar(HealthbarSettings(strdup(xorstr_("Healthbar"))))
-	, weapon(TextSetting(strdup(xorstr_("Weapon"))))
-	, flashDuration(TextSetting(strdup(xorstr_("Flash duration"))))
+PlayerStateSettings::PlayerStateSettings()
+	: boxName(BoxNameSetting())
+	, healthbar(HealthbarSettings())
+	, weapon(TextSetting())
+	, flashDuration(TextSetting())
 {
 }
 
@@ -45,39 +44,20 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 	}
 }
 
-bool PlayerStateSettings::operator==(const PlayerStateSettings& other) const
-{
-	// clang-format off
-	return
-		boxName == other.boxName &&
-		healthbar == other.healthbar &&
-		weapon == other.weapon &&
-		flashDuration == other.flashDuration;
-	// clang-format on
-}
-
-void CopyPlayerStateSettings(PlayerStateSettings from, PlayerStateSettings* to)
-{
-	to->boxName.Copy(from.boxName);
-	to->healthbar.Copy(from.healthbar);
-	to->weapon.Copy(from.weapon);
-	to->flashDuration.Copy(from.flashDuration);
-}
-
 void BuildMenu(PlayerStateSettings* playerStateSettings, PlayerTeamSettings playerTeamSettings)
 {
 	if (ImGui::MenuItem(xorstr_("Visible"))) {
-		CopyPlayerStateSettings(playerTeamSettings.visible, playerStateSettings);
+		*playerStateSettings = playerTeamSettings.visible;
 	}
 	if (ImGui::MenuItem(xorstr_("Occluded"))) {
-		CopyPlayerStateSettings(playerTeamSettings.occluded, playerStateSettings);
+		*playerStateSettings = playerTeamSettings.occluded;
 	}
 	if (ImGui::MenuItem(xorstr_("Dormant"))) {
-		CopyPlayerStateSettings(playerTeamSettings.dormant, playerStateSettings);
+		*playerStateSettings = playerTeamSettings.dormant;
 	}
 }
 
-void PlayerStateSettings::SetupGUI()
+void PlayerStateSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::Button(xorstr_("Copy from")))
@@ -93,21 +73,21 @@ void PlayerStateSettings::SetupGUI()
 			ImGui::EndMenu();
 		}
 		if (ImGui::Selectable(xorstr_("Local"))) {
-			CopyPlayerStateSettings(Features::Visuals::Esp::players.local, this);
+			*this = Features::Visuals::Esp::players.local;
 		}
 		ImGui::EndPopup();
 	}
 
-	boxName.SetupGUI();
-	healthbar.SetupGUI();
-	weapon.SetupGUI();
-	flashDuration.SetupGUI();
+	boxName.SetupGUI(id);
+	healthbar.SetupGUI(xorstr_("Healthbar"));
+	weapon.SetupGUI(xorstr_("Weapon"));
+	flashDuration.SetupGUI(xorstr_("Flash duration"));
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlayerStateSettings::Serializer, id)
-SERIALIZED_STRUCTURE(boxName)
-SERIALIZED_STRUCTURE(healthbar)
-SERIALIZED_STRUCTURE(weapon)
-SERIALIZED_STRUCTURE(flashDuration)
+BEGIN_SERIALIZED_STRUCT(PlayerStateSettings::Serializer)
+SERIALIZED_STRUCTURE(boxName, name)
+SERIALIZED_STRUCTURE(healthbar, xorstr_("Healthbar"))
+SERIALIZED_STRUCTURE(weapon, xorstr_("Weapon"))
+SERIALIZED_STRUCTURE(flashDuration, xorstr_("Flash duration"))
 END_SERIALIZED_STRUCT

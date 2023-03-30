@@ -97,7 +97,7 @@ void Features::General::Menu::SetupGUI()
 	ImGui::Text(xorstr_("Compiled using: " COMPILER_NAME));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::Menu::Serializer, xorstr_("Menu"))
+BEGIN_SERIALIZED_STRUCT(Features::General::Menu::Serializer)
 SERIALIZED_TYPE(xorstr_("Menu key"), menuKey)
 // Intentionally not saving the showing...window because nobody needs those
 SERIALIZED_TYPE(xorstr_("Style"), style)

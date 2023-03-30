@@ -4,9 +4,8 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-TextSetting::TextSetting(const char* id)
-	: id(id)
-	, enabled(false)
+TextSetting::TextSetting()
+	: enabled(false)
 	, fontScale(1.0f)
 	, fontColor(ImGuiColors::white)
 	, shadow(false)
@@ -21,7 +20,7 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 
 	// Hack
 	const float oldFontScale = ImGui::GetFont()->Scale;
-	ImGui::GetFont()->Scale = fontScale;
+	ImGui::GetFont()->Scale *= fontScale;
 	ImGui::PushFont(ImGui::GetFont());
 
 	const ImVec2 size = ImGui::CalcTextSize(text);
@@ -37,33 +36,12 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 	ImGui::PopFont();
 }
 
-bool TextSetting::operator==(const TextSetting& other) const
-{
-	// clang-format off
-	return
-		enabled == other.enabled &&
-		fontScale == other.fontScale &&
-		fontColor == other.fontColor &&
-		shadow == other.shadow &&
-		shadowColor == other.shadowColor;
-	// clang-format on
-}
-
 float TextSetting::GetLineHeight() const
 {
 	return ImGui::GetTextLineHeightWithSpacing() * fontScale;
 }
 
-void TextSetting::Copy(TextSetting& src)
-{
-	enabled = src.enabled;
-	fontScale = src.fontScale;
-	fontColor = src.fontColor;
-	shadow = src.shadow;
-	shadowColor = src.shadowColor;
-}
-
-void TextSetting::SetupGUI()
+void TextSetting::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -85,7 +63,7 @@ void TextSetting::SetupGUI()
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(TextSetting::Serializer, id)
+BEGIN_SERIALIZED_STRUCT(TextSetting::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Font scale"), fontScale)
 SERIALIZED_TYPE(xorstr_("Font color"), fontColor)

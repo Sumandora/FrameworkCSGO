@@ -84,7 +84,7 @@ void Features::Legit::Triggerbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer, xorstr_("Spectator list"))
+BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Input"), input)
 SERIALIZED_TYPE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver)

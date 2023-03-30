@@ -4,9 +4,8 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-BoxSettings::BoxSettings(const char* id)
-	: id(id)
-	, enabled(false)
+BoxSettings::BoxSettings()
+	: enabled(false)
 	, color(ImGuiColors::white)
 	, rounding(0.0f)
 	, thickness(1.0f)
@@ -29,36 +28,7 @@ void BoxSettings::Draw(ImDrawList* drawList, ImVec4 rectangle) const
 	drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), color, rounding, ImDrawFlags_None, thickness);
 }
 
-bool BoxSettings::operator==(const BoxSettings& other) const
-{
-	// clang-format off
-	return
-		enabled == other.enabled &&
-		color == other.color &&
-		rounding == other.rounding &&
-		thickness == other.thickness &&
-		outlined == other.outlined &&
-		outlineColor == other.outlineColor &&
-		outlineThickness == other.outlineThickness &&
-		fill == other.fill &&
-		fillColor == other.fillColor;
-	// clang-format on
-}
-
-void BoxSettings::Copy(BoxSettings& src)
-{
-	enabled = src.enabled;
-	color = src.color;
-	rounding = src.rounding;
-	thickness = src.thickness;
-	outlined = src.outlined;
-	outlineColor = src.outlineColor;
-	outlineThickness = src.outlineThickness;
-	fill = src.fill;
-	fillColor = src.fillColor;
-}
-
-void BoxSettings::SetupGUI()
+void BoxSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -86,7 +56,7 @@ void BoxSettings::SetupGUI()
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(BoxSettings::Serializer, id)
+BEGIN_SERIALIZED_STRUCT(BoxSettings::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Color"), color)
 SERIALIZED_TYPE(xorstr_("Rounding"), rounding)

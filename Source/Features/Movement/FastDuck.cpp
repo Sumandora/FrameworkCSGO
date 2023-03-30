@@ -24,6 +24,6 @@ void Features::Movement::FastDuck::SetupGUI()
 	ImGui::Text(xorstr_("Warning: This feature is known to cause untrusted bans"));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::FastDuck::Serializer, xorstr_("Fast duck"))
+BEGIN_SERIALIZED_STRUCT(Features::Movement::FastDuck::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 END_SERIALIZED_STRUCT

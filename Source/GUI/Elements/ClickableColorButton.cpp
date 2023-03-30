@@ -21,7 +21,7 @@ IMGUI_API void ImGui::ClickableColorButton(const char* desc_id, ImColor& col, Im
 		ImGui::EndPopup();
 	}
 	ImGui::SameLine();
-	ImGui::Text("%s", desc_id);
+	ImGui::Text(xorstr_("%s"), desc_id);
 
 	if (clicked)
 		ImGui::OpenPopup(xorstr_("##Picker"));

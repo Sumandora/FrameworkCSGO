@@ -23,10 +23,10 @@ struct Ray {
 	{
 		m_Delta = end - start;
 		m_IsSwept = (m_Delta.LengthSquared() != 0);
-		m_Extents.x = m_Extents.y = m_Extents.z = 0;
+		m_Extents.x = m_Extents.y = m_Extents.z = 0.0f;
 		m_pWorldAxisTransform = nullptr;
 		m_IsRay = true;
-		m_StartOffset.x = m_StartOffset.y = m_StartOffset.z = 0;
+		m_StartOffset.x = m_StartOffset.y = m_StartOffset.z = 0.0f;
 		m_Start = start;
 	}
 

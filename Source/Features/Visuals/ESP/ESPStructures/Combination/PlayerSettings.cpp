@@ -4,33 +4,32 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-PlayerSettings::PlayerSettings(const char* id)
-	: id(id)
-	, teammate(PlayerTeamSettings(strdup(xorstr_("Teammate"))))
-	, enemy(PlayerTeamSettings(strdup(xorstr_("Enemy"))))
-	, local(PlayerStateSettings(strdup(xorstr_("Local"))))
-	, spectators(BoxNameSetting(strdup(xorstr_("Spectators"))))
+PlayerSettings::PlayerSettings()
+	: teammate(PlayerTeamSettings())
+	, enemy(PlayerTeamSettings())
+	, local(PlayerStateSettings())
+	, spectators(BoxNameSetting())
 {
 }
 
-void PlayerSettings::SetupGUI()
+void PlayerSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar(xorstr_("#Player config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Teammate"))) {
-			teammate.SetupGUI();
+			teammate.SetupGUI(xorstr_("Teammate"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Enemy"))) {
-			enemy.SetupGUI();
+			enemy.SetupGUI(xorstr_("Enemy"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Local"))) {
-			local.SetupGUI();
+			local.SetupGUI(xorstr_("Local"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Spectators"))) {
-			spectators.SetupGUI();
+			spectators.SetupGUI(xorstr_("Spectators"));
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -38,9 +37,9 @@ void PlayerSettings::SetupGUI()
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlayerSettings::Serializer, id)
-SERIALIZED_STRUCTURE(teammate)
-SERIALIZED_STRUCTURE(enemy)
-SERIALIZED_STRUCTURE(local)
-SERIALIZED_STRUCTURE(spectators)
+BEGIN_SERIALIZED_STRUCT(PlayerSettings::Serializer)
+SERIALIZED_STRUCTURE(teammate, xorstr_("Teammate"))
+SERIALIZED_STRUCTURE(enemy, xorstr_("Enemy"))
+SERIALIZED_STRUCTURE(local, xorstr_("Local"))
+SERIALIZED_STRUCTURE(spectators, xorstr_("Spectators"))
 END_SERIALIZED_STRUCT

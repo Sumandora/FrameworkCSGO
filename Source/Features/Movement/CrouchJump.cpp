@@ -50,7 +50,7 @@ void Features::Movement::CrouchJump::SetupGUI()
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::CrouchJump::Serializer, xorstr_("Crouch jump"))
+BEGIN_SERIALIZED_STRUCT(Features::Movement::CrouchJump::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Input"), input)
 END_SERIALIZED_STRUCT

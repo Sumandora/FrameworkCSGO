@@ -70,6 +70,6 @@ void Features::General::EnginePrediction::SetupGUI()
 	ImGui::HelpMarker(xorstr_("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine."));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::EnginePrediction::Serializer, xorstr_("Engine prediction"))
+BEGIN_SERIALIZED_STRUCT(Features::General::EnginePrediction::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 END_SERIALIZED_STRUCT

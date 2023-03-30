@@ -59,7 +59,7 @@ void Features::Semirage::RecoilAssistance::SetupGUI()
 	ImGui::SliderInt(xorstr_("Min shots"), &minShots, 0, 10);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Semirage::RecoilAssistance::Serializer, xorstr_("Recoil assistance"))
+BEGIN_SERIALIZED_STRUCT(Features::Semirage::RecoilAssistance::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Horizontal adjustment"), horizontalAdjustment)
 SERIALIZED_TYPE(xorstr_("Vertical adjustment"), verticalAdjustment)
