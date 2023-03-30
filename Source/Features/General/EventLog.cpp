@@ -7,6 +7,7 @@
 
 #include <chrono>
 #include <vector>
+#include <cmath>
 
 static bool enabled = true;
 static int duration = 5000;
@@ -49,8 +50,10 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 		// If you are curious, what this formula does, then just put it into geogebra or wolframalpha
 		// FYI: The `10` is the duration the notification stays visible (uneven numbers break it)
 		animation = 1.0 - (float)pow(((animation - 0.5) * 2.0), 10.0);
-		if (animation > 0.99) // Because we are calculating everything using floats, we will see micro movements
-			animation = 1.0; // If we are close to 1.0 then just set it to 1.0, we don't care about movements in the 0.99-1.0 range
+
+		// Because we are calculating everything using floats, we will see micro movements
+		// If we are close to 1.0 then just set it to 1.0, we don't care about movements in the 0.99-1.0 range
+		animation = fmin(animation + 0.01, 1.0);
 
 		const ImVec2 size = ImGui::CalcTextSize(entry.text);
 		const ImVec2 position((float)(-size.x * (1.0 - animation) + 10.0), (float)(yOffset + 10.0));
