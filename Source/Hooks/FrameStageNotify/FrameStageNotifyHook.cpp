@@ -4,10 +4,16 @@
 
 #include "../../Features/Semirage.hpp"
 #include "../../Features/Visuals.hpp"
+#include "../../GameCache.hpp"
 
 void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
+	case ClientFrameStage::FRAME_START: {
+		GameCache::ClearLocalPlayer();
+		Features::Visuals::Esp::UpdateVisibility();
+		break;
+	}
 	case ClientFrameStage::FRAME_RENDER_START: {
 		Features::Semirage::Backtrack::FrameStageNotify();
 

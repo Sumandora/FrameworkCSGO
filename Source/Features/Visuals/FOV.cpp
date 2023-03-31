@@ -4,6 +4,7 @@
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "xorstr.hpp"
 
+#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
 

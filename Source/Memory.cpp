@@ -35,7 +35,7 @@ void Memory::Create()
 
 	// Set the address for the return address spoofer
 	ret_instruction_addr = Pattern(
-		xorstr_("\xC9\xC3"), // leave; ret; instructions
+		"\xC9\xC3", // leave; ret; instructions
 		xorstr_("xx"))
 							   .searchPattern(baseClientVTable[0]); // random code piece
 
@@ -52,10 +52,10 @@ void Memory::Create()
 	// The method which contains the 1.25 and 1.0 float literals is the one...
 	void* categorizeGroundSurface = gameMovementVTable[69];
 
-	void* leaInstr = Pattern(xorstr_("\x48\x8d\x05") /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
+	void* leaInstr = Pattern("\x48\x8d\x05" /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
 	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
 
-	lineGoesThroughSmoke = Pattern(xorstr_("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\x00\x00\x00\x00\x66"), xorstr_("xxxxxxxxxxxxxxxxx????x"))
+	lineGoesThroughSmoke = Pattern("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\x00\x00\x00\x00\x66", xorstr_("xxxxxxxxxxxxxxxxx????x"))
 							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
 

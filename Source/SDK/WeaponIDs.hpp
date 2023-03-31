@@ -108,296 +108,111 @@ enum class WeaponID : short {
 	LEATHER_HANDWRAPS = 5032,
 	MOTORCYCLE_GLOVES = 5033,
 	SPECIALIST_GLOVES = 5034,
-	STUDDED_HYDRA_GLOVES = 5035,
+	STUDDED_HYDRA_GLOVES = 5035
 };
 
-// I need to make huge functions like this one, because the xorstr lib produces dangling pointers otherwise
-inline constexpr void LocalizeWeaponID(WeaponID weaponID, char weaponName[256])
+static std::map<WeaponID, const char*> weaponLocalization {
+	{ WeaponID::WEAPON_INVALID, strdup(xorstr_("Invalid weapon")) },
+	{ WeaponID::WEAPON_NONE, strdup(xorstr_("None")) },
+	{ WeaponID::WEAPON_DEAGLE, strdup(xorstr_("Desert Eagle")) },
+	{ WeaponID::WEAPON_ELITE, strdup(xorstr_("Dual Berettas")) },
+	{ WeaponID::WEAPON_FIVESEVEN, strdup(xorstr_("Five-SeveN")) },
+	{ WeaponID::WEAPON_GLOCK, strdup(xorstr_("Glock-18")) },
+	{ WeaponID::WEAPON_AK47, strdup(xorstr_("AK-47")) },
+	{ WeaponID::WEAPON_AUG, strdup(xorstr_("AUG")) },
+	{ WeaponID::WEAPON_AWP, strdup(xorstr_("AWP")) },
+	{ WeaponID::WEAPON_FAMAS, strdup(xorstr_("FAMAS")) },
+	{ WeaponID::WEAPON_G3SG1, strdup(xorstr_("G3SG1")) },
+	{ WeaponID::WEAPON_GALILAR, strdup(xorstr_("Galil AR")) },
+	{ WeaponID::WEAPON_M249, strdup(xorstr_("M249")) },
+	{ WeaponID::WEAPON_M4A1, strdup(xorstr_("M4A4")) }, // Don't know why the game calls it M4A1 even though its M4A4
+	{ WeaponID::WEAPON_MAC10, strdup(xorstr_("MAC-10")) },
+	{ WeaponID::WEAPON_P90, strdup(xorstr_("P90")) },
+	{ WeaponID::WEAPON_ZONE_REPULSOR, strdup(xorstr_("Zone Repulsor")) },
+	{ WeaponID::WEAPON_MP5SD, strdup(xorstr_("MP5-SD")) },
+	{ WeaponID::WEAPON_UMP45, strdup(xorstr_("UMP-45")) },
+	{ WeaponID::WEAPON_XM1014, strdup(xorstr_("XM1014")) },
+	{ WeaponID::WEAPON_BIZON, strdup(xorstr_("PP-Bizon")) },
+	{ WeaponID::WEAPON_MAG7, strdup(xorstr_("MAG-7")) },
+	{ WeaponID::WEAPON_NEGEV, strdup(xorstr_("Negev")) },
+	{ WeaponID::WEAPON_SAWEDOFF, strdup(xorstr_("Sawed-Off")) },
+	{ WeaponID::WEAPON_TEC9, strdup(xorstr_("Tec-9")) },
+	{ WeaponID::WEAPON_TASER, strdup(xorstr_("Zeus x27")) },
+	{ WeaponID::WEAPON_HKP2000, strdup(xorstr_("P2000")) },
+	{ WeaponID::WEAPON_MP7, strdup(xorstr_("MP7")) },
+	{ WeaponID::WEAPON_MP9, strdup(xorstr_("MP9")) },
+	{ WeaponID::WEAPON_NOVA, strdup(xorstr_("Nova")) },
+	{ WeaponID::WEAPON_P250, strdup(xorstr_("P250")) },
+	{ WeaponID::WEAPON_SHIELD, strdup(xorstr_("Riot Shield")) },
+	{ WeaponID::WEAPON_SCAR20, strdup(xorstr_("SCAR-20")) },
+	{ WeaponID::WEAPON_SG556, strdup(xorstr_("SG 553")) }, // I don't know why the game calls it WEAPON_SG556, but it's not 556 but 553
+	{ WeaponID::WEAPON_SSG08, strdup(xorstr_("SSG 08")) },
+	{ WeaponID::WEAPON_KNIFEGG, strdup(xorstr_("Golden Knife")) },
+	{ WeaponID::WEAPON_KNIFE, strdup(xorstr_("Knife")) },
+	{ WeaponID::WEAPON_FLASHBANG, strdup(xorstr_("Flashbang")) },
+	{ WeaponID::WEAPON_HEGRENADE, strdup(xorstr_("High Explosive Grenade")) },
+	{ WeaponID::WEAPON_SMOKEGRENADE, strdup(xorstr_("Smoke Grenade")) },
+	{ WeaponID::WEAPON_MOLOTOV, strdup(xorstr_("Molotov")) },
+	{ WeaponID::WEAPON_DECOY, strdup(xorstr_("Decoy Grenade")) },
+	{ WeaponID::WEAPON_INCGRENADE, strdup(xorstr_("Incendiary Grenade")) },
+	{ WeaponID::WEAPON_C4, strdup(xorstr_("C4 Explosive")) },
+	{ WeaponID::WEAPON_HEALTHSHOT, strdup(xorstr_("Medi-Shot")) },
+	{ WeaponID::WEAPON_KNIFE_T, strdup(xorstr_("Knife")) },
+	{ WeaponID::WEAPON_M4A1_SILENCER, strdup(xorstr_("M4A1-S")) },
+	{ WeaponID::WEAPON_USP_SILENCER, strdup(xorstr_("USP-S")) },
+	{ WeaponID::WEAPON_CZ75A, strdup(xorstr_("CZ75-Auto")) },
+	{ WeaponID::WEAPON_REVOLVER, strdup(xorstr_("R8 Revolver")) },
+	{ WeaponID::WEAPON_TAGRENADE, strdup(xorstr_("Tactical Awareness Grenade")) },
+	{ WeaponID::WEAPON_FISTS, strdup(xorstr_("Bare Hands")) },
+	{ WeaponID::WEAPON_BREACHCHARGE, strdup(xorstr_("Breach charge")) },
+	{ WeaponID::WEAPON_TABLET, strdup(xorstr_("Tablet")) },
+	{ WeaponID::WEAPON_MELEE, strdup(xorstr_("Knife")) }, // A broken and throwable variant...
+	{ WeaponID::WEAPON_AXE, strdup(xorstr_("Axe")) },
+	{ WeaponID::WEAPON_HAMMER, strdup(xorstr_("Hammer")) },
+	{ WeaponID::WEAPON_SPANNER, strdup(xorstr_("Wrench")) },
+	{ WeaponID::WEAPON_KNIFE_GHOST, strdup(xorstr_("Spectral Shiv")) }, // Shoutout to whatever valve employee who is responsible for this one, it's awesome
+	{ WeaponID::WEAPON_FIREBOMB, strdup(xorstr_("Fire Bomb")) }, // Literally the same as a molotov?
+	{ WeaponID::WEAPON_DIVERSION, strdup(xorstr_("Diversion")) }, // Decoy, but footsteps instead of gunshots? (lmao that's cool, why don't we have that in comp)
+	{ WeaponID::WEAPON_FRAG_GRENADE, strdup(xorstr_("Frag Grenade")) },
+	{ WeaponID::WEAPON_SNOWBALL, strdup(xorstr_("Snowball")) },
+	{ WeaponID::WEAPON_BUMPMINE, strdup(xorstr_("Bump Mine")) },
+	{ WeaponID::WEAPON_BAYONET, strdup(xorstr_("Bayonet")) },
+	{ WeaponID::WEAPON_KNIFE_CSS, strdup(xorstr_("Classic Knife")) },
+	{ WeaponID::WEAPON_KNIFE_FLIP, strdup(xorstr_("Flip Knife")) },
+	{ WeaponID::WEAPON_KNIFE_GUT, strdup(xorstr_("Gut Knife")) },
+	{ WeaponID::WEAPON_KNIFE_KARAMBIT, strdup(xorstr_("Karambit")) },
+	{ WeaponID::WEAPON_KNIFE_M9_BAYONET, strdup(xorstr_("M9 Bayonet")) },
+	{ WeaponID::WEAPON_KNIFE_TACTICAL, strdup(xorstr_("Huntsman Knife")) },
+	{ WeaponID::WEAPON_KNIFE_FALCHION, strdup(xorstr_("Falchion Knife")) },
+	{ WeaponID::WEAPON_KNIFE_SURVIVAL_BOWIE, strdup(xorstr_("Bowie Knife")) },
+	{ WeaponID::WEAPON_KNIFE_BUTTERFLY, strdup(xorstr_("Butterfly Knife")) },
+	{ WeaponID::WEAPON_KNIFE_PUSH, strdup(xorstr_("Shadow daggers")) },
+	{ WeaponID::WEAPON_KNIFE_CORD, strdup(xorstr_("Paracord Knife")) },
+	{ WeaponID::WEAPON_KNIFE_CANIS, strdup(xorstr_("Survival Knife")) },
+	{ WeaponID::WEAPON_KNIFE_URSUS, strdup(xorstr_("Ursus Knife")) },
+	{ WeaponID::WEAPON_KNIFE_GYPSY_JACKKNIFE, strdup(xorstr_("Navaja Knife")) },
+	{ WeaponID::WEAPON_KNIFE_OUTDOOR, strdup(xorstr_("Nomad Knife")) },
+	{ WeaponID::WEAPON_KNIFE_STILETTO, strdup(xorstr_("Stiletto Knife")) },
+	{ WeaponID::WEAPON_KNIFE_WIDOWMAKER, strdup(xorstr_("Talon Knife")) },
+	{ WeaponID::WEAPON_KNIFE_SKELETON, strdup(xorstr_("Skeleton Knife")) },
+	{ WeaponID::STUDDED_BROKENFANG_GLOVES, strdup(xorstr_("Broken Fang Gloves")) },
+	{ WeaponID::STUDDED_BLOODHOUND_GLOVES, strdup(xorstr_("Bloodhound Gloves")) },
+	{ WeaponID::T_GLOVES, strdup(xorstr_("T Gloves")) },
+	{ WeaponID::CT_GLOVES, strdup(xorstr_("CT Gloves")) },
+	{ WeaponID::SPORTY_GLOVES, strdup(xorstr_("Sport Gloves")) },
+	{ WeaponID::SLICK_GLOVES, strdup(xorstr_("Slick Gloves")) }, // Seem to be unused content (or go by different name)
+	{ WeaponID::LEATHER_HANDWRAPS, strdup(xorstr_("Hand Wraps")) },
+	{ WeaponID::MOTORCYCLE_GLOVES, strdup(xorstr_("Motorcycle Gloves")) }, // Seem to be unused content (or go by different name)
+	{ WeaponID::SPECIALIST_GLOVES, strdup(xorstr_("Specialist Gloves")) },
+	{ WeaponID::STUDDED_HYDRA_GLOVES, strdup(xorstr_("Hydra Gloves")) }
+};
+
+inline const char* LocalizeWeaponID(WeaponID weaponID)
 {
-	switch (weaponID) {
-	case WeaponID::WEAPON_INVALID:
-		strcpy(weaponName, xorstr_("Invalid weapon"));
-		break;
-	case WeaponID::WEAPON_NONE:
-		strcpy(weaponName, xorstr_("None"));
-		break;
-	case WeaponID::WEAPON_DEAGLE:
-		strcpy(weaponName, xorstr_("Desert Eagle"));
-		break;
-	case WeaponID::WEAPON_ELITE:
-		strcpy(weaponName, xorstr_("Dual Berettas"));
-		break;
-	case WeaponID::WEAPON_FIVESEVEN:
-		strcpy(weaponName, xorstr_("Five-SeveN"));
-		break;
-	case WeaponID::WEAPON_GLOCK:
-		strcpy(weaponName, xorstr_("Glock-18"));
-		break;
-	case WeaponID::WEAPON_AK47:
-		strcpy(weaponName, xorstr_("AK-47"));
-		break;
-	case WeaponID::WEAPON_AUG:
-		strcpy(weaponName, xorstr_("AUG"));
-		break;
-	case WeaponID::WEAPON_AWP:
-		strcpy(weaponName, xorstr_("AWP"));
-		break;
-	case WeaponID::WEAPON_FAMAS:
-		strcpy(weaponName, xorstr_("FAMAS"));
-		break;
-	case WeaponID::WEAPON_G3SG1:
-		strcpy(weaponName, xorstr_("G3SG1"));
-		break;
-	case WeaponID::WEAPON_GALILAR:
-		strcpy(weaponName, xorstr_("Galil AR"));
-		break;
-	case WeaponID::WEAPON_M249:
-		strcpy(weaponName, xorstr_("M249"));
-		break;
-	case WeaponID::WEAPON_M4A1:
-		strcpy(weaponName, xorstr_("M4A4"));
-		break; // Don't know why the game calls it M4A1 even though the its M4A4
-	case WeaponID::WEAPON_MAC10:
-		strcpy(weaponName, xorstr_("MAC-10"));
-		break;
-	case WeaponID::WEAPON_P90:
-		strcpy(weaponName, xorstr_("P90"));
-		break;
-	case WeaponID::WEAPON_ZONE_REPULSOR:
-		strcpy(weaponName, xorstr_("Zone Repulsor"));
-		break;
-	case WeaponID::WEAPON_MP5SD:
-		strcpy(weaponName, xorstr_("MP5-SD"));
-		break;
-	case WeaponID::WEAPON_UMP45:
-		strcpy(weaponName, xorstr_("UMP-45"));
-		break;
-	case WeaponID::WEAPON_XM1014:
-		strcpy(weaponName, xorstr_("XM1014"));
-		break;
-	case WeaponID::WEAPON_BIZON:
-		strcpy(weaponName, xorstr_("PP-Bizon"));
-		break;
-	case WeaponID::WEAPON_MAG7:
-		strcpy(weaponName, xorstr_("MAG-7"));
-		break;
-	case WeaponID::WEAPON_NEGEV:
-		strcpy(weaponName, xorstr_("Negev"));
-		break;
-	case WeaponID::WEAPON_SAWEDOFF:
-		strcpy(weaponName, xorstr_("Sawed-Off"));
-		break;
-	case WeaponID::WEAPON_TEC9:
-		strcpy(weaponName, xorstr_("Tec-9"));
-		break;
-	case WeaponID::WEAPON_TASER:
-		strcpy(weaponName, xorstr_("Zeus x27"));
-		break;
-	case WeaponID::WEAPON_HKP2000:
-		strcpy(weaponName, xorstr_("P2000"));
-		break;
-	case WeaponID::WEAPON_MP7:
-		strcpy(weaponName, xorstr_("MP7"));
-		break;
-	case WeaponID::WEAPON_MP9:
-		strcpy(weaponName, xorstr_("MP9"));
-		break;
-	case WeaponID::WEAPON_NOVA:
-		strcpy(weaponName, xorstr_("Nova"));
-		break;
-	case WeaponID::WEAPON_P250:
-		strcpy(weaponName, xorstr_("P250"));
-		break;
-	case WeaponID::WEAPON_SHIELD:
-		strcpy(weaponName, xorstr_("Riot Shield"));
-		break;
-	case WeaponID::WEAPON_SCAR20:
-		strcpy(weaponName, xorstr_("SCAR-20"));
-		break;
-	case WeaponID::WEAPON_SG556:
-		strcpy(weaponName, xorstr_("SG 553"));
-		break; // I don't know why the game calls it WEAPON_SG556 but its not 556 but 553
-	case WeaponID::WEAPON_SSG08:
-		strcpy(weaponName, xorstr_("SSG 08"));
-		break;
-	case WeaponID::WEAPON_KNIFEGG:
-		strcpy(weaponName, xorstr_("Golden Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE:
-		strcpy(weaponName, xorstr_("Knife"));
-		break;
-	case WeaponID::WEAPON_FLASHBANG:
-		strcpy(weaponName, xorstr_("Flashbang"));
-		break;
-	case WeaponID::WEAPON_HEGRENADE:
-		strcpy(weaponName, xorstr_("High Explosive Grenade"));
-		break;
-	case WeaponID::WEAPON_SMOKEGRENADE:
-		strcpy(weaponName, xorstr_("Smoke Grenade"));
-		break;
-	case WeaponID::WEAPON_MOLOTOV:
-		strcpy(weaponName, xorstr_("Molotov"));
-		break;
-	case WeaponID::WEAPON_DECOY:
-		strcpy(weaponName, xorstr_("Decoy Grenade"));
-		break;
-	case WeaponID::WEAPON_INCGRENADE:
-		strcpy(weaponName, xorstr_("Incendiary Grenade"));
-		break;
-	case WeaponID::WEAPON_C4:
-		strcpy(weaponName, xorstr_("C4 Explosive"));
-		break;
-	case WeaponID::WEAPON_HEALTHSHOT:
-		strcpy(weaponName, xorstr_("Medi-Shot"));
-		break;
-	case WeaponID::WEAPON_KNIFE_T:
-		strcpy(weaponName, xorstr_("Knife"));
-		break;
-	case WeaponID::WEAPON_M4A1_SILENCER:
-		strcpy(weaponName, xorstr_("M4A1-S"));
-		break;
-	case WeaponID::WEAPON_USP_SILENCER:
-		strcpy(weaponName, xorstr_("USP-S"));
-		break;
-	case WeaponID::WEAPON_CZ75A:
-		strcpy(weaponName, xorstr_("CZ75-Auto"));
-		break;
-	case WeaponID::WEAPON_REVOLVER:
-		strcpy(weaponName, xorstr_("R8 Revolver"));
-		break;
-	case WeaponID::WEAPON_TAGRENADE:
-		strcpy(weaponName, xorstr_("Tactical Awareness Grenade"));
-		break;
-	case WeaponID::WEAPON_FISTS:
-		strcpy(weaponName, xorstr_("Bare Hands"));
-		break;
-	case WeaponID::WEAPON_BREACHCHARGE:
-		strcpy(weaponName, xorstr_("Breach charge"));
-		break;
-	case WeaponID::WEAPON_TABLET:
-		strcpy(weaponName, xorstr_("Tablet"));
-		break;
-	case WeaponID::WEAPON_MELEE:
-		strcpy(weaponName, xorstr_("Knife"));
-		break; // A broken and throwable variant...
-	case WeaponID::WEAPON_AXE:
-		strcpy(weaponName, xorstr_("Axe"));
-		break;
-	case WeaponID::WEAPON_HAMMER:
-		strcpy(weaponName, xorstr_("Hammer"));
-		break;
-	case WeaponID::WEAPON_SPANNER:
-		strcpy(weaponName, xorstr_("Wrench"));
-		break;
-	case WeaponID::WEAPON_KNIFE_GHOST:
-		strcpy(weaponName, xorstr_("Spectral Shiv"));
-		break; // Shoutout to whatever valve employee is responsible for this one, it's awesome
-	case WeaponID::WEAPON_FIREBOMB:
-		strcpy(weaponName, xorstr_("Fire Bomb"));
-		break; // Literally the same as a molotov?
-	case WeaponID::WEAPON_DIVERSION:
-		strcpy(weaponName, xorstr_("Diversion"));
-		break; // Decoy, but footsteps instead of gunshots? (lmao thats cool, why don't we have that in comp)
-	case WeaponID::WEAPON_FRAG_GRENADE:
-		strcpy(weaponName, xorstr_("Frag Grenade"));
-		break;
-	case WeaponID::WEAPON_SNOWBALL:
-		strcpy(weaponName, xorstr_("Snowball"));
-		break;
-	case WeaponID::WEAPON_BUMPMINE:
-		strcpy(weaponName, xorstr_("Bump Mine"));
-		break;
-	case WeaponID::WEAPON_BAYONET:
-		strcpy(weaponName, xorstr_("Bayonet"));
-		break;
-	case WeaponID::WEAPON_KNIFE_CSS:
-		strcpy(weaponName, xorstr_("Classic Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_FLIP:
-		strcpy(weaponName, xorstr_("Flip Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_GUT:
-		strcpy(weaponName, xorstr_("Gut Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_KARAMBIT:
-		strcpy(weaponName, xorstr_("Karambit"));
-		break;
-	case WeaponID::WEAPON_KNIFE_M9_BAYONET:
-		strcpy(weaponName, xorstr_("M9 Bayonet"));
-		break;
-	case WeaponID::WEAPON_KNIFE_TACTICAL:
-		strcpy(weaponName, xorstr_("Huntsman Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_FALCHION:
-		strcpy(weaponName, xorstr_("Falchion Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_SURVIVAL_BOWIE:
-		strcpy(weaponName, xorstr_("Bowie Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_BUTTERFLY:
-		strcpy(weaponName, xorstr_("Butterfly Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_PUSH:
-		strcpy(weaponName, xorstr_("Shadow daggers"));
-		break;
-	case WeaponID::WEAPON_KNIFE_CORD:
-		strcpy(weaponName, xorstr_("Paracord Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_CANIS:
-		strcpy(weaponName, xorstr_("Survival Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_URSUS:
-		strcpy(weaponName, xorstr_("Ursus Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_GYPSY_JACKKNIFE:
-		strcpy(weaponName, xorstr_("Navaja Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_OUTDOOR:
-		strcpy(weaponName, xorstr_("Nomad Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_STILETTO:
-		strcpy(weaponName, xorstr_("Stiletto Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_WIDOWMAKER:
-		strcpy(weaponName, xorstr_("Talon Knife"));
-		break;
-	case WeaponID::WEAPON_KNIFE_SKELETON:
-		strcpy(weaponName, xorstr_("Skeleton Knife"));
-		break;
-	case WeaponID::STUDDED_BROKENFANG_GLOVES:
-		strcpy(weaponName, xorstr_("Broken Fang Gloves"));
-		break;
-	case WeaponID::STUDDED_BLOODHOUND_GLOVES:
-		strcpy(weaponName, xorstr_("Bloodhound Gloves"));
-		break;
-	case WeaponID::T_GLOVES:
-		strcpy(weaponName, xorstr_("T Gloves"));
-		break;
-	case WeaponID::CT_GLOVES:
-		strcpy(weaponName, xorstr_("CT Gloves"));
-		break;
-	case WeaponID::SPORTY_GLOVES:
-		strcpy(weaponName, xorstr_("Sport Gloves"));
-		break;
-	case WeaponID::SLICK_GLOVES:
-		strcpy(weaponName, xorstr_("Slick Gloves"));
-		break; // Seem to be unused content (or go by different name)
-	case WeaponID::LEATHER_HANDWRAPS:
-		strcpy(weaponName, xorstr_("Hand Wraps"));
-		break;
-	case WeaponID::MOTORCYCLE_GLOVES:
-		strcpy(weaponName, xorstr_("Motorcycle Gloves"));
-		break; // Seem to be unused content (or go by different name)
-	case WeaponID::SPECIALIST_GLOVES:
-		strcpy(weaponName, xorstr_("Specialist Gloves"));
-		break;
-	case WeaponID::STUDDED_HYDRA_GLOVES:
-		strcpy(weaponName, xorstr_("Hydra Gloves"));
-		break;
-	default:
-		strcpy(weaponName, xorstr_("Invalid weapon ID"));
-		break;
-	}
+	if(!weaponLocalization.contains(weaponID))
+		return xorstr_("Invalid weapon ID");
+	else
+		return weaponLocalization[weaponID];
 }
 
 #endif

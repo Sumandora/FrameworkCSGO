@@ -12,9 +12,9 @@ WeaponSettings::WeaponSettings()
 
 void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const
 {
-	char weaponName[256] {};
+	const char* weaponName = nullptr;
 	if (boxName.nametag.enabled) { // Don't ask for the weapon, if we don't have to
-		LocalizeWeaponID(*weapon->WeaponDefinitionIndex(), weaponName);
+		weaponName = LocalizeWeaponID(*weapon->WeaponDefinitionIndex());
 	}
 
 	boxName.Draw(drawList, rectangle, weaponName);

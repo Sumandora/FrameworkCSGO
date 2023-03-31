@@ -1,8 +1,7 @@
 #!/bin/bash
 
 echo "Building Debug-Binary"
-rm -rf Build-Debug
-mkdir Build-Debug
+mkdir -p Build-Debug
 
 if [ -z "$MAKEOPTS" ]; then
 	MAKE_CONF=/etc/portage/make.conf

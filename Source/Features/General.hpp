@@ -30,6 +30,9 @@ namespace Features::General {
 		DECLARE_SERIALIZER(Serializer)
 	}
 	namespace EnginePrediction {
+		// Settings
+		extern bool enabled;
+
 		extern CMoveData moveData;
 		extern int prePredictionFlags;
 		extern MoveType prePredictionMoveType;

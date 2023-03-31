@@ -4,6 +4,7 @@
 
 #include "../../Interfaces.hpp"
 
+#include "../../GameCache.hpp"
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
@@ -36,7 +37,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
 
-	if (*reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) > (float)maximalFlashAmount)
+	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
 		return;
 
 	const Vector playerEye = localPlayer->GetEyePosition();
@@ -58,7 +59,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		if (!IsParticipatingTeam(*player->Team()))
 			continue;
 
-		if (!(friendlyFire || player->IsEnemy()))
+		if (!(friendlyFire || player->IsEnemy(localPlayer)))
 			continue;
 
 		Matrix3x4 boneMatrix[MAXSTUDIOBONES];
@@ -110,8 +111,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 void Features::Legit::Aimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
-	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, xorstr_("%.2f"));
 	ImGui::SliderInt(xorstr_("Maximal influence"), &maximalInfluence, 1, 5);
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);

@@ -50,7 +50,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	float bestDistance {};
 
 	// For compatibility’s sake, play it off like we didn't find a target
-	if ((cmd->buttons & IN_ATTACK || !onlyWhenShooting) && *reinterpret_cast<float*>(reinterpret_cast<char*>(localPlayer->FlashMaxAlpha()) - 0x8) <= (float)maximalFlashAmount) {
+	if ((cmd->buttons & IN_ATTACK || !onlyWhenShooting) && localPlayer->GetFlashAlpha() <= (float)maximalFlashAmount) {
 		CTraceFilterEntity filter(localPlayer);
 
 		// The first object is always the WorldObj
@@ -62,7 +62,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 			if (!IsParticipatingTeam(*player->Team()))
 				continue;
 
-			if (!(friendlyFire || player->IsEnemy()))
+			if (!(friendlyFire || player->IsEnemy(localPlayer)))
 				continue;
 
 			const Vector playerEye = localPlayer->GetEyePosition();

@@ -31,14 +31,12 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 		if (weapon) {
 			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
-				char weaponName[256];
-				LocalizeWeaponID(weaponID, weaponName);
-				this->weapon.Draw(drawList,rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, weaponName);
+				this->weapon.Draw(drawList,rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, LocalizeWeaponID(weaponID));
 			}
 		}
 	}
 
-	const float flashDuration = *reinterpret_cast<float*>(reinterpret_cast<char*>(player->FlashMaxAlpha()) - 0x8);
+	const float flashDuration = player->GetFlashAlpha();
 	if (flashDuration > 0.0) {
 		this->flashDuration.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y + (rectangle.w - rectangle.y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)flashDuration).c_str());
 	}

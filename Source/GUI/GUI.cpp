@@ -25,25 +25,10 @@ void Gui::Create()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 
-	float fontSize = 24.0f;
-
+	const float fontSize = 24.0f;
 	// Might not work on certain distros/configurations
-	io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize);
-
-	ImFontConfig fontConfig;
-	fontConfig.MergeMode = true;
-
-	for (auto glyphs : {
-			 io.Fonts->GetGlyphRangesGreek(),
-			 io.Fonts->GetGlyphRangesKorean(),
-			 io.Fonts->GetGlyphRangesJapanese(),
-			 io.Fonts->GetGlyphRangesChineseFull(),
-			 io.Fonts->GetGlyphRangesChineseSimplifiedCommon(),
-			 io.Fonts->GetGlyphRangesCyrillic(),
-			 io.Fonts->GetGlyphRangesThai(),
-			 io.Fonts->GetGlyphRangesVietnamese() }) {
-		io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize, &fontConfig, glyphs);
-	}
+	if(!io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize))
+		io.Fonts->AddFontDefault();
 
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
@@ -58,20 +43,19 @@ void Gui::Destroy()
 
 void Gui::SwapWindow(SDL_Window* window)
 {
+	ImGuiIO& io = ImGui::GetIO();
+
 	static std::once_flag init;
 	std::call_once(init, [&]() {
 		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 		ImGui_ImplOpenGL3_Init();
 	});
 
-	ImGuiIO& io = ImGui::GetIO();
-	io.SetPlatformImeDataFn = nullptr;
-
 	int width {}, height {};
 	SDL_GetWindowSize(window, &width, &height);
 
 	io.DisplaySize = ImVec2((float)width, (float)height);
-	io.MousePos = ImVec2(std::clamp(io.MousePos.x, 0.0f, (float)width), std::clamp(io.MousePos.y, 0.0f, (float)height));
+	io.MousePos = ImVec2(std::clamp((float)io.MousePos.x, 0.0f, (float)width), std::clamp((float)io.MousePos.y, 0.0f, (float)height));
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
