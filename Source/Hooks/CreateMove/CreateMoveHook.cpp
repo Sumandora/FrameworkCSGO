@@ -2,14 +2,10 @@
 
 #include <cstring>
 
-#include "../../GameCache.hpp"
-
 #include "../../Features/Features.hpp"
 
 bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
-	GameCache::ClearLocalPlayer();
-
 	bool silent = invokeFunction<bool, void*, float, CUserCmd*>(Hooks::CreateMove::hook->proxy, thisptr, flInputSampleTime, cmd);
 
 	if (!cmd || !cmd->command_number)

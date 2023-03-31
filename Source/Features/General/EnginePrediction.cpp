@@ -11,7 +11,7 @@
 
 #include <cstring>
 
-static bool enabled = true;
+bool Features::General::EnginePrediction::enabled = true;
 static bool forceResetVelocityModifier = false;
 
 CMoveData Features::General::EnginePrediction::moveData {};
@@ -46,15 +46,15 @@ void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 
 void Features::General::EnginePrediction::EndPrediction()
 {
-	if (!enabled)
-		return;
-
-	Utils::EndPrediction();
-
 	moveData = {};
 
 	prePredictionFlags = 0;
 	prePredictionMoveType = MOVETYPE_NONE;
+
+	if (!enabled)
+		return;
+
+	Utils::EndPrediction();
 
 	if(forceResetVelocityModifier) // I'm curious why people on UC seem to have so many problems figuring this out... Does this have some major downside, which I haven't noticed yet?
 		*GameCache::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;

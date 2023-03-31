@@ -13,6 +13,7 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/NetworkFlows.hpp"
 
+#include "../../GUI/ImGuiColors.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
 static bool enabled = false;
@@ -76,7 +77,7 @@ bool IsTickValid(Tick tick)
 	return fabs(deltaTime) <= 0.2f; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
 }
 
-float CalculateFOVDistance(CBasePlayer* localPlayer, Vector viewangles, Vector b)
+float CalculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, const Vector& b)
 {
 	Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), b);
 	requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
@@ -120,7 +121,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 			return true;
 		}
 
-		if (!(friendlyFire || player->IsEnemy()))
+		if (!(friendlyFire || player->IsEnemy(localPlayer)))
 			return true;
 
 		std::vector<Tick> records = pair.second;
@@ -178,7 +179,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 			continue;
 		}
 
-		if (!IsParticipatingTeam(*player->Team()) || !player->IsEnemy()) {
+		if (!IsParticipatingTeam(*player->Team()) || !(friendlyFire || player->IsEnemy(localPlayer))) {
 			ticks[i].clear();
 			continue;
 		}
@@ -205,7 +206,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 void Features::Semirage::Backtrack::SetupGUI()
 {
 	if (!ConVarStorage::cl_lagcompensation->GetBool() || !ConVarStorage::sv_unlag->GetBool())
-		ImGui::Text(xorstr_("Warning: Judging by convars, lag compensation is disabled."));
+		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: Judging by convars, lag compensation is disabled."));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, "%.2f");
 	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
@@ -213,7 +214,7 @@ void Features::Semirage::Backtrack::SetupGUI()
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %.2f seconds"), ConVarStorage::sv_maxunlag->GetFloat() * scale);
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d seconds"), (int) (ConVarStorage::sv_maxunlag->GetFloat() * scale * 1000 /*s to ms*/));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)

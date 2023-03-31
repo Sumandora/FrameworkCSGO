@@ -7,9 +7,9 @@
 #include "../../SDK/Definitions/StateFlags.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../GUI/Elements/Keybind.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../SDK/MoveType.hpp"
-#include "../../GUI/Elements/Keybind.hpp"
 
 static bool enabled = false;
 static int input = 0;

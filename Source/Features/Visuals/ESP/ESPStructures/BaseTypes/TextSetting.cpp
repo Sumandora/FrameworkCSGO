@@ -18,6 +18,9 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 	if (!enabled)
 		return;
 
+	if(fontScale <= 0.0f)
+		return;
+
 	// Hack
 	const float oldFontScale = ImGui::GetFont()->Scale;
 	ImGui::GetFont()->Scale *= fontScale;
@@ -47,11 +50,11 @@ void TextSetting::SetupGUI(const char* id)
 	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
-	if (ImGui::Button("..."))
+	if (ImGui::Button(xorstr_("...")))
 		ImGui::OpenPopup(id);
 
 	if (ImGui::BeginPopup(id)) {
-		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, "%.2f");
+		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, xorstr_("%.2f"));
 		ImGui::ClickableColorButton(xorstr_("Font color"), fontColor);
 		ImGui::Checkbox(xorstr_("Shadow"), &shadow);
 		if (shadow)

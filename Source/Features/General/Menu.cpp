@@ -71,15 +71,13 @@ void Features::General::Menu::SetupGUI()
 	if (menuKey == 0)
 		menuKey = static_cast<int>(ImGuiKey_Insert);
 #ifdef DEBUG
-	ImGui::Checkbox("Show Demo Window", &isShowingDemoWindow);
-	ImGui::Checkbox("Show Metrics Window", &isShowingMetricsWindow);
-	ImGui::Checkbox("Show Debug Log Window", &isShowingDebugLogWindow);
-	ImGui::Checkbox("Show Stack Tool Window", &isShowingStackToolWindow);
-	ImGui::Checkbox("Show About Window", &isShowingAboutWindow);
-	ImGui::Checkbox("Show Style Editor", &isShowingStyleEditor);
-	// ImGui::Checkbox("Show Style Selector", &isShowingStyleSelector); // I wrote that myself under this ifdef
-	// ImGui::Checkbox("Show Font Selector", &isShowingFontSelector); // I only add one font, kinda pointless to make a selector with only one option
-	ImGui::Checkbox("Show User Guide", &isShowingUserGuide);
+	ImGui::Checkbox(xorstr_("Show Demo Window"), &isShowingDemoWindow);
+	ImGui::Checkbox(xorstr_("Show Metrics Window"), &isShowingMetricsWindow);
+	ImGui::Checkbox(xorstr_("Show Debug Log Window"), &isShowingDebugLogWindow);
+	ImGui::Checkbox(xorstr_("Show Stack Tool Window"), &isShowingStackToolWindow);
+	ImGui::Checkbox(xorstr_("Show About Window"), &isShowingAboutWindow);
+	ImGui::Checkbox(xorstr_("Show Style Editor"), &isShowingStyleEditor);
+	ImGui::Checkbox(xorstr_("Show User Guide"), &isShowingUserGuide);
 #endif
 	if (ImGui::Button(xorstr_("Set style to dark"))) {
 		style = 0;

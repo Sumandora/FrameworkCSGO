@@ -34,7 +34,7 @@ void BoxSettings::SetupGUI(const char* id)
 	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
-	if (ImGui::Button("..."))
+	if (ImGui::Button(xorstr_("...")))
 		ImGui::OpenPopup(id);
 
 	if (ImGui::BeginPopup(id)) {

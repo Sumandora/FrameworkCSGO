@@ -53,7 +53,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
-	if (*localPlayer->Flags() & FL_ONGROUND && Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND) {
+	if (*localPlayer->Flags() & FL_ONGROUND && (!Features::General::EnginePrediction::enabled || Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND)) {
 		// Only abort if we are not going to be in air again (if bhopping don't abort)
 		if (cmd->forwardmove == 0.0f && cmd->sidemove == 0.0f)
 			lastWishDirection = 0.0f; // atan2f(0.0f, 1.0f); // Play it off like we were walking forward
@@ -119,7 +119,7 @@ void Features::Movement::AutoStrafer::SetupGUI()
 	if(directional) {
 		ImGui::Checkbox(xorstr_("Allow hard turns"), &allowHardTurns);
 		if(allowHardTurns)
-			ImGui::SliderFloat(xorstr_("Hard turn threshold"), &hardTurnThreshold, 0.0f, 180.0f, "%.2f");
+			ImGui::SliderFloat(xorstr_("Hard turn threshold"), &hardTurnThreshold, 0.0f, 180.0f, xorstr_("%.2f"));
 	} else {
 		ImGui::Checkbox(xorstr_("Only when idle"), &onlyWhenIdle);
 	}

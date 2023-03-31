@@ -1,5 +1,6 @@
 #include "../Visuals.hpp"
 
+#include "../../GameCache.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
 

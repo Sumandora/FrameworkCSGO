@@ -11,6 +11,7 @@ namespace Features::Visuals {
 		// Settings
 		extern PlayerSettings players;
 
+		void UpdateVisibility();
 		void ImGuiRender(ImDrawList* drawList);
 
 		// GUI

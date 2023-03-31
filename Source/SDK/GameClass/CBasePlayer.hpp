@@ -4,12 +4,10 @@
 #include "CBaseCombatWeapon.hpp"
 #include "CBaseEntity.hpp"
 
-#include "../Definitions/Bones.hpp"
 #include "../Definitions/LifeState.hpp"
 #include "../ObserverMode.hpp"
 
 #include "../../ConVarStorage.hpp"
-#include "../../GameCache.hpp"
 
 #include "../../Utils/GameMode.hpp"
 
@@ -42,6 +40,9 @@ public:
 	NETVAR_FUNCTION(unsigned int, TickBase, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_nTickBase"))
 
 	NETVAR_FUNCTION(float, FlashMaxAlpha, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_flFlashMaxAlpha"))
+	inline float GetFlashAlpha() {
+		return *reinterpret_cast<float*>(reinterpret_cast<char*>(FlashMaxAlpha()) - 0x8);
+	}
 
 	NETVAR_FUNCTION(Vector, Velocity, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_vecVelocity[0]"))
 	NETVAR_FUNCTION(float, VelocityModifier, ClientClassID::CCSPlayer, xorstr_("DT_CSLocalPlayerExclusive"), xorstr_("m_flVelocityModifier"))
@@ -54,33 +55,25 @@ public:
 		return *this->Origin() + *this->VecViewOffset();
 	}
 
-	inline bool SetupBones(Matrix3x4 (&boneMatrix)[])
+	inline bool IsAlive()
 	{
-		return CBaseEntity::SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
-	}
-
-	inline bool IsAlive() {
 		return *LifeState() == LIFE_ALIVE && *Health() > 0;
 	}
 
-	inline bool IsEnemy()
+	inline bool IsEnemy(CBasePlayer* view)
 	{
-		CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-		if (localPlayer != this) {
-			if (ConVarStorage::mp_teammates_are_enemies->GetBool())
-				return true;
-			else {
-				if (Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {
-					const int localSurvivalTeam = *localPlayer->SurvivalTeam();
-					if (localSurvivalTeam < 0) // DZ without teams
-						return true;
+		if (ConVarStorage::mp_teammates_are_enemies->GetBool())
+			return true;
+		else {
+			if (Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {
+				const int localSurvivalTeam = *view->SurvivalTeam();
+				if (localSurvivalTeam < 0) // DZ without teams
+					return true;
 
-					return localSurvivalTeam != *SurvivalTeam();
-				} else
-					return *localPlayer->Team() != *Team();
-			}
+				return localSurvivalTeam != *SurvivalTeam();
+			} else
+				return *view->Team() != *Team();
 		}
-		return false;
 	}
 };
 

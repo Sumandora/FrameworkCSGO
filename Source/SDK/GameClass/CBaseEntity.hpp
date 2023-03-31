@@ -8,6 +8,7 @@
 #include "../Math/Matrix3x4.hpp"
 #include "../Netvars/ClientClass.hpp"
 #include "../TeamID.hpp"
+#include "../Definitions/Bones.hpp"
 
 #include "../../Netvars.hpp"
 
@@ -44,6 +45,11 @@ public:
 	// Actually CBaseEntity
 	VIRTUAL_METHOD(210, IsPlayer, bool, (), (this))
 	VIRTUAL_METHOD(218, IsWeapon, bool, (), (this))
+
+	inline bool SetupBones(Matrix3x4 (&boneMatrix)[])
+	{
+		return SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
+	}
 };
 
 #endif

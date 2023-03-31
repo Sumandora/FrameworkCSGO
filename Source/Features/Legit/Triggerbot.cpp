@@ -10,6 +10,7 @@
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
+#include "../../GameCache.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
 
 static bool enabled = false;
@@ -58,7 +59,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!entity || !entity->IsPlayer() || entity->GetDormant())
 		return;
 
-	auto player = reinterpret_cast<CBasePlayer*>(entity);
+	auto* player = reinterpret_cast<CBasePlayer*>(entity);
 	if (!player->IsAlive() || *player->GunGameImmunity())
 		return;
 
@@ -67,7 +68,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!IsParticipatingTeam(team))
 		return;
 
-	if (!(friendlyFire || player->IsEnemy()))
+	if (!(friendlyFire || player->IsEnemy(localPlayer)))
 		return;
 
 	if (secondaryFire)

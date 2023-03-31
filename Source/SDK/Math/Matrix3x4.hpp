@@ -1,6 +1,8 @@
 #ifndef SDK_MATH_MATRIX3X4
 #define SDK_MATH_MATRIX3X4
 
+#include "Vector.hpp"
+
 struct Matrix3x4 {
 	float matrix[3][4];
 

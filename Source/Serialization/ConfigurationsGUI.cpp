@@ -50,8 +50,8 @@ void Serialization::SetupGUI()
 
 	if (ImGui::Button(xorstr_("Save")) && name[0] != '\0') {
 		auto* cfgName = name;
-		if (!std::string(cfgName).ends_with(".ini"))
-			cfgName = strcat(cfgName, ".ini");
+		if (!std::string(cfgName).ends_with(xorstr_(".ini")))
+			cfgName = strcat(cfgName, xorstr_(".ini"));
 
 		if (Save(GetConfigFile(cfgName)))
 			Features::General::EventLog::CreateReport(xorstr_("Saved config '%s'"), cfgName);

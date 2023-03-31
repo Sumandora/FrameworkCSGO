@@ -3,13 +3,12 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../../Interfaces.hpp"
-
-#include "../../../Utils/Raytrace.hpp"
-
+#include "../../../GameCache.hpp"
+#include "../../../GUI/Elements/HelpMarker.hpp"
 #include "../../../GUI/Elements/Keybind.hpp"
-
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../../../Interfaces.hpp"
+#include "../../../Utils/Raytrace.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -19,6 +18,7 @@ static int onKey = 0;
 static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
+static bool cacheVisibilityState = true;
 PlayerSettings Features::Visuals::Esp::players;
 static WeaponSettings weapons;
 static BoxNameSetting projectiles;
@@ -28,6 +28,8 @@ static BoxNameSetting dzLootCrates;
 static BoxNameSetting dzAmmoBoxes;
 static BoxNameSetting dzSentries;
 static BoxNameSetting other;
+
+static std::map<int, bool> visibilityCache;
 
 bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -45,7 +47,24 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 	return true;
 }
 
-PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* settings)
+bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer) {
+	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
+	if (!otherPlayer->SetupBones(boneMatrix))
+		return false;
+
+	const Vector playerEye = localPlayer->GetEyePosition();
+	const Vector head = boneMatrix[8].Origin();
+
+	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
+		return false;
+
+	CTraceFilterEntity filter(localPlayer);
+	Trace trace = Utils::TraceRay(playerEye, head, &filter);
+
+	return trace.m_pEnt == otherPlayer;
+}
+
+PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* player, PlayerTeamSettings* settings)
 {
 	if (player->GetDormant())
 		return &settings->dormant;
@@ -53,45 +72,41 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* player, PlayerTeamSettings* 
 	if (settings->visible == settings->occluded)
 		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
 
-	if (settings == &Features::Visuals::Esp::players.enemy /* Teammates are always "spotted" */ && considerSpottedEntitiesAsVisible && *player->Spotted())
+	if (considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
-	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-	if (!player->SetupBones(boneMatrix))
-		return &settings->dormant; // This is weird...
+	bool visible;
+	if(cacheVisibilityState)
+		visible = visibilityCache[player->entindex()];
+	else
+		visible = IsVisible(localPlayer, player);
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-
-	Vector playerEye = localPlayer->GetEyePosition();
-	CTraceFilterEntity filter(localPlayer);
-
-	const Vector head = boneMatrix[8].Origin();
-
-	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
-		return &settings->occluded;
-
-	const Trace trace = Utils::TraceRay(playerEye, head, &filter);
-	if (trace.m_pEnt == player)
+	if (visible)
 		return &settings->visible;
 	else
 		return &settings->occluded;
 }
 
-// TODO Expose for FOV
-CBasePlayer* GetViewer()
+void Features::Visuals::Esp::UpdateVisibility()
 {
-	CBasePlayer* viewer = GameCache::GetLocalPlayer();
+	if (!enabled || !IsInputDown(onKey, true))
+		return;
 
-	if (!viewer)
-		return nullptr;
+	if (!Interfaces::engine->IsInGame())
+		return;
 
-	if (!viewer->IsAlive() && viewer->ObserverTarget()) {
-		auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
-		if (observerTarget && observerTarget->IsAlive())
-			viewer = observerTarget;
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	if(!localPlayer)
+		return;
+
+	// The first object is always the WorldObj
+	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		if (!player || player->GetDormant() || player == localPlayer)
+			continue;
+
+		visibilityCache[i] = IsVisible(localPlayer, player);
 	}
-
-	return viewer;
 }
 
 void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
@@ -102,7 +117,9 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* viewer = GetViewer();
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	if(!localPlayer)
+		return;
 
 	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;
 
@@ -120,7 +137,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (!collideable)
 			continue;
 
-		if ((*entity->Origin() - *viewer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
+		if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
 			continue;
 
 		const Vector min = *entity->Origin() + *collideable->ObbMins();
@@ -179,10 +196,10 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 					players.spectators.Draw(drawList, rectangle, name);
 					continue;
 				} else {
-					if (!player->IsEnemy())
-						settings = SelectPlayerState(player, &players.teammate);
+					if (!player->IsEnemy(localPlayer))
+						settings = SelectPlayerState(localPlayer, player, &players.teammate);
 					else
-						settings = SelectPlayerState(player, &players.enemy);
+						settings = SelectPlayerState(localPlayer, player, &players.enemy);
 				}
 
 				if (settings)
@@ -252,6 +269,12 @@ void Features::Visuals::Esp::SetupGUI()
 	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 16);
 
 	ImGui::Checkbox(xorstr_("Consider spotted entities as visible"), &considerSpottedEntitiesAsVisible);
+	ImGui::SameLine();
+	ImGui::PushStyleColor(ImGuiCol_Text, ImGuiColors::red.Value);
+	ImGui::Checkbox(xorstr_("Cache visibility state"), &cacheVisibilityState);
+	ImGui::PopStyleColor();
+	ImGui::HelpMarker(xorstr_("Debug option, which should only be turned off if needed"));
+
 	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
 
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
@@ -310,6 +333,7 @@ SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
 SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
 SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
 SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
+SERIALIZED_TYPE(xorstr_("Cache visibility state"), cacheVisibilityState)
 
 SERIALIZED_STRUCTURE(players, xorstr_("Players"))
 SERIALIZED_STRUCTURE(weapons, xorstr_("Weapons"))
