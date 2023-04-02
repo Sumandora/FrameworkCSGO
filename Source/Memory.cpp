@@ -15,7 +15,7 @@ static void* lineGoesThroughSmoke;
 void* GetBaseAddress(const char* name)
 {
 	void* handle = dlopen(name, RTLD_NOLOAD | RTLD_NOW);
-	void* baseAddress = *reinterpret_cast<void**>(handle);
+	void* baseAddress = *static_cast<void**>(handle);
 	dlclose(handle); // Reset ref count
 	return baseAddress;
 }
@@ -25,7 +25,7 @@ void* Memory::RelativeToAbsolute(void* addr)
 	// RIP-Relatives start after the instruction using it
 	// The relative offsets are 4 bytes long
 
-	return static_cast<char*>(addr) + 4 + *reinterpret_cast<int*>(addr);
+	return static_cast<char*>(addr) + 4 + *static_cast<int*>(addr);
 }
 
 void Memory::Create()
@@ -35,7 +35,7 @@ void Memory::Create()
 
 	// Set the address for the return address spoofer
 	ret_instruction_addr = Pattern(
-		"\xC9\xC3", // leave; ret; instructions
+		xorstr_("\xC9\xC3"), // leave; ret; instructions
 		xorstr_("xx"))
 							   .searchPattern(baseClientVTable[0]); // random code piece
 
@@ -44,18 +44,18 @@ void Memory::Create()
 
 	void* getClientMode = RelativeToAbsolute(static_cast<char*>(hudProcessInput) + 12);
 
-	clientMode = *reinterpret_cast<void**>(RelativeToAbsolute(static_cast<char*>(getClientMode) + 4));
-	globalVars = *reinterpret_cast<CGlobalVars**>(RelativeToAbsolute(static_cast<char*>(hudUpdate) + 16));
+	clientMode = *static_cast<void**>(RelativeToAbsolute(static_cast<char*>(getClientMode) + 4));
+	globalVars = *static_cast<CGlobalVars**>(RelativeToAbsolute(static_cast<char*>(hudUpdate) + 16));
 
 	// If this index changes I'm mad bro...
 	// To find the method, just search for the moveHelper and look at all usages
 	// The method which contains the 1.25 and 1.0 float literals is the one...
 	void* categorizeGroundSurface = gameMovementVTable[69];
 
-	void* leaInstr = Pattern("\x48\x8d\x05" /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
-	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
+	void* leaInstr = Pattern(xorstr_("\x48\x8d\x05") /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
+	moveHelper = *static_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
 
-	lineGoesThroughSmoke = Pattern("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\x00\x00\x00\x00\x66", xorstr_("xxxxxxxxxxxxxxxxx????x"))
+	lineGoesThroughSmoke = Pattern(xorstr_("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\x00\x00\x00\x00\x66"), xorstr_("xxxxxxxxxxxxxxxxx????x"))
 							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
 

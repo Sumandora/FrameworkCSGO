@@ -51,6 +51,8 @@ void Gui::SwapWindow(SDL_Window* window)
 		ImGui_ImplOpenGL3_Init();
 	});
 
+	io.SetPlatformImeDataFn = nullptr;
+
 	int width {}, height {};
 	SDL_GetWindowSize(window, &width, &height);
 

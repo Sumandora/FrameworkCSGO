@@ -13,10 +13,10 @@ SDLHook::SDLHook(const char* name, void* hook)
 	 * They have a relative jmp instruction inside of them.
 	 * We take the address of the relative jmp and swap it with our method
 	 */
-	char* address = reinterpret_cast<char*>(dlsym(RTLD_NEXT, name)) + 2;
-	jumpAddress = reinterpret_cast<void**>(Memory::RelativeToAbsolute(address));
+	char* address = static_cast<char*>(dlsym(RTLD_NEXT, name)) + 2;
+	jumpAddress = static_cast<void**>(Memory::RelativeToAbsolute(address));
 	proxy = *jumpAddress;
-	*jumpAddress = reinterpret_cast<unsigned int*>(hook);
+	*jumpAddress = static_cast<unsigned int*>(hook);
 }
 
 SDLHook::~SDLHook()

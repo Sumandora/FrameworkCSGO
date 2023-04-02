@@ -28,6 +28,7 @@ static BoxNameSetting dzLootCrates;
 static BoxNameSetting dzAmmoBoxes;
 static BoxNameSetting dzSentries;
 static BoxNameSetting other;
+//TODO Drone ESP
 
 static std::map<int, bool> visibilityCache;
 
@@ -245,6 +246,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 					hostages.Draw(drawList, rectangle, xorstr_("Hostage"));
 					break;
 				case ClientClassID::CPhysPropLootCrate:
+					// TODO Separate
 					dzLootCrates.Draw(drawList, rectangle, xorstr_("Loot crate"));
 					break;
 				case ClientClassID::CPhysPropAmmoBox:
