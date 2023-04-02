@@ -39,7 +39,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (!player)
 			continue;
 
-		if (player->GetDormant() || !localPlayer->IsAlive())
+		if (player->GetDormant() || player->IsAlive())
 			continue;
 
 		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());
@@ -53,9 +53,10 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		Interfaces::engine->GetPlayerInfo(target->entindex(), &second);
 
 		const ObserverMode observerMode = *player->ObserverMode();
+		const char* observerModeName = LocalizeObserverMode(observerMode);
 
-		char text[strlen(first.name) + 4 + strlen(second.name) + 1];
-		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, LocalizeObserverMode(observerMode));
+		char text[strlen(first.name) + 4 + strlen(second.name) + 2 + strlen(observerModeName) + 1];
+		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, observerModeName);
 
 		const ImVec2 size = ImGui::CalcTextSize(text);
 		const ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);

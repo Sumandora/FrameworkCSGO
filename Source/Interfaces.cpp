@@ -35,18 +35,18 @@ void* UncoverCreateFunction(void* createFunc)
 	 * There is a preprocessor definition in the source engine which creates these exported interface functions.
 	 * But hey who could imagine that the same code also produces the same assembly right?
 	 */
-	static const Pattern leaRax = Pattern("\x48\x8d\x05", "xxx");
-	static const Pattern movRaxRax = Pattern("\x48\x8b\x00", "xxx");
-	static const Pattern ret = Pattern("\xc3", "x"); // Unnecessary but to follow the style
+	Pattern leaRax = Pattern(xorstr_("\x48\x8d\x05"), xorstr_("xxx"));
+	Pattern movRaxRax = Pattern("\x48\x8b\x00", xorstr_("xxx"));
+	Pattern ret = Pattern("\xc3", "x"); // Unnecessary but to follow the style
 
-	char* rip = reinterpret_cast<char*>(createFunc);
+	char* rip = static_cast<char*>(createFunc);
 	void* interfacePtr {};
 	while (true) {
 		if (leaRax.matchPattern(rip)) { // LEA rax, [rip + offset]
-			interfacePtr = Memory::RelativeToAbsolute(reinterpret_cast<char*>(rip) + 3 /* skip the lea */);
+			interfacePtr = Memory::RelativeToAbsolute(static_cast<char*>(rip) + 3 /* skip the lea */);
 			rip += 7;
 		} else if (movRaxRax.matchPattern(rip)) { // MOV rax, [rax]
-			interfacePtr = *reinterpret_cast<void**>(interfacePtr);
+			interfacePtr = *static_cast<void**>(interfacePtr);
 			rip += 3;
 		} else if (ret.matchPattern(rip)) { // RET
 			break;
@@ -69,7 +69,7 @@ void* GetInterface(const char* file, const char* name)
 	if (!interfacesList)
 		return nullptr;
 
-	InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList);
+	InterfaceReg* interface = *static_cast<InterfaceReg**>(interfacesList);
 
 	while (interface != nullptr) {
 		if (strncmp(interface->m_pName, name, strlen(interface->m_pName) - 3) == 0) {
@@ -84,12 +84,12 @@ void* GetInterface(const char* file, const char* name)
 void Interfaces::GetInterfaces()
 {
 	baseClient = GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
-	engine = reinterpret_cast<CEngineClient*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
-	entityList = reinterpret_cast<CClientEntityList*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
-	engineTrace = reinterpret_cast<CEngineTrace*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
-	icvar = reinterpret_cast<ICvar*>(GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
-	prediction = reinterpret_cast<IPrediction*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction")));
-	gameMovement = reinterpret_cast<CGameMovement*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement")));
+	engine = static_cast<CEngineClient*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
+	entityList = static_cast<CClientEntityList*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
+	engineTrace = static_cast<CEngineTrace*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
+	icvar = static_cast<ICvar*>(GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
+	prediction = static_cast<IPrediction*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction")));
+	gameMovement = static_cast<CGameMovement*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement")));
 }
 
 void Interfaces::SetupGUI()
@@ -116,7 +116,7 @@ void Interfaces::SetupGUI()
 
 			interfaceStorage[info->dlpi_name] = {};
 
-			InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfaces);
+			InterfaceReg* interface = *static_cast<InterfaceReg**>(interfaces);
 
 			while (interface != nullptr) {
 				Interface t {};
@@ -131,31 +131,31 @@ void Interfaces::SetupGUI()
 			nullptr);
 	});
 
-	for (const auto& [key, value] : interfaceStorage) {
-		if (ImGui::TreeNode(key)) {
-			for (const auto& [key2, value2] : value) {
-				if (ImGui::TreeNode(key2)) {
-					ImGui::Text(xorstr_("Create function: %p"), value2.reg->m_CreateFn);
-					ImGui::Text(xorstr_("Name: %s"), value2.reg->m_pName);
-					ImGui::Text(xorstr_("Next: %p"), value2.reg->m_pNext);
+	for (const auto& [sharedObject, interfaces] : interfaceStorage) {
+		if (ImGui::TreeNode(sharedObject)) {
+			for (const auto& [interfaceName, cachedInterface] : interfaces) {
+				if (ImGui::TreeNode(interfaceName)) {
+					ImGui::Text(xorstr_("Create function: %p"), cachedInterface.reg->m_CreateFn);
+					ImGui::Text(xorstr_("Name: %s"), cachedInterface.reg->m_pName);
+					ImGui::Text(xorstr_("Next: %p"), cachedInterface.reg->m_pNext);
 
-					ImGui::Spacing();
+					ImGui::Separator();
 
 					ImGui::Text(xorstr_("The next two addresses should line up, if they don't, we have to adjust the uncover function."));
 
-					if (value2.uncoveredAddress) {
-						ImGui::Text(xorstr_("Uncovered address: %p"), value2.uncoveredAddress);
+					if (cachedInterface.uncoveredAddress) {
+						ImGui::Text(xorstr_("Uncovered address: %p"), cachedInterface.uncoveredAddress);
 					} else {
 						if (ImGui::Button(xorstr_("Uncover create function"))) {
-							value2.uncoveredAddress = UncoverCreateFunction(value2.reg->m_CreateFn);
+							cachedInterface.uncoveredAddress = UncoverCreateFunction(cachedInterface.reg->m_CreateFn);
 						}
 					}
 
-					if (value2.realAddress) {
-						ImGui::Text(xorstr_("Real address: %p"), value2.realAddress);
+					if (cachedInterface.realAddress) {
+						ImGui::Text(xorstr_("Real address: %p"), cachedInterface.realAddress);
 					} else {
 						if (ImGui::Button(xorstr_("Invoke create function"))) {
-							value2.realAddress = reinterpret_cast<void* (*)()>(value2.reg->m_CreateFn)();
+							cachedInterface.realAddress = ((void*(*)())(cachedInterface.reg->m_CreateFn))();
 						}
 						ImGui::HelpMarker(xorstr_("Warning: This is considered unsafe"));
 					}

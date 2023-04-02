@@ -20,8 +20,11 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4*
 			return; // You can't defuse the bomb anymore
 		float middle = rectangle.x + (rectangle.z - rectangle.x) * 0.5f;
 		timer.Draw(drawList, middle, rectangle.w, true, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str());
-		if(showDefuseTimer && Interfaces::entityList->GetClientEntityFromHandle(bomb->Defuser()))
+		if (showDefuseTimer && Interfaces::entityList->GetClientEntityFromHandle(bomb->Defuser())) {
+			if(*bomb->DefuseCountDown() < Memory::globalVars->curtime)
+				return; // We are done defusing, no point in showing this anymore
 			timer.Draw(drawList, middle, rectangle.w + timer.GetLineHeight(), true, std::to_string(*bomb->DefuseCountDown() - Memory::globalVars->curtime).c_str());
+		}
 	}
 }
 

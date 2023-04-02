@@ -46,7 +46,7 @@ void Netvars::DumpNetvars()
 
 	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
 	char* relativeAddress = static_cast<char*>(getAllClasses) + 3;
-	ClientClass* rootClass = *reinterpret_cast<ClientClass**>(Memory::RelativeToAbsolute(relativeAddress));
+	ClientClass* rootClass = *static_cast<ClientClass**>(Memory::RelativeToAbsolute(relativeAddress));
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
