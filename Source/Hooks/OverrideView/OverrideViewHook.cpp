@@ -11,7 +11,7 @@ void OverrideViewHook(void* thisptr, CViewSetup* pSetup)
 
 void Hooks::OverrideView::Hook()
 {
-	hook = new class Hook(Utils::GetVTable(Memory::clientMode)[19], reinterpret_cast<void*>(OverrideViewHook), 6);
+	hook = new class Hook(Utils::GetVTable(Memory::clientMode)[19], reinterpret_cast<void*>(OverrideViewHook));
 }
 
 void Hooks::OverrideView::Unhook()

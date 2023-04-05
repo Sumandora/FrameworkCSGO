@@ -33,7 +33,7 @@ void PlayerTeamSettings::SetupGUI(const char* id)
 }
 
 BEGIN_SERIALIZED_STRUCT(PlayerTeamSettings::Serializer)
-SERIALIZED_STRUCTURE(visible, xorstr_("Visible"))
-SERIALIZED_STRUCTURE(occluded, xorstr_("Occluded"))
-SERIALIZED_STRUCTURE(dormant, xorstr_("Dormant"))
+SERIALIZED_STRUCTURE(xorstr_("Visible"), visible)
+SERIALIZED_STRUCTURE(xorstr_("Occluded"), occluded)
+SERIALIZED_STRUCTURE(xorstr_("Dormant"), dormant)
 END_SERIALIZED_STRUCT

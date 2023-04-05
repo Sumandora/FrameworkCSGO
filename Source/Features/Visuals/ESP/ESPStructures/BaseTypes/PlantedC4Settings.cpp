@@ -38,8 +38,8 @@ void PlantedC4Settings::SetupGUI(const char* id)
 }
 
 BEGIN_SERIALIZED_STRUCT(PlantedC4Settings::Serializer)
-SERIALIZED_STRUCTURE(boxName, name)
-SERIALIZED_STRUCTURE(timer, xorstr_("Timer"))
+SERIALIZED_STRUCTURE(name, boxName)
+SERIALIZED_STRUCTURE(xorstr_("Timer"), timer)
 
 SERIALIZED_TYPE(xorstr_("Show defuse timer"), showDefuseTimer)
 END_SERIALIZED_STRUCT

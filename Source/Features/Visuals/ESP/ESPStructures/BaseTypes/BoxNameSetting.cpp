@@ -25,6 +25,6 @@ void BoxNameSetting::SetupGUI(const char* id)
 }
 
 BEGIN_SERIALIZED_STRUCT(BoxNameSetting::Serializer)
-SERIALIZED_STRUCTURE(box, xorstr_("Box"))
-SERIALIZED_STRUCTURE(nametag, xorstr_("Name"))
+SERIALIZED_STRUCTURE(xorstr_("Box"), box)
+SERIALIZED_STRUCTURE(xorstr_("Name"), nametag)
 END_SERIALIZED_STRUCT

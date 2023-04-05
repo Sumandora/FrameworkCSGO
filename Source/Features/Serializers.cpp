@@ -1,43 +1,43 @@
 #include "Features.hpp"
 
 BEGIN_SERIALIZED_STRUCT(Features::General::Serializer)
-SERIALIZED_NAMESPACE(Menu, xorstr_("Menu"))
-SERIALIZED_NAMESPACE(Watermark, xorstr_("Watermark"))
-SERIALIZED_NAMESPACE(EnginePrediction, xorstr_("Engine prediction"))
-SERIALIZED_NAMESPACE(EventLog, xorstr_("Event log"))
+SERIALIZED_NAMESPACE(xorstr_("Menu"), Menu)
+SERIALIZED_NAMESPACE(xorstr_("Watermark"), Watermark)
+SERIALIZED_NAMESPACE(xorstr_("Engine prediction"), EnginePrediction)
+SERIALIZED_NAMESPACE(xorstr_("Event log"), EventLog)
 END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Serializer)
-SERIALIZED_NAMESPACE(Aimbot, xorstr_("Legit Aimbot"))
-SERIALIZED_NAMESPACE(Triggerbot, xorstr_("Spectator list"))
+SERIALIZED_NAMESPACE(xorstr_("Legit Aimbot"), Aimbot)
+SERIALIZED_NAMESPACE(xorstr_("Spectator list"), Triggerbot)
 END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Serializer)
-SERIALIZED_NAMESPACE(Aimbot, xorstr_("Semirage Aimbot"))
-SERIALIZED_NAMESPACE(Backtrack, xorstr_("Backtrack"))
-SERIALIZED_NAMESPACE(RecoilAssistance, xorstr_("Recoil assistance"))
+SERIALIZED_NAMESPACE(xorstr_("Semirage Aimbot"), Aimbot)
+SERIALIZED_NAMESPACE(xorstr_("Backtrack"), Backtrack)
+SERIALIZED_NAMESPACE(xorstr_("Recoil assistance"), RecoilAssistance)
 END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Movement::Serializer)
-SERIALIZED_NAMESPACE(Bhop, xorstr_("Bhop"))
-SERIALIZED_NAMESPACE(CrouchJump, xorstr_("Crouch jump"))
-SERIALIZED_NAMESPACE(JumpBug, xorstr_("Jump bug"))
-SERIALIZED_NAMESPACE(EdgeJump, xorstr_("Edge jump"))
-SERIALIZED_NAMESPACE(AutoStrafer, xorstr_("Auto strafer"))
-SERIALIZED_NAMESPACE(FastDuck, xorstr_("Fast duck"))
+SERIALIZED_NAMESPACE(xorstr_("Bhop"), Bhop)
+SERIALIZED_NAMESPACE(xorstr_("Crouch jump"), CrouchJump)
+SERIALIZED_NAMESPACE(xorstr_("Jump bug"), JumpBug)
+SERIALIZED_NAMESPACE(xorstr_("Edge jump"), EdgeJump)
+SERIALIZED_NAMESPACE(xorstr_("Auto strafer"), AutoStrafer)
+SERIALIZED_NAMESPACE(xorstr_("Fast duck"), FastDuck)
 END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Visuals::Serializer)
-SERIALIZED_NAMESPACE(Esp, xorstr_("Esp"))
-SERIALIZED_NAMESPACE(SpectatorList, xorstr_("Spectator list"))
-SERIALIZED_NAMESPACE(NoPunch, xorstr_("No punch"))
-SERIALIZED_NAMESPACE(FOV, xorstr_("FOV"))
+SERIALIZED_NAMESPACE(xorstr_("Esp"), Esp)
+SERIALIZED_NAMESPACE(xorstr_("Spectator list"), SpectatorList)
+SERIALIZED_NAMESPACE(xorstr_("No punch"), NoPunch)
+SERIALIZED_NAMESPACE(xorstr_("FOV"), FOV)
 END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Serializer)
-SERIALIZED_NAMESPACE(General, xorstr_("General"))
-SERIALIZED_NAMESPACE(Legit, xorstr_("Legit"))
-SERIALIZED_NAMESPACE(Semirage, xorstr_("Semirage"))
-SERIALIZED_NAMESPACE(Movement, xorstr_("Movement"))
-SERIALIZED_NAMESPACE(Visuals, xorstr_("Visuals"))
+SERIALIZED_NAMESPACE(xorstr_("General"), General)
+SERIALIZED_NAMESPACE(xorstr_("Legit"), Legit)
+SERIALIZED_NAMESPACE(xorstr_("Semirage"), Semirage)
+SERIALIZED_NAMESPACE(xorstr_("Movement"), Movement)
+SERIALIZED_NAMESPACE(xorstr_("Visuals"), Visuals)
 END_SERIALIZED_STRUCT

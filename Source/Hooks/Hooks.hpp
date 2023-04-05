@@ -3,13 +3,13 @@
 
 class Hook {
 	void* original;
-	int len;
+	unsigned int len;
 
 public:
 	void* proxy;
 
 	Hook() = delete;
-	Hook(void* original, void* hook, int len);
+	Hook(void* original, void* hook);
 	~Hook();
 };
 

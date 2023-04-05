@@ -12,6 +12,8 @@
 #include "Hooking/Hooking.hpp"
 #include "Memory/Memory.hpp"
 
+#include "ldisasm.h"
+
 void Hooks::InstallHooks()
 {
 	FrameStageNotify::Hook();
@@ -28,11 +30,16 @@ void Hooks::UninstallHooks()
 	FrameStageNotify::Unhook();
 }
 
-Hook::Hook(void* original, void* hook, int len)
+Hook::Hook(void* original, void* hook)
 {
 	this->original = original;
-	this->len = len;
-	this->proxy = Framework::Hooking::detour(original, hook, len);
+
+	this->len = 0;
+	while(this->len <= FRAMEWORK_NEAR_JMP_LENGTH) {
+		this->len += ldisasm(static_cast<char*>(original) + this->len, true);
+	}
+
+	this->proxy = Framework::Hooking::detour(original, hook, (int)this->len);
 }
 
 Hook::~Hook()
