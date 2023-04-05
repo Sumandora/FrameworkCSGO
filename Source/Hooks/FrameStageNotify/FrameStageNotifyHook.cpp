@@ -35,7 +35,7 @@ void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 
 void Hooks::FrameStageNotify::Hook()
 {
-	hook = new class Hook(Utils::GetVTable(Interfaces::baseClient)[37], reinterpret_cast<void*>(FrameStageNotifyHook), 6);
+	hook = new class Hook(Utils::GetVTable(Interfaces::baseClient)[37], reinterpret_cast<void*>(FrameStageNotifyHook));
 }
 
 void Hooks::FrameStageNotify::Unhook()

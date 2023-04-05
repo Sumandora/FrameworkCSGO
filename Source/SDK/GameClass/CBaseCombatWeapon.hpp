@@ -4,7 +4,7 @@
 #include "xorstr.hpp"
 
 #include "../../Netvars.hpp"
-#include "../WeaponIDs.hpp"
+#include "../Weapons/WeaponIDs.hpp"
 #include "VirtualMethod.hpp"
 
 #include "CBaseAttributableItem.hpp"

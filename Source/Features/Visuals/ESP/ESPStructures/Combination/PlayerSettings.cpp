@@ -38,8 +38,8 @@ void PlayerSettings::SetupGUI(const char* id)
 }
 
 BEGIN_SERIALIZED_STRUCT(PlayerSettings::Serializer)
-SERIALIZED_STRUCTURE(teammate, xorstr_("Teammate"))
-SERIALIZED_STRUCTURE(enemy, xorstr_("Enemy"))
-SERIALIZED_STRUCTURE(local, xorstr_("Local"))
-SERIALIZED_STRUCTURE(spectators, xorstr_("Spectators"))
+SERIALIZED_STRUCTURE(xorstr_("Teammate"), teammate)
+SERIALIZED_STRUCTURE(xorstr_("Enemy"), enemy)
+SERIALIZED_STRUCTURE(xorstr_("Local"), local)
+SERIALIZED_STRUCTURE(xorstr_("Spectators"), spectators)
 END_SERIALIZED_STRUCT

@@ -34,18 +34,18 @@ namespace Serialization {
 	};
 }
 
-#define BEGIN_SERIALIZED_STRUCT(functionName)                              \
+#define BEGIN_SERIALIZED_STRUCT(functionName)                                                      \
 	void functionName(Serialization::Serializer serializer, Direction direction, const char* name) \
-	{                                                                            \
+	{                                                                                             \
 		serializer.SetSection(name);
 
 #define SERIALIZED_TYPE(name, variable) \
 	serializer.Serialize(name, variable, direction);
 
-#define SERIALIZED_STRUCTURE(variable, name) \
+#define SERIALIZED_STRUCTURE(name, variable) \
 	variable.Serializer(serializer, direction, name);
 
-#define SERIALIZED_NAMESPACE(namespaceName, name) \
+#define SERIALIZED_NAMESPACE(name, namespaceName) \
 	namespaceName::Serializer(serializer, direction, name);
 
 #define END_SERIALIZED_STRUCT  \

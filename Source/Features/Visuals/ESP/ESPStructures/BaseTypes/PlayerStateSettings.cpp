@@ -84,8 +84,8 @@ void PlayerStateSettings::SetupGUI(const char* id)
 }
 
 BEGIN_SERIALIZED_STRUCT(PlayerStateSettings::Serializer)
-SERIALIZED_STRUCTURE(boxName, name)
-SERIALIZED_STRUCTURE(healthbar, xorstr_("Healthbar"))
-SERIALIZED_STRUCTURE(weapon, xorstr_("Weapon"))
-SERIALIZED_STRUCTURE(flashDuration, xorstr_("Flash duration"))
+SERIALIZED_STRUCTURE(name, boxName)
+SERIALIZED_STRUCTURE(xorstr_("Healthbar"), healthbar)
+SERIALIZED_STRUCTURE(xorstr_("Weapon"), weapon)
+SERIALIZED_STRUCTURE(xorstr_("Flash duration"), flashDuration)
 END_SERIALIZED_STRUCT

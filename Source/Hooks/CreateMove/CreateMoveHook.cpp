@@ -47,7 +47,7 @@ bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 
 void Hooks::CreateMove::Hook()
 {
-	hook = new class Hook(Utils::GetVTable(Memory::clientMode)[25], reinterpret_cast<void*>(CreateMoveHook), 6);
+	hook = new class Hook(Utils::GetVTable(Memory::clientMode)[25], reinterpret_cast<void*>(CreateMoveHook));
 }
 
 void Hooks::CreateMove::Unhook()

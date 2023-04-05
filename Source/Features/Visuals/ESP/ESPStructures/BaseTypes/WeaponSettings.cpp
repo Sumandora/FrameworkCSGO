@@ -36,6 +36,6 @@ void WeaponSettings::SetupGUI(const char* id)
 }
 
 BEGIN_SERIALIZED_STRUCT(WeaponSettings::Serializer)
-SERIALIZED_STRUCTURE(boxName, name)
-SERIALIZED_STRUCTURE(ammo, xorstr_("Ammo"))
+SERIALIZED_STRUCTURE(name, boxName)
+SERIALIZED_STRUCTURE(xorstr_("Ammo"), ammo)
 END_SERIALIZED_STRUCT

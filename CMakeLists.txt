@@ -51,12 +51,13 @@ target_sources(FrameworkCSGO PUBLIC ${IMGUI_SOURCE_FILES})
 # Setup xorstr
 target_include_directories(FrameworkCSGO PUBLIC Dependencies/xorstr/include)
 
-file(GLOB_RECURSE XORSTR_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/xorstr/include")
-target_sources(FrameworkCSGO PUBLIC ${XORSTR_SOURCE_FILES})
-
 # Setup mINI
 target_include_directories(FrameworkCSGO PUBLIC Dependencies/mINI/src)
 
-file(GLOB_RECURSE MINI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/mINI/src")
 target_compile_definitions(FrameworkCSGO PUBLIC MINI_CASE_SENSITIVE)
-target_sources(FrameworkCSGO PUBLIC ${MINI_SOURCE_FILES})
+
+# Setup length-disassembler
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/length-disassembler)
+
+file(GLOB LDE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/length-disassembler/*.cpp")
+target_sources(FrameworkCSGO PUBLIC ${LDE_SOURCE_FILES})

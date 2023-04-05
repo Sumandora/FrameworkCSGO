@@ -11,3 +11,6 @@
 [submodule "Dependencies/mINI"]
 	path = Dependencies/mINI
 	url = https://github.com/pulzed/mINI.git
+[submodule "Dependencies/length-disassembler"]
+	path = Dependencies/length-disassembler
+	url = https://github.com/Nomade040/length-disassembler.git

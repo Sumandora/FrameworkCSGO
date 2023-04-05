@@ -12,6 +12,8 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "ldisasm.h"
+
 struct InterfaceReg {
 	void* m_CreateFn;
 	const char* m_pName;
@@ -44,14 +46,12 @@ void* UncoverCreateFunction(void* createFunc)
 	while (true) {
 		if (leaRax.matchPattern(rip)) { // LEA rax, [rip + offset]
 			interfacePtr = Memory::RelativeToAbsolute(static_cast<char*>(rip) + 3 /* skip the lea */);
-			rip += 7;
 		} else if (movRaxRax.matchPattern(rip)) { // MOV rax, [rax]
 			interfacePtr = *static_cast<void**>(interfacePtr);
-			rip += 3;
 		} else if (ret.matchPattern(rip)) { // RET
 			break;
 		}
-		rip++;
+		rip += ldisasm(rip, true); // next instruction
 	}
 	return interfacePtr;
 }

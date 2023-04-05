@@ -157,7 +157,7 @@ SERIALIZED_TYPE(xorstr_("Outlined"), outlined)
 SERIALIZED_TYPE(xorstr_("Outline color"), outlineColor)
 SERIALIZED_TYPE(xorstr_("Outline thickness"), outlineThickness)
 
-SERIALIZED_STRUCTURE(healthNumber, xorstr_("Health number"))
+SERIALIZED_STRUCTURE(xorstr_("Health number"), healthNumber)
 
 SERIALIZED_TYPE(xorstr_("Only when damaged"), onlyWhenDamaged)
 END_SERIALIZED_STRUCT

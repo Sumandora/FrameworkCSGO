@@ -215,4 +215,8 @@ inline const char* LocalizeWeaponID(WeaponID weaponID)
 		return weaponLocalization[weaponID];
 }
 
+inline bool IsFirearm(WeaponID weaponID) {
+	return ((weaponID >= WeaponID::WEAPON_DEAGLE && weaponID <= WeaponID::WEAPON_SSG08) || (weaponID >= WeaponID::WEAPON_M4A1_SILENCER && weaponID <= WeaponID::WEAPON_REVOLVER)) && weaponID != WeaponID::WEAPON_TASER /* Technically considered a firearm, but it behaves fundamentally differently */ && weaponID != WeaponID::WEAPON_ZONE_REPULSOR;
+}
+
 #endif

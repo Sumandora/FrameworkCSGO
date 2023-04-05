@@ -10,17 +10,26 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
+#include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include <algorithm>
-// TODO Weapon configs
 static bool enabled = false;
-static bool onlyWhenShooting = false; // TODO Separate key
-static float fov = 3.0f;
-static float aimSpeed = 0.2f;
+
+struct SemirageAimbotWeaponConfig {
+	bool onlyWhenShooting = false; // TODO Separate key
+	float fov = 3.0f;
+	float aimSpeed = 0.2f;
+	bool silent = false;
+	float snapBack = 0.1f;
+
+	DECLARE_SERIALIZER(Serializer);
+};
+void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig);
+
+static WeaponConfigurator<SemirageAimbotWeaponConfig> weaponConfigurator(WeaponGUI);
+
 static int maximalFlashAmount = 255;
 static bool dontAimThroughSmoke = false;
-static bool silent = false;
-static float snapBack = 0.1f;
 static bool friendlyFire = false;
 
 bool wasFaked = false;
@@ -37,8 +46,19 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return false;
 
+	auto* combatWeapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	if(!combatWeapon)
+		return false;
+
+	if(!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
+		return false;
+
+	SemirageAimbotWeaponConfig* weaponConfig = weaponConfigurator.getConfig(*combatWeapon->WeaponDefinitionIndex());
+	if(!weaponConfig)
+		return false;
+
 	Vector viewAngles;
-	if (silent && wasFaked && Hooks::CreateMove::lastCmd)
+	if (weaponConfig->silent && wasFaked && Hooks::CreateMove::lastCmd)
 		viewAngles = Hooks::CreateMove::lastCmd->viewangles;
 	else
 		viewAngles = Vector(cmd->viewangles);
@@ -48,7 +68,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	float bestDistance {};
 
 	// For compatibility’s sake, play it off like we didn't find a target
-	if ((cmd->buttons & IN_ATTACK || !onlyWhenShooting) && localPlayer->GetFlashAlpha() <= (float)maximalFlashAmount) {
+	if ((cmd->buttons & IN_ATTACK || !weaponConfig->onlyWhenShooting) && localPlayer->GetFlashAlpha() <= (float)maximalFlashAmount) {
 		CTraceFilterEntity filter(localPlayer);
 
 		// The first object is always the WorldObj
@@ -91,16 +111,16 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		}
 	}
 
-	if (!target || bestDistance > fov) {
-		if (silent && wasFaked) {
+	if (!target || bestDistance > weaponConfig->fov) {
+		if (weaponConfig->silent && wasFaked) {
 			Vector delta = cmd->viewangles - viewAngles;
 			delta.Wrap();
-			if (delta.Length() < snapBack) {
+			if (delta.Length() < weaponConfig->snapBack) {
 				// At this point the difference is so small, that it no longer matters
 				wasFaked = false;
 				return false;
 			}
-			delta *= aimSpeed;
+			delta *= weaponConfig->aimSpeed;
 			cmd->viewangles = viewAngles + delta;
 			cmd->viewangles.Wrap();
 			wasFaked = true;
@@ -110,40 +130,51 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		return false;
 	}
 
-	bestRotation *= aimSpeed;
+	bestRotation *= weaponConfig->aimSpeed;
 	cmd->viewangles = viewAngles + bestRotation;
 	cmd->viewangles.Wrap();
-	if (!silent)
+	if (!weaponConfig->silent)
 		Interfaces::engine->SetViewAngles(&cmd->viewangles);
 
 	wasFaked = true;
-	return silent;
+	return weaponConfig->silent;
+}
+
+void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig) {
+	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
+	ImGui::SliderFloat(xorstr_("FOV"), &weaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat(xorstr_("Aim speed"), &weaponConfig.aimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+	ImGui::Checkbox(xorstr_("Silent"), &weaponConfig.silent);
+	if (weaponConfig.silent) {
+		ImGui::SliderFloat(xorstr_("Snapback"), &weaponConfig.snapBack, 0.0f, 1.0f, xorstr_("%.2f"));
+		ImGui::HelpMarker(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
+	}
 }
 
 void Features::Semirage::Aimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
-	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("Aim speed"), &aimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
-	ImGui::Checkbox(xorstr_("Silent"), &silent);
-	if (silent) {
-		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, xorstr_("%.2f"));
-		ImGui::HelpMarker(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
-	}
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
+
+	weaponConfigurator.SetupGUI();
 }
+
+BEGIN_SERIALIZED_STRUCT(SemirageAimbotWeaponConfig::Serializer)
+SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
+SERIALIZED_TYPE(xorstr_("FOV"), fov)
+SERIALIZED_TYPE(xorstr_("Aim speed"), aimSpeed)
+SERIALIZED_TYPE(xorstr_("Silent"), silent)
+SERIALIZED_TYPE(xorstr_("Snapback"), snapBack)
+END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
-SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
-SERIALIZED_TYPE(xorstr_("Aim speed"), aimSpeed)
 SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
-SERIALIZED_TYPE(xorstr_("Silent"), silent)
-SERIALIZED_TYPE(xorstr_("Snapback"), snapBack)
 SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
+
+SERIALIZED_STRUCTURE(xorstr_("Weapons"), weaponConfigurator)
 END_SERIALIZED_STRUCT
