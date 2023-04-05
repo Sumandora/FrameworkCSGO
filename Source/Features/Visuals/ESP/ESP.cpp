@@ -4,11 +4,13 @@
 #include "xorstr.hpp"
 
 #include "../../../GameCache.hpp"
+#include "../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../GUI/Elements/HelpMarker.hpp"
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 #include "../../../Interfaces.hpp"
 #include "../../../Utils/Raytrace.hpp"
+#include "../../../Utils/Trigonometry.hpp"
 
 #include <cstdint>
 #include <vector>
@@ -19,6 +21,9 @@ static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
 static bool cacheVisibilityState = true;
+static bool outOfView = false;
+static float outOfViewSize = 30.0f;
+static float outOfViewDistance = 300.0f;
 PlayerSettings Features::Visuals::Esp::players;
 static WeaponSettings weapons;
 static BoxNameSetting projectiles;
@@ -49,9 +54,7 @@ bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& scree
 }
 
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer) {
-	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-	if (!otherPlayer->SetupBones(boneMatrix))
-		return false;
+	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
 
 	const Vector playerEye = localPlayer->GetEyePosition();
 	const Vector head = boneMatrix[8].Origin();
@@ -122,6 +125,16 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if(!localPlayer)
 		return;
 
+	Vector viewangles;
+	if(outOfView) { // We don't need the viewangles otherwise
+		Interfaces::engine->GetViewAngles(&viewangles);
+	}
+
+	CBaseEntity* spectatorEntity = nullptr;
+	if(*localPlayer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && localPlayer->ObserverTarget()) {
+		spectatorEntity = Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ObserverTarget());
+	}
+
 	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;
 
 	if (!matrix.Base())
@@ -179,10 +192,33 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 				rectangle.w = point2D.y;
 		}
 
+		if(outOfView && !visible) {
+			Vector delta = *entity->Origin() - *localPlayer->Origin();
+			float angle = (float) DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
+
+			ImVec2 display = ImGui::GetIO().DisplaySize;
+			ImVec2 direction(cosf(angle), sinf(angle));
+
+			ImVec2 screenPosition(
+				(float) display.x / 2.0f + direction.x * outOfViewDistance,
+				(float) display.y / 2.0f + direction.y * outOfViewDistance
+				);
+
+			rectangle = ImVec4(
+				screenPosition.x - outOfViewSize,
+				screenPosition.y - outOfViewSize,
+
+				screenPosition.x + outOfViewSize,
+				screenPosition.y + outOfViewSize
+				);
+
+			visible = true; // We just made them visible ^^
+		}
+
 		if (visible) {
 			if (entity->IsPlayer()) {
 				auto* player = reinterpret_cast<CBasePlayer*>(entity);
-				if (!player->IsAlive() || *player->Team() == TeamID::TEAM_UNASSIGNED)
+				if (!player->IsAlive() || *player->Team() == TeamID::TEAM_UNASSIGNED || entity == spectatorEntity)
 					continue;
 				PlayerStateSettings* settings;
 				if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
@@ -278,6 +314,17 @@ void Features::Visuals::Esp::SetupGUI()
 	ImGui::HelpMarker(xorstr_("Debug option, which should only be turned off if needed"));
 
 	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
+	ImGui::SameLine();
+	ImGui::Checkbox(xorstr_("Out of view"), &outOfView);
+	ImGui::SameLine();
+	if (ImGui::Button(xorstr_("...")))
+		ImGui::OpenPopup(xorstr_("#Out of view settings"));
+
+	if (ImGui::BeginPopup(xorstr_("#Out of view settings"))) {
+		ImGui::SliderFloat(xorstr_("Size"), &outOfViewSize, 0.0f, 50.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Distance"), &outOfViewDistance, 0.0f, 500.0f, xorstr_("%.2f"));
+		ImGui::EndPopup();
+	}
 
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
 
@@ -336,6 +383,10 @@ SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
 SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
 SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
 SERIALIZED_TYPE(xorstr_("Cache visibility state"), cacheVisibilityState)
+
+SERIALIZED_TYPE(xorstr_("Out of view"), outOfView)
+SERIALIZED_TYPE(xorstr_("Out of view size"), outOfViewSize)
+SERIALIZED_TYPE(xorstr_("Out of view distance"), outOfViewDistance)
 
 SERIALIZED_STRUCTURE(players, xorstr_("Players"))
 SERIALIZED_STRUCTURE(weapons, xorstr_("Weapons"))

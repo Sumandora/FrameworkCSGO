@@ -24,7 +24,6 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (localPlayer->IsAlive())
 			currentTarget = localPlayer;
 		else {
-			// Intentionally not dereferenced, because game is weird
 			void* observerTarget = localPlayer->ObserverTarget();
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);

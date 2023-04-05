@@ -31,10 +31,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		return false;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return false;
-
-	// TODO Add Alive check
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return false;
@@ -67,9 +65,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 			const Vector playerEye = localPlayer->GetEyePosition();
 
-			Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-			if (!player->SetupBones(boneMatrix))
-				continue;
+			Matrix3x4* boneMatrix = player->SetupBones();
 
 			const Vector head = boneMatrix[8].Origin();
 
@@ -128,13 +124,13 @@ void Features::Semirage::Aimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
-	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, "%.2f");
-	ImGui::SliderFloat(xorstr_("Aim speed"), &aimSpeed, 0.0f, 1.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat(xorstr_("Aim speed"), &aimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
 	ImGui::Checkbox(xorstr_("Silent"), &silent);
 	if (silent) {
-		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, "%.2f");
+		ImGui::SliderFloat(xorstr_("Snapback"), &snapBack, 0.0f, 1.0f, xorstr_("%.2f"));
 		ImGui::HelpMarker(xorstr_("Unlike other cheats, silent aim is smoothed out. At some point, we have to combine the rotations again, this setting tells Framework when to do that"));
 	}
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);

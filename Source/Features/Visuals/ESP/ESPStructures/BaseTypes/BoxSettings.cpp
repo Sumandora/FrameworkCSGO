@@ -39,12 +39,12 @@ void BoxSettings::SetupGUI(const char* id)
 
 	if (ImGui::BeginPopup(id)) {
 		ImGui::ClickableColorButton(xorstr_("Color"), color);
-		ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat(xorstr_("Thickness"), &thickness, 0.0f, 10.0f, "%.2f");
+		ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Thickness"), &thickness, 0.0f, 10.0f, xorstr_("%.2f"));
 		ImGui::Checkbox(xorstr_("Outlined"), &outlined);
 		if (outlined) {
 			ImGui::ClickableColorButton(xorstr_("Outline color"), outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, "%.2f");
+			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, xorstr_("%.2f"));
 		}
 		ImGui::Checkbox(xorstr_("Fill"), &fill);
 		if (fill)

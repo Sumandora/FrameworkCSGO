@@ -27,7 +27,7 @@ static bool friendlyFire = false;
 struct Tick {
 	float simulationTime {};
 	int tickCount {};
-	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
+	Matrix3x4* boneMatrix;
 };
 
 float CalculateLerpTime()
@@ -126,9 +126,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 		std::vector<Tick> records = pair.second;
 
-		Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-		if (!player->SetupBones(boneMatrix))
-			return true;
+		Matrix3x4* boneMatrix = player->SetupBones();
 
 		float currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
 #ifdef __clang__
@@ -197,7 +195,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		Tick tick;
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
-		player->SetupBones(tick.boneMatrix);
+		tick.boneMatrix = player->SetupBones();
 
 		ticks[i].push_back(tick);
 	}
@@ -208,13 +206,13 @@ void Features::Semirage::Backtrack::SetupGUI()
 	if (!ConVarStorage::cl_lagcompensation->GetBool() || !ConVarStorage::sv_unlag->GetBool())
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: Judging by convars, lag compensation is disabled."));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, "%.2f");
+	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, xorstr_("%.2f"));
 	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d seconds"), (int) (ConVarStorage::sv_maxunlag->GetFloat() * scale * 1000 /*s to ms*/));
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"), (int) (ConVarStorage::sv_maxunlag->GetFloat() * scale * 1000 /*s to ms*/));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)

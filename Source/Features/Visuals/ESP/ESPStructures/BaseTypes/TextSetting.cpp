@@ -41,7 +41,7 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 
 float TextSetting::GetLineHeight() const
 {
-	return ImGui::GetTextLineHeightWithSpacing() * fontScale;
+	return ImGui::GetTextLineHeight() * fontScale;
 }
 
 void TextSetting::SetupGUI(const char* id)

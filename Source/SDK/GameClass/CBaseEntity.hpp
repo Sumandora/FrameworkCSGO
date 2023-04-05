@@ -12,6 +12,8 @@
 
 #include "../../Netvars.hpp"
 
+#include <map>
+
 class CBaseEntity {
 public:
 	NETVAR_FUNCTION(TeamID, Team, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_iTeamNum"))
@@ -46,9 +48,21 @@ public:
 	VIRTUAL_METHOD(210, IsPlayer, bool, (), (this))
 	VIRTUAL_METHOD(218, IsWeapon, bool, (), (this))
 
-	inline bool SetupBones(Matrix3x4 (&boneMatrix)[])
+	inline Matrix3x4* SetupBones()
 	{
-		return SetupBones(boneMatrix, MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
+		static std::map<void*, Matrix3x4[MAXSTUDIOBONES]> cache;
+		static int lastFrameCount;
+
+		int currFrameCount = Memory::globalVars->framecount;
+		if(currFrameCount != lastFrameCount) {
+			cache.clear();
+			lastFrameCount = currFrameCount;
+		}
+
+		if(!cache.contains(this))
+			SetupBones(cache[this], MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
+
+		return cache[this];
 	}
 };
 
