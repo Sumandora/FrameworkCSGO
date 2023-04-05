@@ -121,9 +121,9 @@ void HealthbarSettings::SetupGUI(const char* id)
 	if (ImGui::BeginPopup(id)) {
 		ImGui::ClickableColorButton(xorstr_("Background color"), backgroundColor);
 		if (!gradient)
-			ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat(xorstr_("Spacing"), &spacing, 0.0f, 10.0f, "%.2f");
-		ImGui::SliderFloat(xorstr_("Width"), &width, 0.0f, 10.0f, "%.2f");
+			ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Spacing"), &spacing, 0.0f, 10.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Width"), &width, 0.0f, 10.0f, xorstr_("%.2f"));
 
 		ImGui::ClickableColorButton(xorstr_("Alive color"), aliveColor);
 		ImGui::ClickableColorButton(xorstr_("Dead color"), deadColor);
@@ -132,7 +132,7 @@ void HealthbarSettings::SetupGUI(const char* id)
 		ImGui::Checkbox(xorstr_("Outlined"), &outlined);
 		if (outlined) {
 			ImGui::ClickableColorButton(xorstr_("Outline color"), outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, "%.2f");
+			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, xorstr_("%.2f"));
 		}
 		healthNumber.SetupGUI(xorstr_("Health number"));
 		if (healthNumber.enabled)

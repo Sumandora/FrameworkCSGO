@@ -62,9 +62,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		if (!(friendlyFire || player->IsEnemy(localPlayer)))
 			continue;
 
-		Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-		if (!player->SetupBones(boneMatrix))
-			continue;
+		Matrix3x4* boneMatrix = player->SetupBones();
 
 		const Vector head = boneMatrix[8].Origin();
 
