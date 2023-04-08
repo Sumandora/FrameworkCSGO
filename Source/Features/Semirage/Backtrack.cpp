@@ -27,6 +27,7 @@ static bool friendlyFire = false;
 struct Tick {
 	float simulationTime {};
 	int tickCount {};
+	Vector origin;
 	Matrix3x4* boneMatrix;
 };
 
@@ -102,9 +103,10 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 	if (!weapon)
 		return;
-
 	if (*weapon->NextPrimaryAttack() > Memory::globalVars->curtime || *localPlayer->WaitForNoAttack()) // TODO Rebuild those https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/cstrike15/weapon_csbase.cpp#L990
 		return;
+
+	bool knife = IsKnife(*weapon->WeaponDefinitionIndex()); // TODO Support for taser
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
@@ -113,11 +115,11 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		return;
 
 	float bestDistance = FLT_MAX;
-	Tick bestTick {};
+	int tickCount = 0;
 
 	std::erase_if(ticks, [&](const auto& pair) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
-		if (!player || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
+		if (!player || !player->IsAlive() || player->GetDormant() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			return true;
 		}
 
@@ -128,27 +130,35 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 		Matrix3x4* boneMatrix = player->SetupBones();
 
-		float currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
+		float currentDistance;
+		if(!knife)
+			currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
+		else
+			currentDistance = (*localPlayer->Origin() - *player->Origin()).Length();
+
 #ifdef __clang__
 		for (unsigned int index = records.size(); index > 0; index--) {
 			auto& tick = records[index];
 #else
 		for (auto& tick : std::ranges::views::reverse(records)) {
 #endif
-			// TODO Support for Knifes
-			float delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
+			float delta;
+			if(!knife)
+				delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
+			else // If we are holding a knife search for the closest tick
+				delta = (*localPlayer->Origin() - tick.origin).Length();
 
 			if (currentDistance > delta && bestDistance > delta) {
 				bestDistance = delta;
-				bestTick = tick;
+				tickCount = tick.tickCount;
 			}
 		}
 		return false;
 	});
 
-	if (bestDistance < 5.0f && cmd->tick_count != bestTick.tickCount) {
-		Features::General::EventLog::CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - bestTick.tickCount);
-		cmd->tick_count = bestTick.tickCount;
+	if (tickCount > 0 && cmd->tick_count != tickCount && (knife || bestDistance < 5.0f)) {
+		Features::General::EventLog::CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - tickCount);
+		cmd->tick_count = tickCount;
 	}
 }
 
@@ -168,19 +178,19 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
+			ticks[i].clear();
+			continue;
+		}
+
+		if (!(friendlyFire || player->IsEnemy(localPlayer))) {
+			ticks[i].clear();
+			continue;
+		}
+
 		if (!ticks.contains(i))
 			ticks[i] = {};
-
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity()) {
-			ticks[i].clear();
-			continue;
-		}
-
-		if (!IsParticipatingTeam(*player->Team()) || !(friendlyFire || player->IsEnemy(localPlayer))) {
-			ticks[i].clear();
-			continue;
-		}
 
 		const float currentSimulationTime = *player->SimulationTime();
 		if (!ticks[i].empty()) {
@@ -195,6 +205,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		Tick tick;
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
+		tick.origin = *player->Origin();
 		tick.boneMatrix = player->SetupBones();
 
 		ticks[i].push_back(tick);
