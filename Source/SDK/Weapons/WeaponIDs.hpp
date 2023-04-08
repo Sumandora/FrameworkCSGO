@@ -219,4 +219,8 @@ inline bool IsFirearm(WeaponID weaponID) {
 	return ((weaponID >= WeaponID::WEAPON_DEAGLE && weaponID <= WeaponID::WEAPON_SSG08) || (weaponID >= WeaponID::WEAPON_M4A1_SILENCER && weaponID <= WeaponID::WEAPON_REVOLVER)) && weaponID != WeaponID::WEAPON_TASER /* Technically considered a firearm, but it behaves fundamentally differently */ && weaponID != WeaponID::WEAPON_ZONE_REPULSOR;
 }
 
+inline bool IsKnife(WeaponID weaponID) {
+	return (weaponID >= WeaponID::WEAPON_KNIFEGG && weaponID <= WeaponID::WEAPON_KNIFE) || weaponID == WeaponID::WEAPON_KNIFE_T || weaponID == WeaponID::WEAPON_KNIFE_GHOST || (weaponID >= WeaponID::WEAPON_KNIFE_CSS && weaponID <= WeaponID::WEAPON_KNIFE_SKELETON);
+}
+
 #endif
