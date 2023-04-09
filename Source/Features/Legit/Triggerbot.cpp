@@ -44,7 +44,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	const Vector playerEye = localPlayer->GetEyePosition();
 	auto viewangles = Vector(cmd->viewangles);
 
-	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat() / 2.0f;
+	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat() / 2.0f;
 
 	Vector forward;
 	Utils::AngleVectors(viewangles, &forward);

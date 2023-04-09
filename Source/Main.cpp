@@ -5,7 +5,6 @@
 #include "Hooks/Hooks.hpp"
 #include "Serialization/Serialization.hpp"
 
-#include "ConVarStorage.hpp"
 #include "Interfaces.hpp"
 #include "Memory.hpp"
 #include "Netvars.hpp"
@@ -30,7 +29,7 @@
 
 // TODO Reveal ranks, money, suspect, votes
 // TODO Auto accept
-// TODO Auto pistol & reload
+// TODO Auto pistol
 
 // TODO Moonwalk
 
@@ -52,8 +51,6 @@ void Initializer()
 
 	Netvars::DumpNetvars();
 	Memory::Create();
-
-	ConVarStorage::FindAll();
 
 	Gui::Create();
 

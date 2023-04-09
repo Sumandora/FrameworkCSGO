@@ -4,9 +4,9 @@
 
 Gamemode Utils::CalculateGamemode()
 {
-	const int game_type = ConVarStorage::game_type->GetInt();
-	const int game_mode = ConVarStorage::game_mode->GetInt();
-	const int sv_skirmish_id = ConVarStorage::sv_skirmish_id->GetInt();
+	const int game_type = ConVarStorage::game_type()->GetInt();
+	const int game_mode = ConVarStorage::game_mode()->GetInt();
+	const int sv_skirmish_id = ConVarStorage::sv_skirmish_id()->GetInt();
 
 	// https://developer.valvesoftware.com/wiki/CS:GO_Game_Modes
 

@@ -30,9 +30,9 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
 	if (*localPlayer->ShotsFired() > minShots) {
 		Vector recoil;
 		if (silent)
-			recoil = currentAimPunch * ConVarStorage::weapon_recoil_scale->GetFloat();
+			recoil = currentAimPunch * ConVarStorage::weapon_recoil_scale()->GetFloat();
 		else
-			recoil = (currentAimPunch - lastAimPunch) * ConVarStorage::weapon_recoil_scale->GetFloat();
+			recoil = (currentAimPunch - lastAimPunch) * ConVarStorage::weapon_recoil_scale()->GetFloat();
 
 		recoil.x *= verticalAdjustment;
 		recoil.y *= horizontalAdjustment;

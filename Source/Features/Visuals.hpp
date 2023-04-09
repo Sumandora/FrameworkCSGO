@@ -1,8 +1,9 @@
 #ifndef FEATURES_VISUALS
 #define FEATURES_VISUALS
 
-#include "../SDK/GameClass/CViewSetup.hpp"
 #include "../SDK/GameClass/CUserCmd.hpp"
+#include "../SDK/GameClass/CViewSetup.hpp"
+#include "../SDK/Math/Matrix4x4.hpp"
 #include "../Serialization/Serializer.hpp"
 #include "Visuals/ESP/ESPStructure.hpp"
 
@@ -13,6 +14,8 @@ namespace Features::Visuals {
 
 		void UpdateVisibility();
 		void ImGuiRender(ImDrawList* drawList);
+
+		bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition);
 
 		// GUI
 		void SetupGUI();

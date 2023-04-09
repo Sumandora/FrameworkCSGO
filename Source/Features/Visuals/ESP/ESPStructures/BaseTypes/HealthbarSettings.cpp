@@ -5,6 +5,7 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
 
 HealthbarSettings::HealthbarSettings()
 	: enabled(false)
@@ -115,10 +116,8 @@ void HealthbarSettings::SetupGUI(const char* id)
 	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
-	if (ImGui::Button(xorstr_("...")))
-		ImGui::OpenPopup(id);
 
-	if (ImGui::BeginPopup(id)) {
+	if (ImGui::Popup(id)) {
 		ImGui::ClickableColorButton(xorstr_("Background color"), backgroundColor);
 		if (!gradient)
 			ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, xorstr_("%.2f"));

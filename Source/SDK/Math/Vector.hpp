@@ -244,7 +244,7 @@ struct Vector {
 	{
 		// Use 360 in the remainder call and then clamp it to [-89..89] to prevent it from flipping the view
 		this->x = std::remainderf(this->x, 360.0f);
-		this->x = std::clamp(this->x, -ConVarStorage::cl_pitchup->GetFloat(), ConVarStorage::cl_pitchdown->GetFloat());
+		this->x = std::clamp(this->x, -ConVarStorage::cl_pitchup()->GetFloat(), ConVarStorage::cl_pitchdown()->GetFloat());
 
 		this->y = std::remainderf(this->y, 360.0f);
 

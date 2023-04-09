@@ -7,6 +7,8 @@ void OverrideViewHook(void* thisptr, CViewSetup* pSetup)
 	invokeFunction<void, void*, CViewSetup*>(Hooks::OverrideView::hook->proxy, thisptr, pSetup);
 
 	Features::Visuals::FOV::OverrideView(pSetup);
+
+	Hooks::OverrideView::lastViewSetup = *pSetup;
 }
 
 void Hooks::OverrideView::Hook()

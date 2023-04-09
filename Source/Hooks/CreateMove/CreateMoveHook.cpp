@@ -21,10 +21,10 @@ bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 		Features::Movement::JumpBug::CreateMove(cmd);
 		Features::Movement::EdgeJump::CreateMove(cmd);
 
-		Features::Legit::Triggerbot::CreateMove(cmd);
-
 		silent = !Features::Semirage::RecoilAssistance::CreateMove(cmd) && silent;
 		silent = !Features::Semirage::Aimbot::CreateMove(cmd) && silent;
+
+		Features::Legit::Triggerbot::CreateMove(cmd);
 
 		// We have to keep in mind that our angles might differ from the client view at this point,
 		// because of that we need to take the cmd at the last point before actually telling the server, that we shot,
@@ -36,11 +36,7 @@ bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 	cmd->viewangles_copy = cmd->viewangles;
 	cmd->buttons_copy = cmd->buttons;
 
-	// We can't just move the cmd into lastCmd, because it will be deleted by the original process
-	if (Hooks::CreateMove::lastCmd != nullptr)
-		free(Hooks::CreateMove::lastCmd);
-	Hooks::CreateMove::lastCmd = static_cast<CUserCmd*>(malloc(sizeof(CUserCmd)));
-	memcpy((void*)Hooks::CreateMove::lastCmd, (void*)cmd, sizeof(CUserCmd));
+	Hooks::CreateMove::lastCmd = *cmd;
 
 	return silent;
 }

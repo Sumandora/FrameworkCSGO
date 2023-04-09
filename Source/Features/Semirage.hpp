@@ -8,6 +8,7 @@
 namespace Features::Semirage {
 	namespace Aimbot {
 		bool CreateMove(CUserCmd* cmd);
+		void ImGuiRender(ImDrawList* drawList);
 
 		// GUI
 		void SetupGUI();
