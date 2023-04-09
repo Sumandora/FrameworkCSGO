@@ -3,7 +3,10 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
+
 #include "../../../../../Interfaces.hpp"
+
 #include "../../../../Visuals.hpp"
 
 PlayerStateSettings::PlayerStateSettings()
@@ -58,10 +61,8 @@ void BuildMenu(PlayerStateSettings* playerStateSettings, PlayerTeamSettings play
 void PlayerStateSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	if (ImGui::Button(xorstr_("Copy from")))
-		ImGui::OpenPopup(xorstr_("##Copy from"));
 
-	if (ImGui::BeginPopup(xorstr_("##Copy from"))) {
+	if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
 		if (ImGui::BeginMenu(xorstr_("Teammate"))) {
 			BuildMenu(this, Features::Visuals::Esp::players.teammate);
 			ImGui::EndMenu();

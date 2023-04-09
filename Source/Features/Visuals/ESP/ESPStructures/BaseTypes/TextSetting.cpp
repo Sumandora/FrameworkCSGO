@@ -3,6 +3,7 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
 
 TextSetting::TextSetting()
 	: enabled(false)
@@ -50,10 +51,8 @@ void TextSetting::SetupGUI(const char* id)
 	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
-	if (ImGui::Button(xorstr_("...")))
-		ImGui::OpenPopup(id);
 
-	if (ImGui::BeginPopup(id)) {
+	if (ImGui::Popup(id)) {
 		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, xorstr_("%.2f"));
 		ImGui::ClickableColorButton(xorstr_("Font color"), fontColor);
 		ImGui::Checkbox(xorstr_("Shadow"), &shadow);

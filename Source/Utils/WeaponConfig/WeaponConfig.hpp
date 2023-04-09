@@ -1,6 +1,7 @@
 #ifndef UTILS_WEAPONCONFIGS
 #define UTILS_WEAPONCONFIGS
 
+#include "../../GUI/Elements/Popup.hpp"
 #include "../../GUI/ImGuiMacros.hpp"
 #include "../../Serialization/Serializer.hpp"
 #include "WeaponClasses.hpp"
@@ -17,7 +18,6 @@ class WeaponConfigurator {
 		END_SERIALIZED_STRUCT
 	};
 
-	// Note: WeaponID::WEAPON_NONE is the shared config
 	void (*WeaponGUICallback)(T&);
 
 	T sharedConfig;
@@ -41,11 +41,7 @@ public:
 
 	void BuildMenu(T& dest)
 	{
-		if (ImGui::Button(xorstr_("Copy from"))) {
-			ImGui::OpenPopup(xorstr_("##Copy from"));
-		}
-
-		if (ImGui::BeginPopup(xorstr_("##Copy from"))) {
+		if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
 			if (ImGui::Selectable(xorstr_("Shared"))) {
 				dest = sharedConfig;
 			}

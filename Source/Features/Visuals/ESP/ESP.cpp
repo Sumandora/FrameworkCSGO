@@ -4,11 +4,14 @@
 #include "xorstr.hpp"
 
 #include "../../../GameCache.hpp"
-#include "../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../Interfaces.hpp"
+
 #include "../../../GUI/Elements/HelpMarker.hpp"
 #include "../../../GUI/Elements/Keybind.hpp"
+#include "../../../GUI/Elements/Popup.hpp"
+
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
-#include "../../../Interfaces.hpp"
+
 #include "../../../Utils/Raytrace.hpp"
 #include "../../../Utils/Trigonometry.hpp"
 
@@ -37,14 +40,14 @@ static BoxNameSetting other;
 
 static std::map<int, bool> visibilityCache;
 
-bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
+bool Features::Visuals::Esp::WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
 	const float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
 	const float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
 	if (z <= 0.0f || w <= 0.0f)
 		return false;
 
-	screenPosition = ImVec2(ImGui::GetIO().DisplaySize);
+	screenPosition = ImGui::GetIO().DisplaySize;
 	screenPosition.x /= 2.0f;
 	screenPosition.y /= 2.0f;
 
@@ -317,10 +320,8 @@ void Features::Visuals::Esp::SetupGUI()
 	ImGui::SameLine();
 	ImGui::Checkbox(xorstr_("Out of view"), &outOfView);
 	ImGui::SameLine();
-	if (ImGui::Button(xorstr_("...")))
-		ImGui::OpenPopup(xorstr_("#Out of view settings"));
 
-	if (ImGui::BeginPopup(xorstr_("#Out of view settings"))) {
+	if (ImGui::Popup(xorstr_("Out of view settings"))) {
 		ImGui::SliderFloat(xorstr_("Size"), &outOfViewSize, 0.0f, 50.0f, xorstr_("%.2f"));
 		ImGui::SliderFloat(xorstr_("Distance"), &outOfViewDistance, 0.0f, 500.0f, xorstr_("%.2f"));
 		ImGui::EndPopup();

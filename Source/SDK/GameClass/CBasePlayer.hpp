@@ -62,7 +62,7 @@ public:
 
 	inline bool IsEnemy(CBasePlayer* view)
 	{
-		if (ConVarStorage::mp_teammates_are_enemies->GetBool())
+		if (ConVarStorage::mp_teammates_are_enemies()->GetBool())
 			return true;
 		else {
 			if (Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {

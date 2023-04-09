@@ -68,7 +68,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (speed < 5.0f)
 		return;
 
-	float term = ConVarStorage::sv_air_max_wishspeed->GetFloat() / ConVarStorage::sv_airaccelerate->GetFloat() / ConVarStorage::sv_maxspeed->GetFloat() * 100.0f / speed;
+	float term = ConVarStorage::sv_air_max_wishspeed()->GetFloat() / ConVarStorage::sv_airaccelerate()->GetFloat() / ConVarStorage::sv_maxspeed()->GetFloat() * 100.0f / speed;
 
 	if (term <= -1.0f || term >= 1.0f)
 		return;
@@ -101,7 +101,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		cmd->sidemove = -sinf(newDirection) * 450.0f;
 		AdjustButtons(cmd);
 	} else {
-		float oldYaw = Hooks::CreateMove::lastCmd->viewangles.y;
+		float oldYaw = Hooks::CreateMove::lastCmd.viewangles.y;
 		float newYaw = cmd->viewangles.y;
 
 		float change = std::remainderf(newYaw - oldYaw, 360.0f);

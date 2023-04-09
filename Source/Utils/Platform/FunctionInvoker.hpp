@@ -2,31 +2,20 @@
 #define UTILS_FUNCTIONINVOKER
 
 #include "../../Memory.hpp"
+#include "ReturnAddr/ReturnAddr.hpp"
 
 #ifdef __clang__
 
-// These are included in ReturnAddr.hpp
-
-#include "Assembly/Assembly.hpp"
-#include "Memory/Memory.hpp"
-#include "PatternScan/PatternScan.hpp"
-
-#include <cstring>
-#include <mutex>
-#include <sys/mman.h>
-
 template <typename Ret, typename... Args>
-static auto invokeFunction(void* method, Args... args) -> Ret
+inline auto invokeFunction(void* method, Args... args) -> Ret
 {
 	return reinterpret_cast<Ret (*)(Args...)>(method)(args...);
 }
 
 #else
 
-#include "ReturnAddr/ReturnAddr.hpp"
-
 template <typename Ret, typename... Args>
-static auto invokeFunction(void* method, Args... args) -> Ret
+inline auto invokeFunction(void* method, Args... args) -> Ret
 {
 	return Framework::ReturnAddr::invoke<Ret, Args...>(method, Memory::ret_instruction_addr, args...);
 }

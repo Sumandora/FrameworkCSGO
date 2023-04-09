@@ -3,6 +3,7 @@
 #include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
 
 BoxSettings::BoxSettings()
 	: enabled(false)
@@ -34,10 +35,8 @@ void BoxSettings::SetupGUI(const char* id)
 	ImGui::Checkbox(id, &enabled);
 
 	ImGui::SameLine();
-	if (ImGui::Button(xorstr_("...")))
-		ImGui::OpenPopup(id);
 
-	if (ImGui::BeginPopup(id)) {
+	if (ImGui::Popup(id)) {
 		ImGui::ClickableColorButton(xorstr_("Color"), color);
 		ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, xorstr_("%.2f"));
 		ImGui::SliderFloat(xorstr_("Thickness"), &thickness, 0.0f, 10.0f, xorstr_("%.2f"));

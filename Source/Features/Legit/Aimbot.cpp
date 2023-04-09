@@ -96,7 +96,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 			continue; // The enemy is behind something...
 
 		Vector rotation = Utils::CalculateView(playerEye, head);
-		rotation -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
+		rotation -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat();
 		rotation -= viewAngles;
 		rotation = rotation.Wrap();
 

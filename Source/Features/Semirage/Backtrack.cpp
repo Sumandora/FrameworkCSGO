@@ -34,18 +34,18 @@ struct Tick {
 float CalculateLerpTime()
 {
 	// https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/server/gameinterface.cpp#L3281
-	float flUpdateRateValue = ConVarStorage::cl_updaterate->GetFloat();
-	flUpdateRateValue = std::clamp(flUpdateRateValue, ConVarStorage::sv_minupdaterate->GetFloat(), ConVarStorage::sv_maxupdaterate->GetFloat());
+	float flUpdateRateValue = ConVarStorage::cl_updaterate()->GetFloat();
+	flUpdateRateValue = std::clamp(flUpdateRateValue, ConVarStorage::sv_minupdaterate()->GetFloat(), ConVarStorage::sv_maxupdaterate()->GetFloat());
 
-	if (ConVarStorage::cl_interpolate->GetBool()) {
-		float flLerpRatio = ConVarStorage::cl_interp_ratio->GetFloat();
+	if (ConVarStorage::cl_interpolate()->GetBool()) {
+		float flLerpRatio = ConVarStorage::cl_interp_ratio()->GetFloat();
 		if (flLerpRatio == 0)
 			flLerpRatio = 1.0f;
-		const float flLerpAmount = ConVarStorage::cl_interp->GetFloat();
+		const float flLerpAmount = ConVarStorage::cl_interp()->GetFloat();
 
-		const float min = ConVarStorage::sv_client_min_interp_ratio->GetFloat();
+		const float min = ConVarStorage::sv_client_min_interp_ratio()->GetFloat();
 		if (min != -1) { // They forgot to check for max != -1, didn't they?
-			flLerpRatio = std::clamp(flLerpRatio, min, ConVarStorage::sv_client_max_interp_ratio->GetFloat());
+			flLerpRatio = std::clamp(flLerpRatio, min, ConVarStorage::sv_client_max_interp_ratio()->GetFloat());
 		}
 		return std::max(flLerpAmount, flLerpRatio / flUpdateRateValue);
 	} else {
@@ -69,7 +69,7 @@ bool IsTickValid(Tick tick)
 
 	correct += m_fLerpTime;
 
-	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag->GetFloat() * scale);
+	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag()->GetFloat() * scale);
 
 	const float flTargetTime = TICKS_TO_TIME(tick.tickCount) - m_fLerpTime;
 
@@ -81,7 +81,7 @@ bool IsTickValid(Tick tick)
 float CalculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, const Vector& b)
 {
 	Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), b);
-	requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale->GetFloat();
+	requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat();
 	requiredView -= viewangles;
 	requiredView.Wrap();
 
@@ -119,7 +119,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 	std::erase_if(ticks, [&](const auto& pair) {
 		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
-		if (!player || !player->IsAlive() || player->GetDormant() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
+		if (!player || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			return true;
 		}
 
@@ -214,7 +214,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 
 void Features::Semirage::Backtrack::SetupGUI()
 {
-	if (!ConVarStorage::cl_lagcompensation->GetBool() || !ConVarStorage::sv_unlag->GetBool())
+	if (!ConVarStorage::cl_lagcompensation()->GetBool() || !ConVarStorage::sv_unlag()->GetBool())
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: Judging by convars, lag compensation is disabled."));
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, xorstr_("%.2f"));
@@ -223,7 +223,7 @@ void Features::Semirage::Backtrack::SetupGUI()
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"), (int) (ConVarStorage::sv_maxunlag->GetFloat() * scale * 1000 /*s to ms*/));
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"), (int) (ConVarStorage::sv_maxunlag()->GetFloat() * scale * 1000 /*s to ms*/));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)

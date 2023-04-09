@@ -6,7 +6,7 @@
 
 namespace Hooks::CreateMove {
 	inline Hook* hook;
-	inline CUserCmd* lastCmd;
+	inline CUserCmd lastCmd;
 
 	void Hook();
 	void Unhook();

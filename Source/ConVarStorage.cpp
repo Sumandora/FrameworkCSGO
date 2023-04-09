@@ -1,36 +1,46 @@
 #include "ConVarStorage.hpp"
 
-#include "xorstr.hpp"
-
 #include "Interfaces.hpp"
 
-void ConVarStorage::FindAll()
-{
-	weapon_recoil_scale = Interfaces::icvar->FindVar(xorstr_("weapon_recoil_scale"));
-	mp_teammates_are_enemies = Interfaces::icvar->FindVar(xorstr_("mp_teammates_are_enemies"));
+#define INIT_LAZY_CONVAR(name)                                   \
+	ConVar* ConVarStorage::name()                                \
+	{                                                            \
+		static ConVar* convar = nullptr;                         \
+		if (!convar) {                                           \
+			convar = Interfaces::icvar->FindVar(xorstr_(#name)); \
+		}                                                        \
+		return convar;                                           \
+	}
 
-	game_type = Interfaces::icvar->FindVar(xorstr_("game_type"));
-	game_mode = Interfaces::icvar->FindVar(xorstr_("game_mode"));
-	sv_skirmish_id = Interfaces::icvar->FindVar(xorstr_("sv_skirmish_id"));
+// Combat
+INIT_LAZY_CONVAR(weapon_recoil_scale)
+INIT_LAZY_CONVAR(mp_teammates_are_enemies)
 
-	cl_pitchup = Interfaces::icvar->FindVar(xorstr_("cl_pitchup"));
-	cl_pitchdown = Interfaces::icvar->FindVar(xorstr_("cl_pitchdown"));
+// Gamemode
+INIT_LAZY_CONVAR(game_type)
+INIT_LAZY_CONVAR(game_mode)
+INIT_LAZY_CONVAR(sv_skirmish_id)
 
-	cl_lagcompensation = Interfaces::icvar->FindVar(xorstr_("cl_lagcompensation"));
+// Pitch
+INIT_LAZY_CONVAR(cl_pitchup)
+INIT_LAZY_CONVAR(cl_pitchdown)
 
-	sv_unlag = Interfaces::icvar->FindVar(xorstr_("sv_unlag"));
-	sv_maxunlag = Interfaces::icvar->FindVar(xorstr_("sv_maxunlag"));
+// Lag Compensation
+INIT_LAZY_CONVAR(cl_lagcompensation)
+// Unlag
+INIT_LAZY_CONVAR(sv_unlag)
+INIT_LAZY_CONVAR(sv_maxunlag)
+// Lerping
+INIT_LAZY_CONVAR(cl_updaterate)
+INIT_LAZY_CONVAR(sv_minupdaterate)
+INIT_LAZY_CONVAR(sv_maxupdaterate)
+INIT_LAZY_CONVAR(cl_interpolate)
+INIT_LAZY_CONVAR(cl_interp_ratio)
+INIT_LAZY_CONVAR(cl_interp)
+INIT_LAZY_CONVAR(sv_client_min_interp_ratio)
+INIT_LAZY_CONVAR(sv_client_max_interp_ratio)
 
-	cl_updaterate = Interfaces::icvar->FindVar(xorstr_("cl_updaterate"));
-	sv_minupdaterate = Interfaces::icvar->FindVar(xorstr_("sv_minupdaterate"));
-	sv_maxupdaterate = Interfaces::icvar->FindVar(xorstr_("sv_maxupdaterate"));
-	cl_interpolate = Interfaces::icvar->FindVar(xorstr_("cl_interpolate"));
-	cl_interp_ratio = Interfaces::icvar->FindVar(xorstr_("cl_interp_ratio"));
-	cl_interp = Interfaces::icvar->FindVar(xorstr_("cl_interp"));
-	sv_client_min_interp_ratio = Interfaces::icvar->FindVar(xorstr_("sv_client_min_interp_ratio"));
-	sv_client_max_interp_ratio = Interfaces::icvar->FindVar(xorstr_("sv_client_max_interp_ratio"));
-
-	sv_maxspeed = Interfaces::icvar->FindVar(xorstr_("sv_maxspeed"));
-	sv_airaccelerate = Interfaces::icvar->FindVar(xorstr_("sv_airaccelerate"));
-	sv_air_max_wishspeed = Interfaces::icvar->FindVar(xorstr_("sv_air_max_wishspeed"));
-}
+// Movement
+INIT_LAZY_CONVAR(sv_maxspeed)
+INIT_LAZY_CONVAR(sv_airaccelerate)
+INIT_LAZY_CONVAR(sv_air_max_wishspeed)
