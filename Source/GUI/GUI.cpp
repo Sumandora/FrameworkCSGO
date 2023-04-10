@@ -84,6 +84,7 @@ void Gui::SwapWindow(SDL_Window* window)
 	Features::General::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	Features::Semirage::Aimbot::ImGuiRender(ImGui::GetBackgroundDrawList());
+	Features::Semirage::Backtrack::ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	Features::Visuals::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
 	Features::Visuals::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());

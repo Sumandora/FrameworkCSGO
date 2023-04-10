@@ -1,5 +1,5 @@
-#ifndef UTILS_FUNCTIONINVOKER
-#define UTILS_FUNCTIONINVOKER
+#ifndef UTILS_PLATFORM_FUNCTIONINVOKER
+#define UTILS_PLATFORM_FUNCTIONINVOKER
 
 #include "../../Memory.hpp"
 #include "ReturnAddr/ReturnAddr.hpp"
