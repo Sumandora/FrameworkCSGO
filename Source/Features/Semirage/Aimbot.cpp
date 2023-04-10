@@ -97,7 +97,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
 	Vector viewAngles;
-	if (weaponConfig->silent && wasFaked)
+	if (weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
 		viewAngles = Hooks::CreateMove::lastCmd.viewangles;
 	else
 		viewAngles = Vector(cmd->viewangles);
@@ -181,8 +181,10 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		return false;
 	}
 
-	bestRotation.x *= weaponConfig->verticalAimSpeed;
-	bestRotation.y *= weaponConfig->horizontalAimSpeed;
+	if(weaponConfig->smoothOut) {
+		bestRotation.x *= weaponConfig->verticalAimSpeed;
+		bestRotation.y *= weaponConfig->horizontalAimSpeed;
+	}
 
 	cmd->viewangles = viewAngles + bestRotation;
 	cmd->viewangles.Wrap();
@@ -202,7 +204,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 	if (!weaponConfig)
 		return;
 
-	auto displaySize = ImGui::GetIO().DisplaySize;
+	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	ImVec2 center(displaySize.x / 2.0f, displaySize.y / 2.0f);
 
 	if (fovCircle) {

@@ -1,6 +1,8 @@
 #include <sys/stat.h>
 #include <thread>
 
+#include "xorstr.hpp"
+
 #include "GUI/GUI.hpp"
 #include "Hooks/Hooks.hpp"
 #include "Serialization/Serialization.hpp"
@@ -8,8 +10,6 @@
 #include "Interfaces.hpp"
 #include "Memory.hpp"
 #include "Netvars.hpp"
-
-#include "xorstr.hpp"
 
 #include "Features/General.hpp"
 

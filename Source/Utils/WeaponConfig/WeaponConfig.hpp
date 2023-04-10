@@ -1,5 +1,5 @@
-#ifndef UTILS_WEAPONCONFIGS
-#define UTILS_WEAPONCONFIGS
+#ifndef UTILS_WEAPONCONFIG
+#define UTILS_WEAPONCONFIG
 
 #include "../../GUI/Elements/Popup.hpp"
 #include "../../GUI/ImGuiMacros.hpp"

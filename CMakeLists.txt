@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
 project(FrameworkCSGO)
 
-option(ENABLE_LUA "Enables lua support" ON)
-
 set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -march=native -mtune=native -Wno-return-type -ggdb -DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Oz -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -march=native -mtune=native -Wno-return-type -ggdb --no-gnu-unique -DDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Oz -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti --no-gnu-unique")
 
 set(CMAKE_SKIP_RPATH ON)
 
@@ -17,7 +15,7 @@ file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library(FrameworkCSGO SHARED ${SOURCE_FILES})
-target_link_libraries(FrameworkCSGO dl SDL2 GL luajit-5.1)
+target_link_libraries(FrameworkCSGO dl SDL2 GL)
 
 # Setup Framework
 target_include_directories(FrameworkCSGO PUBLIC Dependencies/Framework/Source/Framework)

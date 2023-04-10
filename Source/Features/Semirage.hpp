@@ -19,6 +19,7 @@ namespace Features::Semirage {
 	namespace Backtrack {
 		void CreateMove(CUserCmd* cmd);
 		void FrameStageNotify();
+		void ImGuiRender(ImDrawList* drawList);
 
 		// GUI
 		void SetupGUI();

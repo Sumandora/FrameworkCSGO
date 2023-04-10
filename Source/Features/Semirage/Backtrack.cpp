@@ -16,10 +16,14 @@
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
+#include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../Visuals.hpp"
+
 static bool enabled = false;
 static float scale = 1.0f;
 static bool accountForOutgoingPing = false;
 static bool friendlyFire = false;
+static bool visualize = false;
 
 #define TIME_TO_TICKS(dt) ((int)(0.5f + (float)(dt) / Memory::globalVars->interval_per_tick))
 #define TICKS_TO_TIME(t) (Memory::globalVars->interval_per_tick * (t))
@@ -28,7 +32,7 @@ struct Tick {
 	float simulationTime {};
 	int tickCount {};
 	Vector origin;
-	Matrix3x4* boneMatrix;
+	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 };
 
 float CalculateLerpTime()
@@ -53,7 +57,7 @@ float CalculateLerpTime()
 	}
 }
 
-bool IsTickValid(Tick tick)
+bool IsTickValid(const Tick& tick)
 {
 	// https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/server/player_lagcompensation.cpp#L246
 	float correct = 0.0f;
@@ -99,6 +103,9 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (!localPlayer)
 		return;
 
+	if (!IsParticipatingTeam(*localPlayer->Team()))
+		return;
+
 	auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 
 	if (!weapon)
@@ -106,10 +113,8 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (*weapon->NextPrimaryAttack() > Memory::globalVars->curtime || *localPlayer->WaitForNoAttack()) // TODO Rebuild those https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/cstrike15/weapon_csbase.cpp#L990
 		return;
 
-	bool knife = IsKnife(*weapon->WeaponDefinitionIndex()); // TODO Support for taser
-
-	if (!IsParticipatingTeam(*localPlayer->Team()))
-		return;
+	WeaponID defIndex = *weapon->WeaponDefinitionIndex();
+	bool hasLimitedDistance = IsKnife(defIndex);
 
 	if (!(cmd->buttons & IN_ATTACK))
 		return;
@@ -131,21 +136,21 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		Matrix3x4* boneMatrix = player->SetupBones();
 
 		float currentDistance;
-		if(!knife)
+		if(!hasLimitedDistance)
 			currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
 		else
 			currentDistance = (*localPlayer->Origin() - *player->Origin()).Length();
 
 #ifdef __clang__
-		for (unsigned int index = records.size(); index > 0; index--) {
+		for (unsigned int index = records.size() - 1; index >= 0; index--) {
 			auto& tick = records[index];
 #else
 		for (auto& tick : std::ranges::views::reverse(records)) {
 #endif
 			float delta;
-			if(!knife)
+			if(!hasLimitedDistance)
 				delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
-			else // If we are holding a knife search for the closest tick
+			else // If we are holding a hasLimitedDistance search for the closest tick
 				delta = (*localPlayer->Origin() - tick.origin).Length();
 
 			if (currentDistance > delta && bestDistance > delta) {
@@ -156,7 +161,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		return false;
 	});
 
-	if (tickCount > 0 && cmd->tick_count != tickCount && (knife || bestDistance < 5.0f)) {
+	if (tickCount > 0 && cmd->tick_count != tickCount && (hasLimitedDistance || bestDistance < 5.0f)) {
 		Features::General::EventLog::CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - tickCount);
 		cmd->tick_count = tickCount;
 	}
@@ -206,9 +211,27 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
 		tick.origin = *player->Origin();
-		tick.boneMatrix = player->SetupBones();
+		memcpy(tick.boneMatrix, player->SetupBones(), sizeof(Matrix3x4[MAXSTUDIOBONES]));
 
 		ticks[i].push_back(tick);
+	}
+}
+
+
+void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
+{
+	if(!enabled || !visualize)
+		return;
+
+	for (const auto& pair : ticks) {
+		for (const auto& tick : pair.second) {
+			ImVec2 screenOrigin;
+			Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, tick.origin, screenOrigin);
+			drawList->AddCircleFilled(screenOrigin, 5.0f, ImGuiColors::white);
+			ImVec2 screenHead;
+			Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, tick.boneMatrix[8].Origin(), screenHead);
+			drawList->AddCircleFilled(screenHead, 5.0f, ImGuiColors::red);
+		}
 	}
 }
 
@@ -220,6 +243,7 @@ void Features::Semirage::Backtrack::SetupGUI()
 	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, xorstr_("%.2f"));
 	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
+	ImGui::Checkbox(xorstr_("Visualize"), &visualize);
 
 	ImGui::Separator();
 
@@ -231,4 +255,5 @@ SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Scale"), scale)
 SERIALIZED_TYPE(xorstr_("Account for outgoing ping"), accountForOutgoingPing)
 SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
+SERIALIZED_TYPE(xorstr_("Visualize"), visualize)
 END_SERIALIZED_STRUCT
