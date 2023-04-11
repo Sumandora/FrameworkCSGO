@@ -14,7 +14,6 @@
 #include "Features/General.hpp"
 
 // TODO Clantag
-// TODO Offscreen ESP
 // TODO Force Crosshair
 // TODO Radar
 
