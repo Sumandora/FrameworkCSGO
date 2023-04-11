@@ -36,7 +36,9 @@ jobs:
 
       - name: Distro name for artifact
         id: distro_name
-        run: echo "name=$(lsb-release -i -s)" >> "$GITHUB_OUTPUT"
+        run: |
+          . /etc/os-release
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Upload artifacts
