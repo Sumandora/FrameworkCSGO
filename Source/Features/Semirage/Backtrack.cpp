@@ -134,6 +134,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		std::vector<Tick> records = pair.second;
 
 		Matrix3x4* boneMatrix = player->SetupBones();
+		// TODO TraceRay for tick selection
 
 		float currentDistance;
 		if(!hasLimitedDistance)

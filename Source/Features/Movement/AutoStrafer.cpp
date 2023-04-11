@@ -107,7 +107,12 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		float change = std::remainderf(newYaw - oldYaw, 360.0f);
 		if (!onlyWhenIdle || (cmd->sidemove == 0.0f && cmd->forwardmove == 0.0f)) {
 			cmd->forwardmove = 0.0f;
-			cmd->sidemove = change < 0.0 ? 450.0f : -450.0f;
+			if(change < 0.0)
+				cmd->sidemove = 450.0f;
+			else if(change > 0.0)
+				cmd->sidemove = -450.0f;
+			else
+				cmd->sidemove = 0;
 			AdjustButtons(cmd);
 		}
 	}

@@ -36,7 +36,7 @@ namespace Serialization {
 
 #define BEGIN_SERIALIZED_STRUCT(functionName)                                                      \
 	void functionName(Serialization::Serializer serializer, Direction direction, const char* name) \
-	{                                                                                             \
+	{                                                                                              \
 		serializer.SetSection(name);
 
 #define SERIALIZED_TYPE(name, variable) \
