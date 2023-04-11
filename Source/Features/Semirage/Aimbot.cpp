@@ -66,7 +66,7 @@ static float radius = 5.0f;
 
 bool wasFaked = false;
 
-//TODO Rename/Rewrite
+// TODO Rename/Rewrite
 SemirageAimbotWeaponConfig* GetWeaponConfig()
 {
 	if (!enabled || !Interfaces::engine->IsInGame())
@@ -181,7 +181,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		return false;
 	}
 
-	if(weaponConfig->smoothOut) {
+	if (weaponConfig->smoothOut) {
 		bestRotation.x *= weaponConfig->verticalAimSpeed;
 		bestRotation.y *= weaponConfig->horizontalAimSpeed;
 	}
@@ -235,7 +235,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
 
 		ImVec2 screenspaceView;
-		if(Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
+		if (Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
 			drawList->AddCircleFilled(screenspaceView, radius, viewColor);
 	}
 }

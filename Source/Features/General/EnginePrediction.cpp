@@ -20,7 +20,7 @@ MoveType Features::General::EnginePrediction::prePredictionMoveType = MOVETYPE_N
 
 void Features::General::EnginePrediction::ImGuiWarning()
 {
-	if(!enabled)
+	if (!enabled)
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: This feature expects engine prediction to be enabled"));
 }
 
@@ -34,7 +34,7 @@ void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	if(!localPlayer || !localPlayer->IsAlive())
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	prePredictionFlags = *localPlayer->Flags();
@@ -56,7 +56,7 @@ void Features::General::EnginePrediction::EndPrediction()
 
 	Utils::EndPrediction();
 
-	if(forceResetVelocityModifier) // I'm curious why people on UC seem to have so many problems figuring this out... Does this have some major downside, which I haven't noticed yet?
+	if (forceResetVelocityModifier) // I'm curious why people on UC seem to have so many problems figuring this out... Does this have some major downside, which I haven't noticed yet?
 		*GameCache::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;
 }
 

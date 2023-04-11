@@ -40,7 +40,8 @@ public:
 	NETVAR_FUNCTION(unsigned int, TickBase, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_nTickBase"))
 
 	NETVAR_FUNCTION(float, FlashMaxAlpha, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_flFlashMaxAlpha"))
-	inline float GetFlashAlpha() {
+	inline float GetFlashAlpha()
+	{
 		return *reinterpret_cast<float*>(reinterpret_cast<char*>(FlashMaxAlpha()) - 0x8);
 	}
 

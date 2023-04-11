@@ -28,7 +28,7 @@ void Gui::Create()
 
 	const float fontSize = 24.0f;
 	// Might not work on certain distros/configurations
-	if(!io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize))
+	if (!io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize))
 		io.Fonts->AddFontDefault();
 
 	io.IniFilename = nullptr;

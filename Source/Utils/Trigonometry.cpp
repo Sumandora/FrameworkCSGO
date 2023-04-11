@@ -3,33 +3,30 @@
 #include <cmath>
 
 // https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1027
-void Utils::AngleVectors(Vector angles, Vector *forward, Vector *right, Vector *up)
+void Utils::AngleVectors(Vector angles, Vector* forward, Vector* right, Vector* up)
 {
 	float sr, sp, sy, cr, cp, cy;
 
-	sincosf( DEG2RAD( angles[YAW] ), &sy, &cy );
-	sincosf( DEG2RAD( angles[PITCH] ), &sp, &cp );
-	sincosf( DEG2RAD( angles[ROLL] ), &sr, &cr );
+	sincosf(DEG2RAD(angles[YAW]), &sy, &cy);
+	sincosf(DEG2RAD(angles[PITCH]), &sp, &cp);
+	sincosf(DEG2RAD(angles[ROLL]), &sr, &cr);
 
-	if (forward)
-	{
-		forward->x = cp*cy;
-		forward->y = cp*sy;
+	if (forward) {
+		forward->x = cp * cy;
+		forward->y = cp * sy;
 		forward->z = -sp;
 	}
 
-	if (right)
-	{
-		right->x = (-1*sr*sp*cy+-1*cr*-sy);
-		right->y = (-1*sr*sp*sy+-1*cr*cy);
-		right->z = -1*sr*cp;
+	if (right) {
+		right->x = (-1 * sr * sp * cy + -1 * cr * -sy);
+		right->y = (-1 * sr * sp * sy + -1 * cr * cy);
+		right->z = -1 * sr * cp;
 	}
 
-	if (up)
-	{
-		up->x = (cr*sp*cy+-sr*-sy);
-		up->y = (cr*sp*sy+-sr*cy);
-		up->z = cr*cp;
+	if (up) {
+		up->x = (cr * sp * cy + -sr * -sy);
+		up->y = (cr * sp * sy + -sr * cy);
+		up->z = cr * cp;
 	}
 }
 

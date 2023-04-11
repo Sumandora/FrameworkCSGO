@@ -29,7 +29,7 @@ void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
-	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+	if (localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
 	const int flags = *localPlayer->Flags();

@@ -36,7 +36,7 @@ static BoxNameSetting dzLootCrates;
 static BoxNameSetting dzAmmoBoxes;
 static BoxNameSetting dzSentries;
 static BoxNameSetting other;
-//TODO Drone ESP
+// TODO Drone ESP
 
 static std::map<int, bool> visibilityCache;
 
@@ -56,7 +56,8 @@ bool Features::Visuals::Esp::WorldToScreen(Matrix4x4& matrix, const Vector& worl
 	return true;
 }
 
-bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer) {
+bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
+{
 	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
 
 	const Vector playerEye = localPlayer->GetEyePosition();
@@ -83,7 +84,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* pl
 		return &settings->visible; // Don't even have to raytrace for that.
 
 	bool visible;
-	if(cacheVisibilityState)
+	if (cacheVisibilityState)
 		visible = visibilityCache[player->entindex()];
 	else
 		visible = IsVisible(localPlayer, player);
@@ -103,7 +104,7 @@ void Features::Visuals::Esp::UpdateVisibility()
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if(!localPlayer)
+	if (!localPlayer)
 		return;
 
 	// The first object is always the WorldObj
@@ -125,16 +126,16 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if(!localPlayer)
+	if (!localPlayer)
 		return;
 
 	Vector viewangles;
-	if(outOfView) { // We don't need the viewangles otherwise
+	if (outOfView) { // We don't need the viewangles otherwise
 		Interfaces::engine->GetViewAngles(&viewangles);
 	}
 
 	CBaseEntity* spectatorEntity = nullptr;
-	if(*localPlayer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && localPlayer->ObserverTarget()) {
+	if (*localPlayer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && localPlayer->ObserverTarget()) {
 		spectatorEntity = Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ObserverTarget());
 	}
 
@@ -195,25 +196,23 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 				rectangle.w = point2D.y;
 		}
 
-		if(outOfView && !visible) {
+		if (outOfView && !visible) {
 			Vector delta = *entity->Origin() - *localPlayer->Origin();
-			float angle = (float) DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
+			float angle = (float)DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
 
 			ImVec2 display = ImGui::GetIO().DisplaySize;
 			ImVec2 direction(cosf(angle), sinf(angle));
 
 			ImVec2 screenPosition(
-				(float) display.x / 2.0f + direction.x * outOfViewDistance,
-				(float) display.y / 2.0f + direction.y * outOfViewDistance
-				);
+				(float)display.x / 2.0f + direction.x * outOfViewDistance,
+				(float)display.y / 2.0f + direction.y * outOfViewDistance);
 
 			rectangle = ImVec4(
 				screenPosition.x - outOfViewSize,
 				screenPosition.y - outOfViewSize,
 
 				screenPosition.x + outOfViewSize,
-				screenPosition.y + outOfViewSize
-				);
+				screenPosition.y + outOfViewSize);
 
 			visible = true; // We just made them visible ^^
 		}

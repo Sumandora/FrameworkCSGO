@@ -209,17 +209,19 @@ static std::map<WeaponID, const char*> weaponLocalization {
 
 inline const char* LocalizeWeaponID(WeaponID weaponID)
 {
-	if(!weaponLocalization.contains(weaponID))
+	if (!weaponLocalization.contains(weaponID))
 		return xorstr_("Invalid weapon ID");
 	else
 		return weaponLocalization[weaponID];
 }
 
-inline bool IsFirearm(WeaponID weaponID) {
+inline bool IsFirearm(WeaponID weaponID)
+{
 	return ((weaponID >= WeaponID::WEAPON_DEAGLE && weaponID <= WeaponID::WEAPON_SSG08) || (weaponID >= WeaponID::WEAPON_M4A1_SILENCER && weaponID <= WeaponID::WEAPON_REVOLVER)) && weaponID != WeaponID::WEAPON_TASER /* Technically considered a firearm, but it behaves fundamentally differently */ && weaponID != WeaponID::WEAPON_ZONE_REPULSOR;
 }
 
-inline bool IsKnife(WeaponID weaponID) {
+inline bool IsKnife(WeaponID weaponID)
+{
 	return (weaponID >= WeaponID::WEAPON_KNIFEGG && weaponID <= WeaponID::WEAPON_KNIFE) || weaponID == WeaponID::WEAPON_KNIFE_T || weaponID == WeaponID::WEAPON_KNIFE_GHOST || (weaponID >= WeaponID::WEAPON_KNIFE_CSS && weaponID <= WeaponID::WEAPON_KNIFE_SKELETON);
 }
 

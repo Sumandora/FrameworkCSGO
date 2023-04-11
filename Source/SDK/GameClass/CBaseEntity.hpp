@@ -5,10 +5,10 @@
 #include "VirtualMethod.hpp"
 #include "xorstr.hpp"
 
+#include "../Definitions/Bones.hpp"
 #include "../Math/Matrix3x4.hpp"
 #include "../Netvars/ClientClass.hpp"
 #include "../TeamID.hpp"
-#include "../Definitions/Bones.hpp"
 
 #include "../../Netvars.hpp"
 
@@ -29,7 +29,8 @@ public:
 	NETVAR_FUNCTION(unsigned char, RenderMode, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_nRenderMode"))
 
 	// MoveType used to be a netvar but got removed, RenderMode is still there.
-	unsigned char GetMoveType() {
+	unsigned char GetMoveType()
+	{
 		return *(RenderMode() + 1);
 	}
 
@@ -54,12 +55,12 @@ public:
 		static int lastFrameCount;
 
 		int currFrameCount = Memory::globalVars->framecount;
-		if(currFrameCount != lastFrameCount) {
+		if (currFrameCount != lastFrameCount) {
 			cache.clear();
 			lastFrameCount = currFrameCount;
 		}
 
-		if(!cache.contains(this))
+		if (!cache.contains(this))
 			SetupBones(cache[this], MAXSTUDIOBONES, BONE_USED_BY_HITBOX, Memory::globalVars->curtime);
 
 		return cache[this];

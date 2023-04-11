@@ -19,7 +19,7 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 	if (!enabled)
 		return;
 
-	if(fontScale <= 0.0f)
+	if (fontScale <= 0.0f)
 		return;
 
 	// Hack

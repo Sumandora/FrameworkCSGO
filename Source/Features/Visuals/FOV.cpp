@@ -1,12 +1,12 @@
 #include "../Visuals.hpp"
 
 #include "imgui.h"
-#include "../../GUI/Elements/HelpMarker.hpp"
 #include "xorstr.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
+#include "../../GUI/Elements/HelpMarker.hpp"
 
 #include <vector>
 
@@ -42,7 +42,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 	if (forceFOV && (!ignoreScoped || !*viewer->Scoped()))
 		pSetup->fov = fov;
 
-	if(viewer != localPlayer)
+	if (viewer != localPlayer)
 		return; // View model movement doesn't work when spectating (flickering)
 
 	if (forceViewModel) {
