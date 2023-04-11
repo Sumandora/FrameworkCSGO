@@ -1,16 +1,14 @@
 name: Build
-on:
-  pull_request: { }
-  push:
-    branches:
-      - master
+
+on: [push, pull_request]
+
 jobs:
   build:
     strategy:
       matrix:
         distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest"]
       fail-fast: false
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     container: ${{ matrix.distro }}
     steps:
       - if: matrix.distro == 'ubuntu:latest'
@@ -28,15 +26,17 @@ jobs:
         run: |
           dnf update -y
           dnf install -y patchelf gdb git cmake make gcc-c++ SDL2-devel
+
       - uses: actions/checkout@v3
         with:
           submodules: true
+
       - name: Build
-        run: |
-          if ./Build.sh; then
-            echo "Build succeeded"
-          else
-            echo "Build failed"
-            cat build.log
-            exit 1
-          fi
+        run: ./Build.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            Build/*.so
+            build.log
