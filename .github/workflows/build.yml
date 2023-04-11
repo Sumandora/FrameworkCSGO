@@ -22,7 +22,7 @@ jobs:
         name: Setup dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm base-devel cmake gdb git sdl2 patchelf glfw-x11
+          pacman -S --noconfirm base-devel cmake gdb git sdl2 patchelf
       - if: matrix.distro == 'fedora:latest'
         name: Setup dependencies
         run: |
