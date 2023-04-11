@@ -6,8 +6,8 @@
 #include "../../GUI/ImGuiColors.hpp"
 
 #include <chrono>
-#include <vector>
 #include <cmath>
+#include <vector>
 
 static bool enabled = true;
 static int duration = 5000;

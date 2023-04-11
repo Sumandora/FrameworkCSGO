@@ -31,7 +31,7 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
-	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+	if (localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
 	if (performing) {

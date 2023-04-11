@@ -155,7 +155,7 @@ void Interfaces::SetupGUI()
 						ImGui::Text(xorstr_("Real address: %p"), cachedInterface.realAddress);
 					} else {
 						if (ImGui::Button(xorstr_("Invoke create function"))) {
-							cachedInterface.realAddress = ((void*(*)())(cachedInterface.reg->m_CreateFn))();
+							cachedInterface.realAddress = ((void* (*)())(cachedInterface.reg->m_CreateFn))();
 						}
 						ImGui::HelpMarker(xorstr_("Warning: This is considered unsafe"));
 					}

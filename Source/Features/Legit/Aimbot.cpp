@@ -51,14 +51,14 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		return;
 
 	auto* combatWeapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
-	if(!combatWeapon)
+	if (!combatWeapon)
 		return;
 
-	if(!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
+	if (!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
 		return;
 
 	LegitAimbotWeaponConfig* LegitAimbotWeaponConfig = weaponConfigurator.getConfig(*combatWeapon->WeaponDefinitionIndex());
-	if(!LegitAimbotWeaponConfig)
+	if (!LegitAimbotWeaponConfig)
 		return;
 
 	const Vector playerEye = localPlayer->GetEyePosition();
@@ -127,7 +127,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	event->motion.yrel += std::clamp((int)goal.y, -LegitAimbotWeaponConfig->maximalInfluence, LegitAimbotWeaponConfig->maximalInfluence);
 }
 
-void WeaponGUI(LegitAimbotWeaponConfig& LegitAimbotWeaponConfig) {
+void WeaponGUI(LegitAimbotWeaponConfig& LegitAimbotWeaponConfig)
+{
 	ImGui::SliderFloat(xorstr_("FOV"), &LegitAimbotWeaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
 	ImGui::SliderFloat(xorstr_("Smoothness"), &LegitAimbotWeaponConfig.smoothness, 1.0f, 5.0f, xorstr_("%.2f"));
 	ImGui::SliderInt(xorstr_("Maximal influence"), &LegitAimbotWeaponConfig.maximalInfluence, 1, 5);

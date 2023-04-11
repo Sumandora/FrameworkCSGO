@@ -14,7 +14,7 @@
 #include "SDK/Netvars/ClientClass.hpp"
 #include "SDK/Netvars/RecvTable.hpp"
 
-static std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars{};
+static std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars {};
 
 void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
 {

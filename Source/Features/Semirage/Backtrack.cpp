@@ -137,7 +137,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		// TODO TraceRay for tick selection
 
 		float currentDistance;
-		if(!hasLimitedDistance)
+		if (!hasLimitedDistance)
 			currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
 		else
 			currentDistance = (*localPlayer->Origin() - *player->Origin()).Length();
@@ -149,7 +149,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		for (auto& tick : std::ranges::views::reverse(records)) {
 #endif
 			float delta;
-			if(!hasLimitedDistance)
+			if (!hasLimitedDistance)
 				delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
 			else // If we are holding a hasLimitedDistance search for the closest tick
 				delta = (*localPlayer->Origin() - tick.origin).Length();
@@ -218,10 +218,9 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 	}
 }
 
-
 void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
 {
-	if(!enabled || !visualize)
+	if (!enabled || !visualize)
 		return;
 
 	for (const auto& pair : ticks) {
@@ -248,7 +247,7 @@ void Features::Semirage::Backtrack::SetupGUI()
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"), (int) (ConVarStorage::sv_maxunlag()->GetFloat() * scale * 1000 /*s to ms*/));
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"), (int)(ConVarStorage::sv_maxunlag()->GetFloat() * scale * 1000 /*s to ms*/));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)

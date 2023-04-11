@@ -22,7 +22,7 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
-	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+	if (localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
 	const int flags = *localPlayer->Flags();

@@ -7,9 +7,10 @@
 
 class CViewSetup {
 	char pad[184];
+
 public:
 	float fov;
-	float fovViewmodel; // Ineffective
+	float fovViewmodel;
 	Vector origin;
 	Vector angles;
 	float zNear;

@@ -9,8 +9,8 @@
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../GameCache.hpp"
-#include "../../Utils/Trigonometry.hpp"
 #include "../../Hooks/CreateMove/CreateMoveHook.hpp"
+#include "../../Utils/Trigonometry.hpp"
 
 #include <optional>
 
@@ -50,7 +50,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
-	if(localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+	if (localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
 	if (*localPlayer->Flags() & FL_ONGROUND && (!Features::General::EnginePrediction::enabled || Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND)) {
@@ -82,7 +82,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		float wishDirection;
 		if (cmd->forwardmove != 0.0f || cmd->sidemove != 0.0f)
 			wishDirection = atan2f(-cmd->sidemove, cmd->forwardmove);
-		else if(lastWishDirection.has_value())
+		else if (lastWishDirection.has_value())
 			wishDirection = lastWishDirection.value(); // If we release all keys go to the last known direction
 		else
 			return;
@@ -107,9 +107,9 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		float change = std::remainderf(newYaw - oldYaw, 360.0f);
 		if (!onlyWhenIdle || (cmd->sidemove == 0.0f && cmd->forwardmove == 0.0f)) {
 			cmd->forwardmove = 0.0f;
-			if(change < 0.0)
+			if (change < 0.0)
 				cmd->sidemove = 450.0f;
-			else if(change > 0.0)
+			else if (change > 0.0)
 				cmd->sidemove = -450.0f;
 			else
 				cmd->sidemove = 0;
@@ -123,9 +123,9 @@ void Features::Movement::AutoStrafer::SetupGUI()
 	Features::General::EnginePrediction::ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Directional"), &directional);
-	if(directional) {
+	if (directional) {
 		ImGui::Checkbox(xorstr_("Allow hard turns"), &allowHardTurns);
-		if(allowHardTurns)
+		if (allowHardTurns)
 			ImGui::SliderFloat(xorstr_("Hard turn threshold"), &hardTurnThreshold, 0.0f, 180.0f, xorstr_("%.2f"));
 	} else {
 		ImGui::Checkbox(xorstr_("Only when idle"), &onlyWhenIdle);

@@ -34,7 +34,7 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 		if (weapon) {
 			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
-				this->weapon.Draw(drawList,rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, LocalizeWeaponID(weaponID));
+				this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, LocalizeWeaponID(weaponID));
 			}
 		}
 	}

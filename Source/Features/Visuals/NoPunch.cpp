@@ -12,30 +12,32 @@ static bool hideAimPunch = false;
 static Vector lastViewPunch;
 static Vector lastAimPunch;
 
-void Features::Visuals::NoPunch::HidePunch() {
+void Features::Visuals::NoPunch::HidePunch()
+{
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if(!localPlayer || !localPlayer->IsAlive())
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
-	if(hideViewPunch)
+	if (hideViewPunch)
 		*localPlayer->ViewPunchAngle() = {};
 
-	if(hideAimPunch)
+	if (hideAimPunch)
 		*localPlayer->AimPunchAngle() = {};
 
 	lastViewPunch = *localPlayer->ViewPunchAngle();
 	lastAimPunch = *localPlayer->AimPunchAngle();
 }
 
-void Features::Visuals::NoPunch::RestorePunch() {
+void Features::Visuals::NoPunch::RestorePunch()
+{
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if(!localPlayer || !localPlayer->IsAlive())
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
-	if(hideViewPunch)
+	if (hideViewPunch)
 		*localPlayer->ViewPunchAngle() = lastViewPunch;
 
-	if(hideAimPunch)
+	if (hideAimPunch)
 		*localPlayer->AimPunchAngle() = lastAimPunch;
 }
 

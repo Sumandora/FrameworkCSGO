@@ -4,3 +4,6 @@ NamespaceIndentation: All
 SortIncludes: CaseInsensitive
 TabWidth: 4
 UseTab: Always
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false

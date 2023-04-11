@@ -35,7 +35,7 @@ Hook::Hook(void* original, void* hook)
 	this->original = original;
 
 	this->len = 0;
-	while(this->len <= FRAMEWORK_NEAR_JMP_LENGTH) {
+	while (this->len <= FRAMEWORK_NEAR_JMP_LENGTH) {
 		this->len += ldisasm(static_cast<char*>(original) + this->len, true);
 	}
 
