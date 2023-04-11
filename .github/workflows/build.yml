@@ -1,0 +1,42 @@
+name: Build
+on:
+  pull_request: { }
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    strategy:
+      matrix:
+        distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest"]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    container: ${{ matrix.distro }}
+    steps:
+      - if: matrix.distro == 'ubuntu:latest'
+        name: Setup dependencies
+        run: |
+          apt-get update
+          apt-get install -y patchelf gdb git cmake make build-essential libsdl2-dev
+      - if: matrix.distro == 'archlinux:latest'
+        name: Setup dependencies
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm base-devel cmake gdb git sdl2 patchelf glfw-x11
+      - if: matrix.distro == 'fedora:latest'
+        name: Setup dependencies
+        run: |
+          dnf update -y
+          dnf install -y patchelf gdb git cmake make gcc-c++ SDL2-devel
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Build
+        run: |
+          if ./Build.sh; then
+            echo "Build succeeded"
+          else
+            echo "Build failed"
+            cat build.log
+            exit 1
+          fi
