@@ -5,15 +5,15 @@ A fully-featured training software for Counter Strike: Global Offensive, made fo
 ### Dependencies
 **Ubuntu / Debian**
 ```bash
-apt-get install cmake g++ gdb git libsdl2-dev zlib1g-dev patchelf libglfw3-dev
+apt-get patchelf gdb git cmake make build-essential libsdl2-dev
 ```
 **Arch Linux**
 ```bash
-pacman -S base-devel cmake gdb git sdl2 patchelf glfw-x11
+pacman -S base-devel cmake gdb git sdl2 patchelf
 ```
 **Fedora**
 ```bash
-dnf install cmake gcc-c++ gdb git libstdc++-static mesa-libGL-devel SDL2-devel zlib-devel libX11-devel patchelf
+dnf install patchelf gdb git cmake make gcc-c++ SDL2-devel
 ```
 **Gentoo**
 ```sh
