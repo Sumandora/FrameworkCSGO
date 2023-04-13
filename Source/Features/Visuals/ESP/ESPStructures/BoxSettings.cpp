@@ -1,9 +1,9 @@
-#include "../../ESPStructure.hpp"
+#include "../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/Popup.hpp"
 
 BoxSettings::BoxSettings()
 	: enabled(false)

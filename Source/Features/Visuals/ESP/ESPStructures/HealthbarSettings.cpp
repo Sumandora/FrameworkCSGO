@@ -1,11 +1,11 @@
-#include "../../ESPStructure.hpp"
+#include "../ESPStructure.hpp"
 
 #include <algorithm>
 
 #include "xorstr.hpp"
 
-#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/Popup.hpp"
 
 HealthbarSettings::HealthbarSettings()
 	: enabled(false)

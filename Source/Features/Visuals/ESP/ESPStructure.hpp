@@ -10,8 +10,6 @@
 #include "../../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../../Serialization/Serializer.hpp"
 
-// Base Types
-
 // TODO Generate the boilerplate for implementations
 class BoxSettings {
 private:
@@ -135,8 +133,6 @@ public:
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
-
-// Combination
 
 class PlayerTeamSettings {
 public:

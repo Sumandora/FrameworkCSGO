@@ -1,13 +1,13 @@
-#include "../../ESPStructure.hpp"
+#include "../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/Popup.hpp"
 
-#include "../../../../../Interfaces.hpp"
+#include "../../../../Interfaces.hpp"
 
-#include "../../../../Visuals.hpp"
+#include "../../../Visuals.hpp"
 
 PlayerStateSettings::PlayerStateSettings()
 	: boxName(BoxNameSetting())
