@@ -23,6 +23,7 @@ static int onKey = 0;
 static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
+static bool considerEveryoneVisibleWhenDead = false;
 static bool cacheVisibilityState = true;
 static bool outOfView = false;
 static float outOfViewSize = 30.0f;
@@ -83,6 +84,9 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* pl
 	if (considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
+	if(considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
+		return &settings->visible;
+
 	bool visible;
 	if (cacheVisibilityState)
 		visible = visibilityCache[player->entindex()];
@@ -97,6 +101,9 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* pl
 
 void Features::Visuals::Esp::UpdateVisibility()
 {
+	if (!cacheVisibilityState)
+		return; // If we are not using the cache, there is no point in generating it.
+
 	if (!enabled || !IsInputDown(onKey, true))
 		return;
 
@@ -319,12 +326,13 @@ void Features::Visuals::Esp::SetupGUI()
 	ImGui::SameLine();
 	ImGui::Checkbox(xorstr_("Out of view"), &outOfView);
 	ImGui::SameLine();
-
 	if (ImGui::Popup(xorstr_("Out of view settings"))) {
 		ImGui::SliderFloat(xorstr_("Size"), &outOfViewSize, 0.0f, 50.0f, xorstr_("%.2f"));
 		ImGui::SliderFloat(xorstr_("Distance"), &outOfViewDistance, 0.0f, 500.0f, xorstr_("%.2f"));
 		ImGui::EndPopup();
 	}
+
+	ImGui::Checkbox(xorstr_("Consider everyone visible when dead"), &considerEveryoneVisibleWhenDead);
 
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
 

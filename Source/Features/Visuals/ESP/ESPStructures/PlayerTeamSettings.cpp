@@ -1,8 +1,8 @@
-#include "../../ESPStructure.hpp"
+#include "../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
 PlayerTeamSettings::PlayerTeamSettings()
 	: visible(PlayerStateSettings())
