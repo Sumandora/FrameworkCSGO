@@ -388,8 +388,11 @@ BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
 SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
+
 SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
 SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
+SERIALIZED_TYPE(xorstr_("Consider everyone visible when dead"), considerEveryoneVisibleWhenDead)
+
 SERIALIZED_TYPE(xorstr_("Cache visibility state"), cacheVisibilityState)
 
 SERIALIZED_TYPE(xorstr_("Out of view"), outOfView)

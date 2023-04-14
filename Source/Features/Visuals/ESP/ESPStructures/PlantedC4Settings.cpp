@@ -15,7 +15,7 @@ PlantedC4Settings::PlantedC4Settings()
 void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const
 {
 	boxName.Draw(drawList, rectangle, xorstr_("Planted C4"));
-	if (!*bomb->Defused() && *bomb->BombTicking()) {
+	if (!*bomb->Defused() && *bomb->BombTicking()) { // TODO Ask GameRules if the bomb is actually planted
 		if (*bomb->BombTime() < Memory::globalVars->curtime)
 			return; // You can't defuse the bomb anymore
 		float middle = rectangle.x + (rectangle.z - rectangle.x) * 0.5f;
