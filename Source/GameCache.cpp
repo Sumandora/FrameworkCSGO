@@ -2,6 +2,7 @@
 #include "Interfaces.hpp"
 
 static CBasePlayer* localPlayer;
+static Vector cameraPosition { 0, 0, 0 };
 
 CBasePlayer* GameCache::GetLocalPlayer()
 {
