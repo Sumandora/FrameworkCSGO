@@ -19,7 +19,7 @@
 #include <vector>
 
 static bool enabled = false;
-static int onKey = 0;
+static int onKey = ImGuiKey_None;
 static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
@@ -263,7 +263,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 					break;
 				}
 				case ClientClassID::CBaseCSGrenadeProjectile:
-					// TODO Seperate
+					// TODO Separate
 					projectiles.Draw(drawList, rectangle, xorstr_("Base grenade"));
 					break;
 				case ClientClassID::CBreachChargeProjectile:

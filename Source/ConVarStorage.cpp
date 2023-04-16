@@ -13,7 +13,6 @@
 	}
 
 // Combat
-INIT_LAZY_CONVAR(weapon_recoil_scale)
 INIT_LAZY_CONVAR(mp_teammates_are_enemies)
 
 // Gamemode

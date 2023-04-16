@@ -65,6 +65,10 @@ public:
 
 		return cache[this];
 	}
+
+	inline Vector GetBonePosition(int boneIndex) {
+		return SetupBones()[boneIndex].Origin();
+	}
 };
 
 #endif

@@ -8,7 +8,6 @@
 
 namespace ConVarStorage {
 	// Combat
-	LAZY_CONVAR(weapon_recoil_scale)
 	LAZY_CONVAR(mp_teammates_are_enemies)
 
 	// Gamemode

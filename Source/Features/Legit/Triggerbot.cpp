@@ -14,9 +14,11 @@
 #include "../../GUI/Elements/Keybind.hpp"
 
 static bool enabled = false;
-static int input = 0;
+static int input = ImGuiKey_None;
 static bool secondaryFireWithR8Revolver = true;
 static bool friendlyFire = false;
+static int maximalFlashAmount = 255;
+static bool dontAimThroughSmoke = false;
 // TODO Delay
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
@@ -29,6 +31,9 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 		return;
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
+		return;
+
+	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
 		return;
 
 	auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
@@ -44,7 +49,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	const Vector playerEye = localPlayer->GetEyePosition();
 	Vector viewangles = cmd->viewangles;
 
-	viewangles += *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat() / 2.0f;
+	viewangles += *localPlayer->AimPunchAngle();
 
 	Vector forward;
 	Utils::AngleVectors(viewangles, &forward);
@@ -54,6 +59,9 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	CTraceFilterEntity filter(localPlayer);
 
 	Trace trace = Utils::TraceRay(playerEye, forward, &filter);
+
+	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1))
+		return;
 
 	CBaseEntity* entity = trace.m_pEnt;
 	if (!entity || !entity->IsPlayer() || entity->GetDormant())
@@ -83,6 +91,8 @@ void Features::Legit::Triggerbot::SetupGUI()
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 	ImGui::Checkbox(xorstr_("Secondary fire with R8 Revolver"), &secondaryFireWithR8Revolver);
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
+	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
+	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer)
@@ -90,4 +100,6 @@ SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Input"), input)
 SERIALIZED_TYPE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver)
 SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
+SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
+SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
 END_SERIALIZED_STRUCT
