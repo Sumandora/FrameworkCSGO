@@ -13,7 +13,6 @@ namespace Features::Visuals {
 		extern PlayerSettings players;
 
 		void UpdateVisibility();
-		void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, CBaseEntity* spectatorEntity, Vector viewangles, Matrix4x4 matrix);
 		void ImGuiRender(ImDrawList* drawList);
 
 		bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition);

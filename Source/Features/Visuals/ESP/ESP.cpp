@@ -12,6 +12,7 @@
 
 #include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
 
+#include "../../../Hooks/OverrideView/OverrideViewHook.hpp"
 #include "../../../Utils/Raytrace.hpp"
 #include "../../../Utils/Trigonometry.hpp"
 
@@ -24,8 +25,8 @@ static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
 static bool considerEveryoneVisibleWhenDead = false;
 static bool cacheVisibilityState = true;
-static bool sortEntitiesByDistance = false;
-static bool alignBoundingBox = false;
+static bool sortEntitiesByDistance = true;
+static bool alignBoundingBox = true;
 static bool outOfView = false;
 static float outOfViewSize = 30.0f;
 static float outOfViewDistance = 300.0f;
@@ -125,18 +126,9 @@ void Features::Visuals::Esp::UpdateVisibility()
 	}
 }
 
-void Features::Visuals::Esp::DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, CBaseEntity* spectatorEntity, Vector viewangles, Matrix4x4 matrix)
-{
-	CCollideable* collideable = entity->Collision();
-
-	if (!collideable)
-		return;
-
-	if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
-		return;
-
-	const Vector min = *entity->Origin() + *collideable->ObbMins();
-	const Vector max = *entity->Origin() + *collideable->ObbMaxs();
+bool CalculateScreenRectangle(Vector origin, CCollideable* collideable, ImVec4& rectangle) {
+	const Vector min = origin + *collideable->ObbMins();
+	const Vector max = origin + *collideable->ObbMaxs();
 
 	const Vector points[] = {
 		// Lower
@@ -151,15 +143,13 @@ void Features::Visuals::Esp::DrawEntity(ImDrawList* drawList, CBaseEntity* entit
 		Vector(min.x, max.y, max.z)
 	};
 
-	ImVec4 rectangle(FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX);
-	bool visible = true;
+	rectangle = { FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX };
 
 	for (const auto& point : points) {
 		ImVec2 point2D;
 
-		if (!WorldToScreen(matrix, point, point2D)) {
-			visible = false;
-			break;
+		if (!Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, point, point2D)) {
+			return false;
 		}
 
 		if (point2D.x < rectangle.x)
@@ -180,8 +170,12 @@ void Features::Visuals::Esp::DrawEntity(ImDrawList* drawList, CBaseEntity* entit
 		rectangle.w = std::round(rectangle.w);
 	}
 
-	if (outOfView && !visible) {
-		Vector delta = *entity->Origin() - *localPlayer->Origin();
+	return true;
+}
+
+bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const Vector& viewangles, ImVec4& rectangle) {
+	if (outOfView) {
+		Vector delta = otherOrigin - localOrigin;
 		float angle = (float)DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
 
 		ImVec2 display = ImGui::GetIO().DisplaySize;
@@ -198,6 +192,25 @@ void Features::Visuals::Esp::DrawEntity(ImDrawList* drawList, CBaseEntity* entit
 			screenPosition.x + outOfViewSize,
 			screenPosition.y + outOfViewSize);
 
+		return true;
+	}
+	return false;
+}
+
+void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, CBaseEntity* spectatorEntity, const Vector& viewangles)
+{
+	CCollideable* collideable = entity->Collision();
+
+	if (!collideable)
+		return;
+
+	if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
+		return;
+
+	ImVec4 rectangle;
+	bool visible = CalculateScreenRectangle(*entity->Origin(), collideable, rectangle);
+
+	if(!visible && HandleOutOfView(*localPlayer->Origin(), *entity->Origin(), viewangles, rectangle)) { // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
 	}
 
@@ -208,21 +221,21 @@ void Features::Visuals::Esp::DrawEntity(ImDrawList* drawList, CBaseEntity* entit
 				return;
 			PlayerStateSettings* settings;
 			if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
-				settings = &players.local;
+				settings = &Features::Visuals::Esp::players.local;
 			else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || !player->IsAlive())) {
 				char name[128];
-				if (players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+				if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 					PlayerInfo info {};
 					Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
 					strcpy(name, info.name);
 				}
-				players.spectators.Draw(drawList, rectangle, name);
+				Features::Visuals::Esp::players.spectators.Draw(drawList, rectangle, name);
 				return;
 			} else {
 				if (!player->IsEnemy(localPlayer))
-					settings = SelectPlayerState(localPlayer, player, &players.teammate);
+					settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.teammate);
 				else
-					settings = SelectPlayerState(localPlayer, player, &players.enemy);
+					settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.enemy);
 			}
 
 			if (settings)
@@ -307,11 +320,6 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		spectatorEntity = Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ObserverTarget());
 	}
 
-	Matrix4x4 matrix = Hooks::FrameStageNotify::worldToScreenMatrix;
-
-	if (!matrix.Base())
-		return;
-
 	std::vector<std::pair<float, CBaseEntity*>> entities;
 
 	// The first object is always the WorldObj
@@ -320,16 +328,16 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (!entity)
 			continue;
 		if (!sortEntitiesByDistance)
-			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles, matrix);
+			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
 		else {
-			float distanceToCamera = (*entity->Origin() - GameCache::cameraPosition).Length();
+			float distanceToCamera = (*entity->Origin() - Hooks::OverrideView::cameraPosition).Length();
 			entities.emplace_back(distanceToCamera, entity);
 		}
 	}
 	if (sortEntitiesByDistance) {
-		std::ranges::sort(entities, std::greater {});
+		std::ranges::sort(entities, std::greater{});
 		for (auto [_, entity] : entities) {
-			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles, matrix);
+			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
 		}
 	}
 }
@@ -428,8 +436,7 @@ SERIALIZED_TYPE(xorstr_("Out of view size"), outOfViewSize)
 SERIALIZED_TYPE(xorstr_("Out of view distance"), outOfViewDistance)
 
 SERIALIZED_TYPE(xorstr_("Sort entities by distance"), sortEntitiesByDistance)
-SERIALIZED_TYPE(xorstr_("Align bounding box"), alignBoundingBox);
-
+SERIALIZED_TYPE(xorstr_("Align bounding box"), alignBoundingBox)
 
 SERIALIZED_STRUCTURE(xorstr_("Players"), players)
 SERIALIZED_STRUCTURE(xorstr_("Weapons"), weapons)

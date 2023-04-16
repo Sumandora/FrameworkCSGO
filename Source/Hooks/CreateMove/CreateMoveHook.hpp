@@ -5,8 +5,8 @@
 #include "../Hooks.hpp"
 
 namespace Hooks::CreateMove {
-	inline Hook* hook;
-	inline CUserCmd lastCmd;
+	inline Hook* hook = nullptr;
+	inline CUserCmd lastCmd{};
 
 	void Hook();
 	void Unhook();

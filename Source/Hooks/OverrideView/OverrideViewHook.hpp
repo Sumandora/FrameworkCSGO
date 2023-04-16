@@ -5,8 +5,9 @@
 #include "../Hooks.hpp"
 
 namespace Hooks::OverrideView {
-	inline Hook* hook;
-	inline CViewSetup lastViewSetup;
+	inline Hook* hook = nullptr;
+	inline CViewSetup lastViewSetup{};
+	inline Vector cameraPosition{};
 
 	void Hook();
 	void Unhook();
