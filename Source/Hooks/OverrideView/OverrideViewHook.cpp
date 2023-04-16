@@ -1,14 +1,14 @@
 #include "OverrideViewHook.hpp"
 
 #include "../../Features/Features.hpp"
-#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
 void OverrideViewHook(void* thisptr, CViewSetup* pSetup)
 {
-	if (Interfaces::engine->IsInGame())
-		GameCache::cameraPosition = pSetup->origin;
 	invokeFunction<void, void*, CViewSetup*>(Hooks::OverrideView::hook->proxy, thisptr, pSetup);
+
+	if (Interfaces::engine->IsInGame())
+		Hooks::OverrideView::cameraPosition = pSetup->origin;
 
 	Features::Visuals::FOV::OverrideView(pSetup);
 
