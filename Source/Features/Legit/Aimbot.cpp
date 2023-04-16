@@ -13,6 +13,7 @@
 #include <cmath>
 
 static bool enabled = false;
+// TODO Input
 
 struct LegitAimbotWeaponConfig {
 	float fov = 3.0f;
@@ -57,7 +58,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
 		return;
 
-	LegitAimbotWeaponConfig* LegitAimbotWeaponConfig = weaponConfigurator.getConfig(*combatWeapon->WeaponDefinitionIndex());
+	LegitAimbotWeaponConfig* LegitAimbotWeaponConfig = weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
 	if (!LegitAimbotWeaponConfig)
 		return;
 
@@ -96,7 +97,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 			continue; // The enemy is behind something...
 
 		Vector rotation = Utils::CalculateView(playerEye, head);
-		rotation -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat();
+		rotation -= *localPlayer->AimPunchAngle() * 2.0f;
 		rotation -= viewAngles;
 		rotation = rotation.Wrap();
 

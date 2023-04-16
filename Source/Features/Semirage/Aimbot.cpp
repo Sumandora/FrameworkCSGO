@@ -19,13 +19,20 @@
 #include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
+#include "../../GUI/Elements/Keybind.hpp"
 #include "../Visuals.hpp"
 
 #include <algorithm>
+
 static bool enabled = false;
+static int input = ImGuiKey_None;
+static bool autoFire = false;
+static bool autoFireOnKey = true;
+// TODO Auto Fire regardless of ray intersection
 
 struct SemirageAimbotWeaponConfig {
-	bool onlyWhenShooting = false; // TODO Separate key
+	bool onlyWhenShooting = false;
+	bool orWhenHoldingInput = true;
 
 	float fov = 3.0f;
 	float fovScaleX = 1.0f;
@@ -64,21 +71,24 @@ static bool showDesyncedView = false;
 static ImColor viewColor = ImGuiColors::red;
 static float radius = 5.0f;
 
-bool wasFaked = false;
+static bool wasFaked = false;
+static SemirageAimbotWeaponConfig* lastWeaponConfig = nullptr;
 
-// TODO Rename/Rewrite
-SemirageAimbotWeaponConfig* GetWeaponConfig()
+CBasePlayer* GetLocalPlayer()
 {
-	if (!enabled || !Interfaces::engine->IsInGame())
-		return nullptr;
-
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+
 	if (!localPlayer || !localPlayer->IsAlive())
 		return nullptr;
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return nullptr;
 
+	return localPlayer;
+}
+
+SemirageAimbotWeaponConfig* GetWeaponConfig(CBasePlayer* localPlayer)
+{
 	auto* combatWeapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 	if (!combatWeapon)
 		return nullptr;
@@ -86,121 +96,285 @@ SemirageAimbotWeaponConfig* GetWeaponConfig()
 	if (!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
 		return nullptr;
 
-	return weaponConfigurator.getConfig(*combatWeapon->WeaponDefinitionIndex());
+	return weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
+}
+
+Vector GetViewAngles(SemirageAimbotWeaponConfig* weaponConfig, const Vector& currentViewAngles)
+{
+	if (weaponConfig && weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
+		return Hooks::CreateMove::lastCmd.viewangles; // TODO Track this
+	else
+		return currentViewAngles;
+}
+
+bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
+{
+	if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
+		return false;
+
+	if (!IsParticipatingTeam(*player->Team()))
+		return false;
+
+	if (!friendlyFire && !player->IsEnemy(localPlayer))
+		return false;
+
+	return true;
+}
+
+bool CanPointBeSeen(CBasePlayer* localPlayer, const Vector& point)
+{
+	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), point, 1))
+		return false;
+
+	CTraceFilterNoEntities filter;
+	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), point, &filter);
+
+	return trace.fraction == 1.0f; // The ray was able to travel to its destination
+}
+
+CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
+{
+	const Vector playerEye = localPlayer->GetEyePosition();
+
+	CBasePlayer* target = nullptr;
+	float bestDistance {};
+
+	// The first object is always the WorldObj
+	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		if (!ShouldAttackPlayer(localPlayer, player))
+			continue;
+
+		Vector head = player->GetBonePosition(8);
+
+		if (!CanPointBeSeen(localPlayer, head))
+			continue;
+
+		Vector viewDelta = (Utils::CalculateView(playerEye, head) - viewAngles).Wrap();
+		float length = viewDelta.Length();
+
+		if (!target || bestDistance > length) {
+			target = player;
+			bestDistance = length;
+		}
+	}
+
+	return target;
+}
+
+bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfig, bool attacking)
+{
+	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
+		return false; // We are flashed - we can't aim now.
+
+	if (weaponConfig->onlyWhenShooting) {
+		if (!attacking) {
+			if (weaponConfig->orWhenHoldingInput) {
+				if (!IsInputDown(input, true))
+					return false;
+			}
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void RotateToOrigin(SemirageAimbotWeaponConfig* weaponConfig, const Vector& currentView, Vector& target)
+{
+	Vector delta = (target - currentView).Wrap();
+	if (delta.Length() < weaponConfig->recombineViews) {
+		// At this point the difference is so small, that it no longer matters
+		wasFaked = false;
+		return;
+	}
+
+	delta.x *= weaponConfig->verticalRotateToOriginSpeed;
+	delta.y *= weaponConfig->horizontalRotateToOriginSpeed;
+
+	target = (currentView + delta).Wrap();
+	wasFaked = true;
+}
+
+Vector SetRotation(SemirageAimbotWeaponConfig* weaponConfig, const Vector& targetView, const Vector& currentView, const Vector& aimPunch, Vector& target)
+{
+	Vector recoilCorrected = targetView;
+
+	if (weaponConfig->controlRecoil) {
+		Vector recoil = aimPunch * 2.0f;
+
+		recoil.x *= weaponConfig->recoilScaleX;
+		recoil.y *= weaponConfig->recoilScaleY;
+
+		recoilCorrected -= recoil;
+	}
+
+	Vector viewDelta = (recoilCorrected - currentView).Wrap();
+
+	if (weaponConfig->smoothOut) {
+		viewDelta.x *= weaponConfig->verticalAimSpeed;
+		viewDelta.y *= weaponConfig->horizontalAimSpeed;
+	}
+
+	target = currentView + viewDelta;
+
+	target.Wrap();
+}
+
+bool AutoFire(CBasePlayer* localPlayer, const Vector& viewangles)
+{
+	Vector forward;
+	Utils::AngleVectors(viewangles + *localPlayer->AimPunchAngle(), &forward);
+
+	CTraceFilterEntity filter(localPlayer);
+	Vector playerEye = localPlayer->GetEyePosition();
+
+	Trace trace = Utils::TraceRay(playerEye, playerEye + forward * 4096.0f, &filter);
+
+	if (!dontAimThroughSmoke || !Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1)) {
+		CBaseEntity* entity = trace.m_pEnt;
+		if (entity && entity->IsPlayer() && !entity->GetDormant()) {
+			auto* player = reinterpret_cast<CBasePlayer*>(entity);
+			if (player->IsAlive() && !*player->GunGameImmunity()) {
+				if (IsParticipatingTeam(*player->Team())) {
+					if (friendlyFire || player->IsEnemy(localPlayer)) {
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles) {
+	if (lastWeaponConfig && lastWeaponConfig->silent && wasFaked && lastWeaponConfig->smoothRotateToOrigin) {
+		RotateToOrigin(lastWeaponConfig, currentViewAngles, targetViewAngles);
+		return true;
+	} else {
+		wasFaked = false;
+	}
+	return false;
 }
 
 bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 {
-	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig();
-	if (!weaponConfig)
+	if (!enabled || !Interfaces::engine->IsInGame())
 		return false;
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
-	Vector viewAngles;
-	if (weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
-		viewAngles = Hooks::CreateMove::lastCmd.viewangles;
-	else
-		viewAngles = Vector(cmd->viewangles);
+	bool willBeSilent = false;
 
-	CBasePlayer* target = nullptr;
-	Vector bestRotation;
-	float bestDistance {};
+	CBasePlayer* localPlayer = GetLocalPlayer();
+	if (!localPlayer)
+		return false; // Without local player we can't shoot, can we?
 
-	// For compatibility’s sake, play it off like we didn't find a target
-	if ((cmd->buttons & IN_ATTACK || !weaponConfig->onlyWhenShooting) && localPlayer->GetFlashAlpha() <= (float)maximalFlashAmount) {
-		CTraceFilterEntity filter(localPlayer);
+	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
 
-		// The first object is always the WorldObj
-		for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-			auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-			if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
-				continue;
+	/*if(lastWeaponConfig && lastWeaponConfig->silent && lastWeaponConfig->smoothRotateToOrigin && (!weaponConfig || !weaponConfig->silent || !weaponConfig->smoothRotateToOrigin)) {
+		if(wasFaked) {
+			// This is a critical moment: The user just switched their gun, but we still have work to do (smooth out the snap)
+			RotateToOrigin(lastWeaponConfig, Hooks::CreateMove::lastCmd.viewangles, cmd->viewangles);
+			willBeSilent = true;
+		}
+	}*/
 
-			if (!IsParticipatingTeam(*player->Team()))
-				continue;
+	if (!weaponConfig) {
+		if (wasFaked) {
+			// We still have work to do
+			RotateToOrigin(lastWeaponConfig, Hooks::CreateMove::lastCmd.viewangles, cmd->viewangles);
+			willBeSilent = true;
+		}
+		// Mhm, no work to do. Stop here
+		return willBeSilent;
+	}
 
-			if (!(friendlyFire || player->IsEnemy(localPlayer)))
-				continue;
+	Vector viewAngles = GetViewAngles(lastWeaponConfig, cmd->viewangles);
+	Vector recoilView = cmd->viewangles + *localPlayer->AimPunchAngle() * 2.0f;
 
-			const Vector playerEye = localPlayer->GetEyePosition();
+	if (ShouldAim(localPlayer, weaponConfig, cmd->buttons & IN_ATTACK)) {
+		CBasePlayer* target = FindTarget(localPlayer, recoilView);
+		if (!target) {
+			// We don't have a target, time to relax and try to combine the fake view and the real one again
+			willBeSilent = Relax(viewAngles, cmd->viewangles);
+		} else {
+			// Critical moment: We are facing an enemy
+			Vector targetView = Utils::CalculateView(localPlayer->GetEyePosition(), target->GetBonePosition(8));
 
-			Matrix3x4* boneMatrix = player->SetupBones();
-
-			const Vector head = boneMatrix[8].Origin();
-
-			if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
-				continue;
-
-			const Trace trace = Utils::TraceRay(playerEye, head, &filter);
-
-			if (trace.m_pEnt != player)
-				continue; // The enemy is behind something...
-
-			Vector rotation = Utils::CalculateView(playerEye, head);
-			if (weaponConfig->controlRecoil) {
-				Vector recoil = *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat();
-				recoil.x *= weaponConfig->recoilScaleX;
-				recoil.y *= weaponConfig->recoilScaleY;
-
-				rotation -= recoil;
-			}
-			Vector wrappedDelta = (rotation - cmd->viewangles).Wrap();
+			Vector wrappedDelta = (targetView - recoilView /*TODO Config for fake rotation fov*/).Wrap();
 			wrappedDelta.x /= weaponConfig->fovScaleX;
 			wrappedDelta.y /= weaponConfig->fovScaleY;
-			const float length = wrappedDelta.Length(); // Use the real angle for the fov check
-			rotation -= viewAngles;
-			rotation.Wrap();
+			if (wrappedDelta.Length() > weaponConfig->fov) {
+				// dammit even the enemy which has the lowest view-difference is still too far away
+				// Time to spent rotating back to the origin it is...
+				willBeSilent = Relax(viewAngles, cmd->viewangles);
+			} else {
+				// No more playing around from here
 
-			if (!target || bestDistance > length) {
-				target = player;
-				bestDistance = length;
-				bestRotation = rotation;
+				if (wasFaked && !weaponConfig->silent) {
+					// If we were faking, then we need to calculate another view for the player, because the server view is not real
+					Vector playerView{};
+					Interfaces::engine->GetViewAngles(&playerView);
+					SetRotation(weaponConfig, targetView, playerView, *localPlayer->AimPunchAngle(), playerView);
+
+					Interfaces::engine->SetViewAngles(&playerView);
+
+					willBeSilent = true;
+					wasFaked = true;
+				}
+
+				SetRotation(weaponConfig, targetView, wasFaked ? Hooks::CreateMove::lastCmd.viewangles : cmd->viewangles, *localPlayer->AimPunchAngle(), cmd->viewangles);
+
+				if(!wasFaked) {
+					lastWeaponConfig = weaponConfig; // If the user decides to switch the weapon, and he was using rotate to origin silent aim, we can't just give up...
+				}
+
+				if (weaponConfig->silent) {
+					willBeSilent = true;
+					wasFaked = true;
+				}
 			}
 		}
+	} else {
+		// Ok, the user doesn't want our assistance at this moment.
+		// Time for us to rotate back to the origin
+		willBeSilent = Relax(viewAngles, cmd->viewangles);
 	}
 
-	if (!target || bestDistance > weaponConfig->fov) {
-		if (weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin) {
-			Vector delta = cmd->viewangles - viewAngles;
-			delta.Wrap();
-			if (delta.Length() < weaponConfig->recombineViews) {
-				// At this point the difference is so small, that it no longer matters
-				wasFaked = false;
-				return false;
-			}
-
-			delta.x *= weaponConfig->verticalRotateToOriginSpeed;
-			delta.y *= weaponConfig->horizontalRotateToOriginSpeed;
-
-			cmd->viewangles = viewAngles + delta;
-			cmd->viewangles.Wrap();
-			wasFaked = true;
-			return true;
-		}
-		wasFaked = false;
-		return false;
+	if (autoFire) {
+		if (!autoFireOnKey || IsInputDown(input, true))
+			if (AutoFire(localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
+				cmd->buttons |= IN_ATTACK; // FIRE!!!
 	}
 
-	if (weaponConfig->smoothOut) {
-		bestRotation.x *= weaponConfig->verticalAimSpeed;
-		bestRotation.y *= weaponConfig->horizontalAimSpeed;
-	}
-
-	cmd->viewangles = viewAngles + bestRotation;
-	cmd->viewangles.Wrap();
-	if (!weaponConfig->silent)
-		Interfaces::engine->SetViewAngles(&cmd->viewangles);
-
-	wasFaked = true;
-	return weaponConfig->silent;
+	return willBeSilent;
 }
 
 void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 {
-	if (!fovCircle && !showDesyncedView)
-		return;
+	if (!enabled || (!fovCircle && !showDesyncedView))
+		return; // We should we continue, if the user doesn't want it?
 
-	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig();
+	CBasePlayer* localPlayer = GetLocalPlayer();
+	if (!localPlayer)
+		return; // Without local player we can't shoot, can we?
+
+	if (showDesyncedView && wasFaked) {
+		Vector eye = localPlayer->GetEyePosition();
+
+		Vector fakedView = Hooks::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
+		Vector forward;
+		Utils::AngleVectors(fakedView, &forward);
+
+		CTraceFilterEntity filter(localPlayer);
+		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
+
+		ImVec2 screenspaceView;
+		if (Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
+			drawList->AddCircleFilled(screenspaceView, radius, viewColor); // TODO Perspective division
+	}
+
+	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
 	if (!weaponConfig)
 		return;
 
@@ -222,27 +396,16 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 
 		drawList->AddPolyline(points, size, circleColor, ImDrawFlags_None, thickness);
 	}
-
-	if (showDesyncedView && wasFaked) {
-		CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-		Vector eye = localPlayer->GetEyePosition();
-
-		Vector fakedView = Hooks::CreateMove::lastCmd.viewangles;
-		Vector forward;
-		Utils::AngleVectors(fakedView, &forward);
-
-		CTraceFilterEntity filter(localPlayer);
-		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
-
-		ImVec2 screenspaceView;
-		if (Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
-			drawList->AddCircleFilled(screenspaceView, radius, viewColor);
-	}
 }
 
 void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
 {
 	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
+	ImGui::SameLine();
+	if (ImGui::Popup(xorstr_("Input"))) {
+		ImGui::Checkbox(xorstr_("Or when holding input"), &weaponConfig.orWhenHoldingInput);
+		ImGui::EndPopup();
+	}
 
 	ImGui::SliderFloat(xorstr_("FOV"), &weaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
 	ImGui::SameLine();
@@ -286,6 +449,11 @@ void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
 void Features::Semirage::Aimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::InputSelector(xorstr_("Input (%s)"), input);
+
+	ImGui::Checkbox(xorstr_("Auto fire"), &autoFire);
+	if (autoFire)
+		ImGui::Checkbox(xorstr_("Auto fire on key"), &autoFireOnKey);
 
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
@@ -312,6 +480,7 @@ void Features::Semirage::Aimbot::SetupGUI()
 
 BEGIN_SERIALIZED_STRUCT(SemirageAimbotWeaponConfig::Serializer)
 SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
+SERIALIZED_TYPE(xorstr_("Or when holding input"), orWhenHoldingInput)
 
 SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("FOV scale X"), fovScaleX)
@@ -335,6 +504,11 @@ END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Input"), input)
+
+SERIALIZED_TYPE(xorstr_("Auto fire"), autoFire)
+SERIALIZED_TYPE(xorstr_("Auto fire on key"), autoFireOnKey)
+
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
 SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
 SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)

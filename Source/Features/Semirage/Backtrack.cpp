@@ -85,7 +85,7 @@ bool IsTickValid(const Tick& tick)
 float CalculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, const Vector& b)
 {
 	Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), b);
-	requiredView -= *localPlayer->AimPunchAngle() * ConVarStorage::weapon_recoil_scale()->GetFloat();
+	requiredView -= *localPlayer->AimPunchAngle() * 2.0f;
 	requiredView -= viewangles;
 	requiredView.Wrap();
 

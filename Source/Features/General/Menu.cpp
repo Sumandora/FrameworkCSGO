@@ -7,7 +7,7 @@
 
 #include "../../Utils/Platform/CompilerSupport.hpp"
 
-static int menuKey = static_cast<int>(ImGuiKey_Insert);
+static int menuKey = ImGuiKey_Insert;
 static int style = 0;
 
 #ifdef DEBUG

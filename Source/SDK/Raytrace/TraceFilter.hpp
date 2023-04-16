@@ -14,6 +14,18 @@ public:
 	[[nodiscard]] virtual TraceType GetTraceType() const = 0;
 };
 
+class CTraceFilterNoEntities : public ITraceFilter {
+	bool ShouldHitEntity(void* pEntity, int contentsMask) override
+	{
+		return false; // This is not being invoked.
+	}
+
+	[[nodiscard]] TraceType GetTraceType() const override
+	{
+		return TRACE_WORLD_ONLY;
+	}
+};
+
 class CTraceFilterEntity : public ITraceFilter {
 
 	CBaseEntity* entity;
