@@ -273,14 +273,6 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
 
-	/*if(lastWeaponConfig && lastWeaponConfig->silent && lastWeaponConfig->smoothRotateToOrigin && (!weaponConfig || !weaponConfig->silent || !weaponConfig->smoothRotateToOrigin)) {
-		if(wasFaked) {
-			// This is a critical moment: The user just switched their gun, but we still have work to do (smooth out the snap)
-			RotateToOrigin(lastWeaponConfig, Hooks::CreateMove::lastCmd.viewangles, cmd->viewangles);
-			willBeSilent = true;
-		}
-	}*/
-
 	if (!weaponConfig) {
 		if (wasFaked) {
 			// We still have work to do
