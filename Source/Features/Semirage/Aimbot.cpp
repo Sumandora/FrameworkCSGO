@@ -121,15 +121,17 @@ bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
 	return true;
 }
 
-bool CanPointBeSeen(CBasePlayer* localPlayer, const Vector& point)
+bool CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
-	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), point, 1))
+	Vector head = otherPlayer->GetBonePosition(8);
+
+	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
 		return false;
 
-	CTraceFilterNoEntities filter;
-	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), point, &filter);
+	CTraceFilterEntity filter(localPlayer);
+	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
 
-	return trace.fraction == 1.0f; // The ray was able to travel to its destination
+	return trace.m_pEnt == otherPlayer; // The ray was able to travel to its destination
 }
 
 CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
@@ -147,7 +149,7 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 
 		Vector head = player->GetBonePosition(8);
 
-		if (!CanPointBeSeen(localPlayer, head))
+		if (!CanPointBeSeen(localPlayer, player))
 			continue;
 
 		Vector viewDelta = (Utils::CalculateView(playerEye, head) - viewAngles).Wrap();
