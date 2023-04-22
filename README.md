@@ -3,9 +3,11 @@ A fully-featured training software for Counter Strike: Global Offensive, made fo
 ### WARNING: This program is being detected by Valve. Usage on official, custom or private servers will most likely result in punishment from Valve!
 ## Installation
 ### Dependencies
-**Ubuntu / Debian**
+**Ubuntu / Debian unstable / Debian testing**
+
+Debian stable is not supported until debian 12 releases due to outdated gcc.
 ```bash
-apt-get patchelf gdb git cmake make build-essential libsdl2-dev
+apt-get install patchelf gdb git cmake make build-essential libsdl2-dev
 ```
 **Arch Linux**
 ```bash
