@@ -35,6 +35,7 @@ jobs:
         run: MAKEOPTS="-j$(nproc)" ./Build.sh
 
       - name: Distro name for artifact
+        if: always()
         id: distro_name
         run: |
           . /etc/os-release
@@ -42,6 +43,7 @@ jobs:
         shell: bash
 
       - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.distro_name.outputs.name }}
