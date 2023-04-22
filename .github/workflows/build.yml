@@ -38,7 +38,7 @@ jobs:
         id: distro_name
         run: |
           . /etc/os-release
-          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" | sed "s/\/ /g" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Upload artifacts
