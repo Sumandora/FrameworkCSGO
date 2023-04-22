@@ -6,12 +6,12 @@ jobs:
   build:
     strategy:
       matrix:
-        distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest"]
+        distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest", "debian:unstable", "debian:testing"]
       fail-fast: false
     runs-on: ubuntu-latest
     container: ${{ matrix.distro }}
     steps:
-      - if: matrix.distro == 'ubuntu:latest'
+      - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'debian:unstable' || matrix.distro == 'debian:testing'
         name: Setup dependencies
         run: |
           apt-get update
