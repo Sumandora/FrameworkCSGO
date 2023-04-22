@@ -6,12 +6,12 @@ jobs:
   build:
     strategy:
       matrix:
-        distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest"]
+        distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest", "debian:unstable", "debian:testing"]
       fail-fast: false
     runs-on: ubuntu-latest
     container: ${{ matrix.distro }}
     steps:
-      - if: matrix.distro == 'ubuntu:latest'
+      - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'debian:unstable' || matrix.distro == 'debian:testing'
         name: Setup dependencies
         run: |
           apt-get update
@@ -32,16 +32,26 @@ jobs:
           submodules: true
 
       - name: Build
-        run: ./Build.sh
+        run: MAKEOPTS="-j$(nproc)" ./Build.sh
 
       - name: Distro name for artifact
+        if: always()
         id: distro_name
         run: |
+          CONTAINER_NAME=${{ matrix.distro }}
           . /etc/os-release
-          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          TMP_OUTPUT=$(echo "name=$NAME" | sed "s/\// /g")
+          if [ "$CONTAINER_NAME" == "debian:unstable" ]; then
+            echo "$TMP_OUTPUT unstable" >> "$GITHUB_OUTPUT"
+          elif [ "$CONTAINER_NAME" == "debian:testing" ]; then
+            echo "$TMP_OUTPUT testing" >> "$GITHUB_OUTPUT"
+          else
+            echo $TMP_OUTPUT >> "$GITHUB_OUTPUT"
+          fi
         shell: bash
 
       - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: ${{ steps.distro_name.outputs.name }}
