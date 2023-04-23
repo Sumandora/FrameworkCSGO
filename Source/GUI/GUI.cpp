@@ -28,8 +28,16 @@ void Gui::Create()
 
 	const float fontSize = 24.0f;
 	// Might not work on certain distros/configurations
-	if (!io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize))
-		io.Fonts->AddFontDefault();
+	for (const std::string& path : {
+			 xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"),
+			 xorstr_("/usr/share/fonts/google-noto/NotoSans-Regular.ttf"),
+			 xorstr_("") }) {
+		if (path.empty()) {
+			io.Fonts->AddFontDefault();
+		} else if (access(path.c_str(), F_OK) == 0 && io.Fonts->AddFontFromFileTTF(path.c_str(), fontSize)) {
+			break;
+		}
+	}
 
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
