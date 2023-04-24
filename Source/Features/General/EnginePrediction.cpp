@@ -6,6 +6,7 @@
 #include "../../GameCache.hpp"
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../GUI/ImGuiColors.hpp"
+#include "../../Interfaces.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../Utils/Prediction.hpp"
 
@@ -29,7 +30,7 @@ static float previousVelocityModifer;
 void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 {
 	moveData = {};
-	if (!enabled)
+	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
@@ -51,7 +52,7 @@ void Features::General::EnginePrediction::EndPrediction()
 	prePredictionFlags = 0;
 	prePredictionMoveType = MOVETYPE_NONE;
 
-	if (!enabled)
+	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
 	Utils::EndPrediction();

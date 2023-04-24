@@ -17,17 +17,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(FrameworkCSGO SHARED ${SOURCE_FILES})
 target_link_libraries(FrameworkCSGO dl SDL2 GL)
 
-# Setup Framework
-target_include_directories(FrameworkCSGO PUBLIC Dependencies/Framework/Source/Framework)
-
-file(GLOB_RECURSE FRAMEWORK_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/Framework/Source/Framework/*.cpp")
-target_sources(FrameworkCSGO PUBLIC ${FRAMEWORK_SOURCE_FILES})
-
-target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_HOOKING_DETOUR)
-target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_HOOKING_PTRSWAP)
-target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_PATTERN_SCANNING)
-target_compile_definitions(FrameworkCSGO PUBLIC FRAMEWORK_ENABLE_RETURN_ADDRESS)
-
 # Setup SDL
 target_include_directories(FrameworkCSGO PUBLIC /usr/include/SDL2)
 
@@ -56,3 +45,16 @@ target_compile_definitions(FrameworkCSGO PUBLIC MINI_CASE_SENSITIVE)
 target_include_directories(FrameworkCSGO PUBLIC Dependencies/length-disassembler)
 file(GLOB LDE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/length-disassembler/*.cpp")
 target_sources(FrameworkCSGO PUBLIC ${LDE_SOURCE_FILES})
+
+# Setup DetourHooking
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/DetourHooking/include)
+file(GLOB DETOURHOOKING_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/DetourHooking/Source/*.cpp")
+target_sources(FrameworkCSGO PUBLIC ${DETOURHOOKING_SOURCE_FILES})
+
+# Setup ReturnAddressSpoofer
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/ReturnAddressSpoofer/include)
+
+# Setup SignatureScanner
+target_include_directories(FrameworkCSGO PUBLIC Dependencies/SignatureScanner/include)
+file(GLOB SIGNATURESCANNER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/SignatureScanner/Source/*.cpp")
+target_sources(FrameworkCSGO PUBLIC ${SIGNATURESCANNER_SOURCE_FILES})

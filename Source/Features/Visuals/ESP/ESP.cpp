@@ -10,9 +10,9 @@
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../GUI/Elements/Popup.hpp"
 
-#include "../../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../../../Hooks/GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
 
-#include "../../../Hooks/OverrideView/OverrideViewHook.hpp"
+#include "../../../Hooks/GameFunctions/OverrideView/OverrideViewHook.hpp"
 #include "../../../Utils/Raytrace.hpp"
 #include "../../../Utils/Trigonometry.hpp"
 
