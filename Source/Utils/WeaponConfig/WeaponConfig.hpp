@@ -103,7 +103,7 @@ public:
 		})
 	}
 
-	T* getConfig(WeaponID weaponId)
+	T* GetConfig(WeaponID weaponId)
 	{
 		if (weaponConfigs.contains(weaponId)) {
 			OverridableConfig& weaponConfig = weaponConfigs[weaponId];
@@ -121,6 +121,10 @@ public:
 				return &classConfig.config;
 		}
 
+		return GetSharedConfig();
+	}
+
+	T* GetSharedConfig() {
 		return &sharedConfig;
 	}
 

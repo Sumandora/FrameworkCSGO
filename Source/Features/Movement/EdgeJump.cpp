@@ -16,7 +16,7 @@
 #include "../../GUI/Elements/Keybind.hpp"
 
 static bool enabled = false;
-static int input = 0;
+static int input = ImGuiKey_None;
 
 void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
 {
