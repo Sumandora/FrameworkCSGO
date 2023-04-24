@@ -12,7 +12,7 @@
 #include "../../SDK/MoveType.hpp"
 
 static bool enabled = false;
-static int input = 0;
+static int input = ImGuiKey_None;
 
 static bool performing = false;
 

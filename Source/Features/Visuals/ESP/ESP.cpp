@@ -19,7 +19,7 @@
 #include <vector>
 
 static bool enabled = false;
-static int onKey = 0;
+static int onKey = ImGuiKey_None;
 static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 static bool considerSmokedOffEntitiesAsOccluded = true;
@@ -86,7 +86,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* pl
 	if (considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
-	if (considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
+	if(considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
 		return &settings->visible;
 
 	bool visible;
@@ -253,7 +253,7 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 				break;
 			}
 			case ClientClassID::CBaseCSGrenadeProjectile:
-				// TODO Seperate
+				// TODO Separate
 				projectiles.Draw(drawList, rectangle, xorstr_("Base grenade"));
 				break;
 			case ClientClassID::CBreachChargeProjectile:
