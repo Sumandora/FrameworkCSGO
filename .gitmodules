@@ -1,7 +1,3 @@
-[submodule "Dependencies/Framework"]
-	path = Dependencies/Framework
-	url = https://github.com/Sumandora/Framework.git
-	branch = hardened
 [submodule "Dependencies/imgui"]
 	path = Dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
