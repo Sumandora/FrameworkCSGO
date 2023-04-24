@@ -10,16 +10,16 @@
 
 namespace VirtualMethod {
 	template <typename Ret, unsigned long Index, typename... Args>
-	auto invoke(void* gameClass, Args... args) -> Ret
+	auto Invoke(void* gameClass, Args... args) -> Ret
 	{
-		return invokeFunction<Ret, void*, Args...>(Utils::GetVTable(gameClass)[Index], gameClass, args...);
+		return InvokeFunction<Ret, void*, Args...>(Utils::GetVTable(gameClass)[Index], gameClass, args...);
 	}
 }
 
 #define VIRTUAL_METHOD(index, name, returnType, argsType, argsCall) \
 	inline returnType name argsType                                 \
 	{                                                               \
-		return VirtualMethod::invoke<returnType, index> argsCall;   \
+		return VirtualMethod::Invoke<returnType, index> argsCall;   \
 	}
 
 #endif

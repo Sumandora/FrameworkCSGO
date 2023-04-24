@@ -1,7 +1,5 @@
 #include "Interfaces.hpp"
 
-#include "PatternScan/PatternScan.hpp"
-
 #include <cstring>
 #include <dlfcn.h>
 #include <link.h>
@@ -13,6 +11,8 @@
 #include "xorstr.hpp"
 
 #include "ldisasm.h"
+
+#include "IDASignatureScanner.hpp"
 
 struct InterfaceReg {
 	void* m_CreateFn;
@@ -37,18 +37,18 @@ void* UncoverCreateFunction(void* createFunc)
 	 * There is a preprocessor definition in the source engine which creates these exported interface functions.
 	 * But hey who could imagine that the same code also produces the same assembly right?
 	 */
-	Pattern leaRax = Pattern(xorstr_("\x48\x8d\x05"), xorstr_("xxx"));
-	Pattern movRaxRax = Pattern("\x48\x8b\x00", xorstr_("xxx"));
-	Pattern ret = Pattern("\xc3", "x"); // Unnecessary but to follow the style
+	Signature leaRax = SignatureScanner::BuildSignature(xorstr_("48 8d 05"));
+	Signature movRaxRax = SignatureScanner::BuildSignature(xorstr_("48 8b 00"));
+	Signature ret = SignatureScanner::BuildSignature(xorstr_("c3")); // Unnecessary but to follow the style
 
 	char* rip = static_cast<char*>(createFunc);
 	void* interfacePtr {};
 	while (true) {
-		if (leaRax.matchPattern(rip)) { // LEA rax, [rip + offset]
+		if (SignatureScanner::DoesMatch(leaRax, rip)) { // LEA rax, [rip + offset]
 			interfacePtr = Memory::RelativeToAbsolute(static_cast<char*>(rip) + 3 /* skip the lea */);
-		} else if (movRaxRax.matchPattern(rip)) { // MOV rax, [rax]
+		} else if (SignatureScanner::DoesMatch(movRaxRax, rip)) { // MOV rax, [rax]
 			interfacePtr = *static_cast<void**>(interfacePtr);
-		} else if (ret.matchPattern(rip)) { // RET
+		} else if (SignatureScanner::DoesMatch(ret, rip)) { // RET
 			break;
 		}
 		rip += ldisasm(rip, true); // next instruction

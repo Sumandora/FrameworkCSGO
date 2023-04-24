@@ -9,9 +9,9 @@
 #include "../../GUI/Elements/Popup.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
-#include "../../Hooks/CreateMove/CreateMoveHook.hpp"
-#include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
-#include "../../Hooks/OverrideView/OverrideViewHook.hpp"
+#include "../../Hooks/GameFunctions/CreateMove/CreateMoveHook.hpp"
+#include "../../Hooks/GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../../Hooks/GameFunctions/OverrideView/OverrideViewHook.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
@@ -232,7 +232,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 		Utils::AngleVectors(fakedView, &forward);
 
 		CTraceFilterEntity filter(localPlayer);
-		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
+		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter); // TODO TraceRay in CreateMove
 
 		ImVec2 screenspaceView;
 		if (Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))

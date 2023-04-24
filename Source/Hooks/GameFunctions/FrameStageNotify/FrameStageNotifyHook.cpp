@@ -1,10 +1,14 @@
 #include "FrameStageNotifyHook.hpp"
 
-#include "../../Interfaces.hpp"
+#include "../../../Interfaces.hpp"
 
-#include "../../Features/Semirage.hpp"
-#include "../../Features/Visuals.hpp"
-#include "../../GameCache.hpp"
+#include "../../../Features/Semirage.hpp"
+#include "../../../Features/Visuals.hpp"
+#include "../../../GameCache.hpp"
+
+#include "../GameHook.hpp"
+
+static GameHook* hook;
 
 void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 {
@@ -30,12 +34,12 @@ void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 		// ignored
 		break;
 	}
-	return invokeFunction<void, void*, ClientFrameStage>(Hooks::FrameStageNotify::hook->proxy, thisptr, stage);
+	return InvokeFunction<void, void*, ClientFrameStage>(hook->proxy, thisptr, stage);
 }
 
 void Hooks::FrameStageNotify::Hook()
 {
-	hook = new class Hook(Utils::GetVTable(Interfaces::baseClient)[37], reinterpret_cast<void*>(FrameStageNotifyHook));
+	hook = new class GameHook(Utils::GetVTable(Interfaces::baseClient)[37], reinterpret_cast<void*>(FrameStageNotifyHook));
 }
 
 void Hooks::FrameStageNotify::Unhook()

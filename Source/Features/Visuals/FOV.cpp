@@ -25,6 +25,9 @@ static float rotationOffsetZ = 0.0f;
 
 void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {
+	if((!forceFOV && !forceViewModel) || !Interfaces::engine->IsInGame())
+		return;
+
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 	CBasePlayer* viewer = localPlayer;
 
@@ -45,7 +48,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 	if (viewer != localPlayer)
 		return; // View model movement doesn't work when spectating (flickering)
 
-	if (forceViewModel) {
+	if (forceViewModel && !*viewer->Scoped() /* Don't move scoped weapons around, that will just offset the scope. No reason why you would want that. */) {
 		CBaseEntity* viewModel = Interfaces::entityList->GetClientEntityFromHandle(viewer->ViewModel());
 		if (viewModel) {
 			bool isForcingFOV = viewModelFovOffset != 0;

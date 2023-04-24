@@ -16,7 +16,7 @@
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
-#include "../../Hooks/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../../Hooks/GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
 #include "../Visuals.hpp"
 
 static bool enabled = false;
@@ -143,7 +143,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 			currentDistance = (*localPlayer->Origin() - *player->Origin()).Length();
 
 #ifdef __clang__
-		for (unsigned int index = records.size() - 1; index >= 0; index--) {
+		for (size_t index = records.size(); index--;) {
 			auto& tick = records[index];
 #else
 		for (auto& tick : std::ranges::views::reverse(records)) {
@@ -208,7 +208,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 				ticks[i].end());
 		}
 
-		Tick tick;
+		Tick tick{};
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
 		tick.origin = *player->Origin();

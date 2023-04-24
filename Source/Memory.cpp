@@ -6,9 +6,11 @@
 #include "Interfaces.hpp"
 #include "xorstr.hpp"
 
-#include "PatternScan/PatternScan.hpp"
-
 #include "Utils/VMT.hpp"
+
+#include "IDASignatureScanner.hpp"
+
+void* RetAddrSpoofer::leaveRet = nullptr;
 
 static void* lineGoesThroughSmoke;
 
@@ -25,7 +27,7 @@ void* Memory::RelativeToAbsolute(void* addr)
 	// RIP-Relatives start after the instruction using it
 	// The relative offsets are 4 bytes long
 
-	return static_cast<char*>(addr) + 4 + *static_cast<int*>(addr);
+	return static_cast<char*>(addr) + 4 + *static_cast<int32_t*>(addr);
 }
 
 void Memory::Create()
@@ -34,10 +36,7 @@ void Memory::Create()
 	void** gameMovementVTable = Utils::GetVTable(Interfaces::gameMovement);
 
 	// Set the address for the return address spoofer
-	ret_instruction_addr = Pattern(
-		xorstr_("\xC9\xC3"), // leave; ret; instructions
-		xorstr_("xx"))
-							   .searchPattern(baseClientVTable[0]); // random code piece
+	RetAddrSpoofer::leaveRet = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("c9 c3")), baseClientVTable[0]); // random code piece
 
 	void* hudProcessInput = baseClientVTable[10];
 	void* hudUpdate = baseClientVTable[11];
@@ -52,11 +51,10 @@ void Memory::Create()
 	// The method which contains the 1.25 and 1.0 float literals is the one...
 	void* categorizeGroundSurface = gameMovementVTable[69];
 
-	void* leaInstr = Pattern(xorstr_("\x48\x8d\x05") /* lea rax */, xorstr_("xxx")).searchPattern(categorizeGroundSurface);
+	void* leaInstr = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("48 8d 05") /* lea rax */), categorizeGroundSurface);
 	moveHelper = *static_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
 
-	lineGoesThroughSmoke = Pattern(xorstr_("\x55\x48\x89\xE5\x41\x56\x41\x55\x41\x54\x53\x48\x83\xEC\x30\x8B\x05\x00\x00\x00\x00\x66"), xorstr_("xxxxxxxxxxxxxxxxx????x"))
-							   .searchPattern(GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
+	lineGoesThroughSmoke = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 e5 41 56 41 55 41 54 53 48 83 ec 30 8b 05 ?? ?? ?? ?? 66")), GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
 
 bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
@@ -80,5 +78,5 @@ bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const sh
 	toStruct.y = to.y;
 	toStruct.z = to.z;
 
-	return invokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, fromStruct, toStruct, _);
+	return InvokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, fromStruct, toStruct, _);
 }

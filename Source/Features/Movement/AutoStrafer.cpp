@@ -9,7 +9,7 @@
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../GameCache.hpp"
-#include "../../Hooks/CreateMove/CreateMoveHook.hpp"
+#include "../../Hooks/GameFunctions/CreateMove/CreateMoveHook.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
 #include <optional>
