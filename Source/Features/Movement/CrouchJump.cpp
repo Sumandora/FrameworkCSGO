@@ -8,7 +8,7 @@
 
 #include "../../GameCache.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
+#include "../../Interfaces.hpp"
 #include "../../SDK/MoveType.hpp"
 
 static bool enabled = false;
@@ -22,6 +22,9 @@ void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
 		performing = false;
 		return;
 	}
+
+	if (!Interfaces::engine->IsInGame())
+		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive()) {

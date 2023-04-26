@@ -26,8 +26,11 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!enabled || !IsInputDown(input, false))
 		return;
 
+	if (!Interfaces::engine->IsInGame())
+		return;
+
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))

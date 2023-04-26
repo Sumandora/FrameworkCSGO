@@ -1,7 +1,7 @@
 #include "GameCache.hpp"
 #include "Interfaces.hpp"
 
-static CBasePlayer* localPlayer;
+static CBasePlayer* localPlayer = nullptr;
 
 CBasePlayer* GameCache::GetLocalPlayer()
 {

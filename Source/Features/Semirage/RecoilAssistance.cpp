@@ -21,8 +21,11 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
 		return false;
 	}
 
+	if (!Interfaces::engine->IsInGame())
+		return false;
+
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return false;
 
 	const Vector currentAimPunch = *localPlayer->AimPunchAngle();

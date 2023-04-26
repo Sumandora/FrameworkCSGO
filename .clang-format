@@ -7,3 +7,4 @@ UseTab: Always
 PointerAlignment: Left
 ReferenceAlignment: Left
 DerivePointerAlignment: false
+AlignEscapedNewlines: Right

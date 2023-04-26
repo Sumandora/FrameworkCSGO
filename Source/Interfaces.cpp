@@ -2,11 +2,10 @@
 
 #include <cstring>
 #include <dlfcn.h>
-#include <link.h>
 #include <map>
-#include <mutex>
 
-#include "GUI/Elements/HelpMarker.hpp"
+#include "SDK/InterfaceReg.hpp"
+
 #include "imgui.h"
 #include "xorstr.hpp"
 
@@ -14,13 +13,7 @@
 
 #include "IDASignatureScanner.hpp"
 
-struct InterfaceReg {
-	void* m_CreateFn;
-	const char* m_pName;
-	InterfaceReg* m_pNext;
-};
-
-void* UncoverCreateFunction(void* createFunc)
+void* Interfaces::UncoverCreateFunction(void* createFunc)
 {
 	/**
 	 * These functions look like this:
@@ -41,13 +34,13 @@ void* UncoverCreateFunction(void* createFunc)
 	Signature movRaxRax = SignatureScanner::BuildSignature(xorstr_("48 8b 00"));
 	Signature ret = SignatureScanner::BuildSignature(xorstr_("c3")); // Unnecessary but to follow the style
 
-	char* rip = static_cast<char*>(createFunc);
+	char* rip = reinterpret_cast<char*>(createFunc);
 	void* interfacePtr {};
 	while (true) {
 		if (SignatureScanner::DoesMatch(leaRax, rip)) { // LEA rax, [rip + offset]
-			interfacePtr = Memory::RelativeToAbsolute(static_cast<char*>(rip) + 3 /* skip the lea */);
+			interfacePtr = Memory::RelativeToAbsolute(reinterpret_cast<char*>(rip) + 3 /* skip the lea */);
 		} else if (SignatureScanner::DoesMatch(movRaxRax, rip)) { // MOV rax, [rax]
-			interfacePtr = *static_cast<void**>(interfacePtr);
+			interfacePtr = *reinterpret_cast<void**>(interfacePtr);
 		} else if (SignatureScanner::DoesMatch(ret, rip)) { // RET
 			break;
 		}
@@ -56,7 +49,8 @@ void* UncoverCreateFunction(void* createFunc)
 	return interfacePtr;
 }
 
-void* GetInterface(const char* file, const char* name)
+template <typename T>
+T* GetInterface(const char* file, const char* name)
 {
 	void* library = dlopen(file, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	if (!library)
@@ -69,11 +63,11 @@ void* GetInterface(const char* file, const char* name)
 	if (!interfacesList)
 		return nullptr;
 
-	InterfaceReg* interface = *static_cast<InterfaceReg**>(interfacesList);
+	InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList);
 
 	while (interface != nullptr) {
 		if (strncmp(interface->m_pName, name, strlen(interface->m_pName) - 3) == 0) {
-			return UncoverCreateFunction(interface->m_CreateFn);
+			return reinterpret_cast<T*>(Interfaces::UncoverCreateFunction(interface->m_CreateFn));
 		}
 		interface = interface->m_pNext;
 	}
@@ -83,87 +77,11 @@ void* GetInterface(const char* file, const char* name)
 
 void Interfaces::GetInterfaces()
 {
-	baseClient = GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
-	engine = static_cast<CEngineClient*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient")));
-	entityList = static_cast<CClientEntityList*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList")));
-	engineTrace = static_cast<CEngineTrace*>(GetInterface(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient")));
-	icvar = static_cast<ICvar*>(GetInterface(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar")));
-	prediction = static_cast<IPrediction*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction")));
-	gameMovement = static_cast<CGameMovement*>(GetInterface(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement")));
-}
-
-void Interfaces::SetupGUI()
-{
-	struct Interface {
-		InterfaceReg* reg;
-		mutable void* uncoveredAddress;
-		mutable void* realAddress;
-	};
-
-	static std::map<const char*, std::map<const char*, Interface>> interfaceStorage;
-	static std::once_flag init;
-
-	std::call_once(init, []() {
-		dl_iterate_phdr([](struct dl_phdr_info* info, size_t size, void* data) {
-			void* library = dlopen(info->dlpi_name, RTLD_NOLOAD | RTLD_NOW);
-			if (!library)
-				return 0;
-
-			void* interfaces = dlsym(library, xorstr_("s_pInterfaceRegs"));
-			dlclose(library);
-			if (!interfaces)
-				return 0;
-
-			interfaceStorage[info->dlpi_name] = {};
-
-			InterfaceReg* interface = *static_cast<InterfaceReg**>(interfaces);
-
-			while (interface != nullptr) {
-				Interface t {};
-				t.reg = interface;
-				t.uncoveredAddress = nullptr;
-				t.realAddress = nullptr;
-				interfaceStorage[info->dlpi_name][interface->m_pName] = t;
-				interface = interface->m_pNext;
-			}
-			return 0;
-		},
-			nullptr);
-	});
-
-	for (const auto& [sharedObject, interfaces] : interfaceStorage) {
-		if (ImGui::TreeNode(sharedObject)) {
-			for (const auto& [interfaceName, cachedInterface] : interfaces) {
-				if (ImGui::TreeNode(interfaceName)) {
-					ImGui::Text(xorstr_("Create function: %p"), cachedInterface.reg->m_CreateFn);
-					ImGui::Text(xorstr_("Name: %s"), cachedInterface.reg->m_pName);
-					ImGui::Text(xorstr_("Next: %p"), cachedInterface.reg->m_pNext);
-
-					ImGui::Separator();
-
-					ImGui::Text(xorstr_("The next two addresses should line up, if they don't, we have to adjust the uncover function."));
-
-					if (cachedInterface.uncoveredAddress) {
-						ImGui::Text(xorstr_("Uncovered address: %p"), cachedInterface.uncoveredAddress);
-					} else {
-						if (ImGui::Button(xorstr_("Uncover create function"))) {
-							cachedInterface.uncoveredAddress = UncoverCreateFunction(cachedInterface.reg->m_CreateFn);
-						}
-					}
-
-					if (cachedInterface.realAddress) {
-						ImGui::Text(xorstr_("Real address: %p"), cachedInterface.realAddress);
-					} else {
-						if (ImGui::Button(xorstr_("Invoke create function"))) {
-							cachedInterface.realAddress = ((void* (*)())(cachedInterface.reg->m_CreateFn))();
-						}
-						ImGui::HelpMarker(xorstr_("Warning: This is considered unsafe"));
-					}
-
-					ImGui::TreePop();
-				}
-			}
-			ImGui::TreePop();
-		}
-	}
+	baseClient = GetInterface<void>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
+	engine = GetInterface<CEngineClient>(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient"));
+	entityList = GetInterface<CClientEntityList>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList"));
+	engineTrace = GetInterface<CEngineTrace>(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient"));
+	icvar = GetInterface<ICvar>(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar"));
+	prediction = GetInterface<IPrediction>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction"));
+	gameMovement = GetInterface<CGameMovement>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement"));
 }

@@ -1,4 +1,4 @@
-#include "CreateMoveHook.hpp"
+#include "../GameFunctions.hpp"
 
 #include "../../../Features/Features.hpp"
 
@@ -6,7 +6,7 @@
 
 static GameHook* hook;
 
-bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
+bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
 	bool silent = InvokeFunction<bool, void*, float, CUserCmd*>(hook->proxy, thisptr, flInputSampleTime, cmd);
 
@@ -38,17 +38,7 @@ bool CreateMoveHook(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 	cmd->viewangles_copy = cmd->viewangles;
 	cmd->buttons_copy = cmd->buttons;
 
-	Hooks::CreateMove::lastCmd = *cmd;
+	lastCmd = *cmd;
 
 	return silent;
-}
-
-void Hooks::CreateMove::Hook()
-{
-	hook = new class GameHook(Utils::GetVTable(Memory::clientMode)[25], reinterpret_cast<void*>(CreateMoveHook));
-}
-
-void Hooks::CreateMove::Unhook()
-{
-	delete hook;
 }
