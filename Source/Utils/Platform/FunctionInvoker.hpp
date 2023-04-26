@@ -1,7 +1,6 @@
 #ifndef UTILS_PLATFORM_FUNCTIONINVOKER
 #define UTILS_PLATFORM_FUNCTIONINVOKER
 
-#include "../../Memory.hpp"
 #include "RetAddrSpoofer.hpp"
 
 #ifdef __clang__

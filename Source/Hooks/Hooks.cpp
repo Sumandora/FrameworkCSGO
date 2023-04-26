@@ -1,23 +1,16 @@
 #include "Hooks.hpp"
 
-#include "GameFunctions/CreateMove//CreateMoveHook.hpp"
-#include "GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
-#include "GameFunctions/OverrideView/OverrideViewHook.hpp"
-
-#include "SDL/SDLHook.hpp"
+#include "Game/GameFunctions.hpp"
+#include "SDL/SDLFunctions.hpp"
 
 void Hooks::InstallHooks()
 {
-	FrameStageNotify::Hook();
-	CreateMove::Hook();
-	OverrideView::Hook();
+	Game::Hook();
 	SDL::Hook();
 }
 
 void Hooks::UninstallHooks()
 {
 	SDL::Unhook();
-	OverrideView::Unhook();
-	CreateMove::Unhook();
-	FrameStageNotify::Unhook();
+	Game::Unhook();
 }

@@ -10,9 +10,8 @@
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../GUI/Elements/Popup.hpp"
 
-#include "../../../Hooks/GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../../../Hooks/Game/GameFunctions.hpp"
 
-#include "../../../Hooks/GameFunctions/OverrideView/OverrideViewHook.hpp"
 #include "../../../Utils/Raytrace.hpp"
 #include "../../../Utils/Trigonometry.hpp"
 
@@ -30,7 +29,7 @@ static bool alignBoundingBox = true;
 static bool outOfView = false;
 static float outOfViewSize = 30.0f;
 static float outOfViewDistance = 300.0f;
-PlayerSettings Features::Visuals::Esp::players;
+PlayerSettings Features::Visuals::Esp::players; // TODO Remove dormant
 static WeaponSettings weapons;
 static BoxNameSetting projectiles;
 static PlantedC4Settings plantedC4;
@@ -43,7 +42,7 @@ static BoxNameSetting other;
 
 static std::map<int, bool> visibilityCache;
 
-bool Features::Visuals::Esp::WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
+bool Features::Visuals::Esp::WorldToScreen(const Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
 	const float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
 	const float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
@@ -113,7 +112,7 @@ void Features::Visuals::Esp::UpdateVisibility()
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	// The first object is always the WorldObj
@@ -148,7 +147,7 @@ bool CalculateScreenRectangle(Vector origin, CCollideable* collideable, ImVec4& 
 	for (const auto& point : points) {
 		ImVec2 point2D;
 
-		if (!Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, point, point2D)) {
+		if (!Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, point, point2D)) {
 			return false;
 		}
 
@@ -307,7 +306,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	Vector viewangles;
@@ -330,7 +329,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		if (!sortEntitiesByDistance)
 			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
 		else {
-			float distanceToCamera = (*entity->Origin() - Hooks::OverrideView::cameraPosition).Length();
+			float distanceToCamera = (*entity->Origin() - Hooks::Game::OverrideView::cameraPosition).Length();
 			entities.emplace_back(distanceToCamera, entity);
 		}
 	}

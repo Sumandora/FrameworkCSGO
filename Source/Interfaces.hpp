@@ -18,7 +18,8 @@ namespace Interfaces {
 	inline CGameMovement* gameMovement;
 
 	void GetInterfaces();
-	void SetupGUI();
+
+	void* UncoverCreateFunction(void* createFunc);
 }
 
 #endif

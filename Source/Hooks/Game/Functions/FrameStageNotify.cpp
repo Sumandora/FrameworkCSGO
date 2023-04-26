@@ -1,16 +1,13 @@
-#include "FrameStageNotifyHook.hpp"
-
-#include "../../../Interfaces.hpp"
+#include "../GameFunctions.hpp"
 
 #include "../../../Features/Semirage.hpp"
 #include "../../../Features/Visuals.hpp"
 #include "../../../GameCache.hpp"
-
-#include "../GameHook.hpp"
+#include "../../../Interfaces.hpp"
 
 static GameHook* hook;
 
-void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
+void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
 	case ClientFrameStage::FRAME_START: {
@@ -27,7 +24,7 @@ void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 	case ClientFrameStage::FRAME_RENDER_END: {
 		Features::Visuals::NoPunch::RestorePunch();
 
-		Hooks::FrameStageNotify::worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
+		worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
 		break;
 	}
 	default:
@@ -35,14 +32,4 @@ void FrameStageNotifyHook(void* thisptr, ClientFrameStage stage)
 		break;
 	}
 	return InvokeFunction<void, void*, ClientFrameStage>(hook->proxy, thisptr, stage);
-}
-
-void Hooks::FrameStageNotify::Hook()
-{
-	hook = new class GameHook(Utils::GetVTable(Interfaces::baseClient)[37], reinterpret_cast<void*>(FrameStageNotifyHook));
-}
-
-void Hooks::FrameStageNotify::Unhook()
-{
-	delete hook;
 }

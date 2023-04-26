@@ -16,7 +16,8 @@
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
-#include "../../Hooks/GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
+#include "../../Hooks/Game/GameFunctions.hpp"
+
 #include "../Visuals.hpp"
 
 static bool enabled = false;
@@ -100,7 +101,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
@@ -176,7 +177,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 	}
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
 	if (!IsParticipatingTeam(*localPlayer->Team()))
@@ -226,10 +227,10 @@ void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
 	for (const auto& pair : ticks) {
 		for (const auto& tick : pair.second) {
 			ImVec2 screenOrigin;
-			Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, tick.origin, screenOrigin);
+			Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, tick.origin, screenOrigin);
 			drawList->AddCircleFilled(screenOrigin, 5.0f, ImGuiColors::white);
 			ImVec2 screenHead;
-			Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, tick.boneMatrix[8].Origin(), screenHead);
+			Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, tick.boneMatrix[8].Origin(), screenHead);
 			drawList->AddCircleFilled(screenHead, 5.0f, ImGuiColors::red);
 		}
 	}

@@ -9,9 +9,7 @@
 #include "../../GUI/Elements/Popup.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
-#include "../../Hooks/GameFunctions/CreateMove/CreateMoveHook.hpp"
-#include "../../Hooks/GameFunctions/FrameStageNotify/FrameStageNotifyHook.hpp"
-#include "../../Hooks/GameFunctions/OverrideView/OverrideViewHook.hpp"
+#include "../../Hooks/Game/GameFunctions.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
@@ -102,7 +100,7 @@ SemirageAimbotWeaponConfig* GetWeaponConfig(CBasePlayer* localPlayer)
 Vector GetViewAngles(SemirageAimbotWeaponConfig* weaponConfig, const Vector& currentViewAngles)
 {
 	if (weaponConfig && weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
-		return Hooks::CreateMove::lastCmd.viewangles; // TODO Track this
+		return Hooks::Game::CreateMove::lastCmd.viewangles; // TODO Track this
 	else
 		return currentViewAngles;
 }
@@ -268,7 +266,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	bool willBeSilent = false;
 
 	CBasePlayer* localPlayer = GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return false; // Without local player we can't shoot, can we?
 
 	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
@@ -276,7 +274,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	if (!weaponConfig) {
 		if (wasFaked) {
 			// We still have work to do
-			RotateToOrigin(lastWeaponConfig, Hooks::CreateMove::lastCmd.viewangles, cmd->viewangles);
+			RotateToOrigin(lastWeaponConfig, Hooks::Game::CreateMove::lastCmd.viewangles, cmd->viewangles);
 			willBeSilent = true;
 		}
 		// Mhm, no work to do. Stop here
@@ -317,7 +315,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 					wasFaked = true;
 				}
 
-				SetRotation(weaponConfig, targetView, wasFaked ? Hooks::CreateMove::lastCmd.viewangles : cmd->viewangles, *localPlayer->AimPunchAngle(), cmd->viewangles);
+				SetRotation(weaponConfig, targetView, wasFaked ? Hooks::Game::CreateMove::lastCmd.viewangles : cmd->viewangles, *localPlayer->AimPunchAngle(), cmd->viewangles);
 
 				if(!wasFaked) {
 					lastWeaponConfig = weaponConfig; // If the user decides to switch the weapon, and he was using rotate to origin silent aim, we can't just give up...
@@ -349,14 +347,17 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 	if (!enabled || (!fovCircle && !showDesyncedView))
 		return; // We should we continue, if the user doesn't want it?
 
+	if (!Interfaces::engine->IsInGame())
+		return;
+
 	CBasePlayer* localPlayer = GetLocalPlayer();
-	if (!localPlayer)
+	if (!localPlayer || !localPlayer->IsAlive())
 		return; // Without local player we can't shoot, can we?
 
 	if (showDesyncedView && wasFaked) {
 		Vector eye = localPlayer->GetEyePosition();
 
-		Vector fakedView = Hooks::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
+		Vector fakedView = Hooks::Game::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
 		Vector forward;
 		Utils::AngleVectors(fakedView, &forward);
 
@@ -364,7 +365,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
 
 		ImVec2 screenspaceView;
-		if (Features::Visuals::Esp::WorldToScreen(Hooks::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
+		if (Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
 			drawList->AddCircleFilled(screenspaceView, radius, viewColor); // TODO Perspective division
 	}
 
@@ -379,7 +380,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 		int size = 100;
 		ImVec2 points[size];
 
-		float fov = weaponConfig->fov / Hooks::OverrideView::lastViewSetup.fov * displaySize.x / 2.0f;
+		float fov = weaponConfig->fov / Hooks::Game::OverrideView::lastViewSetup.fov * displaySize.x / 2.0f;
 
 		for (int i = 0; i < size; i++) {
 			float rad = (float)i / (float)(size - 1) * (float)M_PI * 2.0f;

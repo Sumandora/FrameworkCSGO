@@ -9,7 +9,8 @@
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../GameCache.hpp"
-#include "../../Hooks/GameFunctions/CreateMove/CreateMoveHook.hpp"
+#include "../../Hooks/Game/GameFunctions.hpp"
+#include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
 #include <optional>
@@ -44,6 +45,9 @@ void AdjustButtons(CUserCmd* cmd)
 void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled)
+		return;
+
+	if (!Interfaces::engine->IsInGame())
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
@@ -101,7 +105,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		cmd->sidemove = -sinf(newDirection) * 450.0f;
 		AdjustButtons(cmd);
 	} else {
-		float oldYaw = Hooks::CreateMove::lastCmd.viewangles.y;
+		float oldYaw = Hooks::Game::CreateMove::lastCmd.viewangles.y;
 		float newYaw = cmd->viewangles.y;
 
 		float change = std::remainderf(newYaw - oldYaw, 360.0f);

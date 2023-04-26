@@ -14,6 +14,7 @@
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
+#include "../../Interfaces.hpp"
 
 static bool enabled = false;
 static int input = ImGuiKey_None;
@@ -26,6 +27,9 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 	if (!enabled || !IsInputDown(input, true)) {
 		return;
 	}
+
+	if (!Interfaces::engine->IsInGame())
+		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())

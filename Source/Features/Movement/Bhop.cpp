@@ -8,6 +8,7 @@
 #include "../../GameCache.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
+#include "../../Interfaces.hpp"
 #include "../../SDK/MoveType.hpp"
 
 static bool enabled = false;
@@ -16,6 +17,9 @@ static int humanization = 0;
 void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled)
+		return;
+
+	if (!Interfaces::engine->IsInGame())
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();

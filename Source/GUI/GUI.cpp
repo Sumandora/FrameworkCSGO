@@ -9,7 +9,7 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
 
-#include "../Hooks/SDL/SDLHook.hpp"
+#include "../Hooks/SDL/SDLFunctions.hpp"
 
 #include "../Features/General.hpp"
 #include "../Features/Semirage.hpp"
@@ -98,7 +98,7 @@ void Gui::SwapWindow(SDL_Window* window)
 }
 
 // I don't even want to know why I have to do this
-static unsigned int lastTextInput;
+static Uint32 lastTextInput;
 
 void Gui::PollEvent(SDL_Event* event)
 {
@@ -117,7 +117,7 @@ void Gui::PollEvent(SDL_Event* event)
 		ImGui_ImplSDL2_ProcessEvent(event);
 
 	if (event->type == SDL_MOUSEBUTTONUP)
-		reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::warpMouseInWindow->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
+		reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
 
 	if (event->type == SDL_TEXTINPUT)
 		lastTextInput = event->text.timestamp;

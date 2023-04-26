@@ -29,11 +29,11 @@ struct Matrix4x4 {
 		matrix[3][3] = m33;
 	}
 
-	inline float* operator[](int i)
+	inline const float* operator[](int i) const
 	{
 		return matrix[i];
 	}
-	inline float* Base()
+	inline const float* Base() const
 	{
 		return &matrix[0][0];
 	}

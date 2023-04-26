@@ -6,9 +6,6 @@
 namespace Gui {
 	extern bool visible;
 
-	extern float fontSize;
-	void RebuildFont();
-
 	void Create();
 	void Destroy();
 

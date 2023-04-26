@@ -6,7 +6,6 @@ class IMoveHelper;
 struct Vector;
 
 namespace Memory {
-	inline void* ret_instruction_addr;
 	inline void* clientMode;
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;

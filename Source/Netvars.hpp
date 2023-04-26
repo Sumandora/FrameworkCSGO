@@ -1,8 +1,13 @@
 #ifndef NETVARS
 #define NETVARS
 
+#include <map>
+#include <vector>
+
 #include "SDK/ClientClassIDs.hpp"
-#include "SDK/Netvars/RecvProp.hpp"
+
+#include "SDK/Netvars/ClientClass.hpp"
+#include "SDK/Netvars/RecvTable.hpp"
 
 #define NETVAR_FUNCTION(returnType, functionName, clientClass, table, name) \
 	returnType* functionName()                                              \
@@ -27,9 +32,10 @@
 	}
 
 namespace Netvars {
+	inline std::map<ClientClass*, std::map<RecvTable*, std::vector<RecvProp*>>> netvars{};
+
 	void DumpNetvars();
 	RecvProp* GetOffset(ClientClassID clientClass, const char* table, const char* name);
-	void SetupGUI();
 }
 
 #endif

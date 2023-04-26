@@ -15,7 +15,7 @@ namespace Features::Visuals {
 		void UpdateVisibility();
 		void ImGuiRender(ImDrawList* drawList);
 
-		bool WorldToScreen(Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition);
+		bool WorldToScreen(const Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition);
 
 		// GUI
 		void SetupGUI();
