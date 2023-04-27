@@ -27,8 +27,20 @@ void Gui::Create()
 	ImGuiIO& io = ImGui::GetIO();
 
 	const float fontSize = 24.0f;
+
 	// Might not work on certain distros/configurations
-	if (!io.Fonts->AddFontFromFileTTF(xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"), fontSize))
+	bool loadedFont = false;
+
+	for (const char* path : {
+			 xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"),
+			 xorstr_("/usr/share/fonts/google-noto/NotoSans-Regular.ttf") }) {
+		if (access(path, F_OK) == 0 && io.Fonts->AddFontFromFileTTF(path, fontSize)) {
+			loadedFont = true;
+			break;
+		}
+	}
+
+	if (!loadedFont)
 		io.Fonts->AddFontDefault();
 
 	io.IniFilename = nullptr;
