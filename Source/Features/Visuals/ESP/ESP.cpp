@@ -112,7 +112,7 @@ void Features::Visuals::Esp::UpdateVisibility()
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer || !localPlayer->IsAlive())
+	if (!localPlayer)
 		return;
 
 	// The first object is always the WorldObj
@@ -125,7 +125,7 @@ void Features::Visuals::Esp::UpdateVisibility()
 	}
 }
 
-bool CalculateScreenRectangle(Vector origin, CCollideable* collideable, ImVec4& rectangle) {
+bool CalculateScreenRectangle(const Vector& origin, CCollideable* collideable, ImVec4& rectangle) {
 	const Vector min = origin + *collideable->ObbMins();
 	const Vector max = origin + *collideable->ObbMaxs();
 
@@ -306,7 +306,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer || !localPlayer->IsAlive())
+	if (!localPlayer)
 		return;
 
 	Vector viewangles;

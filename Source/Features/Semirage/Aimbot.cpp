@@ -23,14 +23,12 @@
 #include <algorithm>
 
 static bool enabled = false;
-static int input = ImGuiKey_None;
 static bool autoFire = false;
-static bool autoFireOnKey = true;
+static int autoFireKey = ImGuiKey_None;
 // TODO Auto Fire regardless of ray intersection
 
 struct SemirageAimbotWeaponConfig {
 	bool onlyWhenShooting = false;
-	bool orWhenHoldingInput = true;
 
 	float fov = 3.0f;
 	float fovScaleX = 1.0f;
@@ -169,11 +167,10 @@ bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfi
 
 	if (weaponConfig->onlyWhenShooting) {
 		if (!attacking) {
-			if (weaponConfig->orWhenHoldingInput) {
-				if (!IsInputDown(input, true))
-					return false;
-			}
-			return false;
+			if (autoFire) {
+				return IsInputDown(autoFireKey, true);
+			} else
+				return false;
 		}
 	}
 
@@ -334,7 +331,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	}
 
 	if (autoFire) {
-		if (!autoFireOnKey || IsInputDown(input, true))
+		if (IsInputDown(autoFireKey, true))
 			if (AutoFire(localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
 				cmd->buttons |= IN_ATTACK; // FIRE!!!
 	}
@@ -396,11 +393,6 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
 {
 	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
-	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Input"))) {
-		ImGui::Checkbox(xorstr_("Or when holding input"), &weaponConfig.orWhenHoldingInput);
-		ImGui::EndPopup();
-	}
 
 	ImGui::SliderFloat(xorstr_("FOV"), &weaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
 	ImGui::SameLine();
@@ -444,11 +436,10 @@ void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
 void Features::Semirage::Aimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 
 	ImGui::Checkbox(xorstr_("Auto fire"), &autoFire);
 	if (autoFire)
-		ImGui::Checkbox(xorstr_("Auto fire on key"), &autoFireOnKey);
+		ImGui::InputSelector(xorstr_("Auto fire key (%s)"), autoFireKey);
 
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
 	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
@@ -475,7 +466,6 @@ void Features::Semirage::Aimbot::SetupGUI()
 
 BEGIN_SERIALIZED_STRUCT(SemirageAimbotWeaponConfig::Serializer)
 SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
-SERIALIZED_TYPE(xorstr_("Or when holding input"), orWhenHoldingInput)
 
 SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("FOV scale X"), fovScaleX)
@@ -499,10 +489,9 @@ END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Input"), input)
 
 SERIALIZED_TYPE(xorstr_("Auto fire"), autoFire)
-SERIALIZED_TYPE(xorstr_("Auto fire on key"), autoFireOnKey)
+SERIALIZED_TYPE(xorstr_("Auto fire key"), autoFireKey)
 
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
 SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
