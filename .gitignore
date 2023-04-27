@@ -6,6 +6,8 @@ gdb.log
 
 # CLion
 .idea/
+# This folder is being created to house CLion internal CMake data
+cmake-build-debug/
 
 # VSCode
 .vscode/
