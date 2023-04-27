@@ -7,7 +7,5 @@
 
 void Gui::Construction::SetupConfiguration()
 {
-	TABBAR(xorstr_("#Configuration settings"), []() {
-		TABITEM(xorstr_("Save/Load"), Configuration::SaveLoadTab);
-	})
+	Configuration::SaveLoadTab();
 }
