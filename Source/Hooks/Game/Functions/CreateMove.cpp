@@ -4,8 +4,6 @@
 
 #include "../GameHook.hpp"
 
-static GameHook* hook;
-
 bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
 	bool silent = InvokeFunction<bool, void*, float, CUserCmd*>(hook->proxy, thisptr, flInputSampleTime, cmd);

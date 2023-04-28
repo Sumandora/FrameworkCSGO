@@ -34,7 +34,9 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 		if (weapon) {
 			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
-				this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, LocalizeWeaponID(weaponID));
+				const char* localization = LocalizeWeaponID(weaponID);
+				if(localization)
+					this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, localization);
 			}
 		}
 	}
@@ -45,7 +47,7 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 	}
 }
 
-void BuildMenu(PlayerStateSettings* playerStateSettings, PlayerTeamSettings playerTeamSettings)
+void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
 {
 	if (ImGui::MenuItem(xorstr_("Visible"))) {
 		*playerStateSettings = playerTeamSettings.visible;

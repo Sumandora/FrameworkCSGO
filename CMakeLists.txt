@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -march=native -mtune=native -Wno-return-type -ggdb --no-gnu-unique -DDEBUG")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti --no-gnu-unique")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti --no-gnu-unique -D'IM_ASSERT(_EXPR)='")
 
 set(CMAKE_SKIP_RPATH ON)
 
@@ -29,8 +29,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
 	target_compile_definitions(FrameworkCSGO PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)
 	target_compile_definitions(FrameworkCSGO PUBLIC IMGUI_DISABLE_DEBUG_TOOLS)
-
-	target_compile_definitions(FrameworkCSGO PUBLIC IM_ASSERT\(x\))
 endif()
 target_sources(FrameworkCSGO PUBLIC ${IMGUI_SOURCE_FILES})
 

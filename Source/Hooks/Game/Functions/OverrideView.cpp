@@ -2,8 +2,6 @@
 
 #include "../../../Features/Features.hpp"
 
-static GameHook* hook;
-
 void Hooks::Game::OverrideView::HookFunc(void* thisptr, CViewSetup* pSetup)
 {
 	InvokeFunction<void, void*, CViewSetup*>(hook->proxy, thisptr, pSetup);

@@ -5,8 +5,6 @@
 #include "../../../GameCache.hpp"
 #include "../../../Interfaces.hpp"
 
-static GameHook* hook;
-
 void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
