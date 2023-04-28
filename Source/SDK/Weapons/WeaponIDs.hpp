@@ -210,7 +210,7 @@ static std::map<WeaponID, const char*> weaponLocalization {
 inline const char* LocalizeWeaponID(WeaponID weaponID)
 {
 	if (!weaponLocalization.contains(weaponID))
-		return xorstr_("Invalid weapon ID");
+		return nullptr;
 	else
 		return weaponLocalization[weaponID];
 }

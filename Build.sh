@@ -35,8 +35,8 @@ fi
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
-LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release . >> build.log 2>&1 || error
-LANG=en make $MAKEOPTS -C Build >> build.log 2>&1 || error
+LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release . 2>&1 | tee build.log || error
+LANG=en make $MAKEOPTS -C Build 2>&1 | tee build.log || error
 
 strip -x -s Build/libFrameworkCSGO.so >> build.log 2>&1 || error
 patchelf --set-soname "libMangoHud.so" Build/libFrameworkCSGO.so >> build.log 2>&1 || error # May be unneeded because of the following line?

@@ -53,6 +53,8 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 
 		const ObserverMode observerMode = *player->ObserverMode();
 		const char* observerModeName = LocalizeObserverMode(observerMode);
+		if(!observerModeName)
+			return; // We don't have a name?
 
 		char text[strlen(first.name) + 4 + strlen(second.name) + 2 + strlen(observerModeName) + 1];
 		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, observerModeName);

@@ -24,7 +24,7 @@ static std::map<ObserverMode, const char*> observerModeLocalization {
 inline const char* LocalizeObserverMode(ObserverMode observerMode)
 {
 	if (!observerModeLocalization.contains(observerMode))
-		return xorstr_("Invalid observer mode");
+		return nullptr;
 	else
 		return observerModeLocalization[observerMode];
 }
