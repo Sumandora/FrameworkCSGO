@@ -9,15 +9,15 @@ Gentoo/Portage Users might want to use [this](https://github.com/Sumandora/porta
 **Ubuntu / Debian unstable / Debian testing**
 
 Debian stable is not supported until debian 12 releases due to outdated gcc.
-```bash
+```sh
 apt-get install patchelf gdb git cmake make build-essential libsdl2-dev
 ```
 **Arch Linux**
-```bash
+```sh
 pacman -S base-devel cmake gdb git sdl2 patchelf
 ```
 **Fedora**
-```bash
+```sh
 dnf install patchelf gdb git cmake make gcc-c++ SDL2-devel
 ```
 **Gentoo**

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Building Debug-Binary"
 mkdir -p Build-Debug

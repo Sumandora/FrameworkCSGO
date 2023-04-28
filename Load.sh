@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Set the DEBUGGER variable on the cmdline to use lldb or any debugger
 # Make sure it supports the following commands
