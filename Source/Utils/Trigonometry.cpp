@@ -30,7 +30,7 @@ void Utils::AngleVectors(Vector angles, Vector* forward, Vector* right, Vector* 
 	}
 }
 
-void Utils::AngleVectors(Vector angles, Vector* forward)
+void Utils::AngleVectors(const Vector& angles, Vector* forward)
 {
 	AngleVectors(angles, forward, nullptr, nullptr);
 }
@@ -40,29 +40,24 @@ void Utils::VectorAngles(Vector& forward, Vector& angles)
 {
 	float tmp, yaw, pitch;
 
-	if (forward[1] == 0 && forward[0] == 0) {
+	if (forward.x == 0 && forward.y == 0) {
 		yaw = 0;
-		if (forward[2] > 0)
-			pitch = 270;
+		if (forward.z > 0)
+			pitch = -90;
 		else
 			pitch = 90;
 	} else {
-		yaw = RAD2DEG(atan2(forward[1], forward[0]));
-		if (yaw < 0)
-			yaw += 360;
-
-		tmp = sqrt(forward[0] * forward[0] + forward[1] * forward[1]);
-		pitch = RAD2DEG(atan2(-forward[2], tmp));
-		if (pitch < 0)
-			pitch += 360;
+		yaw = RAD2DEG(std::atan2(forward.y, forward.x));
+		tmp = std::sqrt(forward.x * forward.x + forward.y * forward.y);
+		pitch = RAD2DEG(std::atan2(-forward.z, tmp));
 	}
 
-	angles[0] = pitch;
-	angles[1] = yaw;
-	angles[2] = 0;
+	angles[PITCH] = pitch;
+	angles[YAW] = yaw;
+	angles[ROLL] = 0;
 }
 
-Vector Utils::CalculateView(const Vector a, const Vector b)
+Vector Utils::CalculateView(const Vector& a, const Vector& b)
 {
 	Vector delta = b - a;
 	Vector rotation {};

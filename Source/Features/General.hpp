@@ -17,6 +17,7 @@ namespace Features::General {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
+#
 	namespace Watermark {
 		// Settings
 		extern bool enabled;

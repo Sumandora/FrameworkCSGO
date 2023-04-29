@@ -4,14 +4,6 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
-PlayerSettings::PlayerSettings()
-	: teammate(PlayerTeamSettings())
-	, enemy(PlayerTeamSettings())
-	, local(PlayerStateSettings())
-	, spectators(BoxNameSetting())
-{
-}
-
 void PlayerSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);

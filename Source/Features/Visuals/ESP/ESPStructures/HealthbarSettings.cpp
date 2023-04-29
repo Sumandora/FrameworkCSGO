@@ -19,7 +19,6 @@ HealthbarSettings::HealthbarSettings()
 	, outlined(false)
 	, outlineColor(ImGuiColors::black)
 	, outlineThickness(1.0f)
-	, healthNumber(TextSetting())
 	, onlyWhenDamaged(true)
 {
 }
@@ -65,7 +64,7 @@ void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health)
 		deadHsv[0], deadHsv[1], deadHsv[2]);
 
 	if (gradient) {
-		float transition = std::min(0.5f, healthPercentage); // At some point the second rect will become smaller than 50% means we have to adjust the color in order to not break the illusion of it being one long bar
+		const float transition = std::min(0.5f, healthPercentage); // At some point the second rect will become smaller than 50% means we have to adjust the color in order to not break the illusion of it being one long bar
 		const float middleHsv[] = {
 			deadHsv[0] + (aliveHsv[0] - deadHsv[0]) * transition,
 			deadHsv[1] + (aliveHsv[1] - deadHsv[1]) * transition,

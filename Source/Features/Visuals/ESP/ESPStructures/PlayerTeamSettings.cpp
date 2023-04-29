@@ -4,13 +4,6 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
-PlayerTeamSettings::PlayerTeamSettings()
-	: visible(PlayerStateSettings())
-	, occluded(PlayerStateSettings())
-	, dormant(PlayerStateSettings())
-{
-}
-
 void PlayerTeamSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
@@ -23,10 +16,6 @@ void PlayerTeamSettings::SetupGUI(const char* id)
 			occluded.SetupGUI(xorstr_("Occluded"));
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Dormant"))) {
-			dormant.SetupGUI(xorstr_("Dormant"));
-			ImGui::EndTabItem();
-		}
 		ImGui::EndTabBar();
 	}
 	ImGui::PopID();
@@ -35,5 +24,4 @@ void PlayerTeamSettings::SetupGUI(const char* id)
 BEGIN_SERIALIZED_STRUCT(PlayerTeamSettings::Serializer)
 SERIALIZED_STRUCTURE(xorstr_("Visible"), visible)
 SERIALIZED_STRUCTURE(xorstr_("Occluded"), occluded)
-SERIALIZED_STRUCTURE(xorstr_("Dormant"), dormant)
 END_SERIALIZED_STRUCT

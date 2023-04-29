@@ -11,9 +11,7 @@ namespace ConVarStorage {
 	LAZY_CONVAR(mp_teammates_are_enemies)
 
 	// Gamemode
-	LAZY_CONVAR(game_type)
 	LAZY_CONVAR(game_mode)
-	LAZY_CONVAR(sv_skirmish_id)
 
 	// Pitch
 	LAZY_CONVAR(cl_pitchup)

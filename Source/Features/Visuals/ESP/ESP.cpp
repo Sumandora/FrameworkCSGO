@@ -29,7 +29,7 @@ static bool alignBoundingBox = true;
 static bool outOfView = false;
 static float outOfViewSize = 30.0f;
 static float outOfViewDistance = 300.0f;
-PlayerSettings Features::Visuals::Esp::players; // TODO Remove dormant
+PlayerSettings Features::Visuals::Esp::players;
 static WeaponSettings weapons;
 static BoxNameSetting projectiles;
 static PlantedC4Settings plantedC4;
@@ -69,23 +69,20 @@ bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 		return false;
 
 	CTraceFilterEntity filter(localPlayer);
-	Trace trace = Utils::TraceRay(playerEye, head, &filter);
+	const Trace trace = Utils::TraceRay(playerEye, head, &filter);
 
 	return trace.m_pEnt == otherPlayer;
 }
 
 PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* player, PlayerTeamSettings* settings)
 {
-	if (player->GetDormant())
-		return &settings->dormant;
-
 	if (settings->visible == settings->occluded)
 		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
 
 	if (considerSpottedEntitiesAsVisible && *player->Spotted())
 		return &settings->visible; // Don't even have to raytrace for that.
 
-	if(considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
+	if (considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
 		return &settings->visible;
 
 	bool visible;
@@ -96,8 +93,7 @@ PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* pl
 
 	if (visible)
 		return &settings->visible;
-	else
-		return &settings->occluded;
+	return &settings->occluded;
 }
 
 void Features::Visuals::Esp::UpdateVisibility()
@@ -125,7 +121,8 @@ void Features::Visuals::Esp::UpdateVisibility()
 	}
 }
 
-bool CalculateScreenRectangle(const Vector& origin, CCollideable* collideable, ImVec4& rectangle) {
+bool CalculateScreenRectangle(const Vector& origin, CCollideable* collideable, ImVec4& rectangle)
+{
 	const Vector min = origin + *collideable->ObbMins();
 	const Vector max = origin + *collideable->ObbMaxs();
 
@@ -172,15 +169,16 @@ bool CalculateScreenRectangle(const Vector& origin, CCollideable* collideable, I
 	return true;
 }
 
-bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const Vector& viewangles, ImVec4& rectangle) {
+bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const Vector& viewangles, ImVec4& rectangle)
+{
 	if (outOfView) {
-		Vector delta = otherOrigin - localOrigin;
-		float angle = (float)DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
+		const Vector delta = otherOrigin - localOrigin;
+		const float angle = (float)DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
 
-		ImVec2 display = ImGui::GetIO().DisplaySize;
-		ImVec2 direction(cosf(angle), sinf(angle));
+		const ImVec2 display = ImGui::GetIO().DisplaySize;
+		const ImVec2 direction(cosf(angle), sinf(angle));
 
-		ImVec2 screenPosition(
+		const ImVec2 screenPosition(
 			(float)display.x / 2.0f + direction.x * outOfViewDistance,
 			(float)display.y / 2.0f + direction.y * outOfViewDistance);
 
@@ -209,7 +207,7 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 	ImVec4 rectangle;
 	bool visible = CalculateScreenRectangle(*entity->Origin(), collideable, rectangle);
 
-	if(!visible && HandleOutOfView(*localPlayer->Origin(), *entity->Origin(), viewangles, rectangle)) { // TODO Buy menu makes oov flicker
+	if (!visible && HandleOutOfView(*localPlayer->Origin(), *entity->Origin(), viewangles, rectangle)) { // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
 	}
 
@@ -221,7 +219,7 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 			PlayerStateSettings* settings;
 			if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
 				settings = &Features::Visuals::Esp::players.local;
-			else if (!player->GetDormant() && (*player->Team() == TeamID::TEAM_SPECTATOR || !player->IsAlive())) {
+			else if (*player->Team() == TeamID::TEAM_SPECTATOR || !player->IsAlive()) {
 				char name[128];
 				if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 					PlayerInfo info {};
@@ -324,17 +322,17 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
 		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (!entity)
+		if (!entity || entity->GetDormant())
 			continue;
 		if (!sortEntitiesByDistance)
 			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
 		else {
-			float distanceToCamera = (*entity->Origin() - Hooks::Game::OverrideView::cameraPosition).Length();
+			const float distanceToCamera = (*entity->Origin() - Hooks::Game::OverrideView::cameraPosition).Length();
 			entities.emplace_back(distanceToCamera, entity);
 		}
 	}
 	if (sortEntitiesByDistance) {
-		std::ranges::sort(entities, std::greater{});
+		std::ranges::sort(entities, std::greater {});
 		for (auto [_, entity] : entities) {
 			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
 		}

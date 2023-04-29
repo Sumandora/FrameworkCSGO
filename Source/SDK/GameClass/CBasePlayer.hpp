@@ -9,8 +9,6 @@
 
 #include "../../ConVarStorage.hpp"
 
-#include "../../Utils/GameMode.hpp"
-
 #include "../Math/Vector.hpp"
 
 class CBasePlayer : public CBaseEntity {
@@ -65,16 +63,14 @@ public:
 	{
 		if (ConVarStorage::mp_teammates_are_enemies()->GetBool())
 			return true;
-		else {
-			if (Utils::CalculateGamemode() == Gamemode::DANGER_ZONE) {
-				const int localSurvivalTeam = *view->SurvivalTeam();
-				if (localSurvivalTeam < 0) // DZ without teams
-					return true;
+		if (ConVarStorage::game_mode()->GetInt() == 6) {
+			const int localSurvivalTeam = *view->SurvivalTeam();
+			if (localSurvivalTeam < 0) // DZ without teams
+				return true;
 
-				return localSurvivalTeam != *SurvivalTeam();
-			} else
-				return *view->Team() != *Team();
+			return localSurvivalTeam != *SurvivalTeam();
 		}
+		return *view->Team() != *Team();
 	}
 };
 

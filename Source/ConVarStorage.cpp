@@ -16,9 +16,7 @@
 INIT_LAZY_CONVAR(mp_teammates_are_enemies)
 
 // Gamemode
-INIT_LAZY_CONVAR(game_type)
 INIT_LAZY_CONVAR(game_mode)
-INIT_LAZY_CONVAR(sv_skirmish_id)
 
 // Pitch
 INIT_LAZY_CONVAR(cl_pitchup)

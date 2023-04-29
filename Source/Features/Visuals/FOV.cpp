@@ -4,9 +4,9 @@
 #include "xorstr.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
-#include "../../GUI/Elements/HelpMarker.hpp"
 
 #include <vector>
 
@@ -25,7 +25,7 @@ static float rotationOffsetZ = 0.0f;
 
 void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {
-	if((!forceFOV && !forceViewModel) || !Interfaces::engine->IsInGame())
+	if ((!forceFOV && !forceViewModel) || !Interfaces::engine->IsInGame())
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
@@ -51,8 +51,8 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 	if (forceViewModel && !*viewer->Scoped() /* Don't move scoped weapons around, that will just offset the scope. No reason why you would want that. */) {
 		CBaseEntity* viewModel = Interfaces::entityList->GetClientEntityFromHandle(viewer->ViewModel());
 		if (viewModel) {
-			bool isForcingFOV = viewModelFovOffset != 0;
-			bool isForcingOffset = offsetX != 0 || offsetY != 0 || offsetZ != 0;
+			const bool isForcingFOV = viewModelFovOffset != 0;
+			const bool isForcingOffset = offsetX != 0 || offsetY != 0 || offsetZ != 0;
 
 			if (isForcingFOV || isForcingOffset) {
 				Vector viewAngles {};

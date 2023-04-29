@@ -80,7 +80,7 @@ public:
 
 class BoxNameSetting {
 public:
-	explicit BoxNameSetting();
+	explicit BoxNameSetting() = default;
 
 	BoxSettings box;
 	TextSetting nametag;
@@ -93,7 +93,7 @@ public:
 
 class PlayerStateSettings {
 public:
-	PlayerStateSettings();
+	PlayerStateSettings() = default;
 
 	BoxNameSetting boxName;
 	HealthbarSettings healthbar;
@@ -113,7 +113,7 @@ private:
 	TextSetting ammo;
 
 public:
-	WeaponSettings();
+	WeaponSettings() = default;
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const;
 	void SetupGUI(const char* id);
@@ -136,11 +136,10 @@ public:
 
 class PlayerTeamSettings {
 public:
-	PlayerTeamSettings();
+	PlayerTeamSettings() = default;
 
 	PlayerStateSettings visible;
 	PlayerStateSettings occluded;
-	PlayerStateSettings dormant;
 
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -148,7 +147,7 @@ public:
 
 class PlayerSettings {
 public:
-	PlayerSettings();
+	PlayerSettings() = default;
 
 	PlayerTeamSettings teammate;
 	PlayerTeamSettings enemy;

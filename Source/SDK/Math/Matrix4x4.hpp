@@ -33,7 +33,8 @@ struct Matrix4x4 {
 	{
 		return matrix[i];
 	}
-	inline const float* Base() const
+
+	[[nodiscard]] inline const float* Base() const
 	{
 		return &matrix[0][0];
 	}

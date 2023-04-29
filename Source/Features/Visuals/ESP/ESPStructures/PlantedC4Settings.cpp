@@ -6,9 +6,7 @@
 #include "../../../../Interfaces.hpp"
 
 PlantedC4Settings::PlantedC4Settings()
-	: boxName(BoxNameSetting())
-	, timer(TextSetting())
-	, showDefuseTimer(false)
+	: showDefuseTimer(false)
 {
 }
 
@@ -18,7 +16,7 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4*
 	if (!*bomb->Defused() && *bomb->BombTicking()) { // TODO Ask GameRules if the bomb is actually planted
 		if (*bomb->BombTime() < Memory::globalVars->curtime)
 			return; // You can't defuse the bomb anymore
-		float middle = rectangle.x + (rectangle.z - rectangle.x) * 0.5f;
+		const float middle = rectangle.x + (rectangle.z - rectangle.x) * 0.5f;
 		timer.Draw(drawList, middle, rectangle.w, true, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str());
 		if (showDefuseTimer && Interfaces::entityList->GetClientEntityFromHandle(bomb->Defuser())) {
 			if (*bomb->DefuseCountDown() < Memory::globalVars->curtime)

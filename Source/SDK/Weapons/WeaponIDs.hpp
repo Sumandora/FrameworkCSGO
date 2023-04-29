@@ -211,8 +211,7 @@ inline const char* LocalizeWeaponID(WeaponID weaponID)
 {
 	if (!weaponLocalization.contains(weaponID))
 		return nullptr;
-	else
-		return weaponLocalization[weaponID];
+	return weaponLocalization[weaponID];
 }
 
 inline bool IsFirearm(WeaponID weaponID)
