@@ -4,12 +4,6 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
-BoxNameSetting::BoxNameSetting()
-	: box(BoxSettings())
-	, nametag(TextSetting())
-{
-}
-
 void BoxNameSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const
 {
 	box.Draw(drawList, rectangle);

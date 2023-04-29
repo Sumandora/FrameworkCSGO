@@ -4,12 +4,6 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
-WeaponSettings::WeaponSettings()
-	: boxName(BoxNameSetting())
-	, ammo(TextSetting())
-{
-}
-
 void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const
 {
 	const char* weaponName = nullptr;

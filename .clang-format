@@ -8,3 +8,4 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 DerivePointerAlignment: false
 AlignEscapedNewlines: Right
+QualifierAlignment: Left

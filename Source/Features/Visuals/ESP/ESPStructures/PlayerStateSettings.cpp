@@ -9,14 +9,6 @@
 
 #include "../../../Visuals.hpp"
 
-PlayerStateSettings::PlayerStateSettings()
-	: boxName(BoxNameSetting())
-	, healthbar(HealthbarSettings())
-	, weapon(TextSetting())
-	, flashDuration(TextSetting())
-{
-}
-
 void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const
 {
 	char name[128];
@@ -35,7 +27,7 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlay
 			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
 			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
 				const char* localization = LocalizeWeaponID(weaponID);
-				if(localization)
+				if (localization)
 					this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, localization);
 			}
 		}
@@ -54,9 +46,6 @@ void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSetting
 	}
 	if (ImGui::MenuItem(xorstr_("Occluded"))) {
 		*playerStateSettings = playerTeamSettings.occluded;
-	}
-	if (ImGui::MenuItem(xorstr_("Dormant"))) {
-		*playerStateSettings = playerTeamSettings.dormant;
 	}
 }
 

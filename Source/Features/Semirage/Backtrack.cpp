@@ -26,9 +26,6 @@ static bool accountForOutgoingPing = false;
 static bool friendlyFire = false;
 static bool visualize = false;
 
-#define TIME_TO_TICKS(dt) ((int)(0.5f + (float)(dt) / Memory::globalVars->interval_per_tick))
-#define TICKS_TO_TIME(t) (Memory::globalVars->interval_per_tick * (t))
-
 struct Tick {
 	float simulationTime {};
 	int tickCount {};
@@ -53,9 +50,8 @@ float CalculateLerpTime()
 			flLerpRatio = std::clamp(flLerpRatio, min, ConVarStorage::sv_client_max_interp_ratio()->GetFloat());
 		}
 		return std::max(flLerpAmount, flLerpRatio / flUpdateRateValue);
-	} else {
-		return 0.0f;
 	}
+	return 0.0f;
 }
 
 bool IsTickValid(const Tick& tick)
@@ -76,7 +72,7 @@ bool IsTickValid(const Tick& tick)
 
 	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag()->GetFloat() * scale);
 
-	const float flTargetTime = TICKS_TO_TIME(tick.tickCount) - m_fLerpTime;
+	const float flTargetTime = tick.tickCount * Memory::globalVars->interval_per_tick - m_fLerpTime;
 
 	const float deltaTime = correct - (Memory::globalVars->curtime - flTargetTime);
 
@@ -114,7 +110,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (*weapon->NextPrimaryAttack() > Memory::globalVars->curtime || *localPlayer->WaitForNoAttack()) // TODO Rebuild those https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/cstrike15/weapon_csbase.cpp#L990
 		return;
 
-	WeaponID defIndex = *weapon->WeaponDefinitionIndex();
+	const WeaponID defIndex = *weapon->WeaponDefinitionIndex();
 	bool hasLimitedDistance = IsKnife(defIndex);
 
 	if (!(cmd->buttons & IN_ATTACK))
@@ -124,7 +120,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	int tickCount = 0;
 
 	std::erase_if(ticks, [&](const auto& pair) {
-		auto player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
+		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
 		if (!player || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			return true;
 		}
@@ -177,11 +173,15 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 	}
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer || !localPlayer->IsAlive())
+	if (!localPlayer) {
+		ticks.clear();
 		return;
+	}
 
-	if (!IsParticipatingTeam(*localPlayer->Team()))
+	if (!IsParticipatingTeam(*localPlayer->Team())) {
+		ticks.clear();
 		return;
+	}
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
@@ -209,7 +209,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 				ticks[i].end());
 		}
 
-		Tick tick{};
+		Tick tick {};
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
 		tick.origin = *player->Origin();

@@ -66,23 +66,23 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
-	Vector velocity = *localPlayer->Velocity();
-	float speed = velocity.HorizontalLength();
+	const Vector velocity = *localPlayer->Velocity();
+	const float speed = velocity.HorizontalLength();
 
 	if (speed < 5.0f)
 		return;
 
-	float term = ConVarStorage::sv_air_max_wishspeed()->GetFloat() / ConVarStorage::sv_airaccelerate()->GetFloat() / ConVarStorage::sv_maxspeed()->GetFloat() * 100.0f / speed;
+	const float term = ConVarStorage::sv_air_max_wishspeed()->GetFloat() / ConVarStorage::sv_airaccelerate()->GetFloat() / ConVarStorage::sv_maxspeed()->GetFloat() * 100.0f / speed;
 
 	if (term <= -1.0f || term >= 1.0f)
 		return;
 
-	float perfectDelta = acosf(term);
+	const float perfectDelta = acosf(term);
 
 	if (directional) {
 		// https://github.com/degeneratehyperbola/NEPS/blob/7e41ae811cf4ae136203093a059e137c8a10796f/NEPS/Hacks/Misc.cpp#L830
-		float yaw = DEG2RAD(cmd->viewangles.y);
-		float realDirection = atan2f(velocity.y, velocity.x) - yaw;
+		const float yaw = DEG2RAD(cmd->viewangles.y);
+		const float realDirection = atan2f(velocity.y, velocity.x) - yaw;
 		float wishDirection;
 		if (cmd->forwardmove != 0.0f || cmd->sidemove != 0.0f)
 			wishDirection = atan2f(-cmd->sidemove, cmd->forwardmove);
@@ -92,7 +92,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 			return;
 		lastWishDirection = wishDirection;
 
-		float delta = std::remainderf(wishDirection - realDirection, 2.0f * M_PI);
+		const float delta = std::remainderf(wishDirection - realDirection, 2.0f * M_PI);
 
 		float newDirection;
 		if (allowHardTurns && abs(delta) >= DEG2RAD(hardTurnThreshold))
@@ -105,10 +105,10 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		cmd->sidemove = -sinf(newDirection) * 450.0f;
 		AdjustButtons(cmd);
 	} else {
-		float oldYaw = Hooks::Game::CreateMove::lastCmd.viewangles.y;
-		float newYaw = cmd->viewangles.y;
+		const float oldYaw = Hooks::Game::CreateMove::lastCmd.viewangles.y;
+		const float newYaw = cmd->viewangles.y;
 
-		float change = std::remainderf(newYaw - oldYaw, 360.0f);
+		const float change = std::remainderf(newYaw - oldYaw, 360.0f);
 		if (!onlyWhenIdle || (cmd->sidemove == 0.0f && cmd->forwardmove == 0.0f)) {
 			cmd->forwardmove = 0.0f;
 			if (change < 0.0)

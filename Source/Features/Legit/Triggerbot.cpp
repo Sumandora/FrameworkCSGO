@@ -61,7 +61,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 
 	CTraceFilterEntity filter(localPlayer);
 
-	Trace trace = Utils::TraceRay(playerEye, forward, &filter);
+	const Trace trace = Utils::TraceRay(playerEye, forward, &filter);
 
 	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1))
 		return;
@@ -74,7 +74,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!player->IsAlive() || *player->GunGameImmunity())
 		return;
 
-	TeamID team = *player->Team();
+	const TeamID team = *player->Team();
 
 	if (!IsParticipatingTeam(team))
 		return;

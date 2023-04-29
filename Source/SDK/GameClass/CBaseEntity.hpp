@@ -54,7 +54,7 @@ public:
 		static std::map<void*, Matrix3x4[MAXSTUDIOBONES]> cache;
 		static int lastFrameCount;
 
-		int currFrameCount = Memory::globalVars->framecount;
+		const int currFrameCount = Memory::globalVars->framecount;
 		if (currFrameCount != lastFrameCount) {
 			cache.clear();
 			lastFrameCount = currFrameCount;
@@ -66,7 +66,8 @@ public:
 		return cache[this];
 	}
 
-	inline Vector GetBonePosition(int boneIndex) {
+	inline Vector GetBonePosition(int boneIndex)
+	{
 		return SetupBones()[boneIndex].Origin();
 	}
 };

@@ -7,7 +7,6 @@
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Interfaces.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../Utils/Prediction.hpp"
 
 #include <cstring>

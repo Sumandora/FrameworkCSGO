@@ -55,6 +55,6 @@ void Features::Visuals::NoPunch::SetupGUI()
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Visuals::NoPunch::Serializer)
-SERIALIZED_TYPE(xorstr_("Hide view punch"), hideViewPunch);
-SERIALIZED_TYPE(xorstr_("Hide aim punch"), hideAimPunch);
+SERIALIZED_TYPE(xorstr_("Hide view punch"), hideViewPunch)
+SERIALIZED_TYPE(xorstr_("Hide aim punch"), hideAimPunch)
 END_SERIALIZED_STRUCT

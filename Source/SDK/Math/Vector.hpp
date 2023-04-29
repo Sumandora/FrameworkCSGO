@@ -232,7 +232,7 @@ struct Vector {
 
 	[[nodiscard]] inline Vector Normalized() const
 	{
-		float len = Length();
+		const float len = Length();
 		return {
 			this->x / len,
 			this->y / len,

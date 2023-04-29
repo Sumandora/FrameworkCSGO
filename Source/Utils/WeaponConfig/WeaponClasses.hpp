@@ -57,7 +57,7 @@ static std::map<WeaponClass, std::vector<WeaponID>> weaponClassification {
 inline WeaponClass WeaponClassByID(WeaponID weaponId)
 {
 	for (auto [weaponClass, weaponIds] : weaponClassification) {
-		for (WeaponID weaponId2 : weaponIds) {
+		for (const WeaponID weaponId2 : weaponIds) {
 			if (weaponId == weaponId2)
 				return weaponClass;
 		}

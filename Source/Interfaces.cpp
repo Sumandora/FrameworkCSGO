@@ -30,9 +30,9 @@ void* Interfaces::UncoverCreateFunction(void* createFunc)
 	 * There is a preprocessor definition in the source engine which creates these exported interface functions.
 	 * But hey who could imagine that the same code also produces the same assembly right?
 	 */
-	Signature leaRax = SignatureScanner::BuildSignature(xorstr_("48 8d 05"));
-	Signature movRaxRax = SignatureScanner::BuildSignature(xorstr_("48 8b 00"));
-	Signature ret = SignatureScanner::BuildSignature(xorstr_("c3")); // Unnecessary but to follow the style
+	const Signature leaRax = SignatureScanner::BuildSignature(xorstr_("48 8d 05"));
+	const Signature movRaxRax = SignatureScanner::BuildSignature(xorstr_("48 8b 00"));
+	const Signature ret = SignatureScanner::BuildSignature(xorstr_("c3")); // Unnecessary but to follow the style
 
 	char* rip = reinterpret_cast<char*>(createFunc);
 	void* interfacePtr {};

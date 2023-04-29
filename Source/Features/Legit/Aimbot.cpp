@@ -91,7 +91,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
 			continue;
 
-		Trace trace = Utils::TraceRay(playerEye, head, &filter);
+		const Trace trace = Utils::TraceRay(playerEye, head, &filter);
 
 		if (trace.m_pEnt != player)
 			continue; // The enemy is behind something...
@@ -101,7 +101,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 		rotation -= viewAngles;
 		rotation = rotation.Wrap();
 
-		float delta = rotation.Length();
+		const float delta = rotation.Length();
 		if (!target || bestDistance > delta) {
 			target = player;
 			bestDistance = delta;
@@ -117,10 +117,10 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 
 	bestRotation /= LegitAimbotWeaponConfig->smoothness;
 
-	Vector before = Vector((float)event->motion.xrel, (float)event->motion.yrel, 0);
-	Vector goal = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
+	const Vector before = Vector((float)event->motion.xrel, (float)event->motion.yrel, 0);
+	const Vector goal = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
 
-	float dir = before.Normalized().Dot(goal.Normalized());
+	const float dir = before.Normalized().Dot(goal.Normalized());
 	if (dir < 0)
 		return; // We are trying to aim away
 

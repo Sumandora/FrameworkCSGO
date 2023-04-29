@@ -30,12 +30,13 @@ struct Matrix3x4 {
 	{
 		return matrix[i];
 	}
+
 	inline float* Base()
 	{
 		return &matrix[0][0];
 	}
 
-	inline Vector Origin() const
+	[[nodiscard]] inline Vector Origin() const
 	{
 		return { matrix[0][3], matrix[1][3], matrix[2][3] };
 	}

@@ -25,8 +25,7 @@ inline const char* LocalizeObserverMode(ObserverMode observerMode)
 {
 	if (!observerModeLocalization.contains(observerMode))
 		return nullptr;
-	else
-		return observerModeLocalization[observerMode];
+	return observerModeLocalization[observerMode];
 }
 
 #endif

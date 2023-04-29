@@ -99,8 +99,7 @@ Vector GetViewAngles(SemirageAimbotWeaponConfig* weaponConfig, const Vector& cur
 {
 	if (weaponConfig && weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
 		return Hooks::Game::CreateMove::lastCmd.viewangles; // TODO Track this
-	else
-		return currentViewAngles;
+	return currentViewAngles;
 }
 
 bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
@@ -119,7 +118,7 @@ bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
 
 bool CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
-	Vector head = otherPlayer->GetBonePosition(8);
+	const Vector head = otherPlayer->GetBonePosition(8);
 
 	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
 		return false;
@@ -143,13 +142,13 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 		if (!ShouldAttackPlayer(localPlayer, player))
 			continue;
 
-		Vector head = player->GetBonePosition(8);
+		const Vector head = player->GetBonePosition(8);
 
 		if (!CanPointBeSeen(localPlayer, player))
 			continue;
 
-		Vector viewDelta = (Utils::CalculateView(playerEye, head) - viewAngles).Wrap();
-		float length = viewDelta.Length();
+		const Vector viewDelta = (Utils::CalculateView(playerEye, head) - viewAngles).Wrap();
+		const float length = viewDelta.Length();
 
 		if (!target || bestDistance > length) {
 			target = player;
@@ -169,8 +168,8 @@ bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfi
 		if (!attacking) {
 			if (autoFire) {
 				return IsInputDown(autoFireKey, true);
-			} else
-				return false;
+			}
+			return false;
 		}
 	}
 
@@ -224,9 +223,9 @@ bool AutoFire(CBasePlayer* localPlayer, const Vector& viewangles)
 	Utils::AngleVectors(viewangles + *localPlayer->AimPunchAngle(), &forward);
 
 	CTraceFilterEntity filter(localPlayer);
-	Vector playerEye = localPlayer->GetEyePosition();
+	const Vector playerEye = localPlayer->GetEyePosition();
 
-	Trace trace = Utils::TraceRay(playerEye, playerEye + forward * 4096.0f, &filter);
+	const Trace trace = Utils::TraceRay(playerEye, playerEye + forward * 4096.0f, &filter);
 
 	if (!dontAimThroughSmoke || !Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1)) {
 		CBaseEntity* entity = trace.m_pEnt;
@@ -245,13 +244,14 @@ bool AutoFire(CBasePlayer* localPlayer, const Vector& viewangles)
 	return false;
 }
 
-bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles) {
+bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles)
+{
 	if (lastWeaponConfig && lastWeaponConfig->silent && wasFaked && lastWeaponConfig->smoothRotateToOrigin) {
 		RotateToOrigin(lastWeaponConfig, currentViewAngles, targetViewAngles);
 		return true;
-	} else {
-		wasFaked = false;
 	}
+	wasFaked = false;
+
 	return false;
 }
 
@@ -278,8 +278,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		return willBeSilent;
 	}
 
-	Vector viewAngles = GetViewAngles(lastWeaponConfig, cmd->viewangles);
-	Vector recoilView = cmd->viewangles + *localPlayer->AimPunchAngle() * 2.0f;
+	const Vector viewAngles = GetViewAngles(lastWeaponConfig, cmd->viewangles);
+	const Vector recoilView = cmd->viewangles + *localPlayer->AimPunchAngle() * 2.0f;
 
 	if (ShouldAim(localPlayer, weaponConfig, cmd->buttons & IN_ATTACK)) {
 		CBasePlayer* target = FindTarget(localPlayer, recoilView);
@@ -288,7 +288,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 			willBeSilent = Relax(viewAngles, cmd->viewangles);
 		} else {
 			// Critical moment: We are facing an enemy
-			Vector targetView = Utils::CalculateView(localPlayer->GetEyePosition(), target->GetBonePosition(8));
+			const Vector targetView = Utils::CalculateView(localPlayer->GetEyePosition(), target->GetBonePosition(8));
 
 			Vector wrappedDelta = (targetView - recoilView /*TODO Config for fake rotation fov*/).Wrap();
 			wrappedDelta.x /= weaponConfig->fovScaleX;
@@ -302,7 +302,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 				if (wasFaked && !weaponConfig->silent) {
 					// If we were faking, then we need to calculate another view for the player, because the server view is not real
-					Vector playerView{};
+					Vector playerView {};
 					Interfaces::engine->GetViewAngles(&playerView);
 					SetRotation(weaponConfig, targetView, playerView, *localPlayer->AimPunchAngle(), playerView);
 
@@ -314,7 +314,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 				SetRotation(weaponConfig, targetView, wasFaked ? Hooks::Game::CreateMove::lastCmd.viewangles : cmd->viewangles, *localPlayer->AimPunchAngle(), cmd->viewangles);
 
-				if(!wasFaked) {
+				if (!wasFaked) {
 					lastWeaponConfig = weaponConfig; // If the user decides to switch the weapon, and he was using rotate to origin silent aim, we can't just give up...
 				}
 
@@ -352,14 +352,14 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 		return; // Without local player we can't shoot, can we?
 
 	if (showDesyncedView && wasFaked) {
-		Vector eye = localPlayer->GetEyePosition();
+		const Vector eye = localPlayer->GetEyePosition();
 
-		Vector fakedView = Hooks::Game::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
+		const Vector fakedView = Hooks::Game::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
 		Vector forward;
 		Utils::AngleVectors(fakedView, &forward);
 
 		CTraceFilterEntity filter(localPlayer);
-		Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
+		const Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
 
 		ImVec2 screenspaceView;
 		if (Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
@@ -370,17 +370,17 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 	if (!weaponConfig)
 		return;
 
-	ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-	ImVec2 center(displaySize.x / 2.0f, displaySize.y / 2.0f);
+	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+	const ImVec2 center(displaySize.x / 2.0f, displaySize.y / 2.0f);
 
 	if (fovCircle) {
-		int size = 100;
+		const int size = 100;
 		ImVec2 points[size];
 
-		float fov = weaponConfig->fov / Hooks::Game::OverrideView::lastViewSetup.fov * displaySize.x / 2.0f;
+		const float fov = weaponConfig->fov / Hooks::Game::OverrideView::lastViewSetup.fov * displaySize.x / 2.0f;
 
 		for (int i = 0; i < size; i++) {
-			float rad = (float)i / (float)(size - 1) * (float)M_PI * 2.0f;
+			const float rad = (float)i / (float)(size - 1) * (float)M_PI * 2.0f;
 			points[i] = ImVec2(
 				center.x + cosf(rad) * fov * weaponConfig->fovScaleY, // remember that x and y have to be flipped here
 				center.y - sinf(rad) * fov * weaponConfig->fovScaleX);

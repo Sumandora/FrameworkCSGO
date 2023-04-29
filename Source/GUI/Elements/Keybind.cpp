@@ -13,9 +13,9 @@ bool IsInputDown(int key, bool _default, bool disableInMenu)
 	if (!Gui::visible || !disableInMenu) {
 		if (key > 0)
 			return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
-		else if (key < 0)
+		if (key < 0)
 			return ImGui::IsMouseDown(abs(key) - 1);
-		else if (key == 0)
+		if (key == 0)
 			return _default;
 		return false;
 	}
