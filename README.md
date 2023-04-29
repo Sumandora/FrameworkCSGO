@@ -1,5 +1,5 @@
 # FrameworkCSGO
-A fully-featured training software for Counter Strike: Global Offensive, made for Linux with [Framework](https://github.com/Sumandora/Framework)
+A fully-featured training software for Counter Strike: Global Offensive, made for Linux
 ### WARNING: This program is being detected by Valve. Usage on official, custom or private servers will most likely result in punishment from Valve!
 ## Installation
 
