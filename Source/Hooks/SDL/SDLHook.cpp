@@ -2,8 +2,8 @@
 
 #include <dlfcn.h>
 
-#include "xorstr.hpp"
 #include "../../Memory.hpp"
+#include "xorstr.hpp"
 
 SDLHook::SDLHook(const char* name, void* hook)
 {

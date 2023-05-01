@@ -35,7 +35,7 @@ void* Interfaces::UncoverCreateFunction(void* createFunc)
 	const Signature ret = SignatureScanner::BuildSignature(xorstr_("c3")); // Unnecessary but to follow the style
 
 	char* rip = reinterpret_cast<char*>(createFunc);
-	void* interfacePtr {};
+	void* interfacePtr{};
 	while (true) {
 		if (SignatureScanner::DoesMatch(leaRax, rip)) { // LEA rax, [rip + offset]
 			interfacePtr = Memory::RelativeToAbsolute(reinterpret_cast<char*>(rip) + 3 /* skip the lea */);

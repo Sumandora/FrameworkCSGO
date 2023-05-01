@@ -1,4 +1,4 @@
-#include "../../Visuals.hpp"
+#include "../Visuals.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -194,7 +194,7 @@ bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const
 	return false;
 }
 
-void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, CBaseEntity* spectatorEntity, const Vector& viewangles)
+void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, const Vector& viewangles)
 {
 	CCollideable* collideable = entity->Collision();
 
@@ -214,7 +214,7 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 	if (visible) {
 		if (entity->IsPlayer()) {
 			auto* player = reinterpret_cast<CBasePlayer*>(entity);
-			if (!player->IsAlive() || *player->Team() == TeamID::TEAM_UNASSIGNED || entity == spectatorEntity)
+			if (!player->IsAlive() || *player->Team() == TeamID::TEAM_UNASSIGNED)
 				return;
 			PlayerStateSettings* settings;
 			if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
@@ -222,7 +222,7 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 			else if (*player->Team() == TeamID::TEAM_SPECTATOR || !player->IsAlive()) {
 				char name[128];
 				if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-					PlayerInfo info {};
+					PlayerInfo info{};
 					Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
 					strcpy(name, info.name);
 				}
@@ -320,21 +320,21 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	std::vector<std::pair<float, CBaseEntity*>> entities;
 
 	// The first object is always the WorldObj
-	for (int i = 1; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
+	for (int i = 1; i <= Interfaces::entityList->GetHighestEntityIndex(); i++) {
 		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (!entity || entity->GetDormant())
+		if (!entity || entity->GetDormant() || entity == spectatorEntity)
 			continue;
 		if (!sortEntitiesByDistance)
-			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
+			DrawEntity(drawList, entity, localPlayer, viewangles);
 		else {
 			const float distanceToCamera = (*entity->Origin() - Hooks::Game::OverrideView::cameraPosition).Length();
 			entities.emplace_back(distanceToCamera, entity);
 		}
 	}
 	if (sortEntitiesByDistance) {
-		std::ranges::sort(entities, std::greater {});
+		std::ranges::sort(entities, std::greater{});
 		for (auto [_, entity] : entities) {
-			DrawEntity(drawList, entity, localPlayer, spectatorEntity, viewangles);
+			DrawEntity(drawList, entity, localPlayer, viewangles);
 		}
 	}
 }

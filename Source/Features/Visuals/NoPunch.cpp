@@ -1,4 +1,4 @@
-#include "../Visuals.hpp"
+#include "Visuals.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
@@ -15,7 +15,7 @@ static Vector lastAimPunch;
 
 void Features::Visuals::NoPunch::HidePunch()
 {
-	if((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
+	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
@@ -34,7 +34,7 @@ void Features::Visuals::NoPunch::HidePunch()
 
 void Features::Visuals::NoPunch::RestorePunch()
 {
-	if((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
+	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
 
 	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();

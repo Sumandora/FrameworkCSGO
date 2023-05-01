@@ -68,12 +68,12 @@ bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const sh
 		float x, y, z;
 	};
 
-	VectorStruct fromStruct {};
+	VectorStruct fromStruct{};
 	fromStruct.x = from.x;
 	fromStruct.y = from.y;
 	fromStruct.z = from.z;
 
-	VectorStruct toStruct {};
+	VectorStruct toStruct{};
 	toStruct.x = to.x;
 	toStruct.y = to.y;
 	toStruct.z = to.z;

@@ -77,7 +77,7 @@ public:
 		}
 	}
 
-	void SetupGUI() {
+	void SetupGUI(){
 		TABBAR(xorstr_("#Weapon config"), [&]() {
 			TABITEM(xorstr_("Shared"), [&]() {
 				WeaponGUICallback(sharedConfig);
@@ -124,7 +124,8 @@ public:
 		return GetSharedConfig();
 	}
 
-	T* GetSharedConfig() {
+	T* GetSharedConfig()
+	{
 		return &sharedConfig;
 	}
 

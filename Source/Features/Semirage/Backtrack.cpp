@@ -1,11 +1,11 @@
-#include "../Semirage.hpp"
+#include "Semirage.hpp"
 
 #include <deque>
 #include <map>
 #include <ranges>
 #include <vector>
 
-#include "../General.hpp"
+#include "../General/General.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
@@ -18,7 +18,7 @@
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 
-#include "../Visuals.hpp"
+#include "../Visuals/Visuals.hpp"
 
 static bool enabled = false;
 static float scale = 1.0f;
@@ -27,8 +27,8 @@ static bool friendlyFire = false;
 static bool visualize = false;
 
 struct Tick {
-	float simulationTime {};
-	int tickCount {};
+	float simulationTime{};
+	int tickCount{};
 	Vector origin;
 	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
 };
@@ -209,7 +209,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 				ticks[i].end());
 		}
 
-		Tick tick {};
+		Tick tick{};
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
 		tick.origin = *player->Origin();

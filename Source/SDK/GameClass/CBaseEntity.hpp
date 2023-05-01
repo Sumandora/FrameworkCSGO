@@ -34,8 +34,7 @@ public:
 		return *(RenderMode() + 1);
 	}
 
-	// https://github.com/danielkrupinski/Osiris/blob/444d7dd9daeb0f46de412dbb524c91dfdedf1723/Source/CSGO/Entity.h#L79
-	//  IClientNetworkable
+	// IClientNetworkable
 	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(10, entindex, int, (), (this + sizeof(void*) * 2))

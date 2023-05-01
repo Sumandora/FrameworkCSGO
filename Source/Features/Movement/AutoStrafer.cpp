@@ -1,8 +1,8 @@
-#include "../Movement.hpp"
+#include "Movement.hpp"
 
 #include "imgui.h"
 
-#include "../General.hpp"
+#include "../General/General.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"

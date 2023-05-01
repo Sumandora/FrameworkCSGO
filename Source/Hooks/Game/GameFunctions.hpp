@@ -1,10 +1,10 @@
 #ifndef HOOKS_GAMEFUNCTIONS_FUNCTIONS
 #define HOOKS_GAMEFUNCTIONS_FUNCTIONS
 
-#include "../../SDK/GameClass/CViewSetup.hpp"
-#include "../../SDK/GameClass/CUserCmd.hpp"
-#include "../../SDK/Math/Matrix4x4.hpp"
 #include "../../SDK/ClientFrameStage.hpp"
+#include "../../SDK/GameClass/CUserCmd.hpp"
+#include "../../SDK/GameClass/CViewSetup.hpp"
+#include "../../SDK/Math/Matrix4x4.hpp"
 
 #include "../Hooks.hpp"
 

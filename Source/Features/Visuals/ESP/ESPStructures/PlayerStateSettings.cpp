@@ -7,13 +7,13 @@
 
 #include "../../../../Interfaces.hpp"
 
-#include "../../../Visuals.hpp"
+#include "../../Visuals.hpp"
 
 void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const
 {
 	char name[128];
 	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-		PlayerInfo info {};
+		PlayerInfo info{};
 		Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
 		strcpy(name, info.name);
 	}

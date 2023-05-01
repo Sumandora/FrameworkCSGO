@@ -1,11 +1,11 @@
 #ifndef FEATURES_GENERAL
 #define FEATURES_GENERAL
 
-#include "../SDK/GameClass/CMoveData.hpp"
-#include "../SDK/GameClass/CUserCmd.hpp"
-#include "../SDK/MoveType.hpp"
+#include "../../SDK/GameClass/CMoveData.hpp"
+#include "../../SDK/GameClass/CUserCmd.hpp"
+#include "../../SDK/MoveType.hpp"
 
-#include "../Serialization/Serializer.hpp"
+#include "../../Serialization/Serializer.hpp"
 
 namespace Features::General {
 	namespace Menu {

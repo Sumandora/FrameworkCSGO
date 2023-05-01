@@ -111,7 +111,7 @@ enum class WeaponID : short {
 	STUDDED_HYDRA_GLOVES = 5035
 };
 
-static std::map<WeaponID, const char*> weaponLocalization {
+static std::map<WeaponID, const char*> weaponLocalization{
 	{ WeaponID::WEAPON_INVALID, strdup(xorstr_("Invalid weapon")) },
 	{ WeaponID::WEAPON_NONE, strdup(xorstr_("None")) },
 	{ WeaponID::WEAPON_DEAGLE, strdup(xorstr_("Desert Eagle")) },

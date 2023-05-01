@@ -1,4 +1,4 @@
-#include "../Visuals.hpp"
+#include "Visuals.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -45,15 +45,15 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (!target)
 			continue;
 
-		PlayerInfo first {};
+		PlayerInfo first{};
 		Interfaces::engine->GetPlayerInfo(i, &first);
 
-		PlayerInfo second {};
+		PlayerInfo second{};
 		Interfaces::engine->GetPlayerInfo(target->entindex(), &second);
 
 		const ObserverMode observerMode = *player->ObserverMode();
 		const char* observerModeName = LocalizeObserverMode(observerMode);
-		if(!observerModeName)
+		if (!observerModeName)
 			return; // We don't have a name?
 
 		char text[strlen(first.name) + 4 + strlen(second.name) + 2 + strlen(observerModeName) + 1];

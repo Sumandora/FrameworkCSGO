@@ -1,7 +1,7 @@
 #include "../GameFunctions.hpp"
 
-#include "../../../Features/Semirage.hpp"
-#include "../../../Features/Visuals.hpp"
+#include "../../../Features/Semirage/Semirage.hpp"
+#include "../../../Features/Visuals/Visuals.hpp"
 #include "../../../GameCache.hpp"
 #include "../../../Interfaces.hpp"
 

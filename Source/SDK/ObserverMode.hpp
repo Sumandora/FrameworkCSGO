@@ -11,7 +11,7 @@ enum class ObserverMode : int {
 	OBS_MODE_ROAMING
 };
 
-static std::map<ObserverMode, const char*> observerModeLocalization {
+static std::map<ObserverMode, const char*> observerModeLocalization{
 	{ ObserverMode::OBS_MODE_NONE, strdup(xorstr_("None")) },
 	{ ObserverMode::OBS_MODE_DEATHCAM, strdup(xorstr_("Deathcam")) },
 	{ ObserverMode::OBS_MODE_FREEZECAM, strdup(xorstr_("Freezecam")) },

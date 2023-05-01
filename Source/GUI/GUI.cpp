@@ -11,9 +11,9 @@
 
 #include "../Hooks/SDL/SDLFunctions.hpp"
 
-#include "../Features/General.hpp"
-#include "../Features/Semirage.hpp"
-#include "../Features/Visuals.hpp"
+#include "../Features/General/General.hpp"
+#include "../Features/Semirage/Semirage.hpp"
+#include "../Features/Visuals/Visuals.hpp"
 
 #include "Construction/Settings.hpp"
 
@@ -25,23 +25,6 @@ void Gui::Create()
 {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-
-	const float fontSize = 24.0f;
-
-	// Might not work on certain distros/configurations
-	bool loadedFont = false;
-
-	for (const char* path : {
-			 xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"),
-			 xorstr_("/usr/share/fonts/google-noto/NotoSans-Regular.ttf") }) {
-		if (access(path, F_OK) == 0 && io.Fonts->AddFontFromFileTTF(path, fontSize)) {
-			loadedFont = true;
-			break;
-		}
-	}
-
-	if (!loadedFont)
-		io.Fonts->AddFontDefault();
 
 	io.IniFilename = nullptr;
 	io.LogFilename = nullptr;
@@ -62,11 +45,36 @@ void Gui::SwapWindow(SDL_Window* window)
 	std::call_once(init, [&]() {
 		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 		ImGui_ImplOpenGL3_Init();
+
+		float dpi;
+		const int displayIndex = SDL_GetWindowDisplayIndex(window);
+		SDL_GetDisplayDPI(displayIndex, &dpi, nullptr, nullptr);
+
+		// We are running straight into the multi monitor dpi issue here, but to my knowledge there is no appropriate solution to this when using ImGui
+		const float fontSize = floor(dpi / 4.0f);
+
+		// Might not work on certain distros/configurations
+		bool loadedFont = false;
+
+		for (const char* path : {
+				 xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"),
+				 xorstr_("/usr/share/fonts/google-noto/NotoSans-Regular.ttf") }) {
+			if (access(path, F_OK) == 0 && io.Fonts->AddFontFromFileTTF(path, fontSize)) {
+				loadedFont = true;
+				break;
+			}
+		}
+
+		if (!loadedFont) {
+			ImFontConfig config;
+			config.SizePixels = fontSize;
+			io.Fonts->AddFontDefault(&config);
+		}
 	});
 
 	io.SetPlatformImeDataFn = nullptr;
 
-	int width {}, height {};
+	int width, height;
 	SDL_GetWindowSize(window, &width, &height);
 
 	io.DisplaySize = ImVec2((float)width, (float)height);

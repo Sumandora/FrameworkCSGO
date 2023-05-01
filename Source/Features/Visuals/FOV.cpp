@@ -1,4 +1,4 @@
-#include "../Visuals.hpp"
+#include "Visuals.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -55,12 +55,12 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 			const bool isForcingOffset = offsetX != 0 || offsetY != 0 || offsetZ != 0;
 
 			if (isForcingFOV || isForcingOffset) {
-				Vector viewAngles {};
+				Vector viewAngles{};
 				Interfaces::engine->GetViewAngles(&viewAngles);
 
-				Vector forward {};
-				Vector right {};
-				Vector up {};
+				Vector forward{};
+				Vector right{};
+				Vector up{};
 				Utils::AngleVectors(viewAngles, &forward, &right, &up);
 
 				Vector& origin = viewModel->GetRenderOrigin();
