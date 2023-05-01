@@ -1,4 +1,4 @@
-#include "../General.hpp"
+#include "General.hpp"
 
 #include "xorstr.hpp"
 
@@ -13,8 +13,8 @@ static bool enabled = true;
 static int duration = 5000;
 
 struct Entry {
-	long time {};
-	char text[512] {}; // When your message is longer than that, you should probably rephrase it lmao
+	long time{};
+	char text[512]{}; // When your message is longer than that, you should probably rephrase it lmao
 };
 
 std::vector<Entry> entries;

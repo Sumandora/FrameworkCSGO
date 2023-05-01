@@ -1,4 +1,4 @@
-#include "../Semirage.hpp"
+#include "Semirage.hpp"
 
 #include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"

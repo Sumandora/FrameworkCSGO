@@ -1,4 +1,4 @@
-#include "../Legit.hpp"
+#include "Legit.hpp"
 
 #include "imgui.h"
 
@@ -68,7 +68,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	Interfaces::engine->GetViewAngles(&viewAngles);
 
 	CBasePlayer* target = nullptr;
-	float bestDistance {};
+	float bestDistance{};
 	Vector bestRotation;
 
 	CTraceFilterEntity filter(localPlayer);

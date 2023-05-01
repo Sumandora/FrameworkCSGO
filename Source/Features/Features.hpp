@@ -3,11 +3,11 @@
 
 #include "../Serialization/Serializer.hpp"
 
-#include "General.hpp"
-#include "Legit.hpp"
-#include "Movement.hpp"
-#include "Semirage.hpp"
-#include "Visuals.hpp"
+#include "General/General.hpp"
+#include "Legit/Legit.hpp"
+#include "Movement/Movement.hpp"
+#include "Semirage/Semirage.hpp"
+#include "Visuals/Visuals.hpp"
 
 namespace Features {
 	// GUI

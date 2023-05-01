@@ -11,7 +11,7 @@ void Serialization::Serializer::Serialize(const char* name, ImColor& type, Direc
 	case DESERIALIZE:
 		const std::string str = GetValue(name);
 		if (!str.empty()) {
-			char* saveptr {};
+			char* saveptr{};
 			char* cstr = const_cast<char*>(str.c_str());
 			type.Value.x = std::stof(strtok_r(cstr, xorstr_("|"), &saveptr));
 			type.Value.y = std::stof(strtok_r(nullptr, xorstr_("|"), &saveptr));

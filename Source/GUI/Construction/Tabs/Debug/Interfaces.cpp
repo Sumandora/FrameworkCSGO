@@ -34,7 +34,7 @@ void Gui::Construction::Debug::InterfacesTab()
 			InterfaceReg* interface = *static_cast<InterfaceReg**>(interfaces);
 
 			while (interface != nullptr) {
-				Interface t {};
+				Interface t{};
 				t.reg = interface;
 				t.uncoveredAddress = nullptr;
 				t.realAddress = nullptr;

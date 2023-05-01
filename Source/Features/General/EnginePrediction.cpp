@@ -1,4 +1,4 @@
-#include "../General.hpp"
+#include "General.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -14,7 +14,7 @@
 bool Features::General::EnginePrediction::enabled = true;
 static bool forceResetVelocityModifier = false;
 
-CMoveData Features::General::EnginePrediction::moveData {};
+CMoveData Features::General::EnginePrediction::moveData{};
 int Features::General::EnginePrediction::prePredictionFlags = 0;
 MoveType Features::General::EnginePrediction::prePredictionMoveType = MOVETYPE_NONE;
 

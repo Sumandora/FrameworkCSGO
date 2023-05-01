@@ -1,7 +1,7 @@
 #include "../SDLFunctions.hpp"
 
+#include "../../../Features/Legit/Legit.hpp"
 #include "../../../GUI/GUI.hpp"
-#include "../../../Features/Legit.hpp"
 
 int Hooks::SDL::PollEvents::HookFunc(SDL_Event* event)
 {

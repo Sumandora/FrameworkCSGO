@@ -11,7 +11,7 @@
 #include "Memory.hpp"
 #include "Netvars.hpp"
 
-#include "Features/General.hpp"
+#include "Features/General/General.hpp"
 
 // TODO Clantag
 // TODO Force Crosshair

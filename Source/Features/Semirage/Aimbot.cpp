@@ -1,4 +1,4 @@
-#include "../Semirage.hpp"
+#include "Semirage.hpp"
 
 #include "imgui.h"
 
@@ -18,9 +18,9 @@
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
-#include "../Visuals.hpp"
+#include "../Visuals/Visuals.hpp"
 
-#include <algorithm>
+#include <optional>
 
 static bool enabled = false;
 static bool autoFire = false;
@@ -69,6 +69,7 @@ static float radius = 5.0f;
 
 static bool wasFaked = false;
 static SemirageAimbotWeaponConfig* lastWeaponConfig = nullptr;
+static std::optional<Vector> aimTarget;
 
 CBasePlayer* GetLocalPlayer()
 {
@@ -134,7 +135,7 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 	const Vector playerEye = localPlayer->GetEyePosition();
 
 	CBasePlayer* target = nullptr;
-	float bestDistance {};
+	float bestDistance{};
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
@@ -255,6 +256,24 @@ bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles)
 	return false;
 }
 
+void CalculateAimTarget(CBasePlayer* localPlayer)
+{
+	if (!showDesyncedView || !wasFaked) {
+		aimTarget.reset();
+		return;
+	}
+	const Vector eye = localPlayer->GetEyePosition();
+
+	const Vector fakedView = Hooks::Game::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
+	Vector forward;
+	Utils::AngleVectors(fakedView, &forward);
+
+	CTraceFilterEntity filter(localPlayer);
+	const Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
+
+	aimTarget = trace.endpos;
+}
+
 bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !Interfaces::engine->IsInGame())
@@ -274,6 +293,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 			RotateToOrigin(lastWeaponConfig, Hooks::Game::CreateMove::lastCmd.viewangles, cmd->viewangles);
 			willBeSilent = true;
 		}
+		CalculateAimTarget(localPlayer);
 		// Mhm, no work to do. Stop here
 		return willBeSilent;
 	}
@@ -302,7 +322,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 				if (wasFaked && !weaponConfig->silent) {
 					// If we were faking, then we need to calculate another view for the player, because the server view is not real
-					Vector playerView {};
+					Vector playerView{};
 					Interfaces::engine->GetViewAngles(&playerView);
 					SetRotation(weaponConfig, targetView, playerView, *localPlayer->AimPunchAngle(), playerView);
 
@@ -336,6 +356,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 				cmd->buttons |= IN_ATTACK; // FIRE!!!
 	}
 
+	CalculateAimTarget(localPlayer);
 	return willBeSilent;
 }
 
@@ -351,18 +372,9 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 	if (!localPlayer || !localPlayer->IsAlive())
 		return; // Without local player we can't shoot, can we?
 
-	if (showDesyncedView && wasFaked) {
-		const Vector eye = localPlayer->GetEyePosition();
-
-		const Vector fakedView = Hooks::Game::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
-		Vector forward;
-		Utils::AngleVectors(fakedView, &forward);
-
-		CTraceFilterEntity filter(localPlayer);
-		const Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
-
+	if (aimTarget.has_value()) {
 		ImVec2 screenspaceView;
-		if (Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, trace.endpos, screenspaceView))
+		if (Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, aimTarget.value(), screenspaceView))
 			drawList->AddCircleFilled(screenspaceView, radius, viewColor); // TODO Perspective division
 	}
 

@@ -26,7 +26,7 @@ struct Ray {
 		m_Start = start;
 	}
 
-	void Init(Vector const& start, Vector const& end, Vector const& mins, Vector const& maxs)
+	void Init(const Vector& start, const Vector& end, const Vector& mins, const Vector& maxs)
 	{
 		m_Delta = end - start;
 		m_pWorldAxisTransform = nullptr;

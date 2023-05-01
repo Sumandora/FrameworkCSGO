@@ -1,11 +1,11 @@
 #ifndef FEATURES_VISUALS
 #define FEATURES_VISUALS
 
-#include "../SDK/GameClass/CUserCmd.hpp"
-#include "../SDK/GameClass/CViewSetup.hpp"
-#include "../SDK/Math/Matrix4x4.hpp"
-#include "../Serialization/Serializer.hpp"
-#include "Visuals/ESP/ESPStructure.hpp"
+#include "../../SDK/GameClass/CUserCmd.hpp"
+#include "../../SDK/GameClass/CViewSetup.hpp"
+#include "../../SDK/Math/Matrix4x4.hpp"
+#include "../../Serialization/Serializer.hpp"
+#include "ESP/ESPStructure.hpp"
 
 namespace Features::Visuals {
 	namespace Esp {

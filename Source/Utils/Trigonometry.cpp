@@ -60,7 +60,7 @@ void Utils::VectorAngles(Vector& forward, Vector& angles)
 Vector Utils::CalculateView(const Vector& a, const Vector& b)
 {
 	Vector delta = b - a;
-	Vector rotation {};
+	Vector rotation{};
 	Utils::VectorAngles(delta, rotation);
 	return rotation;
 }
