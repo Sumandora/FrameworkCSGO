@@ -41,3 +41,7 @@ INIT_LAZY_CONVAR(sv_client_max_interp_ratio)
 INIT_LAZY_CONVAR(sv_maxspeed)
 INIT_LAZY_CONVAR(sv_airaccelerate)
 INIT_LAZY_CONVAR(sv_air_max_wishspeed)
+
+// Mouse
+INIT_LAZY_CONVAR(m_yaw)
+INIT_LAZY_CONVAR(m_pitch)

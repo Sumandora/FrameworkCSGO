@@ -18,7 +18,7 @@ public:
 	int weaponselect;
 	int weaponsubtype;
 	int random_seed;
-	short mousedx; // TODO Fix these
+	short mousedx;
 	short mousedy;
 	bool hasbeenpredicted;
 	Vector viewangles_copy;

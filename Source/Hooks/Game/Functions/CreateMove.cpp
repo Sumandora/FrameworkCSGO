@@ -1,6 +1,9 @@
 #include "../GameFunctions.hpp"
 
 #include "../../../Features/Features.hpp"
+#include "../../../Interfaces.hpp"
+
+#include "../../../Utils/MouseCorrection.hpp"
 
 bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
@@ -30,6 +33,8 @@ bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, C
 		Features::Semirage::Backtrack::CreateMove(cmd);
 	}
 	Features::General::EnginePrediction::EndPrediction();
+
+	Utils::CorrectMouseDeltas(cmd);
 
 	cmd->viewangles_copy = cmd->viewangles;
 	cmd->buttons_copy = cmd->buttons;

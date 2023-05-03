@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Interfaces.hpp"
+
 #include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
@@ -16,6 +17,7 @@ static void* lineGoesThroughSmoke;
 
 void* GetBaseAddress(const char* name)
 {
+	// TODO dl_iterate_phdr
 	void* handle = dlopen(name, RTLD_NOLOAD | RTLD_NOW);
 	void* baseAddress = *static_cast<void**>(handle);
 	dlclose(handle); // Reset ref count
@@ -39,12 +41,14 @@ void Memory::Create()
 	RetAddrSpoofer::leaveRet = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("c9 c3")), baseClientVTable[0]); // random code piece
 
 	void* hudProcessInput = baseClientVTable[10];
+	void* getClientMode = RelativeToAbsolute(reinterpret_cast<char*>(hudProcessInput) + 12);
+	clientMode = *reinterpret_cast<CClientMode**>(RelativeToAbsolute(reinterpret_cast<char*>(getClientMode) + 4));
+
 	void* hudUpdate = baseClientVTable[11];
+	globalVars = *reinterpret_cast<CGlobalVars**>(RelativeToAbsolute(reinterpret_cast<char*>(hudUpdate) + 16));
 
-	void* getClientMode = RelativeToAbsolute(static_cast<char*>(hudProcessInput) + 12);
-
-	clientMode = *static_cast<void**>(RelativeToAbsolute(static_cast<char*>(getClientMode) + 4));
-	globalVars = *static_cast<CGlobalVars**>(RelativeToAbsolute(static_cast<char*>(hudUpdate) + 16));
+	//void* in_activateMouse = baseClientVTable[16];
+	//cinput = *reinterpret_cast<CInput**>(RelativeToAbsolute(reinterpret_cast<char*>(in_activateMouse) + 3));
 
 	// If this index changes I'm mad bro...
 	// To find the method, just search for the moveHelper and look at all usages
@@ -52,7 +56,7 @@ void Memory::Create()
 	void* categorizeGroundSurface = gameMovementVTable[69];
 
 	void* leaInstr = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("48 8d 05") /* lea rax */), categorizeGroundSurface);
-	moveHelper = *static_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
+	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
 
 	lineGoesThroughSmoke = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 e5 41 56 41 55 41 54 53 48 83 ec 30 8b 05 ?? ?? ?? ?? 66")), GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }

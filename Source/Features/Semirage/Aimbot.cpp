@@ -220,6 +220,9 @@ Vector SetRotation(SemirageAimbotWeaponConfig* weaponConfig, const Vector& targe
 
 bool AutoFire(CBasePlayer* localPlayer, const Vector& viewangles)
 {
+	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
+		return false;
+
 	Vector forward;
 	Utils::AngleVectors(viewangles + *localPlayer->AimPunchAngle(), &forward);
 

@@ -1,12 +1,14 @@
 #ifndef MEMORY
 #define MEMORY
 
+class CClientMode;
 class IMoveHelper;
 #include "SDK/GameClass/CGlobalVars.hpp"
+class CUserCmd;
 struct Vector;
 
 namespace Memory {
-	inline void* clientMode;
+	inline CClientMode* clientMode;
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;
 
