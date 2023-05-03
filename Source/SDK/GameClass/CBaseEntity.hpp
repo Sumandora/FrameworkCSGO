@@ -7,12 +7,15 @@
 
 #include "../Definitions/Bones.hpp"
 #include "../Math/Matrix3x4.hpp"
+#include "../Model/Model.hpp"
 #include "../Netvars/ClientClass.hpp"
 #include "../TeamID.hpp"
 
 #include "../../Netvars.hpp"
+#include "../Math/BoundingBox.hpp"
 
 #include <map>
+#include <optional>
 
 class CBaseEntity {
 public:
@@ -42,6 +45,7 @@ public:
 	// IClientRenderable
 	VIRTUAL_METHOD(1, GetRenderOrigin, Vector&, (), (this + sizeof(void*)))
 	VIRTUAL_METHOD(2, GetRenderAngles, Vector&, (), (this + sizeof(void*)))
+	VIRTUAL_METHOD(8, GetModel, Model*, (), (this + sizeof(void*)))
 	VIRTUAL_METHOD(13, SetupBones, bool, (Matrix3x4 * pBoneMatrix, int nMaxBones, int nBoneMask, float flCurTime = 0), (this + sizeof(void*), pBoneMatrix, nMaxBones, nBoneMask, flCurTime))
 
 	// Actually CBaseEntity
@@ -68,6 +72,21 @@ public:
 	inline Vector GetBonePosition(int boneIndex)
 	{
 		return SetupBones()[boneIndex].Origin();
+	}
+
+	inline std::optional<BoundingBox> EntityBounds()
+	{
+		if (IsPlayer()) {
+			CCollideable* collision = Collision();
+			if(!collision)
+				return std::nullopt;
+			return BoundingBox{ *collision->ObbMins(), *collision->ObbMaxs() };
+		} else {
+			Model* model = GetModel();
+			if(!model)
+				return std::nullopt;
+			return BoundingBox{ model->mins, model->maxs };
+		}
 	}
 };
 

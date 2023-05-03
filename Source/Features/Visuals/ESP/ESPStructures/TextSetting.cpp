@@ -6,10 +6,10 @@
 #include "../../../../GUI/Elements/Popup.hpp"
 
 TextSetting::TextSetting()
-	: enabled(false)
+	: enabled(true)
 	, fontScale(1.0f)
 	, fontColor(ImGuiColors::white)
-	, shadow(false)
+	, shadow(true)
 	, shadowColor(ImGuiColors::black)
 {
 }

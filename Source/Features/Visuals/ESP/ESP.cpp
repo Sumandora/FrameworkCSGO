@@ -41,6 +41,14 @@ static BoxNameSetting other;
 // TODO Drone ESP
 
 static std::map<int, bool> visibilityCache;
+static std::map<const char*, const char*> lootCrateNames {
+	{ strdup(xorstr_("case_pistol.mdl")), strdup(xorstr_("Pistol Case")) },
+	{ strdup(xorstr_("case_light_weapon.mdl")), strdup(xorstr_("Light Case")) },
+	{ strdup(xorstr_("case_heavy_weapon.mdl")), strdup(xorstr_("Heavy Case")) },
+	{ strdup(xorstr_("case_explosive.mdl")), strdup(xorstr_("Explosive Case")) },
+	{ strdup(xorstr_("case_tools.mdl")), strdup(xorstr_("Tools Case")) },
+	{ strdup(xorstr_("dufflebag.mdl")), strdup(xorstr_("Cash Dufflebag")) }
+};
 
 bool Features::Visuals::Esp::WorldToScreen(const Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
 {
@@ -121,10 +129,10 @@ void Features::Visuals::Esp::UpdateVisibility()
 	}
 }
 
-bool CalculateScreenRectangle(const Vector& origin, CCollideable* collideable, ImVec4& rectangle)
+bool CalculateScreenRectangle(const Vector& origin, const BoundingBox& boundingBox, ImVec4& rectangle)
 {
-	const Vector min = origin + *collideable->ObbMins();
-	const Vector max = origin + *collideable->ObbMaxs();
+	const Vector min = origin + boundingBox.mins;
+	const Vector max = origin + boundingBox.maxs;
 
 	const Vector points[] = {
 		// Lower
@@ -196,16 +204,17 @@ bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const
 
 void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, const Vector& viewangles)
 {
-	CCollideable* collideable = entity->Collision();
-
-	if (!collideable)
-		return;
-
+	// TODO Cache Entities
 	if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
 		return;
 
+	const std::optional<BoundingBox> boundingBox = entity->EntityBounds();
+
+	if (!boundingBox.has_value())
+		return;
+
 	ImVec4 rectangle;
-	bool visible = CalculateScreenRectangle(*entity->Origin(), collideable, rectangle);
+	bool visible = CalculateScreenRectangle(*entity->Origin(), boundingBox.value(), rectangle);
 
 	if (!visible && HandleOutOfView(*localPlayer->Origin(), *entity->Origin(), viewangles, rectangle)) { // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
@@ -249,10 +258,14 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 				plantedC4.Draw(drawList, rectangle, bomb);
 				break;
 			}
-			case ClientClassID::CBaseCSGrenadeProjectile:
-				// TODO Separate
-				projectiles.Draw(drawList, rectangle, xorstr_("Base grenade"));
+			case ClientClassID::CBaseCSGrenadeProjectile: {
+				// TODO Invoke when necessary
+				if(strstr(entity->GetModel()->szPathName, xorstr_("flashbang")))
+					projectiles.Draw(drawList, rectangle, xorstr_("Flashbang"));
+				else
+					projectiles.Draw(drawList, rectangle, xorstr_("High Explosive Grenade"));
 				break;
+			}
 			case ClientClassID::CBreachChargeProjectile:
 				projectiles.Draw(drawList, rectangle, xorstr_("Breach charge"));
 				break;
@@ -277,10 +290,19 @@ void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPla
 			case ClientClassID::CHostage:
 				hostages.Draw(drawList, rectangle, xorstr_("Hostage"));
 				break;
-			case ClientClassID::CPhysPropLootCrate:
-				// TODO Separate
-				dzLootCrates.Draw(drawList, rectangle, xorstr_("Loot crate"));
+			case ClientClassID::CPhysPropLootCrate: {
+				// TODO Invoke when necessary
+				const char* modelName = entity->GetModel()->szPathName;
+				for(const auto pair : lootCrateNames) {
+					if(strstr(modelName, pair.first)) {
+						dzLootCrates.Draw(drawList, rectangle, pair.second);
+						goto skip;
+					}
+				}
+				dzLootCrates.Draw(drawList, rectangle, xorstr_("Unknown loot crate"));
+				skip:
 				break;
+			}
 			case ClientClassID::CPhysPropAmmoBox:
 				dzAmmoBoxes.Draw(drawList, rectangle, xorstr_("Ammo box"));
 				break;

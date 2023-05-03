@@ -1,6 +1,7 @@
 #include "Movement.hpp"
 
 #include "imgui.h"
+#include "../../GUI/Elements/HelpMarker.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
@@ -13,6 +14,7 @@
 
 static bool enabled = false;
 static int humanization = 0;
+static bool onlyWhenFalling = false;
 
 void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 {
@@ -27,6 +29,9 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 		return;
 
 	if (localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
+		return;
+
+	if(onlyWhenFalling && localPlayer->Velocity()->z > 0.0)
 		return;
 
 	const int flags = *localPlayer->Flags();
@@ -50,9 +55,12 @@ void Features::Movement::Bhop::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderInt(xorstr_("Humanization"), &humanization, 0, 4);
+	ImGui::Checkbox(xorstr_("Only when falling"), &onlyWhenFalling);
+	ImGui::HelpMarker(xorstr_("This is useful when wearing an exojump suit"));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Movement::Bhop::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Humanization"), humanization)
+SERIALIZED_TYPE(xorstr_("Only when falling"), onlyWhenFalling)
 END_SERIALIZED_STRUCT
