@@ -10,7 +10,7 @@ void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage sta
 	switch (stage) {
 	case ClientFrameStage::FRAME_START: {
 		GameCache::ClearLocalPlayer();
-		Features::Visuals::Esp::UpdateVisibility();
+		Features::Visuals::Esp::Update();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_START: {

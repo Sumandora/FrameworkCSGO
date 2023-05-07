@@ -2,6 +2,7 @@
 #define SDK_NETVARS_CLIENTCLASS
 
 #include "RecvTable.hpp"
+#include "../ClientClassIDs.hpp"
 
 class ClientClass {
 public:
@@ -10,7 +11,7 @@ public:
 	char* m_pNetworkName;
 	RecvTable* m_pRecvTable;
 	ClientClass* m_pNext;
-	int m_ClassID;
+	ClientClassID m_ClassID;
 };
 
 #endif

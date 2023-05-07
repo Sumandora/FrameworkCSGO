@@ -12,6 +12,7 @@
 
 #include "../../../Hooks/Game/GameFunctions.hpp"
 
+#include "../../../GUI/ImGuiColors.hpp"
 #include "../../../Utils/Raytrace.hpp"
 #include "../../../Utils/Trigonometry.hpp"
 
@@ -21,9 +22,8 @@ static bool enabled = false;
 static int onKey = ImGuiKey_None;
 static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
-static bool considerSmokedOffEntitiesAsOccluded = true;
+bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
 static bool considerEveryoneVisibleWhenDead = false;
-static bool cacheVisibilityState = true;
 static bool sortEntitiesByDistance = true;
 static bool alignBoundingBox = true;
 static bool outOfView = false;
@@ -31,7 +31,7 @@ static float outOfViewSize = 30.0f;
 static float outOfViewDistance = 300.0f;
 PlayerSettings Features::Visuals::Esp::players;
 static WeaponSettings weapons;
-static BoxNameSetting projectiles;
+static ProjectileSettings projectiles;
 static PlantedC4Settings plantedC4;
 static BoxNameSetting hostages;
 static BoxNameSetting dzLootCrates;
@@ -40,8 +40,7 @@ static BoxNameSetting dzSentries;
 static BoxNameSetting other;
 // TODO Drone ESP
 
-static std::map<int, bool> visibilityCache;
-static std::map<const char*, const char*> lootCrateNames {
+static std::map<const char*, const char*> lootCrateNames{
 	{ strdup(xorstr_("case_pistol.mdl")), strdup(xorstr_("Pistol Case")) },
 	{ strdup(xorstr_("case_light_weapon.mdl")), strdup(xorstr_("Light Case")) },
 	{ strdup(xorstr_("case_heavy_weapon.mdl")), strdup(xorstr_("Heavy Case")) },
@@ -66,67 +65,21 @@ bool Features::Visuals::Esp::WorldToScreen(const Matrix4x4& matrix, const Vector
 	return true;
 }
 
-bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
-{
-	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
-
-	const Vector playerEye = localPlayer->GetEyePosition();
-	const Vector head = boneMatrix[8].Origin();
-
-	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
-		return false;
-
-	CTraceFilterEntity filter(localPlayer);
-	const Trace trace = Utils::TraceRay(playerEye, head, &filter);
-
-	return trace.m_pEnt == otherPlayer;
-}
-
-PlayerStateSettings* SelectPlayerState(CBasePlayer* localPlayer, CBasePlayer* player, PlayerTeamSettings* settings)
+PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Player& player, PlayerTeamSettings* settings)
 {
 	if (settings->visible == settings->occluded)
 		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
 
-	if (considerSpottedEntitiesAsVisible && *player->Spotted())
+	if (considerSpottedEntitiesAsVisible && player.spotted)
 		return &settings->visible; // Don't even have to raytrace for that.
 
-	if (considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
+	if (considerEveryoneVisibleWhenDead && !localPlayer.alive)
 		return &settings->visible;
 
-	bool visible;
-	if (cacheVisibilityState)
-		visible = visibilityCache[player->entindex()];
+	if (player.visible)
+		return &settings->visible;
 	else
-		visible = IsVisible(localPlayer, player);
-
-	if (visible)
-		return &settings->visible;
-	return &settings->occluded;
-}
-
-void Features::Visuals::Esp::UpdateVisibility()
-{
-	if (!cacheVisibilityState)
-		return; // If we are not using the cache, there is no point in generating it.
-
-	if (!enabled || !IsInputDown(onKey, true))
-		return;
-
-	if (!Interfaces::engine->IsInGame())
-		return;
-
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
-		return;
-
-	// The first object is always the WorldObj
-	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!player || player->GetDormant() || player == localPlayer)
-			continue;
-
-		visibilityCache[i] = IsVisible(localPlayer, player);
-	}
+		return &settings->occluded;
 }
 
 bool CalculateScreenRectangle(const Vector& origin, const BoundingBox& boundingBox, ImVec4& rectangle)
@@ -202,118 +155,120 @@ bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const
 	return false;
 }
 
-void DrawEntity(ImDrawList* drawList, CBaseEntity* entity, CBasePlayer* localPlayer, const Vector& viewangles)
+bool ScreenRectangle(ImVec4& rectangle, const Entity& entity, const LocalPlayer& localPlayer, bool outOfView = true)
 {
-	// TODO Cache Entities
-	if ((*entity->Origin() - *localPlayer->Origin()).LengthSquared() > (float)(drawDistance * drawDistance))
-		return;
-
-	const std::optional<BoundingBox> boundingBox = entity->EntityBounds();
+	const std::optional<BoundingBox>& boundingBox = entity.boundingBox;
 
 	if (!boundingBox.has_value())
-		return;
+		return false;
 
-	ImVec4 rectangle;
-	bool visible = CalculateScreenRectangle(*entity->Origin(), boundingBox.value(), rectangle);
+	bool visible = CalculateScreenRectangle(entity.origin, boundingBox.value(), rectangle);
 
-	if (!visible && HandleOutOfView(*localPlayer->Origin(), *entity->Origin(), viewangles, rectangle)) { // TODO Buy menu makes oov flicker
+	if (outOfView && !visible && HandleOutOfView(localPlayer.origin, entity.origin, localPlayer.viewangles, rectangle)) { // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
 	}
 
-	if (visible) {
-		if (entity->IsPlayer()) {
-			auto* player = reinterpret_cast<CBasePlayer*>(entity);
-			if (!player->IsAlive() || *player->Team() == TeamID::TEAM_UNASSIGNED)
-				return;
-			PlayerStateSettings* settings;
-			if (entity == GameCache::GetLocalPlayer()) // TODO Check for third person
-				settings = &Features::Visuals::Esp::players.local;
-			else if (*player->Team() == TeamID::TEAM_SPECTATOR || !player->IsAlive()) {
-				char name[128];
-				if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-					PlayerInfo info{};
-					Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
-					strcpy(name, info.name);
-				}
-				Features::Visuals::Esp::players.spectators.Draw(drawList, rectangle, name);
-				return;
-			} else {
-				if (!player->IsEnemy(localPlayer))
-					settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.teammate);
-				else
-					settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.enemy);
-			}
+	return visible;
+}
 
-			if (settings)
-				settings->Draw(drawList, rectangle, player);
-		} else if (entity->IsWeapon()) {
-			auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(entity);
-			if (*weapon->OwnerEntity() == -1)
-				weapons.Draw(drawList, rectangle, weapon);
-		} else {
-			const ClientClass clientClass = *entity->GetClientClass();
-			switch (static_cast<ClientClassID>(clientClass.m_ClassID)) {
-			case ClientClassID::CPlantedC4: {
-				auto* bomb = reinterpret_cast<CPlantedC4*>(entity);
-				plantedC4.Draw(drawList, rectangle, bomb);
-				break;
-			}
-			case ClientClassID::CBaseCSGrenadeProjectile: {
-				// TODO Invoke when necessary
-				if(strstr(entity->GetModel()->szPathName, xorstr_("flashbang")))
-					projectiles.Draw(drawList, rectangle, xorstr_("Flashbang"));
-				else
-					projectiles.Draw(drawList, rectangle, xorstr_("High Explosive Grenade"));
-				break;
-			}
-			case ClientClassID::CBreachChargeProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Breach charge"));
-				break;
-			case ClientClassID::CBumpMineProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Bump Mine"));
-				break;
-			case ClientClassID::CDecoyProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Decoy"));
-				break;
-			case ClientClassID::CMolotovProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Molotov"));
-				break;
-			case ClientClassID::CSensorGrenadeProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Sensor grenade"));
-				break;
-			case ClientClassID::CSmokeGrenadeProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Smoke grenade"));
-				break;
-			case ClientClassID::CSnowballProjectile:
-				projectiles.Draw(drawList, rectangle, xorstr_("Snowball"));
-				break;
-			case ClientClassID::CHostage:
-				hostages.Draw(drawList, rectangle, xorstr_("Hostage"));
-				break;
-			case ClientClassID::CPhysPropLootCrate: {
-				// TODO Invoke when necessary
-				const char* modelName = entity->GetModel()->szPathName;
-				for(const auto pair : lootCrateNames) {
-					if(strstr(modelName, pair.first)) {
-						dzLootCrates.Draw(drawList, rectangle, pair.second);
-						goto skip;
-					}
+void DrawLocalPlayer(ImDrawList* drawList, const LocalPlayer& localPlayer)
+{
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, localPlayer, localPlayer, false))
+		return;
+
+	Features::Visuals::Esp::players.local.Draw(drawList, rectangle, localPlayer);
+}
+
+void DrawPlayer(ImDrawList* drawList, const Player& player, const LocalPlayer& localPlayer)
+{
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, player, localPlayer))
+		return;
+
+	PlayerStateSettings* settings;
+
+	if (!player.enemy)
+		settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.teammate);
+	else
+		settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.enemy);
+
+	if (settings)
+		settings->Draw(drawList, rectangle, player);
+}
+
+void DrawSpectator(ImDrawList* drawList, const Player& player, const LocalPlayer& localPlayer)
+{
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, player, localPlayer))
+		return;
+
+	char name[128];
+	if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+		PlayerInfo info{};
+		Interfaces::engine->GetPlayerInfo(player.index, &info);
+		strcpy(name, info.name);
+	}
+	Features::Visuals::Esp::players.spectators.Draw(drawList, rectangle, name);
+}
+
+void DrawWeapon(ImDrawList* drawList, const Weapon& weapon, const LocalPlayer& localPlayer) {
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, weapon, localPlayer))
+		return;
+
+	if (weapon.ownerEntity == -1)
+		weapons.Draw(drawList, rectangle, weapon);
+}
+
+void DrawProjectile(ImDrawList* drawList, const Projectile& projectile, const LocalPlayer& localPlayer) {
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, projectile, localPlayer))
+		return;
+
+	projectiles.Draw(drawList, rectangle, projectile);
+}
+
+void DrawPlantedC4(ImDrawList* drawList, const PlantedC4& bomb, const LocalPlayer& localPlayer) {
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, bomb, localPlayer))
+		return;
+
+	plantedC4.Draw(drawList, rectangle, bomb);
+}
+
+void DrawEntity(ImDrawList* drawList, const Entity& entity, const LocalPlayer& localPlayer) {
+	ImVec4 rectangle;
+	if(!ScreenRectangle(rectangle, entity, localPlayer))
+		return;
+
+	switch (entity.clientClass->m_ClassID) {
+	case ClientClassID::CHostage:
+		hostages.Draw(drawList, rectangle, xorstr_("Hostage"));
+		break;
+	case ClientClassID::CPhysPropLootCrate: {
+		const char* name = xorstr_("Unknown loot crate");
+		if(dzLootCrates.nametag.enabled) {
+			const char* modelName = entity.model->szPathName;
+			for (const auto pair : lootCrateNames) {
+				if (strstr(modelName, pair.first)) {
+					name = pair.second;
 				}
-				dzLootCrates.Draw(drawList, rectangle, xorstr_("Unknown loot crate"));
-				skip:
-				break;
-			}
-			case ClientClassID::CPhysPropAmmoBox:
-				dzAmmoBoxes.Draw(drawList, rectangle, xorstr_("Ammo box"));
-				break;
-			case ClientClassID::CDronegun:
-				dzSentries.Draw(drawList, rectangle, xorstr_("Sentry"));
-				break;
-			default:
-				other.Draw(drawList, rectangle, clientClass.m_pNetworkName);
-				break;
 			}
 		}
+
+		dzLootCrates.Draw(drawList, rectangle, name);
+		break;
+	}
+	case ClientClassID::CPhysPropAmmoBox:
+		dzAmmoBoxes.Draw(drawList, rectangle, xorstr_("Ammo box"));
+		break;
+	case ClientClassID::CDronegun:
+		dzSentries.Draw(drawList, rectangle, xorstr_("Sentry"));
+		break;
+	default:
+		other.Draw(drawList, rectangle, entity.clientClass->m_pNetworkName);
+		break;
 	}
 }
 
@@ -325,8 +280,8 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
-	if (!localPlayer)
+	std::optional<LocalPlayer> localPlayer = EntityCache::GetLocalPlayer();
+	if (!localPlayer.has_value())
 		return;
 
 	Vector viewangles;
@@ -334,31 +289,42 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		Interfaces::engine->GetViewAngles(&viewangles);
 	}
 
-	CBaseEntity* spectatorEntity = nullptr;
-	if (*localPlayer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && localPlayer->ObserverTarget()) {
-		spectatorEntity = Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ObserverTarget());
+	DrawLocalPlayer(drawList, localPlayer.value());
+
+	for (const Player& player : EntityCache::GetPlayers()) {
+		DrawPlayer(drawList, player, localPlayer.value());
 	}
 
-	std::vector<std::pair<float, CBaseEntity*>> entities;
+	for (const Player& spectator : EntityCache::GetSpectators()) {
+		DrawSpectator(drawList, spectator, localPlayer.value());
+	}
 
-	// The first object is always the WorldObj
-	for (int i = 1; i <= Interfaces::entityList->GetHighestEntityIndex(); i++) {
-		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (!entity || entity->GetDormant() || entity == spectatorEntity)
-			continue;
-		if (!sortEntitiesByDistance)
-			DrawEntity(drawList, entity, localPlayer, viewangles);
-		else {
-			const float distanceToCamera = (*entity->Origin() - Hooks::Game::OverrideView::cameraPosition).Length();
-			entities.emplace_back(distanceToCamera, entity);
-		}
+	for(const Weapon& weapon : EntityCache::GetWeapons()) {
+		DrawWeapon(drawList, weapon, localPlayer.value());
 	}
-	if (sortEntitiesByDistance) {
-		std::ranges::sort(entities, std::greater{});
-		for (auto [_, entity] : entities) {
-			DrawEntity(drawList, entity, localPlayer, viewangles);
-		}
+
+	for(const Projectile& projectile : EntityCache::GetProjectiles()) {
+		DrawProjectile(drawList, projectile, localPlayer.value());
 	}
+
+	for(const PlantedC4& bomb : EntityCache::GetBombs()) {
+		DrawPlantedC4(drawList, bomb, localPlayer.value());
+	}
+
+	for(const Entity& entity : EntityCache::GetEntities()) {
+		DrawEntity(drawList, entity, localPlayer.value());
+	}
+}
+
+void Features::Visuals::Esp::Update()
+{
+	if (!enabled || !IsInputDown(onKey, true))
+		return;
+
+	if (!Interfaces::engine->IsInGame())
+		return;
+
+	EntityCache::UpdateEntities(drawDistance);
 }
 
 void Features::Visuals::Esp::SetupGUI()
@@ -369,13 +335,6 @@ void Features::Visuals::Esp::SetupGUI()
 
 	ImGui::Checkbox(xorstr_("Consider spotted entities as visible"), &considerSpottedEntitiesAsVisible);
 	ImGui::SameLine();
-	ImGui::PushStyleColor(ImGuiCol_Text, ImGuiColors::red.Value);
-	ImGui::Checkbox(xorstr_("Cache visibility state"), &cacheVisibilityState);
-	ImGui::PopStyleColor();
-	ImGui::HelpMarker(xorstr_("Debug option, which should only be turned off if needed"));
-
-	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
-	ImGui::SameLine();
 	ImGui::Checkbox(xorstr_("Out of view"), &outOfView);
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Out of view settings"))) {
@@ -384,9 +343,12 @@ void Features::Visuals::Esp::SetupGUI()
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Consider everyone visible when dead"), &considerEveryoneVisibleWhenDead);
+	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
 	ImGui::SameLine();
 	ImGui::Checkbox(xorstr_("Distance-based rendering"), &sortEntitiesByDistance);
+
+	ImGui::Checkbox(xorstr_("Consider everyone visible when dead"), &considerEveryoneVisibleWhenDead);
+	ImGui::SameLine();
 	ImGui::Checkbox(xorstr_("Align bounding boxes with the pixel grid"), &alignBoundingBox);
 
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
@@ -447,8 +409,6 @@ SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
 SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
 SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
 SERIALIZED_TYPE(xorstr_("Consider everyone visible when dead"), considerEveryoneVisibleWhenDead)
-
-SERIALIZED_TYPE(xorstr_("Cache visibility state"), cacheVisibilityState)
 
 SERIALIZED_TYPE(xorstr_("Out of view"), outOfView)
 SERIALIZED_TYPE(xorstr_("Out of view size"), outOfViewSize)

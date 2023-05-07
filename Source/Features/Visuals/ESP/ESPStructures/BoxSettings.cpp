@@ -4,6 +4,7 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../GUI/Elements/Popup.hpp"
+#include "../../../../GUI/ImGuiColors.hpp"
 
 BoxSettings::BoxSettings()
 	: enabled(false)

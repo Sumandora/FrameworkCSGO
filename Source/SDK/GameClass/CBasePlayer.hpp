@@ -9,6 +9,7 @@
 
 #include "../../ConVarStorage.hpp"
 
+#include "../CBaseHandle.hpp"
 #include "../Math/Vector.hpp"
 
 class CBasePlayer : public CBaseEntity {
@@ -19,7 +20,7 @@ public:
 	NETVAR_FUNCTION(Vector, VecViewOffset, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_vecViewOffset[0]"))
 	NETVAR_FUNCTION(bool, SurvivalTeam, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_nSurvivalTeam"))
 
-	NETVAR_FUNCTION(void, ActiveWeapon, ClientClassID::CBaseCombatCharacter, xorstr_("DT_BaseCombatCharacter"), xorstr_("m_hActiveWeapon"))
+	NETVAR_FUNCTION(CBaseHandle, ActiveWeapon, ClientClassID::CBaseCombatCharacter, xorstr_("DT_BaseCombatCharacter"), xorstr_("m_hActiveWeapon"))
 	NETVAR_FUNCTION(bool, WaitForNoAttack, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bWaitForNoAttack"))
 
 	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngle,
@@ -33,7 +34,7 @@ public:
 	NETVAR_FUNCTION(int, Health, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_iHealth"))
 
 	NETVAR_FUNCTION(enum ObserverMode, ObserverMode, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_iObserverMode"))
-	NETVAR_FUNCTION(void, ObserverTarget, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_hObserverTarget"))
+	NETVAR_FUNCTION(CBaseHandle, ObserverTarget, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_hObserverTarget"))
 
 	NETVAR_FUNCTION(unsigned int, TickBase, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_nTickBase"))
 
@@ -46,7 +47,7 @@ public:
 	NETVAR_FUNCTION(Vector, Velocity, ClientClassID::CBasePlayer, xorstr_("DT_LocalPlayerExclusive"), xorstr_("m_vecVelocity[0]"))
 	NETVAR_FUNCTION(float, VelocityModifier, ClientClassID::CCSPlayer, xorstr_("DT_CSLocalPlayerExclusive"), xorstr_("m_flVelocityModifier"))
 
-	NETVAR_FUNCTION(void, ViewModel, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_hViewModel[0]"))
+	NETVAR_FUNCTION(CBaseHandle, ViewModel, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_hViewModel[0]"))
 	NETVAR_FUNCTION(bool, Scoped, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsScoped"))
 
 	inline Vector GetEyePosition()

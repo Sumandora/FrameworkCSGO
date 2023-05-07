@@ -6,6 +6,7 @@
 #include "../../GUI/Elements/ShadowString.hpp"
 
 #include "../../GameCache.hpp"
+#include "../../GUI/ImGuiColors.hpp"
 #include "../../Interfaces.hpp"
 
 #include <vector>
@@ -24,7 +25,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (localPlayer->IsAlive())
 			currentTarget = localPlayer;
 		else {
-			void* observerTarget = localPlayer->ObserverTarget();
+			CBaseHandle* observerTarget = localPlayer->ObserverTarget();
 			if (observerTarget)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 		}

@@ -3,25 +3,24 @@
 #include "xorstr.hpp"
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../Interfaces.hpp"
 
 PlantedC4Settings::PlantedC4Settings()
 	: showDefuseTimer(false)
 {
 }
 
-void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const
-{
+void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, const PlantedC4& bomb) const
+{ // TODO Accuracy
 	boxName.Draw(drawList, rectangle, xorstr_("Planted C4"));
-	if (!*bomb->Defused() && *bomb->BombTicking()) { // TODO Ask GameRules if the bomb is actually planted
-		if (*bomb->BombTime() < Memory::globalVars->curtime)
+	if (!bomb.defused && bomb.bombTicking) { // TODO Ask GameRules if the bomb is actually planted
+		if (bomb.bombTime < Memory::globalVars->curtime)
 			return; // You can't defuse the bomb anymore
 		const float middle = rectangle.x + (rectangle.z - rectangle.x) * 0.5f;
-		timer.Draw(drawList, middle, rectangle.w, true, std::to_string(*bomb->BombTime() - Memory::globalVars->curtime).c_str());
-		if (showDefuseTimer && Interfaces::entityList->GetClientEntityFromHandle(bomb->Defuser())) {
-			if (*bomb->DefuseCountDown() < Memory::globalVars->curtime)
+		timer.Draw(drawList, middle, rectangle.w, true, std::to_string(bomb.bombTime - Memory::globalVars->curtime).c_str());
+		if (showDefuseTimer && bomb.defuser) {
+			if (bomb.defuseCountDown < Memory::globalVars->curtime)
 				return; // We are done defusing, no point in showing this anymore
-			timer.Draw(drawList, middle, rectangle.w + timer.GetLineHeight(), true, std::to_string(*bomb->DefuseCountDown() - Memory::globalVars->curtime).c_str());
+			timer.Draw(drawList, middle, rectangle.w + timer.GetLineHeight(), true, std::to_string(bomb.defuseCountDown - Memory::globalVars->curtime).c_str());
 		}
 	}
 }
