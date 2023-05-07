@@ -49,7 +49,7 @@ void Netvars::DumpNetvars()
 RecvProp* Netvars::GetOffset(ClientClassID clientClass, const char* table, const char* name)
 {
 	for (const auto& [key, value] : netvars) {
-		if (key->m_ClassID == static_cast<int>(clientClass))
+		if (key->m_ClassID == clientClass)
 			for (const auto& [key2, value2] : value) {
 				if (strcmp(key2->m_pNetTableName, table) == 0)
 					for (const auto& variable : value2) {

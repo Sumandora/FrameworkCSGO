@@ -4,9 +4,10 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../GUI/Elements/Popup.hpp"
+#include "../../../../GUI/ImGuiColors.hpp"
 
 TextSetting::TextSetting()
-	: enabled(true)
+	: enabled(false)
 	, fontScale(1.0f)
 	, fontColor(ImGuiColors::white)
 	, shadow(true)
@@ -16,7 +17,7 @@ TextSetting::TextSetting()
 
 void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const
 {
-	if (!enabled)
+	if (!enabled || !text)
 		return;
 
 	if (fontScale <= 0.0f)

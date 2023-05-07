@@ -14,6 +14,8 @@
 #include "../../Netvars.hpp"
 #include "../Math/BoundingBox.hpp"
 
+#include "../CBaseHandle.hpp"
+
 #include <map>
 #include <optional>
 
@@ -37,6 +39,11 @@ public:
 		return *(RenderMode() + 1);
 	}
 
+	// TODO Separate classes
+
+	// IClientUnknown
+	VIRTUAL_METHOD(3, GetRefEHandle, CBaseHandle&, (), (this))
+
 	// IClientNetworkable
 	VIRTUAL_METHOD(2, GetClientClass, ClientClass*, (), (this + sizeof(void*) * 2))
 	VIRTUAL_METHOD(9, GetDormant, bool, (), (this + sizeof(void*) * 2))
@@ -50,7 +57,7 @@ public:
 
 	// Actually CBaseEntity
 	VIRTUAL_METHOD(210, IsPlayer, bool, (), (this))
-	VIRTUAL_METHOD(218, IsWeapon, bool, (), (this))
+	VIRTUAL_METHOD(218, IsWeaponWorldModel, bool, (), (this))
 
 	inline Matrix3x4* SetupBones()
 	{

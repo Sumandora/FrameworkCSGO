@@ -1,7 +1,7 @@
 #ifndef SDK_CMOVEDATA
 #define SDK_CMOVEDATA
 
-#include "../EntityHandle.hpp"
+#include "../CBaseHandle.hpp"
 #include "../Math/Vector.hpp"
 
 class CMoveData {
@@ -10,7 +10,7 @@ public:
 	bool m_bGameCodeMovedPlayer;
 	bool m_bNoAirControl;
 
-	EntityHandle m_nPlayerHandle;
+	CBaseHandle m_nPlayerHandle;
 
 	int m_nImpulseCommand;
 	Vector m_vecViewAngles;

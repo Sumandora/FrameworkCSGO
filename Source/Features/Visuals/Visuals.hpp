@@ -10,9 +10,10 @@
 namespace Features::Visuals {
 	namespace Esp {
 		// Settings
+		extern bool considerSmokedOffEntitiesAsOccluded;
 		extern PlayerSettings players;
 
-		void UpdateVisibility();
+		void Update();
 		void ImGuiRender(ImDrawList* drawList);
 
 		bool WorldToScreen(const Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition);

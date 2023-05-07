@@ -1,14 +1,11 @@
 #ifndef FEATURES_LEGIT_ESPSTRUCTURE
 #define FEATURES_LEGIT_ESPSTRUCTURE
 
-#include "../../../GUI/ImGuiColors.hpp"
 #include "imgui.h"
 
-#include "../../../SDK/GameClass/CBaseCombatWeapon.hpp"
-#include "../../../SDK/GameClass/CPlantedC4.hpp"
-
-#include "../../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../../Serialization/Serializer.hpp"
+
+#include "EntityCache/EntityCache.hpp"
 
 // TODO Generate the boilerplate for implementations
 class BoxSettings {
@@ -78,6 +75,27 @@ public:
 	DECLARE_SERIALIZER(Serializer)
 };
 
+class LineSetting {
+public:
+	bool enabled;
+
+private:
+	ImColor lineColor;
+	float thickness;
+	bool outlined;
+	ImColor outlineColor;
+	float outlineThickness;
+
+public:
+	LineSetting();
+
+	void Draw(ImDrawList* drawList, std::vector<ImVec2> points) const;
+
+	bool operator<=>(const LineSetting& other) const = default;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
 class BoxNameSetting {
 public:
 	explicit BoxNameSetting() = default;
@@ -101,7 +119,7 @@ public:
 	TextSetting flashDuration;
 	// TODO Flags
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const;
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const;
 	bool operator<=>(const PlayerStateSettings& other) const = default;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -115,7 +133,7 @@ private:
 public:
 	WeaponSettings() = default;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, CBaseCombatWeapon* weapon) const;
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Weapon& weapon) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
@@ -129,7 +147,20 @@ private:
 public:
 	PlantedC4Settings();
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, CPlantedC4* bomb) const;
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const PlantedC4& bomb) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class ProjectileSettings {
+private:
+	BoxNameSetting boxName;
+	LineSetting trail;
+
+public:
+	ProjectileSettings() = default;
+
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Projectile& projectile) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };

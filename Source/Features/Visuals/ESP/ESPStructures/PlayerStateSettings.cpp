@@ -9,33 +9,27 @@
 
 #include "../../Visuals.hpp"
 
-void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, CBasePlayer* player) const
+void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const
 {
 	char name[128];
 	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
-		Interfaces::engine->GetPlayerInfo(player->entindex(), &info);
+		Interfaces::engine->GetPlayerInfo(player.index, &info);
 		strcpy(name, info.name);
 	}
 	boxName.Draw(drawList, rectangle, name);
 
-	healthbar.Draw(drawList, rectangle, *player->Health());
+	healthbar.Draw(drawList, rectangle, player.health);
 	if (weapon.enabled) { // Don't ask for the weapon, if we don't have to
-		auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(
-			player->ActiveWeapon()));
-		if (weapon) {
-			const WeaponID weaponID = *weapon->WeaponDefinitionIndex();
-			if (weaponID > WeaponID::WEAPON_NONE) { // Also prevent invalids
-				const char* localization = LocalizeWeaponID(weaponID);
-				if (localization)
-					this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, localization);
-			}
+		if (player.activeWeapon > WeaponID::WEAPON_NONE) { // Also prevent invalids
+			const char* localization = LocalizeWeaponID(player.activeWeapon);
+			if (localization)
+				this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, localization);
 		}
 	}
 
-	const float flashDuration = player->GetFlashAlpha();
-	if (flashDuration > 0.0) {
-		this->flashDuration.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y + (rectangle.w - rectangle.y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)flashDuration).c_str());
+	if (player.flashAlpha > 0.0) {
+		this->flashDuration.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y + (rectangle.w - rectangle.y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)player.flashAlpha).c_str());
 	}
 }
 
