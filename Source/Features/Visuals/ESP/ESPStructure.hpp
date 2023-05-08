@@ -42,7 +42,7 @@ private:
 public:
 	TextSetting();
 
-	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const;
+	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride = std::nullopt) const;
 	[[nodiscard]] float GetLineHeight() const;
 
 	bool operator<=>(const TextSetting& other) const = default;
@@ -142,12 +142,30 @@ class PlantedC4Settings {
 private:
 	BoxNameSetting boxName;
 	TextSetting timer;
-	bool showDefuseTimer;
+	TextSetting defuseTimer;
+	bool overrideDefuseColor;
+	ImColor defusePossibleWithKit;
+	ImColor defuseImpossible;
+	int accuracy;
 
 public:
 	PlantedC4Settings();
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, const PlantedC4& bomb) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class HostageSettings {
+private:
+	BoxNameSetting boxName;
+	TextSetting timer;
+	int accuracy;
+
+public:
+	HostageSettings();
+
+	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Hostage& hostage) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };

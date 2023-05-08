@@ -25,6 +25,7 @@ namespace Features::Visuals {
 		DECLARE_SERIALIZER(Serializer)
 	}
 	namespace SpectatorList {
+		void Update();
 		void ImGuiRender(ImDrawList* drawList);
 
 		// GUI

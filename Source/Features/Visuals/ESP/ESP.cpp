@@ -24,7 +24,6 @@ static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
 static bool considerEveryoneVisibleWhenDead = false;
-static bool sortEntitiesByDistance = true;
 static bool alignBoundingBox = true;
 static bool outOfView = false;
 static float outOfViewSize = 30.0f;
@@ -33,7 +32,7 @@ PlayerSettings Features::Visuals::Esp::players;
 static WeaponSettings weapons;
 static ProjectileSettings projectiles;
 static PlantedC4Settings plantedC4;
-static BoxNameSetting hostages;
+static HostageSettings hostages;
 static BoxNameSetting dzLootCrates;
 static BoxNameSetting dzAmmoBoxes;
 static BoxNameSetting dzSentries;
@@ -82,10 +81,15 @@ PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Pla
 		return &settings->occluded;
 }
 
-bool CalculateScreenRectangle(const Vector& origin, const BoundingBox& boundingBox, ImVec4& rectangle)
+bool CalculateScreenRectangle(const Vector& origin, Entity& entity, ImVec4& rectangle)
 {
-	const Vector min = origin + boundingBox.mins;
-	const Vector max = origin + boundingBox.maxs;
+	const std::optional<BoundingBox>& boundingBox = entity.boundingBox;
+
+	if (!boundingBox.has_value())
+		return false;
+
+	const Vector min = origin + boundingBox->mins;
+	const Vector max = origin + boundingBox->maxs;
 
 	const Vector points[] = {
 		// Lower
@@ -106,6 +110,7 @@ bool CalculateScreenRectangle(const Vector& origin, const BoundingBox& boundingB
 		ImVec2 point2D;
 
 		if (!Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, point, point2D)) {
+			entity.lastScreenRectangle.reset();
 			return false;
 		}
 
@@ -118,6 +123,20 @@ bool CalculateScreenRectangle(const Vector& origin, const BoundingBox& boundingB
 			rectangle.y = point2D.y;
 		else if (point2D.y > rectangle.w)
 			rectangle.w = point2D.y;
+	}
+
+	const int currTick = Memory::globalVars->tickcount;
+	if (entity.lastScreenRectangleUpdate != currTick) { // Remember this rectangle
+		entity.lastScreenRectangleUpdate = currTick;
+		entity.lastScreenRectangle = rectangle;
+	} else if (entity.lastScreenRectangle.has_value()) {
+		// We got a new one now, lets get the middle between the new and old one based on the interp amount
+		const ImVec4 old = entity.lastScreenRectangle.value();
+
+		rectangle.x += (old.x - rectangle.x) * Memory::globalVars->interpolation_amount;
+		rectangle.y += (old.y - rectangle.y) * Memory::globalVars->interpolation_amount;
+		rectangle.z += (old.z - rectangle.z) * Memory::globalVars->interpolation_amount;
+		rectangle.w += (old.w - rectangle.w) * Memory::globalVars->interpolation_amount;
 	}
 
 	if (alignBoundingBox) {
@@ -155,14 +174,9 @@ bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const
 	return false;
 }
 
-bool ScreenRectangle(ImVec4& rectangle, const Entity& entity, const LocalPlayer& localPlayer, bool outOfView = true)
+bool ScreenRectangle(ImVec4& rectangle, Entity& entity, const LocalPlayer& localPlayer, bool outOfView = true)
 {
-	const std::optional<BoundingBox>& boundingBox = entity.boundingBox;
-
-	if (!boundingBox.has_value())
-		return false;
-
-	bool visible = CalculateScreenRectangle(entity.origin, boundingBox.value(), rectangle);
+	bool visible = CalculateScreenRectangle(entity.origin, entity, rectangle);
 
 	if (outOfView && !visible && HandleOutOfView(localPlayer.origin, entity.origin, localPlayer.viewangles, rectangle)) { // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
@@ -171,19 +185,19 @@ bool ScreenRectangle(ImVec4& rectangle, const Entity& entity, const LocalPlayer&
 	return visible;
 }
 
-void DrawLocalPlayer(ImDrawList* drawList, const LocalPlayer& localPlayer)
+void DrawLocalPlayer(ImDrawList* drawList, LocalPlayer& localPlayer)
 {
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, localPlayer, localPlayer, false))
+	if (!ScreenRectangle(rectangle, localPlayer, localPlayer, false))
 		return;
 
 	Features::Visuals::Esp::players.local.Draw(drawList, rectangle, localPlayer);
 }
 
-void DrawPlayer(ImDrawList* drawList, const Player& player, const LocalPlayer& localPlayer)
+void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPlayer)
 {
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, player, localPlayer))
+	if (!ScreenRectangle(rectangle, player, localPlayer))
 		return;
 
 	PlayerStateSettings* settings;
@@ -197,10 +211,10 @@ void DrawPlayer(ImDrawList* drawList, const Player& player, const LocalPlayer& l
 		settings->Draw(drawList, rectangle, player);
 }
 
-void DrawSpectator(ImDrawList* drawList, const Player& player, const LocalPlayer& localPlayer)
+void DrawSpectator(ImDrawList* drawList, Player& player, const LocalPlayer& localPlayer)
 {
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, player, localPlayer))
+	if (!ScreenRectangle(rectangle, player, localPlayer))
 		return;
 
 	char name[128];
@@ -212,45 +226,55 @@ void DrawSpectator(ImDrawList* drawList, const Player& player, const LocalPlayer
 	Features::Visuals::Esp::players.spectators.Draw(drawList, rectangle, name);
 }
 
-void DrawWeapon(ImDrawList* drawList, const Weapon& weapon, const LocalPlayer& localPlayer) {
+void DrawWeapon(ImDrawList* drawList, Weapon& weapon, const LocalPlayer& localPlayer)
+{
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, weapon, localPlayer))
+	if (!ScreenRectangle(rectangle, weapon, localPlayer))
 		return;
 
 	if (weapon.ownerEntity == -1)
 		weapons.Draw(drawList, rectangle, weapon);
 }
 
-void DrawProjectile(ImDrawList* drawList, const Projectile& projectile, const LocalPlayer& localPlayer) {
+void DrawProjectile(ImDrawList* drawList, Projectile& projectile, const LocalPlayer& localPlayer)
+{
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, projectile, localPlayer))
+	if (!ScreenRectangle(rectangle, projectile, localPlayer))
 		return;
 
 	projectiles.Draw(drawList, rectangle, projectile);
 }
 
-void DrawPlantedC4(ImDrawList* drawList, const PlantedC4& bomb, const LocalPlayer& localPlayer) {
+void DrawPlantedC4(ImDrawList* drawList, PlantedC4& bomb, const LocalPlayer& localPlayer)
+{
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, bomb, localPlayer))
+	if (!ScreenRectangle(rectangle, bomb, localPlayer))
 		return;
 
 	plantedC4.Draw(drawList, rectangle, bomb);
 }
 
-void DrawEntity(ImDrawList* drawList, const Entity& entity, const LocalPlayer& localPlayer) {
+void DrawHostage(ImDrawList* drawList, Hostage& hostage, const LocalPlayer& localPlayer)
+{
 	ImVec4 rectangle;
-	if(!ScreenRectangle(rectangle, entity, localPlayer))
+	if (!ScreenRectangle(rectangle, hostage, localPlayer))
+		return;
+
+	hostages.Draw(drawList, rectangle, hostage);
+}
+
+void DrawEntity(ImDrawList* drawList, Entity& entity, const LocalPlayer& localPlayer)
+{
+	ImVec4 rectangle;
+	if (!ScreenRectangle(rectangle, entity, localPlayer))
 		return;
 
 	switch (entity.clientClass->m_ClassID) {
-	case ClientClassID::CHostage:
-		hostages.Draw(drawList, rectangle, xorstr_("Hostage"));
-		break;
 	case ClientClassID::CPhysPropLootCrate: {
 		const char* name = xorstr_("Unknown loot crate");
-		if(dzLootCrates.nametag.enabled) {
+		if (dzLootCrates.nametag.enabled) {
 			const char* modelName = entity.model->szPathName;
-			for (const auto pair : lootCrateNames) {
+			for (const auto& pair : lootCrateNames) {
 				if (strstr(modelName, pair.first)) {
 					name = pair.second;
 				}
@@ -291,27 +315,32 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 
 	DrawLocalPlayer(drawList, localPlayer.value());
 
-	for (const Player& player : EntityCache::GetPlayers()) {
-		DrawPlayer(drawList, player, localPlayer.value());
-	}
-
-	for (const Player& spectator : EntityCache::GetSpectators()) {
+	// Give spectators a lower priority than actual players
+	for (Player& spectator : EntityCache::GetSpectators()) {
 		DrawSpectator(drawList, spectator, localPlayer.value());
 	}
 
-	for(const Weapon& weapon : EntityCache::GetWeapons()) {
+	for (Player& player : EntityCache::GetPlayers()) {
+		DrawPlayer(drawList, player, localPlayer.value());
+	}
+
+	for (Weapon& weapon : EntityCache::GetWeapons()) {
 		DrawWeapon(drawList, weapon, localPlayer.value());
 	}
 
-	for(const Projectile& projectile : EntityCache::GetProjectiles()) {
+	for (Projectile& projectile : EntityCache::GetProjectiles()) {
 		DrawProjectile(drawList, projectile, localPlayer.value());
 	}
 
-	for(const PlantedC4& bomb : EntityCache::GetBombs()) {
+	for (PlantedC4& bomb : EntityCache::GetBombs()) {
 		DrawPlantedC4(drawList, bomb, localPlayer.value());
 	}
 
-	for(const Entity& entity : EntityCache::GetEntities()) {
+	for (Hostage& hostage : EntityCache::GetHostages()) {
+		DrawHostage(drawList, hostage, localPlayer.value());
+	}
+
+	for (Entity& entity : EntityCache::GetEntities()) {
 		DrawEntity(drawList, entity, localPlayer.value());
 	}
 }
@@ -345,11 +374,9 @@ void Features::Visuals::Esp::SetupGUI()
 
 	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
 	ImGui::SameLine();
-	ImGui::Checkbox(xorstr_("Distance-based rendering"), &sortEntitiesByDistance);
+	ImGui::Checkbox(xorstr_("Align bounding boxes with the pixel grid"), &alignBoundingBox);
 
 	ImGui::Checkbox(xorstr_("Consider everyone visible when dead"), &considerEveryoneVisibleWhenDead);
-	ImGui::SameLine();
-	ImGui::Checkbox(xorstr_("Align bounding boxes with the pixel grid"), &alignBoundingBox);
 
 	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
 
@@ -414,7 +441,6 @@ SERIALIZED_TYPE(xorstr_("Out of view"), outOfView)
 SERIALIZED_TYPE(xorstr_("Out of view size"), outOfViewSize)
 SERIALIZED_TYPE(xorstr_("Out of view distance"), outOfViewDistance)
 
-SERIALIZED_TYPE(xorstr_("Sort entities by distance"), sortEntitiesByDistance)
 SERIALIZED_TYPE(xorstr_("Align bounding box"), alignBoundingBox)
 
 SERIALIZED_STRUCTURE(xorstr_("Players"), players)
