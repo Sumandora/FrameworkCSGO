@@ -7,6 +7,6 @@ void PlantedC4::Update(CPlantedC4* entity, int index, const CBaseHandle& handle,
 	defused = *entity->Defused();
 	bombTicking = *entity->BombTicking();
 	bombTime = *entity->BombTime();
-	defuser = entity->Defuser();
+	defuser = *entity->Defuser();
 	defuseCountDown = *entity->DefuseCountDown();
 }

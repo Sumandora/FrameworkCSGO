@@ -6,6 +6,7 @@
 #include "../../../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../../../SDK/GameClass/CPlantedC4.hpp"
 
+#include "../../../../SDK/GameClass/CHostage.hpp"
 #include "imgui.h"
 
 #include <vector>
@@ -24,10 +25,11 @@ public:
 	std::optional<BoundingBox> boundingBox;
 
 	bool spotted;
-	bool dormant;
-	float distanceToLocal;
 
 	Model* model;
+
+	int lastScreenRectangleUpdate;
+	std::optional<ImVec4> lastScreenRectangle;
 
 	void Update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 
@@ -73,10 +75,18 @@ public:
 	bool defused;
 	bool bombTicking;
 	float bombTime;
-	CBaseEntity* defuser;
+	CBaseHandle defuser;
 	float defuseCountDown;
 
 	void Update(CPlantedC4* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+};
+
+class Hostage : public Entity {
+public:
+	int state;
+	float grabTime;
+
+	void Update(CHostage* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class Projectile : public Entity {
@@ -93,6 +103,7 @@ namespace EntityCache {
 	std::vector<Player>& GetPlayers();
 	std::vector<Player>& GetSpectators();
 	std::vector<Weapon>& GetWeapons();
+	std::vector<Hostage>& GetHostages();
 	std::vector<Projectile>& GetProjectiles();
 	std::vector<PlantedC4>& GetBombs();
 

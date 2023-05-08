@@ -3,6 +3,7 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
+#include "../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
 
 #include "../../GameCache.hpp"
@@ -12,13 +13,28 @@
 #include <vector>
 
 static bool enabled = false;
+static bool showMode = true;
+static bool showAllSpectators = true;
+static ImColor otherTargetColor = ImGuiColors::white;
+static ImColor sameTargetColor = ImGuiColors::red;
 
-void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
+struct Spectator {
+	int spectator;
+	int spectated;
+	ObserverMode mode;
+	bool targeted; // Is spectated = localPlayer or spectated = spectated by localPlayer
+};
+
+std::vector<Spectator> spectators;
+
+void Features::Visuals::SpectatorList::Update()
 {
+	spectators.clear();
+
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	auto* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
 
 	CBaseEntity* currentTarget = nullptr;
 	if (localPlayer) {
@@ -30,9 +46,6 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 		}
 	}
-
-	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-	float offset = 0;
 
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
@@ -46,24 +59,45 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (!target)
 			continue;
 
+		if (!showAllSpectators && target != currentTarget)
+			continue;
+
+		spectators.push_back({ i, target->entindex(), *player->ObserverMode(), target == currentTarget });
+	}
+}
+
+void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
+{
+	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+	float offset = 0;
+
+	for (const Spectator& spectator : spectators) {
 		PlayerInfo first{};
-		Interfaces::engine->GetPlayerInfo(i, &first);
+		Interfaces::engine->GetPlayerInfo(spectator.spectator, &first);
 
 		PlayerInfo second{};
-		Interfaces::engine->GetPlayerInfo(target->entindex(), &second);
+		Interfaces::engine->GetPlayerInfo(spectator.spectated, &second);
 
-		const ObserverMode observerMode = *player->ObserverMode();
-		const char* observerModeName = LocalizeObserverMode(observerMode);
+		const char* unknownObserverMode = xorstr_("Unknown observer mode"); // Initialize it before to prevent dangling pointers
+		const char* observerModeName = LocalizeObserverMode(spectator.mode);
 		if (!observerModeName)
-			return; // We don't have a name?
+			observerModeName = unknownObserverMode;
 
-		char text[strlen(first.name) + 4 + strlen(second.name) + 2 + strlen(observerModeName) + 1];
-		sprintf(text, xorstr_("%s -> %s (%s)"), first.name, second.name, observerModeName);
+		std::stringstream ss;
+
+		ss << first.name;
+		if (showAllSpectators)
+			ss << xorstr_(" -> ") << second.name;
+		if(showMode)
+			ss << xorstr_(" (") << observerModeName << xorstr_(")");
+
+		const std::string str = ss.str();
+		const char* text = str.c_str();
 
 		const ImVec2 size = ImGui::CalcTextSize(text);
 		const ImVec2 position(displaySize.x - size.x - 10.0f, offset + 10.0f);
 
-		ShadowString::AddText(drawList, position, currentTarget && currentTarget == target ? ImGuiColors::red : ImGuiColors::white, text);
+		ShadowString::AddText(drawList, position, spectator.targeted ? sameTargetColor : otherTargetColor, text);
 
 		offset += ImGui::GetTextLineHeightWithSpacing();
 	}
@@ -72,8 +106,17 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 void Features::Visuals::SpectatorList::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox(xorstr_("Show mode"), &showMode);
+	ImGui::Checkbox(xorstr_("Show all spectators"), &showAllSpectators);
+	if(showAllSpectators)
+		ImGui::ClickableColorButton(xorstr_("Other target color"), otherTargetColor);
+	ImGui::ClickableColorButton(xorstr_("Same target color"), sameTargetColor);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Visuals::SpectatorList::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SERIALIZED_TYPE(xorstr_("Show mode"), showMode)
+SERIALIZED_TYPE(xorstr_("Show all spectators"), showAllSpectators)
+SERIALIZED_TYPE(xorstr_("Other target color"), otherTargetColor)
+SERIALIZED_TYPE(xorstr_("Same target color"), sameTargetColor)
 END_SERIALIZED_STRUCT

@@ -18,13 +18,15 @@ static std::map<ClientClassID, const char*> projectileNames{
 
 void ProjectileSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Projectile& projectile) const
 {
+	const char* flashbang = xorstr_("Flashbang");
+	const char* highExplosiveGrenade = xorstr_("High Explosive Grenade");
 	const char* name = xorstr_("Unknown projectile");
 	if (boxName.nametag.enabled) {
 		if (projectile.clientClass->m_ClassID == ClientClassID::CBaseCSGrenadeProjectile) {
 			if (strstr(projectile.model->szPathName, xorstr_("flashbang")))
-				name = xorstr_("Flashbang");
+				name = flashbang;
 			else
-				name = xorstr_("High Explosive Grenade");
+				name = highExplosiveGrenade;
 		} else if (projectileNames.contains(projectile.clientClass->m_ClassID)) {
 			name = projectileNames[projectile.clientClass->m_ClassID];
 		}

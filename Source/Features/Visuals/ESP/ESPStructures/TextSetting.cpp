@@ -15,7 +15,7 @@ TextSetting::TextSetting()
 {
 }
 
-void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text) const
+void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride) const
 {
 	if (!enabled || !text)
 		return;
@@ -35,7 +35,7 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 	if (shadow)
 		drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), shadowColor, text);
 
-	drawList->AddText(position, fontColor, text);
+	drawList->AddText(position, colorOverride.has_value() ? colorOverride.value() : fontColor, text);
 
 	ImGui::GetFont()->Scale = oldFontScale;
 	ImGui::PopFont();

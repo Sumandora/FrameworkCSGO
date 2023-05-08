@@ -9,6 +9,7 @@ static std::vector<Entity> entities;
 static std::vector<Player> players;
 static std::vector<Player> spectators;
 static std::vector<Weapon> weapons;
+static std::vector<Hostage> hostages;
 static std::vector<Projectile> projectiles;
 static std::vector<PlantedC4> bombs;
 
@@ -90,16 +91,22 @@ void EntityCache::UpdateEntities(int maxDistance)
 
 		if (entity->IsPlayer()) {
 			auto* player = reinterpret_cast<CBasePlayer*>(entity);
-			if(player->IsAlive() && *player->Team() != TeamID::TEAM_UNASSIGNED)
-				UpdateEntity<Player, CBasePlayer*>(players, player, index, handle, clientClass);
-			else if(*player->Team() == TeamID::TEAM_SPECTATOR)
-				UpdateEntity<Player, CBasePlayer*>(spectators, player, index, handle, clientClass);
+			const TeamID team = *player->Team();
+			if (team != TeamID::TEAM_UNASSIGNED) {
+				if (player->IsAlive())
+					UpdateEntity<Player, CBasePlayer*>(players, player, index, handle, clientClass);
+				else
+					UpdateEntity<Player, CBasePlayer*>(spectators, player, index, handle, clientClass);
+			}
 			continue;
 		} else if(entity->IsWeaponWorldModel()) {
 			UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, reinterpret_cast<CBaseCombatWeapon*>(entity), index, handle, clientClass);
 			continue;
 		} else if(clientClass->m_ClassID == ClientClassID::CPlantedC4) {
 			UpdateEntity<PlantedC4, CPlantedC4*>(bombs, reinterpret_cast<CPlantedC4*>(entity), index, handle, clientClass);
+			continue;
+		} else if(clientClass->m_ClassID == ClientClassID::CHostage) {
+			UpdateEntity<Hostage, CHostage*>(hostages, reinterpret_cast<CHostage*>(entity), index, handle, clientClass);
 			continue;
 		} else if(std::find(projectileClassIDs.begin(), projectileClassIDs.end(), clientClass->m_ClassID) != projectileClassIDs.end()) {
 			UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
@@ -117,6 +124,7 @@ void EntityCache::UpdateEntities(int maxDistance)
 	std::erase_if(players, IsInvalid);
 	std::erase_if(spectators, IsInvalid);
 	std::erase_if(weapons, IsInvalid);
+	std::erase_if(hostages, IsInvalid);
 	std::erase_if(projectiles, IsInvalid);
 	std::erase_if(bombs, IsInvalid);
 
@@ -152,6 +160,11 @@ std::vector<Player>& EntityCache::GetSpectators()
 std::vector<Weapon>& EntityCache::GetWeapons()
 {
 	return weapons;
+}
+
+std::vector<Hostage>& EntityCache::GetHostages()
+{
+	return hostages;
 }
 
 std::vector<Projectile>& EntityCache::GetProjectiles()
