@@ -238,8 +238,10 @@ void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
 
 void Features::Semirage::Backtrack::SetupGUI()
 {
+#ifndef MENUPREVIEW
 	if (!ConVarStorage::cl_lagcompensation()->GetBool() || !ConVarStorage::sv_unlag()->GetBool())
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: Judging by convars, lag compensation is disabled."));
+#endif
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, xorstr_("%.2f"));
 	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
@@ -248,7 +250,13 @@ void Features::Semirage::Backtrack::SetupGUI()
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"), (int)(ConVarStorage::sv_maxunlag()->GetFloat() * scale * 1000 /*s to ms*/));
+	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"),
+#ifndef MENUPREVIEW
+		(int)(ConVarStorage::sv_maxunlag()->GetFloat() * scale * 1000 /*s to ms*/)
+#else
+		0
+#endif
+	);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)

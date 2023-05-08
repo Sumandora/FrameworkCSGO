@@ -8,13 +8,20 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -march=native -mtune=native -Wno-return-type -ggdb --no-gnu-unique -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -fdata-sections -ffunction-sections -Wl,--gc-sections -Wall -s -march=native -mtune=native -Wno-return-type -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti --no-gnu-unique -D'IM_ASSERT(_EXPR)='")
 
+option(MENUPREVIEW "Builds a executable which previews the menu" OFF)
+
 set(CMAKE_SKIP_RPATH ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-add_library(FrameworkCSGO SHARED ${SOURCE_FILES})
+if(MENUPREVIEW)
+	list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/Main.cpp")
+	add_executable(FrameworkCSGO ${SOURCE_FILES})
+else()
+	list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/MenuPreview.cpp") # No need for this file if we aren't previewing the menu
+	add_library(FrameworkCSGO SHARED ${SOURCE_FILES})
+endif()
 target_link_libraries(FrameworkCSGO dl SDL2 GL)
 
 # Setup SDL
@@ -25,6 +32,13 @@ target_include_directories(FrameworkCSGO PUBLIC Dependencies/imgui)
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl2.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
+
+if(MENUPREVIEW)
+	target_compile_definitions(FrameworkCSGO PUBLIC MENUPREVIEW)
+	list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
+	target_include_directories(FrameworkCSGO PUBLIC Dependencies/imgui/backends)
+	list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/examples/example_sdl2_opengl3/main.cpp")
+endif()
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
 	list(REMOVE_ITEM IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/imgui_demo.cpp")
 	target_compile_definitions(FrameworkCSGO PUBLIC IMGUI_DISABLE_DEMO_WINDOWS)

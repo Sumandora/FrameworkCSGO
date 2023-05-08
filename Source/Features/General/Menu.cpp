@@ -47,12 +47,14 @@ void Features::General::Menu::ImGuiLoop()
 			ImGui::ShowDebugLogWindow();
 		if (isShowingStackToolWindow)
 			ImGui::ShowStackToolWindow();
+#ifndef MENUPREVIEW
 		if (isShowingAboutWindow)
 			ImGui::ShowAboutWindow();
 		if (isShowingStyleEditor)
 			ImGui::ShowStyleEditor();
 		if (isShowingUserGuide)
 			ImGui::ShowUserGuide();
+#endif
 	}
 #endif
 
