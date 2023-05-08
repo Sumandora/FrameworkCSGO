@@ -11,7 +11,7 @@ void Hooks::Game::Hook()
 
 void Hooks::Game::Unhook()
 {
-	delete CreateMove::hook;
-	delete FrameStageNotify::hook;
 	delete OverrideView::hook;
+	delete FrameStageNotify::hook;
+	delete CreateMove::hook;
 }

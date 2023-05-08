@@ -11,7 +11,7 @@ void Hooks::SDL::Hook()
 
 void Hooks::SDL::Unhook()
 {
-	delete SwapWindow::hook;
-	delete PollEvents::hook;
 	delete WarpMouseInWindow::hook;
+	delete PollEvents::hook;
+	delete SwapWindow::hook;
 }
