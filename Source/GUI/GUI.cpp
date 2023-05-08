@@ -37,12 +37,27 @@ void Gui::Destroy()
 	ImGui::DestroyContext();
 }
 
+void Gui::BuildMenu(int width, int height)
+{
+	const ImVec2 size(800, 600);
+	ImGui::SetNextWindowSize(size, ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2((float)width * 0.1f, (float)height * 0.1f), ImGuiCond_Once);
+
+	ImGui::Begin(xorstr_("Framework"));
+
+	ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
+
+	Construction::SetupConstruction();
+
+	ImGui::End();
+}
+
 void Gui::SwapWindow(SDL_Window* window)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
 	static std::once_flag init;
-	std::call_once(init, [&]() {
+	std::call_once(init, [&io, window]() {
 		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 		ImGui_ImplOpenGL3_Init();
 
@@ -87,17 +102,7 @@ void Gui::SwapWindow(SDL_Window* window)
 	Features::General::Menu::ImGuiLoop(); // Will take care of the menu key
 
 	if (visible) {
-		const ImVec2 size(800, 600);
-		ImGui::SetNextWindowSize(size, ImGuiCond_Once);
-		ImGui::SetNextWindowPos(ImVec2((float)width * 0.1f, (float)height * 0.1f), ImGuiCond_Once);
-
-		ImGui::Begin(xorstr_("Framework"));
-
-		ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
-
-		Construction::SetupConstruction();
-
-		ImGui::End();
+		BuildMenu(width, height);
 	}
 
 	Features::General::Watermark::ImGuiRender(ImGui::GetBackgroundDrawList());
