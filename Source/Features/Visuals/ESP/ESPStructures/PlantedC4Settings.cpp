@@ -51,7 +51,7 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Plant
 			if(timer.enabled)
 				y += timer.GetLineHeight();
 
-			defuseTimer.Draw(drawList, middle, y, true, FloatToString(defuseCountDown, accuracy).c_str());
+			defuseTimer.Draw(drawList, middle, y, true, FloatToString(defuseCountDown, accuracy).c_str(), defuseCountDown > defusableCountDown ? std::optional<ImColor>(defuseImpossible) : std::nullopt);
 		}
 	}
 }
