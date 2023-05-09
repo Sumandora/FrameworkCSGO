@@ -40,7 +40,7 @@ $SU rm -rf /tmp/dumps # Remove if it exists
 $SU mkdir --mode=000 /tmp/dumps # Make it as root with no permissions
 
 # https://www.kernel.org/doc/Documentation/security/Yama.txt
-doas sysctl -w kernel.yama.ptrace_scope=2 # Only allows root to inject code. This is temporary until reboot.
+$SU sysctl -w kernel.yama.ptrace_scope=2 # Only allows root to inject code. This is temporary until reboot.
 
 $SU killall -19 steam
 $SU killall -19 steamwebhelper
