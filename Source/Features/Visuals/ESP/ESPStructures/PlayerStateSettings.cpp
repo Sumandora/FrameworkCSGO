@@ -11,7 +11,7 @@
 
 void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const
 {
-	char name[128];
+	char name[MAX_NAME_LEN];
 	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
 		Interfaces::engine->GetPlayerInfo(player.index, &info);

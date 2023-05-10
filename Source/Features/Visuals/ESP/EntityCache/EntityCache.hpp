@@ -61,6 +61,14 @@ public:
 	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
+class Spectator : public Player {
+public:
+	ObserverMode observerMode;
+	CBaseHandle observerTarget;
+
+	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+};
+
 class LocalPlayer : public Player {
 public:
 	ObserverMode observerMode;
@@ -101,7 +109,7 @@ namespace EntityCache {
 
 	std::vector<Entity>& GetEntities();
 	std::vector<Player>& GetPlayers();
-	std::vector<Player>& GetSpectators();
+	std::vector<Spectator>& GetSpectators();
 	std::vector<Weapon>& GetWeapons();
 	std::vector<Hostage>& GetHostages();
 	std::vector<Projectile>& GetProjectiles();
