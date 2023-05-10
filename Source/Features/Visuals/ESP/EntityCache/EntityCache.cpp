@@ -7,7 +7,7 @@
 static std::optional<LocalPlayer> localPlayer;
 static std::vector<Entity> entities;
 static std::vector<Player> players;
-static std::vector<Player> spectators;
+static std::vector<Spectator> spectators;
 static std::vector<Weapon> weapons;
 static std::vector<Hostage> hostages;
 static std::vector<Projectile> projectiles;
@@ -96,7 +96,7 @@ void EntityCache::UpdateEntities(int maxDistance)
 				if (player->IsAlive())
 					UpdateEntity<Player, CBasePlayer*>(players, player, index, handle, clientClass);
 				else
-					UpdateEntity<Player, CBasePlayer*>(spectators, player, index, handle, clientClass);
+					UpdateEntity<Spectator, CBasePlayer*>(spectators, player, index, handle, clientClass);
 			}
 			continue;
 		} else if(entity->IsWeaponWorldModel()) {
@@ -152,7 +152,7 @@ std::vector<Player>& EntityCache::GetPlayers()
 	return players;
 }
 
-std::vector<Player>& EntityCache::GetSpectators()
+std::vector<Spectator>& EntityCache::GetSpectators()
 {
 	return spectators;
 }

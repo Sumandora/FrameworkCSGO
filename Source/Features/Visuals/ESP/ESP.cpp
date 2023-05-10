@@ -3,17 +3,13 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../../GameCache.hpp"
 #include "../../../Interfaces.hpp"
 
-#include "../../../GUI/Elements/HelpMarker.hpp"
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../GUI/Elements/Popup.hpp"
 
 #include "../../../Hooks/Game/GameFunctions.hpp"
 
-#include "../../../GUI/ImGuiColors.hpp"
-#include "../../../Utils/Raytrace.hpp"
 #include "../../../Utils/Trigonometry.hpp"
 
 #include <vector>
@@ -125,6 +121,12 @@ bool CalculateScreenRectangle(const Vector& origin, Entity& entity, ImVec4& rect
 			rectangle.w = point2D.y;
 	}
 
+	if (!std::isfinite(rectangle.x) ||
+		!std::isfinite(rectangle.y) ||
+		!std::isfinite(rectangle.z) ||
+		!std::isfinite(rectangle.z))
+		return false;
+
 	const int currTick = Memory::globalVars->tickcount;
 	if (entity.lastScreenRectangleUpdate != currTick) { // Remember this rectangle
 		entity.lastScreenRectangleUpdate = currTick;
@@ -211,13 +213,13 @@ void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPl
 		settings->Draw(drawList, rectangle, player);
 }
 
-void DrawSpectator(ImDrawList* drawList, Player& player, const LocalPlayer& localPlayer)
+void DrawSpectator(ImDrawList* drawList, Spectator& player, const LocalPlayer& localPlayer)
 {
 	ImVec4 rectangle;
 	if (!ScreenRectangle(rectangle, player, localPlayer))
 		return;
 
-	char name[128];
+	char name[MAX_NAME_LEN];
 	if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
 		Interfaces::engine->GetPlayerInfo(player.index, &info);
@@ -316,8 +318,9 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	DrawLocalPlayer(drawList, localPlayer.value());
 
 	// Give spectators a lower priority than actual players
-	for (Player& spectator : EntityCache::GetSpectators()) {
-		DrawSpectator(drawList, spectator, localPlayer.value());
+	for (Spectator& spectator : EntityCache::GetSpectators()) {
+		if(spectator.observerMode != ObserverMode::OBS_MODE_IN_EYE || (spectator.observerTarget != localPlayer->handle && (localPlayer->observerTarget < 0 || spectator.observerTarget != localPlayer->observerTarget)))
+			DrawSpectator(drawList, spectator, localPlayer.value());
 	}
 
 	for (Player& player : EntityCache::GetPlayers()) {

@@ -18,14 +18,14 @@ static bool showAllSpectators = true;
 static ImColor otherTargetColor = ImGuiColors::white;
 static ImColor sameTargetColor = ImGuiColors::red;
 
-struct Spectator {
+struct SpectatorEntry {
 	int spectator;
 	int spectated;
 	ObserverMode mode;
 	bool targeted; // Is spectated = localPlayer or spectated = spectated by localPlayer
 };
 
-std::vector<Spectator> spectators;
+std::vector<SpectatorEntry> spectators;
 
 void Features::Visuals::SpectatorList::Update()
 {
@@ -71,7 +71,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float offset = 0;
 
-	for (const Spectator& spectator : spectators) {
+	for (const SpectatorEntry& spectator : spectators) {
 		PlayerInfo first{};
 		Interfaces::engine->GetPlayerInfo(spectator.spectator, &first);
 

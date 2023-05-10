@@ -26,6 +26,7 @@ static bool enabled = false;
 static bool autoFire = false;
 static int autoFireKey = ImGuiKey_None;
 // TODO Auto Fire regardless of ray intersection
+// TODO Only when scoped
 
 struct SemirageAimbotWeaponConfig {
 	bool onlyWhenShooting = false;
@@ -279,14 +280,18 @@ void CalculateAimTarget(CBasePlayer* localPlayer)
 
 bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 {
-	if (!enabled || !Interfaces::engine->IsInGame())
+	if (!enabled || !Interfaces::engine->IsInGame()) {
+		wasFaked = false;
 		return false;
+	}
 
 	bool willBeSilent = false;
 
 	CBasePlayer* localPlayer = GetLocalPlayer();
-	if (!localPlayer || !localPlayer->IsAlive())
-		return false; // Without local player we can't shoot, can we?
+	if (!localPlayer || !localPlayer->IsAlive()) { // Without local player we can't shoot, can we?
+		wasFaked = false;
+		return false;
+	}
 
 	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
 
