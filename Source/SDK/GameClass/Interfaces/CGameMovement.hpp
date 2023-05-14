@@ -1,5 +1,5 @@
-#ifndef SDK_CGAMEMOVEMENT
-#define SDK_CGAMEMOVEMENT
+#ifndef SDK_GAMECLASS_INTERFACES_CGAMEMOVEMENT
+#define SDK_GAMECLASS_INTERFACES_CGAMEMOVEMENT
 
 #include "../CBasePlayer.hpp"
 #include "../CMoveData.hpp"

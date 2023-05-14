@@ -1,5 +1,5 @@
-#ifndef SDK_CUSERCMD
-#define SDK_CUSERCMD
+#ifndef SDK_GAMECLASS_CUSERCMD
+#define SDK_GAMECLASS_CUSERCMD
 
 #include "../Math/Vector.hpp"
 

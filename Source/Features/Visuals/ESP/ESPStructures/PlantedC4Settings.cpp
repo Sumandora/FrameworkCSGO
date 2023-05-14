@@ -41,7 +41,7 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Plant
 
 		timer.Draw(drawList, middle, rectangle.w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
 
-		if(bomb.defuser >= 0) {
+		if(bomb.defuser != INVALID_EHANDLE_INDEX) {
 			const float defuseCountDown = bomb.defuseCountDown - Memory::globalVars->curtime;
 			if (defuseCountDown < 0)
 				return; // We are done defusing, no point in showing this anymore

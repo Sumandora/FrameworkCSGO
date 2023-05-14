@@ -1,5 +1,5 @@
-#ifndef ENTITYCACHE
-#define ENTITYCACHE
+#ifndef FEATURES_VISUALS_ESP_ENTITYCACHE
+#define FEATURES_VISUALS_ESP_ENTITYCACHE
 
 #include "../../../../SDK/GameClass/CBaseCombatWeapon.hpp"
 #include "../../../../SDK/GameClass/CBaseEntity.hpp"

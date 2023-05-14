@@ -13,7 +13,6 @@ fi
 cmake -B Build-Debug -D CMAKE_BUILD_TYPE=Debug || exit 1
 make $MAKEOPTS -C Build-Debug || exit 1
 
-
 # Set the DEBUGGER variable on the cmdline to use lldb or any debugger
 # Make sure it supports the following commands
 DEBUGGER="${DEBUGGER:=gdb}"
@@ -36,7 +35,6 @@ if ! [ $(id -u) = 0 ]; then
 else
 	SU=""
 fi
-
 
 csgo_pid=$(pidof csgo_linux64)
 if [ -z "$csgo_pid" ]; then

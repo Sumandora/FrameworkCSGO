@@ -23,7 +23,6 @@ else
 	SU=""
 fi
 
-
 csgo_pid=$(pidof csgo_linux64)
 if [ -z "$csgo_pid" ]; then
 	echo "CS:GO can't be found, is the game running?"

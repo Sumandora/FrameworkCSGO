@@ -32,6 +32,7 @@ SERIALIZED_NAMESPACE(xorstr_("Esp"), Esp)
 SERIALIZED_NAMESPACE(xorstr_("Spectator list"), SpectatorList)
 SERIALIZED_NAMESPACE(xorstr_("No punch"), NoPunch)
 SERIALIZED_NAMESPACE(xorstr_("FOV"), FOV)
+SERIALIZED_NAMESPACE(xorstr_("Flash reduction"), FlashReduction)
 END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Serializer)

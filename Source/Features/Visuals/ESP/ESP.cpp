@@ -121,12 +121,6 @@ bool CalculateScreenRectangle(const Vector& origin, Entity& entity, ImVec4& rect
 			rectangle.w = point2D.y;
 	}
 
-	if (!std::isfinite(rectangle.x) ||
-		!std::isfinite(rectangle.y) ||
-		!std::isfinite(rectangle.z) ||
-		!std::isfinite(rectangle.z))
-		return false;
-
 	const int currTick = Memory::globalVars->tickcount;
 	if (entity.lastScreenRectangleUpdate != currTick) { // Remember this rectangle
 		entity.lastScreenRectangleUpdate = currTick;
@@ -139,6 +133,11 @@ bool CalculateScreenRectangle(const Vector& origin, Entity& entity, ImVec4& rect
 		rectangle.y += (old.y - rectangle.y) * Memory::globalVars->interpolation_amount;
 		rectangle.z += (old.z - rectangle.z) * Memory::globalVars->interpolation_amount;
 		rectangle.w += (old.w - rectangle.w) * Memory::globalVars->interpolation_amount;
+	}
+
+	if (!std::isfinite(rectangle.x) || !std::isfinite(rectangle.y) || !std::isfinite(rectangle.z) || !std::isfinite(rectangle.w)) {
+		entity.lastScreenRectangle.reset();
+		return false;
 	}
 
 	if (alignBoundingBox) {
@@ -319,8 +318,14 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 
 	// Give spectators a lower priority than actual players
 	for (Spectator& spectator : EntityCache::GetSpectators()) {
-		if(spectator.observerMode != ObserverMode::OBS_MODE_IN_EYE || (spectator.observerTarget != localPlayer->handle && (localPlayer->observerTarget < 0 || spectator.observerTarget != localPlayer->observerTarget)))
-			DrawSpectator(drawList, spectator, localPlayer.value());
+		if(!localPlayer->alive && localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE) {
+			if(spectator.observerTarget == localPlayer->observerTarget)
+				continue;
+		} else if(spectator.observerMode == ObserverMode::OBS_MODE_IN_EYE) {
+			if(spectator.observerTarget == localPlayer->handle)
+				continue;
+		}
+		DrawSpectator(drawList, spectator, localPlayer.value());
 	}
 
 	for (Player& player : EntityCache::GetPlayers()) {

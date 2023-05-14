@@ -5,7 +5,6 @@
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
-#include <chrono>
 #include <cmath>
 #include <vector>
 

@@ -1,5 +1,5 @@
-#ifndef SDK_WEAPONIDS
-#define SDK_WEAPONIDS
+#ifndef SDK_WEAPONS_WEAPONIDS
+#define SDK_WEAPONS_WEAPONIDS
 
 #include "xorstr.hpp"
 

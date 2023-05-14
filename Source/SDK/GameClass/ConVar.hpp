@@ -1,5 +1,5 @@
-#ifndef SDK_CONVAR
-#define SDK_CONVAR
+#ifndef SDK_GAMECLASS_CONVAR
+#define SDK_GAMECLASS_CONVAR
 
 #include "VirtualMethod.hpp"
 

@@ -1,3 +1,6 @@
+#ifndef HOOKS_SDL_SDLFUNCTIONS
+#define HOOKS_SDL_SDLFUNCTIONS
+
 #include "SDLHook.hpp"
 
 #include "SDL.h"
@@ -26,3 +29,5 @@ namespace Hooks::SDL {
 	void Hook();
 	void Unhook();
 }
+
+#endif

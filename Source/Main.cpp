@@ -22,7 +22,6 @@
 // TODO No Sleeves
 // TODO No Scope Overlay
 // TODO No Smoke
-// TODO Flash Reducer
 
 // TODO World & Sky Color
 

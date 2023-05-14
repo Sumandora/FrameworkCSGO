@@ -1,5 +1,5 @@
-#ifndef SDK_COLLIDEABLE
-#define SDK_COLLIDEABLE
+#ifndef SDK_GAMECLASS_CCOLLIDEABLE
+#define SDK_GAMECLASS_CCOLLIDEABLE
 
 #include "../Math/Vector.hpp"
 #include "VirtualMethod.hpp"

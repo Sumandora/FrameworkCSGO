@@ -1,5 +1,5 @@
-#ifndef SDK_CMOVEDATA
-#define SDK_CMOVEDATA
+#ifndef SDK_GAMECLASS_CMOVEDATA
+#define SDK_GAMECLASS_CMOVEDATA
 
 #include "../CBaseHandle.hpp"
 #include "../Math/Vector.hpp"

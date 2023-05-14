@@ -1,5 +1,5 @@
-#ifndef SDK_CBASEPLAYER
-#define SDK_CBASEPLAYER
+#ifndef SDK_GAMECLASS_CBASEPLAYER
+#define SDK_GAMECLASS_CBASEPLAYER
 
 #include "CBaseCombatWeapon.hpp"
 #include "CBaseEntity.hpp"
@@ -65,11 +65,11 @@ public:
 		if (ConVarStorage::mp_teammates_are_enemies()->GetBool())
 			return true;
 		if (ConVarStorage::game_mode()->GetInt() == 6) {
-			const int localSurvivalTeam = *view->SurvivalTeam();
-			if (localSurvivalTeam < 0) // DZ without teams
+			const int viewerSurvivalTeam = *view->SurvivalTeam();
+			if (viewerSurvivalTeam < 0) // DZ without teams
 				return true;
 
-			return localSurvivalTeam != *SurvivalTeam();
+			return viewerSurvivalTeam != *SurvivalTeam();
 		}
 		return *view->Team() != *Team();
 	}

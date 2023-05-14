@@ -4,7 +4,10 @@
 #include "../../SDK/GameClass/CUserCmd.hpp"
 #include "../../SDK/GameClass/CViewSetup.hpp"
 #include "../../SDK/Math/Matrix4x4.hpp"
+#include "../../SDK/GameClass/IMaterial.hpp"
+
 #include "../../Serialization/Serializer.hpp"
+
 #include "ESP/ESPStructure.hpp"
 
 namespace Features::Visuals {
@@ -46,6 +49,15 @@ namespace Features::Visuals {
 	}
 	namespace FOV {
 		void OverrideView(CViewSetup* pSetup);
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
+	namespace FlashReduction {
+		bool ViewDrawFade(std::byte* color, IMaterial*& pFadeMaterial);
 
 		// GUI
 		void SetupGUI();
