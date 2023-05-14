@@ -1,5 +1,5 @@
-#ifndef SDK_ICVAR
-#define SDK_ICVAR
+#ifndef SDK_GAMECLASS_INTERFACES_ICVAR
+#define SDK_GAMECLASS_INTERFACES_ICVAR
 
 #include "../ConVar.hpp"
 

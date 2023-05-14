@@ -84,4 +84,5 @@ void Interfaces::GetInterfaces()
 	icvar = GetInterface<ICvar>(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar"));
 	prediction = GetInterface<IPrediction>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction"));
 	gameMovement = GetInterface<CGameMovement>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement"));
+	materialSystem = GetInterface<CMaterialSystem>(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VMaterialSystem"));
 }

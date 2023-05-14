@@ -25,7 +25,7 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 	Entity::Update(entity, index, handle, clientClass);
 
 	activeWeapon = WeaponID::WEAPON_NONE;
-	if(*entity->ActiveWeapon() > 0) {
+	if(*entity->ActiveWeapon() != INVALID_EHANDLE_INDEX) {
 		CBaseEntity* weaponEntity = Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon());
 		if(weaponEntity)
 			activeWeapon = *reinterpret_cast<CBaseAttributableItem*>(weaponEntity)->WeaponDefinitionIndex();

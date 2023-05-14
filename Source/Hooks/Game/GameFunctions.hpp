@@ -1,5 +1,5 @@
-#ifndef HOOKS_GAMEFUNCTIONS_FUNCTIONS
-#define HOOKS_GAMEFUNCTIONS_FUNCTIONS
+#ifndef HOOKS_GAME_GAMEFUNCTIONS
+#define HOOKS_GAME_GAMEFUNCTIONS
 
 #include "../../SDK/ClientFrameStage.hpp"
 #include "../../SDK/GameClass/CUserCmd.hpp"
@@ -8,6 +8,7 @@
 
 #include "../Hooks.hpp"
 
+#include "../../SDK/GameClass/IMaterial.hpp"
 #include "GameHook.hpp"
 
 namespace Hooks::Game {
@@ -34,6 +35,12 @@ namespace Hooks::Game {
 		inline Vector cameraPosition{};
 
 		void HookFunc(void* thisptr, CViewSetup* pSetup);
+	}
+
+	namespace ViewDrawFade {
+		inline GameHook* hook;
+
+		void HookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen);
 	}
 
 	void Hook();

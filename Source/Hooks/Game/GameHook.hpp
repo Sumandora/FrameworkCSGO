@@ -1,5 +1,5 @@
-#ifndef HOOKS_GAMEFUNCTIONS_GAMEHOOK
-#define HOOKS_GAMEFUNCTIONS_GAMEHOOK
+#ifndef HOOKS_GAME_GAMEHOOK
+#define HOOKS_GAME_GAMEHOOK
 
 #include "DetourHooking.hpp"
 

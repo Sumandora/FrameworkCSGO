@@ -35,7 +35,7 @@ inline E* EntityByHandle(std::vector<E>& vector, CBaseHandle handle)
 }
 
 template <typename E = Entity, typename P = CBaseEntity*>
-E* UpdateEntity(std::vector<E>& vector, P p, int index, CBaseHandle handle, ClientClass* clientClass)
+void UpdateEntity(std::vector<E>& vector, P p, int index, CBaseHandle handle, ClientClass* clientClass)
 {
 	auto* playerPtr = EntityByHandle<E>(vector, handle);
 	if (playerPtr)

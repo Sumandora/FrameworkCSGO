@@ -19,8 +19,6 @@
 
 bool Gui::visible = true;
 
-// TODO More aggressive mouse syncing
-
 void Gui::Create()
 {
 	ImGui::CreateContext();
@@ -133,16 +131,18 @@ void Gui::PollEvent(SDL_Event* event)
 	ImGuiIO& io = ImGui::GetIO();
 	// Emulate these 2 events, because ImGui is broken... :c
 	if (event->type == SDL_MOUSEMOTION) {
-		io.MousePos.x += (float)event->motion.xrel;
-		io.MousePos.y += (float)event->motion.yrel;
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+
+		io.MousePos.x = (float)x;
+		io.MousePos.y = (float)y;
+		if(visible)
+			reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
 	} else if (event->type == SDL_MOUSEWHEEL) {
 		io.MouseWheelH += (float)event->wheel.x;
 		io.MouseWheel += (float)event->wheel.y;
 	} else
 		ImGui_ImplSDL2_ProcessEvent(event);
-
-	if (event->type == SDL_MOUSEBUTTONUP)
-		reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
 
 	if (event->type == SDL_TEXTINPUT)
 		lastTextInput = event->text.timestamp;

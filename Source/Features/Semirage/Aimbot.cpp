@@ -217,6 +217,7 @@ Vector SetRotation(SemirageAimbotWeaponConfig* weaponConfig, const Vector& targe
 	target = currentView + viewDelta;
 
 	target.Wrap();
+	return target;
 }
 
 bool AutoFire(CBasePlayer* localPlayer, const Vector& viewangles)

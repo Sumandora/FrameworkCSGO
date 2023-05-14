@@ -1,7 +1,6 @@
-#ifndef SDK_VIRTUALMETHOD
-#define SDK_VIRTUALMETHOD
+#ifndef SDK_GAMECLASS_VIRTUALMETHOD
+#define SDK_GAMECLASS_VIRTUALMETHOD
 
-#include "../../Memory.hpp"
 #include "../../Utils/VMT.hpp"
 
 #include "../../Utils/Platform/FunctionInvoker.hpp"

@@ -1,5 +1,5 @@
-#ifndef SDK_CCPLANTEDC4
-#define SDK_CCPLANTEDC4
+#ifndef SDK_GAMECLASS_CPLANTEDC4
+#define SDK_GAMECLASS_CPLANTEDC4
 
 #include "xorstr.hpp"
 

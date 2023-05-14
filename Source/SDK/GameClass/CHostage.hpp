@@ -1,5 +1,5 @@
-#ifndef SDK_CHOSTAGE
-#define SDK_CHOSTAGE
+#ifndef SDK_GAMECLASS_CHOSTAGE
+#define SDK_GAMECLASS_CHOSTAGE
 
 #include "CBaseEntity.hpp"
 

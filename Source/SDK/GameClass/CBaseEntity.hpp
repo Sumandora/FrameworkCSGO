@@ -1,5 +1,5 @@
-#ifndef SDK_CBASEENTITY
-#define SDK_CBASEENTITY
+#ifndef SDK_GAMECLASS_CBASEENTITY
+#define SDK_GAMECLASS_CBASEENTITY
 
 #include "CCollideable.hpp"
 #include "VirtualMethod.hpp"
@@ -14,6 +14,7 @@
 #include "../../Netvars.hpp"
 #include "../Math/BoundingBox.hpp"
 
+#include "../../Memory.hpp"
 #include "../CBaseHandle.hpp"
 
 #include <map>

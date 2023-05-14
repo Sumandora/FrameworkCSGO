@@ -1,5 +1,5 @@
-#ifndef FEATURES_LEGIT_ESPSTRUCTURE
-#define FEATURES_LEGIT_ESPSTRUCTURE
+#ifndef FEATURES_VISUALS_ESP_ESPSTRUCTURE
+#define FEATURES_VISUALS_ESP_ESPSTRUCTURE
 
 #include "imgui.h"
 
@@ -116,7 +116,7 @@ public:
 	BoxNameSetting boxName;
 	HealthbarSettings healthbar;
 	TextSetting weapon;
-	TextSetting flashDuration;
+	TextSetting flashDuration; // Make flag with opacity
 	// TODO Flags
 
 	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const;

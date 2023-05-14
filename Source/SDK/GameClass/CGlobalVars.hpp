@@ -1,5 +1,5 @@
-#ifndef SDK_CGLOBALVARS
-#define SDK_CGLOBALVARS
+#ifndef SDK_GAMECLASS_CGLOBALVARS
+#define SDK_GAMECLASS_CGLOBALVARS
 
 class CGlobalVars {
 public:

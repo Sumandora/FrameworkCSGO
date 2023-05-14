@@ -1,17 +1,18 @@
 #ifndef MEMORY
 #define MEMORY
 
-class CClientMode;
-class IMoveHelper;
 #include "SDK/GameClass/CGlobalVars.hpp"
-class CUserCmd;
+class IMoveHelper;
+class CBasePlayer;
 struct Vector;
 
 namespace Memory {
-	inline CClientMode* clientMode;
+	inline void* clientMode;
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;
+	inline CBasePlayer* localPlayer;
 
+	void* GetBaseAddress(const char* name);
 	void* RelativeToAbsolute(void* addr);
 
 	void Create();

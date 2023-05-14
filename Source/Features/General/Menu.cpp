@@ -1,5 +1,7 @@
 #include "General.hpp"
 
+#include "../../Hooks/SDL/SDLFunctions.hpp"
+
 #include "xorstr.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"

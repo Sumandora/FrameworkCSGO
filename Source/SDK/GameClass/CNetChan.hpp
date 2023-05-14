@@ -1,5 +1,5 @@
-#ifndef SDK_CNETCHAN
-#define SDK_CNETCHAN
+#ifndef SDK_GAMECLASS_CNETCHAN
+#define SDK_GAMECLASS_CNETCHAN
 
 #include "VirtualMethod.hpp"
 

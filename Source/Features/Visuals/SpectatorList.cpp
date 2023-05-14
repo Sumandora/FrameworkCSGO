@@ -42,7 +42,7 @@ void Features::Visuals::SpectatorList::Update()
 			currentTarget = localPlayer;
 		else {
 			CBaseHandle* observerTarget = localPlayer->ObserverTarget();
-			if (observerTarget)
+			if (*observerTarget != INVALID_EHANDLE_INDEX)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 		}
 	}

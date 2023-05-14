@@ -5,6 +5,7 @@
 #include "SDK/GameClass/Interfaces/CEngineClient.hpp"
 #include "SDK/GameClass/Interfaces/CEngineTrace.hpp"
 #include "SDK/GameClass/Interfaces/CGameMovement.hpp"
+#include "SDK/GameClass/Interfaces/CMaterialSystem.hpp"
 #include "SDK/GameClass/Interfaces/ICvar.hpp"
 #include "SDK/GameClass/Interfaces/IPrediction.hpp"
 
@@ -16,6 +17,7 @@ namespace Interfaces {
 	inline ICvar* icvar;
 	inline IPrediction* prediction;
 	inline CGameMovement* gameMovement;
+	inline CMaterialSystem* materialSystem;
 
 	void GetInterfaces();
 

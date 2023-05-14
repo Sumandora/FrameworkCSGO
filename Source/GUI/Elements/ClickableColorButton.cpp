@@ -2,8 +2,6 @@
 
 #include "xorstr.hpp"
 
-#include <cstdlib>
-
 static ImColor clipboard;
 
 IMGUI_API void ImGui::ClickableColorButton(const char* desc_id, ImColor& col, ImGuiColorEditFlags flags, const ImVec2& size)

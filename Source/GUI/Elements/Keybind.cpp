@@ -1,6 +1,5 @@
 #include "Keybind.hpp"
 
-#include "SDL.h"
 #include "xorstr.hpp"
 
 #include "../GUI.hpp"

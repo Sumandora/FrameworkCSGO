@@ -1,5 +1,5 @@
-#ifndef HOOKS_SDL
-#define HOOKS_SDL
+#ifndef HOOKS_SDL_SDLHOOK
+#define HOOKS_SDL_SDLHOOK
 
 class SDLHook {
 	void** jumpAddress;

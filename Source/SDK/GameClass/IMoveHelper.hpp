@@ -1,5 +1,5 @@
-#ifndef SDK_IMOVEHELPER
-#define SDK_IMOVEHELPER
+#ifndef SDK_GAMECLASS_IMOVEHELPER
+#define SDK_GAMECLASS_IMOVEHELPER
 
 #include "CBaseEntity.hpp"
 #include "VirtualMethod.hpp"

@@ -15,7 +15,7 @@ void* RetAddrSpoofer::leaveRet = nullptr;
 
 static void* lineGoesThroughSmoke;
 
-void* GetBaseAddress(const char* name)
+void* Memory::GetBaseAddress(const char* name)
 {
 	// TODO dl_iterate_phdr
 	void* handle = dlopen(name, RTLD_NOLOAD | RTLD_NOW);
@@ -42,7 +42,7 @@ void Memory::Create()
 
 	void* hudProcessInput = baseClientVTable[10];
 	void* getClientMode = RelativeToAbsolute(reinterpret_cast<char*>(hudProcessInput) + 12);
-	clientMode = *reinterpret_cast<CClientMode**>(RelativeToAbsolute(reinterpret_cast<char*>(getClientMode) + 4));
+	clientMode = *reinterpret_cast<void**>(RelativeToAbsolute(reinterpret_cast<char*>(getClientMode) + 4));
 
 	void* hudUpdate = baseClientVTable[11];
 	globalVars = *reinterpret_cast<CGlobalVars**>(RelativeToAbsolute(reinterpret_cast<char*>(hudUpdate) + 16));
