@@ -5,17 +5,16 @@
 #include "VirtualMethod.hpp"
 #include "xorstr.hpp"
 
-#include "../Definitions/Bones.hpp"
-#include "../Math/Matrix3x4.hpp"
-#include "../Model/Model.hpp"
-#include "../Netvars/ClientClass.hpp"
-#include "../TeamID.hpp"
+#include "SDK/Definitions/Bones.hpp"
+#include "SDK/Math/Matrix3x4.hpp"
+#include "SDK/Math/BoundingBox.hpp"
+#include "SDK/Model/Model.hpp"
+#include "SDK/Netvars/ClientClass.hpp"
+#include "SDK/TeamID.hpp"
+#include "SDK/CBaseHandle.hpp"
 
-#include "../../Netvars.hpp"
-#include "../Math/BoundingBox.hpp"
-
-#include "../../Memory.hpp"
-#include "../CBaseHandle.hpp"
+#include "Memory.hpp"
+#include "Netvars.hpp"
 
 #include <map>
 #include <optional>

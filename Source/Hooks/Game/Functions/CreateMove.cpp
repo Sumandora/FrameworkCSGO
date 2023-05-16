@@ -1,9 +1,9 @@
-#include "../GameFunctions.hpp"
+#include "Hooks/Game/GameFunctions.hpp"
 
-#include "../../../Features/Features.hpp"
-#include "../../../Interfaces.hpp"
+#include "Features/Features.hpp"
+#include "Interfaces.hpp"
 
-#include "../../../Utils/MouseCorrection.hpp"
+#include "Utils/MouseCorrection.hpp"
 
 bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {

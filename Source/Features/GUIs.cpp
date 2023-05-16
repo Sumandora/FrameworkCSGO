@@ -1,6 +1,6 @@
 #include "Features.hpp"
 
-#include "../GUI/ImGuiMacros.hpp"
+#include "GUI/ImGuiMacros.hpp"
 
 void Features::General::SetupGUI()
 {

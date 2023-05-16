@@ -1,6 +1,6 @@
-#include "../GameFunctions.hpp"
+#include "Hooks/Game/GameFunctions.hpp"
 
-#include "../../../Features/Features.hpp"
+#include "Features/Features.hpp"
 
 void Hooks::Game::ViewDrawFade::HookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen)
 {

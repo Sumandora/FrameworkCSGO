@@ -3,11 +3,11 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../GameCache.hpp"
-#include "../../GUI/Elements/HelpMarker.hpp"
-#include "../../GUI/ImGuiColors.hpp"
-#include "../../Interfaces.hpp"
-#include "../../Utils/Prediction.hpp"
+#include "GameCache.hpp"
+#include "Interfaces.hpp"
+#include "GUI/Elements/HelpMarker.hpp"
+#include "GUI/ImGuiColors.hpp"
+#include "Utils/Prediction.hpp"
 
 #include <cstring>
 

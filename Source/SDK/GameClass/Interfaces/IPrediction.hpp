@@ -1,10 +1,10 @@
 #ifndef SDK_GAMECLASS_INTERFACES_IPREDICTION
 #define SDK_GAMECLASS_INTERFACES_IPREDICTION
 
-#include "../CBasePlayer.hpp"
-#include "../CMoveData.hpp"
-#include "../CUserCmd.hpp"
-#include "../IMoveHelper.hpp"
+#include "SDK/GameClass/CBasePlayer.hpp"
+#include "SDK/GameClass/CMoveData.hpp"
+#include "SDK/GameClass/CUserCmd.hpp"
+#include "SDK/GameClass/IMoveHelper.hpp"
 
 class IPrediction {
 public:

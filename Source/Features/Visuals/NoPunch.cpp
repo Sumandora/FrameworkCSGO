@@ -1,9 +1,10 @@
 #include "Visuals.hpp"
 
-#include "../../GameCache.hpp"
-#include "../../Interfaces.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
+
+#include "GameCache.hpp"
+#include "Interfaces.hpp"
 
 #include <vector>
 

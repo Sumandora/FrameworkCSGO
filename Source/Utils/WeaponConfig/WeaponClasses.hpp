@@ -3,7 +3,7 @@
 
 #include "xorstr.hpp"
 
-#include "../../SDK/Weapons/WeaponIDs.hpp"
+#include "SDK/Weapons/WeaponIDs.hpp"
 
 #include <map>
 #include <vector>

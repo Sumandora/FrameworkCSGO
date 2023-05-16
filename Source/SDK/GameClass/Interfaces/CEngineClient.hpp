@@ -1,14 +1,14 @@
 #ifndef SDK_GAMECLASS_INTERFACES_CENGINECLIENT
 #define SDK_GAMECLASS_INTERFACES_CENGINECLIENT
 
-#include "../VirtualMethod.hpp"
+#include "SDK/GameClass/VirtualMethod.hpp"
 
-#include "../CNetChan.hpp"
+#include "SDK/GameClass/CNetChan.hpp"
 
-#include "../../PlayerInfo.hpp"
+#include "SDK/PlayerInfo.hpp"
 
-#include "../../Math/Matrix4x4.hpp"
-#include "../../Math/Vector.hpp"
+#include "SDK/Math/Matrix4x4.hpp"
+#include "SDK/Math/Vector.hpp"
 
 class CEngineClient {
 public:

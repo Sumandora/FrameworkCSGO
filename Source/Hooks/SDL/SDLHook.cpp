@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <dlfcn.h>
 
-#include "../../Memory.hpp"
+#include "Memory.hpp"
 
 SDLHook::SDLHook(const char* name, void* hook)
 {

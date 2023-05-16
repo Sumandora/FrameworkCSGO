@@ -1,9 +1,9 @@
 #ifndef FEATURES_SEMIRAGE
 #define FEATURES_SEMIRAGE
 
-#include "../../SDK/GameClass/CUserCmd.hpp"
+#include "SDK/GameClass/CUserCmd.hpp"
 
-#include "../../Serialization/Serializer.hpp"
+#include "Serialization/Serializer.hpp"
 
 namespace Features::Semirage {
 	namespace Aimbot {

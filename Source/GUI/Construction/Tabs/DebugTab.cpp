@@ -1,9 +1,9 @@
 #include "DebugTab.hpp"
-#include "../Settings.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../ImGuiMacros.hpp"
+#include "GUI/Construction/Settings.hpp"
+#include "GUI/ImGuiMacros.hpp"
 
 void Gui::Construction::SetupDebug()
 {

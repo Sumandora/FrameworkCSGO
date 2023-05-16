@@ -1,9 +1,9 @@
 #ifndef SDK_GAMECLASS_INTERFACES_CMATERIALSYSTEM
 #define SDK_GAMECLASS_INTERFACES_CMATERIALSYSTEM
 
-#include "../VirtualMethod.hpp"
+#include "SDK/GameClass/VirtualMethod.hpp"
 
-#include "../IMaterial.hpp"
+#include "SDK/GameClass/IMaterial.hpp"
 
 class CMaterialSystem {
 public:

@@ -1,16 +1,16 @@
 #include "Movement.hpp"
 
 #include "imgui.h"
-#include "../../GUI/Elements/HelpMarker.hpp"
+#include "GUI/Elements/HelpMarker.hpp"
 
-#include "../../SDK/Definitions/InputFlags.hpp"
-#include "../../SDK/Definitions/StateFlags.hpp"
+#include "SDK/Definitions/InputFlags.hpp"
+#include "SDK/Definitions/StateFlags.hpp"
 
-#include "../../GameCache.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
+#include "GameCache.hpp"
+#include "SDK/GameClass/CBasePlayer.hpp"
 
-#include "../../Interfaces.hpp"
-#include "../../SDK/MoveType.hpp"
+#include "Interfaces.hpp"
+#include "SDK/MoveType.hpp"
 
 static bool enabled = false;
 static int humanization = 0;

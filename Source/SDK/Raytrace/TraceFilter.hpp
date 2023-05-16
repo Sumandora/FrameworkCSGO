@@ -1,7 +1,7 @@
 #ifndef SDK_RAYTRACE_TRACEFILTER
 #define SDK_RAYTRACE_TRACEFILTER
 
-#include "../GameClass/CBaseEntity.hpp"
+#include "SDK/GameClass/CBaseEntity.hpp"
 
 #include "TraceFilter.hpp"
 #include "TraceType.hpp"
