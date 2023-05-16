@@ -97,6 +97,7 @@ void Features::General::Menu::SetupGUI()
 
 	ImGui::Text(xorstr_("ImGui Version: %s"), ImGui::GetVersion());
 	ImGui::Text(xorstr_("Compiled using: " COMPILER_NAME));
+	ImGui::Text(xorstr_("Project name: " PROJECT_NAME));
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::General::Menu::Serializer)

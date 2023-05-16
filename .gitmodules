@@ -19,3 +19,6 @@
 [submodule "Dependencies/SignatureScanner"]
 	path = Dependencies/SignatureScanner
 	url = https://github.com/Sumandora/SignatureScanner.git
+[submodule "Dependencies/HideSharedObject"]
+	path = Dependencies/HideSharedObject
+	url = https://github.com/Sumandora/HideSharedObject.git

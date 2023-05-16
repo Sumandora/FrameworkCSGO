@@ -29,8 +29,8 @@ if [ -z "$csgo_pid" ]; then
 	exit 1
 fi
 
-# Pretty weak disguise as MangoHud
-$SU cp Build/libFrameworkCSGO.so /usr/lib/libMangoHud.so
+lib_name="lib$(cat ProjectName).so"
+$SU cp Build/$lib_name /usr/lib64/
 
 # The following is copied from Fuzion (https://github.com/LWSS/Fuzion/blob/0a4d775e17aba7a723aadce5b80898705e0bd6ff/load#L25); Thanks LWSS and contributors
 # pBypass for crash dumps being sent
@@ -47,7 +47,7 @@ $SU killall -19 steamwebhelper
 rm -f gdb.log
 
 $SU $DEBUGGER -p $csgo_pid -n -q -batch \
-  -ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib/libMangoHud.so\", 1)" \
+  -ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib64/$lib_name\", 1)" \
   -ex "call ((char*(*)(void)) dlerror)()" \
   -ex "detach" \
   -ex "quit" >> gdb.log 2>&1 || {
@@ -85,7 +85,7 @@ $SU $DEBUGGER -p $csgo_pid -n -q -batch \
 # And that's why we all love him so much
 
 # You have to restart your kernel to reinject btw ^^
-$SU sysctl -w kernel.yama.ptrace_scope=3
+#$SU sysctl -w kernel.yama.ptrace_scope=3
 
 sleep 1
 $SU killall -18 steamwebhelper

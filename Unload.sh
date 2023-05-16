@@ -30,13 +30,15 @@ if [ -z "$csgo_pid" ]; then
 	exit 1
 fi
 
+lib_name="lib$(cat ProjectName).so"
+
 $SU killall -19 steam
 $SU killall -19 steamwebhelper
 
 rm -f gdb.log
 
 $SU $DEBUGGER -p $csgo_pid -n -q -batch \
-  -ex "set \$library = ((void*(*)(char*, int)) dlopen)(\"/usr/lib/libMangoHud.so\", 6)" \
+  -ex "set \$library = ((void*(*)(char*, int)) dlopen)(\"/usr/lib/$lib_name\", 6)" \
   -ex "set \$dlclose = (int(*)(void*)) dlclose" \
   -ex "call \$dlclose(\$library)" \
   -ex "call \$dlclose(\$library)" >> gdb.log 2>&1 || {
