@@ -42,12 +42,13 @@ if [ -z "$csgo_pid" ]; then
 	exit 1
 fi
 
-$SU cp Build-Debug/libFrameworkCSGO.so /usr/lib/libMangoHud.so
+lib_name="lib$(cat ProjectName).so"
+$SU cp Build-Debug/$lib_name /usr/lib64/
 
 # https://www.kernel.org/doc/Documentation/security/Yama.txt
 $SU sysctl -w kernel.yama.ptrace_scope=2 # Only allows root to inject code. This is temporary until reboot.
 
 $SU $DEBUGGER -p $csgo_pid \
 	-ex "set pagination off" \
-	-ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib/libMangoHud.so\", 1)" \
+	-ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib64/$lib_name\", 1)" \
 	-ex "continue"
