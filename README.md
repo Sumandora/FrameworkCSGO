@@ -48,6 +48,16 @@ If you don't know how many threads you have you can execute the `nproc` program.
 If this behaviour is unwanted then you can supply MAKEOPTS aswell.**
 
 A ELF-Binary will be built in the "Build"-subdirectory, which will be created by the script.
+
+#### Custom library names
+
+In case you want to build the project using a different name you can do something like this:
+```sh
+echo "MyCoolProjectName" > ProjectName
+./Clean.sh
+# Rebuild here using Debug.sh or Build.sh
+```
+
 ## Usage
 A simple inject script using a debugger like GDB or LLDB is provided.
 ```sh
