@@ -3,13 +3,13 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../SDK/Definitions/InputFlags.hpp"
-#include "../../SDK/Definitions/StateFlags.hpp"
+#include "SDK/Definitions/InputFlags.hpp"
+#include "SDK/Definitions/StateFlags.hpp"
 
-#include "../../GameCache.hpp"
-#include "../../GUI/Elements/Keybind.hpp"
-#include "../../Interfaces.hpp"
-#include "../../SDK/MoveType.hpp"
+#include "GameCache.hpp"
+#include "Interfaces.hpp"
+#include "GUI/Elements/Keybind.hpp"
+#include "SDK/MoveType.hpp"
 
 static bool enabled = false;
 static int input = ImGuiKey_None;

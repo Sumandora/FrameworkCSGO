@@ -1,7 +1,7 @@
 #ifndef SDK_RAYTRACE_TRACE
 #define SDK_RAYTRACE_TRACE
 
-#include "../GameClass/CBaseEntity.hpp"
+#include "SDK/GameClass/CBaseEntity.hpp"
 
 #include "Plane.hpp"
 #include "Surface.hpp"

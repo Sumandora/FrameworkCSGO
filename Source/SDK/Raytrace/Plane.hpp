@@ -1,7 +1,7 @@
 #ifndef SDK_RAYTRACE_PLANE
 #define SDK_RAYTRACE_PLANE
 
-#include "../Math/Vector.hpp"
+#include "SDK/Math/Vector.hpp"
 
 struct Plane {
 	Vector normal;

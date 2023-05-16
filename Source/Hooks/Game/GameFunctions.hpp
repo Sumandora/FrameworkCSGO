@@ -1,14 +1,14 @@
 #ifndef HOOKS_GAME_GAMEFUNCTIONS
 #define HOOKS_GAME_GAMEFUNCTIONS
 
-#include "../../SDK/ClientFrameStage.hpp"
-#include "../../SDK/GameClass/CUserCmd.hpp"
-#include "../../SDK/GameClass/CViewSetup.hpp"
-#include "../../SDK/Math/Matrix4x4.hpp"
+#include "SDK/ClientFrameStage.hpp"
+#include "SDK/GameClass/CUserCmd.hpp"
+#include "SDK/GameClass/CViewSetup.hpp"
+#include "SDK/Math/Matrix4x4.hpp"
+#include "SDK/GameClass/IMaterial.hpp"
 
-#include "../Hooks.hpp"
+#include "Hooks/Hooks.hpp"
 
-#include "../../SDK/GameClass/IMaterial.hpp"
 #include "GameHook.hpp"
 
 namespace Hooks::Game {

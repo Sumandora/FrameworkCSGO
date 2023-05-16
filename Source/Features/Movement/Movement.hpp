@@ -1,9 +1,9 @@
 #ifndef FEATURES_MOVEMENT
 #define FEATURES_MOVEMENT
 
-#include "../../SDK/GameClass/CUserCmd.hpp"
+#include "SDK/GameClass/CUserCmd.hpp"
 
-#include "../../Serialization/Serializer.hpp"
+#include "Serialization/Serializer.hpp"
 
 // TODO More keybinds
 

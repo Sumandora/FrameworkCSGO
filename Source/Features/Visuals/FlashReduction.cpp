@@ -1,12 +1,12 @@
 #include "Visuals.hpp"
 
-#include "../../Interfaces.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../GUI/Elements/HelpMarker.hpp"
-#include "../../GUI/ImGuiColors.hpp"
+#include "Interfaces.hpp"
+#include "GUI/Elements/ClickableColorButton.hpp"
+#include "GUI/Elements/HelpMarker.hpp"
+#include "GUI/ImGuiColors.hpp"
 
 static bool enabled = false;
 static bool clearFlashbang = false;

@@ -1,4 +1,4 @@
-#include "../EntityCache.hpp"
+#include "Features/Visuals/ESP/EntityCache/EntityCache.hpp"
 
 void PlantedC4::Update(CPlantedC4* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {

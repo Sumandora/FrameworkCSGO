@@ -1,10 +1,10 @@
-#include "../ESPStructure.hpp"
+#include "Features/Visuals/ESP/ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../Hooks/Game/GameFunctions.hpp"
-#include "../../Visuals.hpp"
+#include "GUI/Elements/ClickableColorButton.hpp"
+#include "Hooks/Game/GameFunctions.hpp"
+#include "Features/Visuals/Visuals.hpp"
 
 static std::map<ClientClassID, const char*> projectileNames{
 	{ ClientClassID::CBreachChargeProjectile, strdup(xorstr_("Breach charge")) },

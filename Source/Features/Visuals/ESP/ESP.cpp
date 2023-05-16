@@ -1,16 +1,16 @@
-#include "../Visuals.hpp"
+#include "Features/Visuals/Visuals.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../../Interfaces.hpp"
+#include "Interfaces.hpp"
 
-#include "../../../GUI/Elements/Keybind.hpp"
-#include "../../../GUI/Elements/Popup.hpp"
+#include "GUI/Elements/Keybind.hpp"
+#include "GUI/Elements/Popup.hpp"
 
-#include "../../../Hooks/Game/GameFunctions.hpp"
+#include "Hooks/Game/GameFunctions.hpp"
 
-#include "../../../Utils/Trigonometry.hpp"
+#include "Utils/Trigonometry.hpp"
 
 #include <vector>
 

@@ -1,8 +1,9 @@
 #ifndef FEATURES_LEGIT
 #define FEATURES_LEGIT
 
-#include "../../SDK/GameClass/CUserCmd.hpp"
-#include "../../Serialization/Serializer.hpp"
+#include "SDK/GameClass/CUserCmd.hpp"
+#include "Serialization/Serializer.hpp"
+
 #include "SDL.h"
 
 namespace Features::Legit {

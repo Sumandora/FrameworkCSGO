@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "../../ConVarStorage.hpp"
+#include "ConVarStorage.hpp"
 
 struct Vector {
 	float x, y, z;

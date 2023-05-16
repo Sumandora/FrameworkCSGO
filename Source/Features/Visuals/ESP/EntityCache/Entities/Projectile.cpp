@@ -1,6 +1,6 @@
-#include "../EntityCache.hpp"
+#include "Features/Visuals/ESP/EntityCache/EntityCache.hpp"
 
-#include "../../../../../Interfaces.hpp"
+#include "Interfaces.hpp"
 
 void Projectile::Update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {

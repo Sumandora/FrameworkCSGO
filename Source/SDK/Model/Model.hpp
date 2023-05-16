@@ -2,7 +2,7 @@
 #define SDK_MODEL
 
 #include "ModType.hpp"
-#include "../Math/Vector.hpp"
+#include "SDK/Math/Vector.hpp"
 
 struct Model {
 	void* fnHandle;

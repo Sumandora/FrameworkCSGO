@@ -1,9 +1,9 @@
 #include "Semirage.hpp"
 
-#include "../../GameCache.hpp"
-#include "../../Interfaces.hpp"
+#include "GameCache.hpp"
+#include "Interfaces.hpp"
 
-#include "../../SDK/Definitions/InputFlags.hpp"
+#include "SDK/Definitions/InputFlags.hpp"
 
 #include "imgui.h"
 

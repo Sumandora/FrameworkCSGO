@@ -5,20 +5,20 @@
 #include <ranges>
 #include <vector>
 
-#include "../General/General.hpp"
+#include "Features/General/General.hpp"
 
-#include "../../GameCache.hpp"
-#include "../../Interfaces.hpp"
+#include "GameCache.hpp"
+#include "Interfaces.hpp"
 
-#include "../../SDK/Definitions/InputFlags.hpp"
-#include "../../SDK/Definitions/NetworkFlows.hpp"
+#include "SDK/Definitions/InputFlags.hpp"
+#include "SDK/Definitions/NetworkFlows.hpp"
 
-#include "../../GUI/ImGuiColors.hpp"
-#include "../../Utils/Trigonometry.hpp"
+#include "GUI/ImGuiColors.hpp"
+#include "Utils/Trigonometry.hpp"
 
-#include "../../Hooks/Game/GameFunctions.hpp"
+#include "Hooks/Game/GameFunctions.hpp"
 
-#include "../Visuals/Visuals.hpp"
+#include "Features/Visuals/Visuals.hpp"
 
 static bool enabled = false;
 static float scale = 1.0f;

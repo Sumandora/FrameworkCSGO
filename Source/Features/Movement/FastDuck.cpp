@@ -4,7 +4,7 @@
 
 #include "xorstr.hpp"
 
-#include "../../SDK/Definitions/InputFlags.hpp"
+#include "SDK/Definitions/InputFlags.hpp"
 
 static bool enabled = false;
 

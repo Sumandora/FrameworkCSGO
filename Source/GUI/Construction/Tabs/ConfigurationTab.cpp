@@ -1,5 +1,6 @@
 #include "ConfigurationTab.hpp"
-#include "../Settings.hpp"
+
+#include "GUI/Construction/Settings.hpp"
 
 void Gui::Construction::SetupConfiguration()
 {

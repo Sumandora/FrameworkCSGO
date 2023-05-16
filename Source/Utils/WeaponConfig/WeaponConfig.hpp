@@ -1,9 +1,9 @@
 #ifndef UTILS_WEAPONCONFIG
 #define UTILS_WEAPONCONFIG
 
-#include "../../GUI/Elements/Popup.hpp"
-#include "../../GUI/ImGuiMacros.hpp"
-#include "../../Serialization/Serializer.hpp"
+#include "GUI/Elements/Popup.hpp"
+#include "GUI/ImGuiMacros.hpp"
+#include "Serialization/Serializer.hpp"
 #include "WeaponClasses.hpp"
 
 template <typename T>

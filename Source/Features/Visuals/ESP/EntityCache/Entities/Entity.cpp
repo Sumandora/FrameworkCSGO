@@ -1,4 +1,4 @@
-#include "../EntityCache.hpp"
+#include "Features/Visuals/ESP/EntityCache/EntityCache.hpp"
 
 void Entity::Update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {

@@ -1,4 +1,4 @@
-#include "../EntityCache.hpp"
+#include "Features/Visuals/ESP/EntityCache/EntityCache.hpp"
 
 void Spectator::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {

@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "../../../../Interfaces.hpp"
+#include "Interfaces.hpp"
 
 static std::optional<LocalPlayer> localPlayer;
 static std::vector<Entity> entities;

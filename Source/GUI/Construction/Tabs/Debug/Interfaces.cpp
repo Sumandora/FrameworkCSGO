@@ -1,11 +1,11 @@
-#include "../DebugTab.hpp"
+#include "GUI/Construction/Tabs/DebugTab.hpp"
 
 #include <link.h>
 #include <mutex>
 
-#include "../../../../Interfaces.hpp"
-#include "../../../../SDK/InterfaceReg.hpp"
-#include "../../../Elements/HelpMarker.hpp"
+#include "Interfaces.hpp"
+#include "SDK/InterfaceReg.hpp"
+#include "GUI/Elements/HelpMarker.hpp"
 
 void Gui::Construction::Debug::InterfacesTab()
 {

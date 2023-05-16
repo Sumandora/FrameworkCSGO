@@ -1,9 +1,9 @@
-#include "../DebugTab.hpp"
+#include "GUI/Construction/Tabs/DebugTab.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../../../Netvars.hpp"
+#include "Netvars.hpp"
 
 void Gui::Construction::Debug::NetvarsTab()
 {
