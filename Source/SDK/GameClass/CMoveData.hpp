@@ -1,8 +1,8 @@
 #ifndef SDK_GAMECLASS_CMOVEDATA
 #define SDK_GAMECLASS_CMOVEDATA
 
-#include "SDK/CBaseHandle.hpp"
-#include "SDK/Math/Vector.hpp"
+#include "../CBaseHandle.hpp"
+#include "../Math/Vector.hpp"
 
 class CMoveData {
 public:

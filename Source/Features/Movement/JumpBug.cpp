@@ -5,13 +5,16 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "GameCache.hpp"
-#include "Interfaces.hpp"
-#include "Features/General/General.hpp"
-#include "SDK/Definitions/InputFlags.hpp"
-#include "SDK/Definitions/StateFlags.hpp"
-#include "SDK/GameClass/CBasePlayer.hpp"
-#include "GUI/Elements/Keybind.hpp"
+#include "../General/General.hpp"
+
+#include "../../SDK/Definitions/InputFlags.hpp"
+#include "../../SDK/Definitions/StateFlags.hpp"
+
+#include "../../GameCache.hpp"
+#include "../../SDK/GameClass/CBasePlayer.hpp"
+
+#include "../../GUI/Elements/Keybind.hpp"
+#include "../../Interfaces.hpp"
 
 static bool enabled = false;
 static int input = ImGuiKey_None;

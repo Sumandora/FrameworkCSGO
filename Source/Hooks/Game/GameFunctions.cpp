@@ -1,6 +1,6 @@
 #include "GameFunctions.hpp"
 
-#include "Interfaces.hpp"
+#include "../../Interfaces.hpp"
 
 #include "IDASignatureScanner.hpp"
 

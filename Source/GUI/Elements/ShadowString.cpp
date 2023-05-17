@@ -1,6 +1,6 @@
 #include "ShadowString.hpp"
 
-#include "GUI/ImGuiColors.hpp"
+#include "../ImGuiColors.hpp"
 
 // TODO Transparency
 

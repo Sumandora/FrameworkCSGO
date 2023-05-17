@@ -2,7 +2,7 @@
 #define SDK_NETVARS_CLIENTCLASS
 
 #include "RecvTable.hpp"
-#include "SDK/ClientClassIDs.hpp"
+#include "../ClientClassIDs.hpp"
 
 class ClientClass {
 public:

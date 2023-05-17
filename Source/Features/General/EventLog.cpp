@@ -2,8 +2,8 @@
 
 #include "xorstr.hpp"
 
-#include "GUI/Elements/ShadowString.hpp"
-#include "GUI/ImGuiColors.hpp"
+#include "../../GUI/Elements/ShadowString.hpp"
+#include "../../GUI/ImGuiColors.hpp"
 
 #include <cmath>
 #include <vector>

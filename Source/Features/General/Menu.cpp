@@ -1,11 +1,13 @@
 #include "General.hpp"
 
+#include "../../Hooks/SDL/SDLFunctions.hpp"
+
 #include "xorstr.hpp"
 
-#include "GUI/Elements/Keybind.hpp"
-#include "GUI/GUI.hpp"
+#include "../../GUI/Elements/Keybind.hpp"
+#include "../../GUI/GUI.hpp"
 
-#include "Utils/Platform/CompilerSupport.hpp"
+#include "../../Utils/Platform/CompilerSupport.hpp"
 
 static int menuKey = ImGuiKey_Insert;
 static int style = 0;

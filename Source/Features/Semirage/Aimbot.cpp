@@ -2,23 +2,23 @@
 
 #include "imgui.h"
 
-#include "GameCache.hpp"
-#include "Interfaces.hpp"
+#include "../../GameCache.hpp"
+#include "../../Interfaces.hpp"
 
-#include "GUI/Elements/ClickableColorButton.hpp"
-#include "GUI/Elements/Popup.hpp"
-#include "GUI/ImGuiColors.hpp"
-#include "GUI/Elements/Keybind.hpp"
+#include "../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../GUI/Elements/Popup.hpp"
+#include "../../GUI/ImGuiColors.hpp"
 
-#include "Hooks/Game/GameFunctions.hpp"
+#include "../../Hooks/Game/GameFunctions.hpp"
 
-#include "SDK/Definitions/InputFlags.hpp"
+#include "../../SDK/Definitions/InputFlags.hpp"
 
-#include "Utils/Raytrace.hpp"
-#include "Utils/Trigonometry.hpp"
-#include "Utils/WeaponConfig/WeaponConfig.hpp"
+#include "../../Utils/Raytrace.hpp"
+#include "../../Utils/Trigonometry.hpp"
+#include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
-#include "Features/Visuals/Visuals.hpp"
+#include "../../GUI/Elements/Keybind.hpp"
+#include "../Visuals/Visuals.hpp"
 
 #include <optional>
 

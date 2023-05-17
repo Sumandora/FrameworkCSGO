@@ -1,7 +1,7 @@
 #ifndef SDK_RAYTRACE_RAY
 #define SDK_RAYTRACE_RAY
 
-#include "SDK/Math/Matrix3x4.hpp"
+#include "../Math/Matrix3x4.hpp"
 
 #include "Trace.hpp"
 

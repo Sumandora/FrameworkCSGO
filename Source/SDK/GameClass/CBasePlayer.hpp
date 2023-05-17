@@ -4,13 +4,13 @@
 #include "CBaseCombatWeapon.hpp"
 #include "CBaseEntity.hpp"
 
-#include "SDK/Definitions/LifeState.hpp"
-#include "SDK/ObserverMode.hpp"
+#include "../Definitions/LifeState.hpp"
+#include "../ObserverMode.hpp"
 
-#include "ConVarStorage.hpp"
+#include "../../ConVarStorage.hpp"
 
-#include "SDK/CBaseHandle.hpp"
-#include "SDK/Math/Vector.hpp"
+#include "../CBaseHandle.hpp"
+#include "../Math/Vector.hpp"
 
 class CBasePlayer : public CBaseEntity {
 public:

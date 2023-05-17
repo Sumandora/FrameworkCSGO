@@ -1,12 +1,12 @@
 #ifndef FEATURES_VISUALS_ESP_ENTITYCACHE
 #define FEATURES_VISUALS_ESP_ENTITYCACHE
 
-#include "SDK/GameClass/CBaseCombatWeapon.hpp"
-#include "SDK/GameClass/CBaseEntity.hpp"
-#include "SDK/GameClass/CBasePlayer.hpp"
-#include "SDK/GameClass/CPlantedC4.hpp"
-#include "SDK/GameClass/CHostage.hpp"
+#include "../../../../SDK/GameClass/CBaseCombatWeapon.hpp"
+#include "../../../../SDK/GameClass/CBaseEntity.hpp"
+#include "../../../../SDK/GameClass/CBasePlayer.hpp"
+#include "../../../../SDK/GameClass/CPlantedC4.hpp"
 
+#include "../../../../SDK/GameClass/CHostage.hpp"
 #include "imgui.h"
 
 #include <vector>

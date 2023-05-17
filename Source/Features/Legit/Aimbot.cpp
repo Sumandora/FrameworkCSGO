@@ -2,12 +2,12 @@
 
 #include "imgui.h"
 
-#include "Interfaces.hpp"
+#include "../../Interfaces.hpp"
 
-#include "GameCache.hpp"
-#include "Utils/Raytrace.hpp"
-#include "Utils/Trigonometry.hpp"
-#include "Utils/WeaponConfig/WeaponConfig.hpp"
+#include "../../GameCache.hpp"
+#include "../../Utils/Raytrace.hpp"
+#include "../../Utils/Trigonometry.hpp"
+#include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include <algorithm>
 #include <cmath>

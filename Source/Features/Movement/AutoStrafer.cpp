@@ -2,16 +2,16 @@
 
 #include "imgui.h"
 
-#include "Features/General/General.hpp"
+#include "../General/General.hpp"
 
-#include "SDK/Definitions/InputFlags.hpp"
-#include "SDK/Definitions/StateFlags.hpp"
-#include "SDK/GameClass/CBasePlayer.hpp"
+#include "../../SDK/Definitions/InputFlags.hpp"
+#include "../../SDK/Definitions/StateFlags.hpp"
+#include "../../SDK/GameClass/CBasePlayer.hpp"
 
-#include "GameCache.hpp"
-#include "Hooks/Game/GameFunctions.hpp"
-#include "Interfaces.hpp"
-#include "Utils/Trigonometry.hpp"
+#include "../../GameCache.hpp"
+#include "../../Hooks/Game/GameFunctions.hpp"
+#include "../../Interfaces.hpp"
+#include "../../Utils/Trigonometry.hpp"
 
 #include <optional>
 

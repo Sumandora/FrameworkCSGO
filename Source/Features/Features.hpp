@@ -1,7 +1,7 @@
 #ifndef FEATURES
 #define FEATURES
 
-#include "Serialization/Serializer.hpp"
+#include "../Serialization/Serializer.hpp"
 
 #include "General/General.hpp"
 #include "Legit/Legit.hpp"

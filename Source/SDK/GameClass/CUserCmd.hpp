@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_CUSERCMD
 #define SDK_GAMECLASS_CUSERCMD
 
-#include "SDK/Math/Vector.hpp"
+#include "../Math/Vector.hpp"
 
 class CUserCmd {
 	void* vmt; // Force generate a vmt

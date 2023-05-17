@@ -1,13 +1,13 @@
-#include "Features/Visuals/ESP/ESPStructure.hpp"
+#include "../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "GUI/Elements/ClickableColorButton.hpp"
-#include "GUI/Elements/Popup.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/Popup.hpp"
 
-#include "Interfaces.hpp"
+#include "../../../../Interfaces.hpp"
 
-#include "Features/Visuals/Visuals.hpp"
+#include "../../Visuals.hpp"
 
 void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const
 {

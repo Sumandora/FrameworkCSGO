@@ -3,15 +3,15 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "Interfaces.hpp"
+#include "../../Interfaces.hpp"
 
-#include "Utils/Raytrace.hpp"
-#include "Utils/Trigonometry.hpp"
+#include "../../Utils/Raytrace.hpp"
+#include "../../Utils/Trigonometry.hpp"
 
-#include "SDK/Definitions/InputFlags.hpp"
+#include "../../SDK/Definitions/InputFlags.hpp"
 
-#include "GameCache.hpp"
-#include "GUI/Elements/Keybind.hpp"
+#include "../../GameCache.hpp"
+#include "../../GUI/Elements/Keybind.hpp"
 
 static bool enabled = false;
 static int input = ImGuiKey_None;

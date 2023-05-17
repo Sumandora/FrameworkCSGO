@@ -1,8 +1,9 @@
 #ifndef SDK_GAMECLASS_VIRTUALMETHOD
 #define SDK_GAMECLASS_VIRTUALMETHOD
 
-#include "Utils/VMT.hpp"
-#include "Utils/Platform/FunctionInvoker.hpp"
+#include "../../Utils/VMT.hpp"
+
+#include "../../Utils/Platform/FunctionInvoker.hpp"
 
 // Inspired by danielkrupinski/Osiris
 
