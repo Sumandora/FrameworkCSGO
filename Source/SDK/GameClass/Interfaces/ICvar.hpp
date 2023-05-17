@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_INTERFACES_ICVAR
 #define SDK_GAMECLASS_INTERFACES_ICVAR
 
-#include "SDK/GameClass/ConVar.hpp"
+#include "../ConVar.hpp"
 
 class ICvar {
 public:

@@ -2,7 +2,7 @@
 
 #include "xorstr.hpp"
 
-#include "GUI/GUI.hpp"
+#include "../GUI.hpp"
 
 #include <cstdlib>
 #include <optional>

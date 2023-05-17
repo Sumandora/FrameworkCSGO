@@ -1,6 +1,6 @@
-#include "Hooks/Game/GameFunctions.hpp"
+#include "../GameFunctions.hpp"
 
-#include "Features/Features.hpp"
+#include "../../../Features/Features.hpp"
 
 void Hooks::Game::OverrideView::HookFunc(void* thisptr, CViewSetup* pSetup)
 {

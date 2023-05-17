@@ -1,4 +1,4 @@
-#include "GUI/Construction/Tabs/ConfigurationTab.hpp"
+#include "../ConfigurationTab.hpp"
 
 #include <cstring>
 #include <ctime>
@@ -10,8 +10,8 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "Features/General/General.hpp"
-#include "Serialization/Serialization.hpp"
+#include "../../../../Features/General/General.hpp"
+#include "../../../../Serialization/Serialization.hpp"
 
 // TODO Remake GUI
 

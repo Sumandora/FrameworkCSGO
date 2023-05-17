@@ -9,11 +9,11 @@
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
 
-#include "Hooks/SDL/SDLFunctions.hpp"
+#include "../Hooks/SDL/SDLFunctions.hpp"
 
-#include "Features/General/General.hpp"
-#include "Features/Semirage/Semirage.hpp"
-#include "Features/Visuals/Visuals.hpp"
+#include "../Features/General/General.hpp"
+#include "../Features/Semirage/Semirage.hpp"
+#include "../Features/Visuals/Visuals.hpp"
 
 #include "Construction/Settings.hpp"
 

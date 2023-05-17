@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_CCOLLIDEABLE
 #define SDK_GAMECLASS_CCOLLIDEABLE
 
-#include "SDK/Math/Vector.hpp"
+#include "../Math/Vector.hpp"
 #include "VirtualMethod.hpp"
 
 class CCollideable {

@@ -5,7 +5,7 @@
 #include <pwd.h>
 #include <unistd.h>
 
-#include "Features/Features.hpp"
+#include "../Features/Features.hpp"
 
 char* Serialization::GetConfigDirectory()
 {

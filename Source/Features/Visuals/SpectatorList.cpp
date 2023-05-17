@@ -3,11 +3,12 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "GameCache.hpp"
-#include "Interfaces.hpp"
-#include "GUI/Elements/ClickableColorButton.hpp"
-#include "GUI/Elements/ShadowString.hpp"
-#include "GUI/ImGuiColors.hpp"
+#include "../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../GUI/Elements/ShadowString.hpp"
+
+#include "../../GameCache.hpp"
+#include "../../GUI/ImGuiColors.hpp"
+#include "../../Interfaces.hpp"
 
 #include <vector>
 

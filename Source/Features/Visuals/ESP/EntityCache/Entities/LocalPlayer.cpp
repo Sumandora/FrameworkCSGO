@@ -1,6 +1,6 @@
-#include "Features/Visuals/ESP/EntityCache/EntityCache.hpp"
+#include "../EntityCache.hpp"
 
-#include "Interfaces.hpp"
+#include "../../../../../Interfaces.hpp"
 
 LocalPlayer::LocalPlayer(CBasePlayer* entity, int index)
 {

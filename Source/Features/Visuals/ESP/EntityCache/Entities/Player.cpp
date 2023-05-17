@@ -1,8 +1,8 @@
-#include "Features/Visuals/ESP/EntityCache/EntityCache.hpp"
+#include "../EntityCache.hpp"
 
-#include "Interfaces.hpp"
-#include "Utils/Raytrace.hpp"
-#include "Features/Visuals/Visuals.hpp"
+#include "../../../../../Interfaces.hpp"
+#include "../../../../../Utils/Raytrace.hpp"
+#include "../../../Visuals.hpp"
 
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {

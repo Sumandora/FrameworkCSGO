@@ -28,7 +28,6 @@ endif ()
 target_link_libraries(${CMAKE_PROJECT_NAME} dl SDL2 GL)
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC PROJECT_NAME="${CMAKE_PROJECT_NAME}")
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Source)
 
 # Setup SDL
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC /usr/include/SDL2)

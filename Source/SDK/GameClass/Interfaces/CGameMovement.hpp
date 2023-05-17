@@ -1,9 +1,9 @@
 #ifndef SDK_GAMECLASS_INTERFACES_CGAMEMOVEMENT
 #define SDK_GAMECLASS_INTERFACES_CGAMEMOVEMENT
 
-#include "SDK/GameClass/CBasePlayer.hpp"
-#include "SDK/GameClass/CMoveData.hpp"
-#include "SDK/GameClass/VirtualMethod.hpp"
+#include "../CBasePlayer.hpp"
+#include "../CMoveData.hpp"
+#include "../VirtualMethod.hpp"
 
 class CGameMovement {
 public:

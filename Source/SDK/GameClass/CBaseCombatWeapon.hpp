@@ -3,8 +3,8 @@
 
 #include "xorstr.hpp"
 
-#include "Netvars.hpp"
-#include "SDK/Weapons/WeaponIDs.hpp"
+#include "../../Netvars.hpp"
+#include "../Weapons/WeaponIDs.hpp"
 #include "VirtualMethod.hpp"
 
 #include "CBaseAttributableItem.hpp"

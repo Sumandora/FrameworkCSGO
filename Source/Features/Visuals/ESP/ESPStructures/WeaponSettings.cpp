@@ -1,8 +1,8 @@
-#include "Features/Visuals/ESP/ESPStructure.hpp"
+#include "../ESPStructure.hpp"
 
 #include "xorstr.hpp"
 
-#include "GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
 void WeaponSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Weapon& weapon) const
 {

@@ -1,4 +1,4 @@
-#include "Serialization/Serializer.hpp"
+#include "../Serializer.hpp"
 
 void Serialization::Serializer::Serialize(const char* name, int& type, Direction direction)
 {

@@ -1,9 +1,9 @@
-#include "Hooks/Game/GameFunctions.hpp"
+#include "../GameFunctions.hpp"
 
-#include "GameCache.hpp"
-#include "Interfaces.hpp"
-#include "Features/Semirage/Semirage.hpp"
-#include "Features/Visuals/Visuals.hpp"
+#include "../../../Features/Semirage/Semirage.hpp"
+#include "../../../Features/Visuals/Visuals.hpp"
+#include "../../../GameCache.hpp"
+#include "../../../Interfaces.hpp"
 
 void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage stage)
 {

@@ -1,10 +1,10 @@
 #ifndef SDK_GAMECLASS_INTERFACES_CENGINETRACE
 #define SDK_GAMECLASS_INTERFACES_CENGINETRACE
 
-#include "SDK/GameClass/VirtualMethod.hpp"
+#include "../VirtualMethod.hpp"
 
-#include "SDK/Raytrace/Ray.hpp"
-#include "SDK/Raytrace/TraceFilter.hpp"
+#include "../../Raytrace/Ray.hpp"
+#include "../../Raytrace/TraceFilter.hpp"
 
 class CEngineTrace {
 public:

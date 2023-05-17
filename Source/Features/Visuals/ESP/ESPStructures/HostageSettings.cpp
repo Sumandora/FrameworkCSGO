@@ -1,10 +1,9 @@
-#include "Features/Visuals/ESP/ESPStructure.hpp"
-
+#include "../ESPStructure.hpp"
 #include <iomanip>
 
 #include "xorstr.hpp"
 
-#include "GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
 HostageSettings::HostageSettings()
 	: accuracy(1)

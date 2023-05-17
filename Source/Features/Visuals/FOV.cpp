@@ -3,10 +3,10 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "GameCache.hpp"
-#include "Interfaces.hpp"
-#include "GUI/Elements/HelpMarker.hpp"
-#include "Utils/Trigonometry.hpp"
+#include "../../GameCache.hpp"
+#include "../../GUI/Elements/HelpMarker.hpp"
+#include "../../Interfaces.hpp"
+#include "../../Utils/Trigonometry.hpp"
 
 #include <vector>
 

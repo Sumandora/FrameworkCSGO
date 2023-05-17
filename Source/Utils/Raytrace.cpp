@@ -1,8 +1,8 @@
 #include "Raytrace.hpp"
 
-#include "Interfaces.hpp"
+#include "../Interfaces.hpp"
 
-#include "SDK/Raytrace/Definitions/MaskFlags.hpp"
+#include "../SDK/Raytrace/Definitions/MaskFlags.hpp"
 
 Trace Utils::TraceRay(Vector start, Vector end, ITraceFilter* filter)
 {

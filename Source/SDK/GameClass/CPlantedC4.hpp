@@ -3,7 +3,7 @@
 
 #include "xorstr.hpp"
 
-#include "Netvars.hpp"
+#include "../../Netvars.hpp"
 #include "VirtualMethod.hpp"
 
 #include "CBaseEntity.hpp"

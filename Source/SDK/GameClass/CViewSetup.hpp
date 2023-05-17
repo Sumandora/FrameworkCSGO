@@ -3,7 +3,7 @@
 
 #include "xorstr.hpp"
 
-#include "SDK/Math/Vector.hpp"
+#include "../Math/Vector.hpp"
 
 class CViewSetup {
 	char pad[184];

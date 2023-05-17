@@ -1,6 +1,6 @@
-#include "Hooks/SDL/SDLFunctions.hpp"
+#include "../SDLFunctions.hpp"
 
-#include "GUI/GUI.hpp"
+#include "../../../GUI/GUI.hpp"
 
 void Hooks::SDL::SwapWindow::HookFunc(SDL_Window* window)
 {
