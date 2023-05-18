@@ -8,10 +8,6 @@
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../GUI/Elements/Popup.hpp"
 
-#include "../../../Hooks/Game/GameFunctions.hpp"
-
-#include "../../../Utils/Trigonometry.hpp"
-
 #include <vector>
 
 static bool enabled = false;
@@ -20,45 +16,21 @@ static int drawDistance = 1024 * 8;
 static bool considerSpottedEntitiesAsVisible = false;
 bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
 static bool considerEveryoneVisibleWhenDead = false;
-static bool alignBoundingBox = true;
-static bool outOfView = false;
-static float outOfViewSize = 30.0f;
-static float outOfViewDistance = 300.0f;
+bool Features::Visuals::Esp::alignBoundingBox = true;
+bool Features::Visuals::Esp::outOfView = false;
+float Features::Visuals::Esp::outOfViewSize = 30.0f;
+float Features::Visuals::Esp::outOfViewDistance = 300.0f;
 PlayerSettings Features::Visuals::Esp::players;
 static WeaponSettings weapons;
 static ProjectileSettings projectiles;
 static PlantedC4Settings plantedC4;
 static HostageSettings hostages;
-static BoxNameSetting dzLootCrates;
-static BoxNameSetting dzAmmoBoxes;
-static BoxNameSetting dzSentries;
-static BoxNameSetting other;
+static LootCrateTypeSettings dzLootCrates;
+static GenericEntitySettings dzAmmoBoxes;
+static SentrySettings dzSentries;
+static DroneSettings dzDrones;
+static GenericEntitySettings other;
 // TODO Drone ESP
-
-static std::map<const char*, const char*> lootCrateNames{
-	{ strdup(xorstr_("case_pistol.mdl")), strdup(xorstr_("Pistol Case")) },
-	{ strdup(xorstr_("case_light_weapon.mdl")), strdup(xorstr_("Light Case")) },
-	{ strdup(xorstr_("case_heavy_weapon.mdl")), strdup(xorstr_("Heavy Case")) },
-	{ strdup(xorstr_("case_explosive.mdl")), strdup(xorstr_("Explosive Case")) },
-	{ strdup(xorstr_("case_tools.mdl")), strdup(xorstr_("Tools Case")) },
-	{ strdup(xorstr_("dufflebag.mdl")), strdup(xorstr_("Cash Dufflebag")) }
-};
-
-bool Features::Visuals::Esp::WorldToScreen(const Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition)
-{
-	const float z = matrix[2][0] * worldPosition.x + matrix[2][1] * worldPosition.y + matrix[2][2] * worldPosition.z + matrix[2][3];
-	const float w = matrix[3][0] * worldPosition.x + matrix[3][1] * worldPosition.y + matrix[3][2] * worldPosition.z + matrix[3][3];
-	if (z <= 0.0f || w <= 0.0f)
-		return false;
-
-	screenPosition = ImGui::GetIO().DisplaySize;
-	screenPosition.x /= 2.0f;
-	screenPosition.y /= 2.0f;
-
-	screenPosition.x *= 1.0f + (matrix[0][0] * worldPosition.x + matrix[0][1] * worldPosition.y + matrix[0][2] * worldPosition.z + matrix[0][3]) / w;
-	screenPosition.y *= 1.0f - (matrix[1][0] * worldPosition.x + matrix[1][1] * worldPosition.y + matrix[1][2] * worldPosition.z + matrix[1][3]) / w;
-	return true;
-}
 
 PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Player& player, PlayerTeamSettings* settings)
 {
@@ -77,130 +49,8 @@ PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Pla
 		return &settings->occluded;
 }
 
-bool CalculateScreenRectangle(const Vector& origin, Entity& entity, ImVec4& rectangle)
-{
-	const std::optional<BoundingBox>& boundingBox = entity.boundingBox;
-
-	if (!boundingBox.has_value())
-		return false;
-
-	const Vector min = origin + boundingBox->mins;
-	const Vector max = origin + boundingBox->maxs;
-
-	const Vector points[] = {
-		// Lower
-		Vector(min.x, min.y, min.z),
-		Vector(max.x, min.y, min.z),
-		Vector(max.x, min.y, max.z),
-		Vector(min.x, min.y, max.z),
-		// Higher
-		Vector(min.x, max.y, min.z),
-		Vector(max.x, max.y, min.z),
-		Vector(max.x, max.y, max.z),
-		Vector(min.x, max.y, max.z)
-	};
-
-	rectangle = { FLT_MAX, FLT_MAX, -FLT_MAX, -FLT_MAX };
-
-	for (const auto& point : points) {
-		ImVec2 point2D;
-
-		if (!Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, point, point2D)) {
-			entity.lastScreenRectangle.reset();
-			return false;
-		}
-
-		if (point2D.x < rectangle.x)
-			rectangle.x = point2D.x;
-		else if (point2D.x > rectangle.z)
-			rectangle.z = point2D.x;
-
-		if (point2D.y < rectangle.y)
-			rectangle.y = point2D.y;
-		else if (point2D.y > rectangle.w)
-			rectangle.w = point2D.y;
-	}
-
-	const int currTick = Memory::globalVars->tickcount;
-	if (entity.lastScreenRectangleUpdate != currTick) { // Remember this rectangle
-		entity.lastScreenRectangleUpdate = currTick;
-		entity.lastScreenRectangle = rectangle;
-	} else if (entity.lastScreenRectangle.has_value()) {
-		// We got a new one now, lets get the middle between the new and old one based on the interp amount
-		const ImVec4 old = entity.lastScreenRectangle.value();
-
-		rectangle.x += (old.x - rectangle.x) * Memory::globalVars->interpolation_amount;
-		rectangle.y += (old.y - rectangle.y) * Memory::globalVars->interpolation_amount;
-		rectangle.z += (old.z - rectangle.z) * Memory::globalVars->interpolation_amount;
-		rectangle.w += (old.w - rectangle.w) * Memory::globalVars->interpolation_amount;
-	}
-
-	if (!std::isfinite(rectangle.x) || !std::isfinite(rectangle.y) || !std::isfinite(rectangle.z) || !std::isfinite(rectangle.w)) {
-		entity.lastScreenRectangle.reset();
-		return false;
-	}
-
-	if (alignBoundingBox) {
-		rectangle.x = std::round(rectangle.x);
-		rectangle.y = std::round(rectangle.y);
-		rectangle.z = std::round(rectangle.z);
-		rectangle.w = std::round(rectangle.w);
-	}
-
-	return true;
-}
-
-bool HandleOutOfView(const Vector& localOrigin, const Vector& otherOrigin, const Vector& viewangles, ImVec4& rectangle)
-{
-	if (outOfView) {
-		const Vector delta = otherOrigin - localOrigin;
-		const float angle = (float)DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
-
-		const ImVec2 display = ImGui::GetIO().DisplaySize;
-		const ImVec2 direction(cosf(angle), sinf(angle));
-
-		const ImVec2 screenPosition(
-			(float)display.x / 2.0f + direction.x * outOfViewDistance,
-			(float)display.y / 2.0f + direction.y * outOfViewDistance);
-
-		rectangle = ImVec4(
-			screenPosition.x - outOfViewSize,
-			screenPosition.y - outOfViewSize,
-
-			screenPosition.x + outOfViewSize,
-			screenPosition.y + outOfViewSize);
-
-		return true;
-	}
-	return false;
-}
-
-bool ScreenRectangle(ImVec4& rectangle, Entity& entity, const LocalPlayer& localPlayer, bool outOfView = true)
-{
-	bool visible = CalculateScreenRectangle(entity.origin, entity, rectangle);
-
-	if (outOfView && !visible && HandleOutOfView(localPlayer.origin, entity.origin, localPlayer.viewangles, rectangle)) { // TODO Buy menu makes oov flicker
-		visible = true; // We just made them visible ^^
-	}
-
-	return visible;
-}
-
-void DrawLocalPlayer(ImDrawList* drawList, LocalPlayer& localPlayer)
-{
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, localPlayer, localPlayer, false))
-		return;
-
-	Features::Visuals::Esp::players.local.Draw(drawList, rectangle, localPlayer);
-}
-
 void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPlayer)
 {
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, player, localPlayer))
-		return;
-
 	PlayerStateSettings* settings;
 
 	if (!player.enemy)
@@ -209,90 +59,32 @@ void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPl
 		settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.enemy);
 
 	if (settings)
-		settings->Draw(drawList, rectangle, player);
+		settings->Draw(drawList, player);
 }
 
-void DrawSpectator(ImDrawList* drawList, Spectator& player, const LocalPlayer& localPlayer)
+void DrawSpectator(ImDrawList* drawList, Spectator& player)
 {
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, player, localPlayer))
-		return;
-
+	// TODO Hide if spectated entity isnt dormant
+	// TODO Show name of spectated entity
 	char name[MAX_NAME_LEN];
-	if (Features::Visuals::Esp::players.spectators.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
+
+	if (Features::Visuals::Esp::players.spectators.boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
 		Interfaces::engine->GetPlayerInfo(player.index, &info);
 		strcpy(name, info.name);
 	}
-	Features::Visuals::Esp::players.spectators.Draw(drawList, rectangle, name);
+
+	Features::Visuals::Esp::players.spectators.Draw(drawList, player, name);
 }
 
-void DrawWeapon(ImDrawList* drawList, Weapon& weapon, const LocalPlayer& localPlayer)
+void DrawEntity(ImDrawList* drawList, Entity& entity)
 {
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, weapon, localPlayer))
-		return;
-
-	if (weapon.ownerEntity == -1)
-		weapons.Draw(drawList, rectangle, weapon);
-}
-
-void DrawProjectile(ImDrawList* drawList, Projectile& projectile, const LocalPlayer& localPlayer)
-{
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, projectile, localPlayer))
-		return;
-
-	projectiles.Draw(drawList, rectangle, projectile);
-}
-
-void DrawPlantedC4(ImDrawList* drawList, PlantedC4& bomb, const LocalPlayer& localPlayer)
-{
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, bomb, localPlayer))
-		return;
-
-	plantedC4.Draw(drawList, rectangle, bomb);
-}
-
-void DrawHostage(ImDrawList* drawList, Hostage& hostage, const LocalPlayer& localPlayer)
-{
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, hostage, localPlayer))
-		return;
-
-	hostages.Draw(drawList, rectangle, hostage);
-}
-
-void DrawEntity(ImDrawList* drawList, Entity& entity, const LocalPlayer& localPlayer)
-{
-	ImVec4 rectangle;
-	if (!ScreenRectangle(rectangle, entity, localPlayer))
-		return;
-
 	switch (entity.clientClass->m_ClassID) {
-	case ClientClassID::CPhysPropLootCrate: {
-		const char* name = xorstr_("Unknown loot crate");
-		if (dzLootCrates.nametag.enabled) {
-			const char* modelName = entity.model->szPathName;
-			for (const auto& pair : lootCrateNames) {
-				if (strstr(modelName, pair.first)) {
-					name = pair.second;
-				}
-			}
-		}
-
-		dzLootCrates.Draw(drawList, rectangle, name);
-		break;
-	}
 	case ClientClassID::CPhysPropAmmoBox:
-		dzAmmoBoxes.Draw(drawList, rectangle, xorstr_("Ammo box"));
-		break;
-	case ClientClassID::CDronegun:
-		dzSentries.Draw(drawList, rectangle, xorstr_("Sentry"));
+		dzAmmoBoxes.Draw(drawList, entity, xorstr_("Ammo box"));
 		break;
 	default:
-		other.Draw(drawList, rectangle, entity.clientClass->m_pNetworkName);
+		other.Draw(drawList, entity, entity.clientClass->m_pNetworkName);
 		break;
 	}
 }
@@ -314,18 +106,18 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		Interfaces::engine->GetViewAngles(&viewangles);
 	}
 
-	DrawLocalPlayer(drawList, localPlayer.value());
+	Features::Visuals::Esp::players.local.Draw(drawList, localPlayer.value());
 
 	// Give spectators a lower priority than actual players
 	for (Spectator& spectator : EntityCache::GetSpectators()) {
-		if(!localPlayer->alive && localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE) {
-			if(spectator.observerTarget == localPlayer->observerTarget)
+		if (!localPlayer->alive && localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE) {
+			if (spectator.observerTarget == localPlayer->observerTarget)
 				continue;
-		} else if(spectator.observerMode == ObserverMode::OBS_MODE_IN_EYE) {
-			if(spectator.observerTarget == localPlayer->handle)
+		} else if (spectator.observerMode == ObserverMode::OBS_MODE_IN_EYE) {
+			if (spectator.observerTarget == localPlayer->handle)
 				continue;
 		}
-		DrawSpectator(drawList, spectator, localPlayer.value());
+		DrawSpectator(drawList, spectator);
 	}
 
 	for (Player& player : EntityCache::GetPlayers()) {
@@ -333,23 +125,36 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	}
 
 	for (Weapon& weapon : EntityCache::GetWeapons()) {
-		DrawWeapon(drawList, weapon, localPlayer.value());
-	}
-
-	for (Projectile& projectile : EntityCache::GetProjectiles()) {
-		DrawProjectile(drawList, projectile, localPlayer.value());
-	}
-
-	for (PlantedC4& bomb : EntityCache::GetBombs()) {
-		DrawPlantedC4(drawList, bomb, localPlayer.value());
+		if (weapon.ownerEntity == -1)
+			weapons.Draw(drawList, weapon);
 	}
 
 	for (Hostage& hostage : EntityCache::GetHostages()) {
-		DrawHostage(drawList, hostage, localPlayer.value());
+		hostages.Draw(drawList, hostage);
+	}
+
+	for (Projectile& projectile : EntityCache::GetProjectiles()) {
+		projectiles.Draw(drawList, projectile);
+	}
+
+	for (PlantedC4& bomb : EntityCache::GetBombs()) {
+		plantedC4.Draw(drawList, bomb);
+	}
+
+	for(LootCrate& lootCrate : EntityCache::GetLootCrates()) {
+		dzLootCrates.Draw(drawList, lootCrate);
+	}
+
+	for(Drone& drone : EntityCache::GetDrones()) {
+		dzDrones.Draw(drawList, drone);
+	}
+
+	for(Sentry& sentry : EntityCache::GetSentries()) {
+		dzSentries.Draw(drawList, sentry);
 	}
 
 	for (Entity& entity : EntityCache::GetEntities()) {
-		DrawEntity(drawList, entity, localPlayer.value());
+		DrawEntity(drawList, entity);
 	}
 }
 
@@ -423,6 +228,10 @@ void Features::Visuals::Esp::SetupGUI()
 					dzSentries.SetupGUI(xorstr_("Sentries"));
 					ImGui::EndTabItem();
 				}
+				if (ImGui::BeginTabItem(xorstr_("Drones"))) {
+					dzDrones.SetupGUI(xorstr_("Drones"));
+					ImGui::EndTabItem();
+				}
 				ImGui::EndTabBar();
 			}
 			ImGui::EndTabItem();
@@ -434,6 +243,16 @@ void Features::Visuals::Esp::SetupGUI()
 
 		ImGui::EndTabBar();
 	}
+
+	ImGui::Separator();
+
+	ImGui::Text(xorstr_("Entities: %d"), EntityCache::GetEntities().size());
+	ImGui::Text(xorstr_("Players: %d"), EntityCache::GetPlayers().size());
+	ImGui::Text(xorstr_("Spectators: %d"), EntityCache::GetSpectators().size());
+	ImGui::Text(xorstr_("Weapons: %d"), EntityCache::GetWeapons().size());
+	ImGui::Text(xorstr_("Hostages: %d"), EntityCache::GetHostages().size());
+	ImGui::Text(xorstr_("Projectiles: %d"), EntityCache::GetProjectiles().size());
+	ImGui::Text(xorstr_("Bombs: %d"), EntityCache::GetBombs().size());
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer)
@@ -459,5 +278,6 @@ SERIALIZED_STRUCTURE(xorstr_("Hostages"), hostages)
 SERIALIZED_STRUCTURE(xorstr_("Loot crates"), dzLootCrates)
 SERIALIZED_STRUCTURE(xorstr_("Ammo boxes"), dzAmmoBoxes)
 SERIALIZED_STRUCTURE(xorstr_("Sentries"), dzSentries)
+SERIALIZED_STRUCTURE(xorstr_("Drones"), dzDrones)
 SERIALIZED_STRUCTURE(xorstr_("Other"), other)
 END_SERIALIZED_STRUCT

@@ -9,27 +9,35 @@
 
 #include "../../Visuals.hpp"
 
-void PlayerStateSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const
+void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 {
+	if (!boxName.IsEnabled() && !healthbar.enabled && !weapon.enabled && !flashDuration.enabled)
+		return;
+
+	const std::optional<ImVec4> rectangle = player.screenRectangle.Get();
+	if (!rectangle.has_value())
+		return;
+
 	char name[MAX_NAME_LEN];
 	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
 		Interfaces::engine->GetPlayerInfo(player.index, &info);
 		strcpy(name, info.name);
 	}
-	boxName.Draw(drawList, rectangle, name);
+	boxName.Draw(drawList, rectangle.value(), name);
 
-	healthbar.Draw(drawList, rectangle, player.health);
+	healthbar.Draw(drawList, rectangle.value(), player.health);
+
 	if (weapon.enabled) { // Don't ask for the weapon, if we don't have to
 		if (player.activeWeapon > WeaponID::WEAPON_NONE) { // Also prevent invalids
 			const char* localization = LocalizeWeaponID(player.activeWeapon);
 			if (localization)
-				this->weapon.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, localization);
+				this->weapon.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, localization);
 		}
 	}
 
 	if (player.flashAlpha > 0.0) {
-		this->flashDuration.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y + (rectangle.w - rectangle.y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)player.flashAlpha).c_str());
+		this->flashDuration.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->y + (rectangle->w - rectangle->y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)player.flashAlpha).c_str());
 	}
 }
 

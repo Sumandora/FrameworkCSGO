@@ -7,6 +7,7 @@
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../GUI/Elements/Popup.hpp"
+#include "../../GUI/Elements/Keybind.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
@@ -15,10 +16,8 @@
 
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
+#include "../../Utils/Projection.hpp"
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
-
-#include "../../GUI/Elements/Keybind.hpp"
-#include "../Visuals/Visuals.hpp"
 
 #include <optional>
 
@@ -371,6 +370,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 {
+	// TODO Desync View renders when dead?
 	if (!enabled || (!fovCircle && !showDesyncedView))
 		return; // We should we continue, if the user doesn't want it?
 
@@ -383,7 +383,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 
 	if (aimTarget.has_value()) {
 		ImVec2 screenspaceView;
-		if (Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, aimTarget.value(), screenspaceView))
+		if (Utils::Project(aimTarget.value(), screenspaceView))
 			drawList->AddCircleFilled(screenspaceView, radius, viewColor); // TODO Perspective division
 	}
 

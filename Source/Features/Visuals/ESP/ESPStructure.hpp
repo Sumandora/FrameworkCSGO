@@ -9,8 +9,10 @@
 
 // TODO Generate the boilerplate for implementations
 class BoxSettings {
-private:
+public:
 	bool enabled;
+
+private:
 	ImColor color;
 	float rounding;
 	float thickness;
@@ -23,7 +25,7 @@ private:
 public:
 	BoxSettings();
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle) const;
+	void Draw(ImDrawList* drawList, const ImVec4& rectangle) const;
 	bool operator<=>(const BoxSettings& other) const = default;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -51,8 +53,10 @@ public:
 };
 
 class HealthbarSettings {
-private:
+public:
 	bool enabled;
+
+private:
 	ImColor backgroundColor;
 	float rounding;
 	float spacing;
@@ -69,7 +73,7 @@ private:
 public:
 	HealthbarSettings();
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const;
+	void Draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth = 100) const;
 	bool operator<=>(const HealthbarSettings& other) const = default;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -98,48 +102,109 @@ public:
 
 class BoxNameSetting {
 public:
-	explicit BoxNameSetting() = default;
-
 	BoxSettings box;
 	TextSetting nametag;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const;
+	BoxNameSetting() = default;
+
+	void Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const;
 	bool operator<=>(const BoxNameSetting& other) const = default;
+	[[nodiscard]] bool IsEnabled() const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class GenericEntitySettings {
+public:
+	BoxNameSetting boxName;
+
+	GenericEntitySettings() = default;
+
+	void Draw(ImDrawList* drawList, Entity& entity, const char* text) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class SentrySettings {
+	BoxNameSetting boxName;
+	HealthbarSettings healthbar;
+
+public:
+	void Draw(ImDrawList* drawList, Sentry& sentry) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class LootCrateSettings {
+	BoxNameSetting boxName;
+	HealthbarSettings healthbar;
+
+public:
+	void Draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class LootCrateTypeSettings {
+	mutable LootCrateSettings pistolCase;
+	mutable LootCrateSettings lightCase;
+	mutable LootCrateSettings heavyCase;
+	mutable LootCrateSettings explosiveCase;
+	mutable LootCrateSettings toolsCase;
+	mutable LootCrateSettings cashDufflebag;
+	mutable LootCrateSettings randomDrop;
+
+	LootCrateSettings& GetSettings(LootCrateType type) const;
+
+public:
+	LootCrateTypeSettings() = default;
+
+	void Draw(ImDrawList* drawList, LootCrate& lootCrate) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class DroneSettings {
+	BoxNameSetting boxName;
+	TextSetting target;
+
+public:
+	DroneSettings() = default;
+
+	void Draw(ImDrawList* drawList, Drone& drone) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class PlayerStateSettings {
-public:
-	PlayerStateSettings() = default;
-
 	BoxNameSetting boxName;
 	HealthbarSettings healthbar;
 	TextSetting weapon;
 	TextSetting flashDuration; // Make flag with opacity
 	// TODO Flags
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Player& player) const;
+public:
+	PlayerStateSettings() = default;
+
+	void Draw(ImDrawList* drawList, Player& player) const;
 	bool operator<=>(const PlayerStateSettings& other) const = default;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class WeaponSettings {
-private:
 	BoxNameSetting boxName;
 	TextSetting ammo;
 
 public:
 	WeaponSettings() = default;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Weapon& weapon) const;
+	void Draw(ImDrawList* drawList, Weapon& weapon) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class PlantedC4Settings {
-private:
 	BoxNameSetting boxName;
 	TextSetting timer;
 	TextSetting defuseTimer;
@@ -151,13 +216,12 @@ private:
 public:
 	PlantedC4Settings();
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const PlantedC4& bomb) const;
+	void Draw(ImDrawList* drawList, PlantedC4& bomb) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class HostageSettings {
-private:
 	BoxNameSetting boxName;
 	TextSetting timer;
 	int accuracy;
@@ -165,20 +229,19 @@ private:
 public:
 	HostageSettings();
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Hostage& hostage) const;
+	void Draw(ImDrawList* drawList, Hostage& hostage) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class ProjectileSettings {
-private:
 	BoxNameSetting boxName;
-	LineSetting trail;
+	LineSetting trail; // TODO Separate settings for each type
 
 public:
 	ProjectileSettings() = default;
 
-	void Draw(ImDrawList* drawList, ImVec4 rectangle, const Projectile& projectile) const;
+	void Draw(ImDrawList* drawList, Projectile& projectile) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
@@ -201,7 +264,7 @@ public:
 	PlayerTeamSettings teammate;
 	PlayerTeamSettings enemy;
 	PlayerStateSettings local;
-	BoxNameSetting spectators;
+	GenericEntitySettings spectators;
 
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)

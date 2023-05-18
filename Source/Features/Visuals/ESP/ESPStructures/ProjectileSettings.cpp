@@ -3,52 +3,52 @@
 #include "xorstr.hpp"
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../Hooks/Game/GameFunctions.hpp"
-#include "../../Visuals.hpp"
+#include "../../../../Utils/Projection.hpp"
 
-static std::map<ClientClassID, const char*> projectileNames{
-	{ ClientClassID::CBreachChargeProjectile, strdup(xorstr_("Breach charge")) },
-	{ ClientClassID::CBumpMineProjectile, strdup(xorstr_("Bump Mine")) },
-	{ ClientClassID::CDecoyProjectile, strdup(xorstr_("Decoy")) },
-	{ ClientClassID::CMolotovProjectile, strdup(xorstr_("Molotov")) },
-	{ ClientClassID::CSensorGrenadeProjectile, strdup(xorstr_("Sensor grenade")) },
-	{ ClientClassID::CSmokeGrenadeProjectile, strdup(xorstr_("Smoke grenade")) },
-	{ ClientClassID::CSnowballProjectile, strdup(xorstr_("Snowball")) }
+static std::map<ProjectileType, const char*> projectileNames{
+	{ ProjectileType::BREACH_CHARGE, strdup(xorstr_("Breach charge")) },
+	{ ProjectileType::BUMP_MINE, strdup(xorstr_("Bump Mine")) },
+	{ ProjectileType::DECOY, strdup(xorstr_("Decoy")) },
+	{ ProjectileType::MOLOTOV, strdup(xorstr_("Molotov")) },
+	{ ProjectileType::SENSOR_GRENADE, strdup(xorstr_("Sensor Grenade")) },
+	{ ProjectileType::SMOKE_GRENADE, strdup(xorstr_("Smoke Grenade")) },
+	{ ProjectileType::SNOWBALL, strdup(xorstr_("Snowball")) },
+	{ ProjectileType::HIGH_EXPLOSIVE_GRENADE, strdup(xorstr_("High Explosive Grenade")) },
+	{ ProjectileType::FLASHBANG, strdup(xorstr_("Flashbang")) },
 };
 
-void ProjectileSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Projectile& projectile) const
+void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile) const
 {
-	const char* flashbang = xorstr_("Flashbang");
-	const char* highExplosiveGrenade = xorstr_("High Explosive Grenade");
-	const char* name = xorstr_("Unknown projectile");
-	if (boxName.nametag.enabled) {
-		if (projectile.clientClass->m_ClassID == ClientClassID::CBaseCSGrenadeProjectile) {
-			if (strstr(projectile.model->szPathName, xorstr_("flashbang")))
-				name = flashbang;
-			else
-				name = highExplosiveGrenade;
-		} else if (projectileNames.contains(projectile.clientClass->m_ClassID)) {
-			name = projectileNames[projectile.clientClass->m_ClassID];
-		}
-	}
+	// Render trail even if we don't have a rectangle
+	if(trail.enabled) {
+		std::vector<ImVec2> points;
 
-	boxName.Draw(drawList, rectangle, name);
-
-	std::vector<ImVec2> points;
-
-	for (const Vector& pos : projectile.trail) {
-		ImVec2 point2D;
-		if (!Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, pos, point2D)) {
-			if (!points.empty()) {
-				trail.Draw(drawList, points);
-				points.clear();
+		for (const Vector& pos : projectile.trail) {
+			ImVec2 point2D;
+			if (!Utils::Project(pos, point2D)) {
+				if (!points.empty()) {
+					trail.Draw(drawList, points);
+					points.clear();
+				}
+				continue;
 			}
-			continue;
+			points.push_back(point2D);
 		}
-		points.push_back(point2D);
+
+		trail.Draw(drawList, points);
 	}
 
-	trail.Draw(drawList, points);
+	if (!boxName.IsEnabled())
+		return;
+
+	const std::optional<ImVec4> rectangle = projectile.screenRectangle.Get();
+	if (!rectangle.has_value())
+		return;
+
+	if(projectile.type == ProjectileType::INVALID)
+		__asm("int3");
+
+	boxName.Draw(drawList, rectangle.value(), projectileNames[projectile.type]);
 }
 
 void ProjectileSettings::SetupGUI(const char* id)

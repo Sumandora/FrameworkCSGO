@@ -14,5 +14,7 @@ void Entity::Update(CBaseEntity* entity, int index, const CBaseHandle& handle, C
 
 	spotted = *entity->Spotted();
 
-	model = entity->GetModel();
+	screenRectangle.Update(origin, boundingBox);
+
+	markForRemoval = false; // We just got updated, don't remove us, we are still alive!
 }

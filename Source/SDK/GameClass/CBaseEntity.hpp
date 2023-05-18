@@ -7,15 +7,14 @@
 
 #include "../Definitions/Bones.hpp"
 #include "../Math/Matrix3x4.hpp"
+#include "../Math/BoundingBox.hpp"
 #include "../Model/Model.hpp"
 #include "../Netvars/ClientClass.hpp"
 #include "../TeamID.hpp"
-
-#include "../../Netvars.hpp"
-#include "../Math/BoundingBox.hpp"
+#include "../CBaseHandle.hpp"
 
 #include "../../Memory.hpp"
-#include "../CBaseHandle.hpp"
+#include "../../Netvars.hpp"
 
 #include <map>
 #include <optional>
@@ -84,17 +83,10 @@ public:
 
 	inline std::optional<BoundingBox> EntityBounds()
 	{
-		if (IsPlayer()) {
-			CCollideable* collision = Collision();
-			if(!collision)
-				return std::nullopt;
-			return BoundingBox{ *collision->ObbMins(), *collision->ObbMaxs() };
-		} else {
-			Model* model = GetModel();
-			if(!model)
-				return std::nullopt;
-			return BoundingBox{ model->mins, model->maxs };
-		}
+		CCollideable* collision = Collision();
+		if(!collision)
+			return std::nullopt;
+		return BoundingBox{ *collision->ObbMins(), *collision->ObbMaxs() };
 	}
 };
 
