@@ -10,7 +10,6 @@ namespace Memory {
 	inline void* clientMode;
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;
-	inline CBasePlayer* localPlayer;
 
 	void* GetBaseAddress(const char* name);
 	void* RelativeToAbsolute(void* addr);

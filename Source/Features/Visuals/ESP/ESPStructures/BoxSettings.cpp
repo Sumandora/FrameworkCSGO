@@ -19,7 +19,7 @@ BoxSettings::BoxSettings()
 {
 }
 
-void BoxSettings::Draw(ImDrawList* drawList, ImVec4 rectangle) const
+void BoxSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle) const
 {
 	if (!enabled)
 		return;

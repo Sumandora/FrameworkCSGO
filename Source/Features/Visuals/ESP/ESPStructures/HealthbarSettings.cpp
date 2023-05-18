@@ -24,12 +24,12 @@ HealthbarSettings::HealthbarSettings()
 {
 }
 
-void HealthbarSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, int health) const
+void HealthbarSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth) const
 {
 	if (!enabled)
 		return;
 
-	const float healthPercentage = std::clamp((float)health / 100.0f, 0.0f, 1.0f);
+	const float healthPercentage = std::clamp((float)health / (float)maxHealth, 0.0f, 1.0f);
 
 	const ImVec4 healthbar(rectangle.x - spacing - width, rectangle.y, rectangle.x - spacing, rectangle.w);
 	const ImVec4 outside(healthbar.x - outlineThickness, healthbar.y - outlineThickness, healthbar.z + outlineThickness, healthbar.w + outlineThickness);

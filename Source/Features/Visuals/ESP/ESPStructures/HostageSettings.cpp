@@ -10,15 +10,22 @@ HostageSettings::HostageSettings()
 {
 }
 
-void HostageSettings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Hostage& hostage) const
+void HostageSettings::Draw(ImDrawList* drawList, Hostage& hostage) const
 {
-	boxName.Draw(drawList, rectangle, xorstr_("Hostage"));
+	if (!boxName.IsEnabled() && !timer.enabled)
+		return;
+
+	const std::optional<ImVec4> rectangle = hostage.screenRectangle.Get();
+	if (!rectangle.has_value())
+		return;
+
+	boxName.Draw(drawList, rectangle.value(), xorstr_("Hostage"));
 
 	if (hostage.state == 1) { // Is the hostage being picked up?
 		const float countDown = hostage.grabTime - Memory::globalVars->curtime;
 		std::stringstream stream;
 		stream << std::fixed << std::setprecision(accuracy) << countDown;
-		timer.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.w, true, stream.str().c_str());
+		timer.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, stream.str().c_str());
 	}
 }
 

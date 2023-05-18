@@ -3,10 +3,15 @@
 
 #include "SDK/GameClass/ConVar.hpp"
 
+#include "xorstr.hpp"
+
 #define LAZY_CONVAR(name) \
-	ConVar* name();
+	inline ConVar* name() { return GetConVar(#name); } // TODO xor?
 
 namespace ConVarStorage {
+
+	ConVar* GetConVar(const char* name);
+
 	// Combat
 	LAZY_CONVAR(mp_teammates_are_enemies)
 

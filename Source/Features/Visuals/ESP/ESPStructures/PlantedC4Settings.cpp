@@ -21,13 +21,21 @@ std::string FloatToString(float num, int accuracy)
 	return stream.str();
 }
 
-void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, const PlantedC4& bomb) const
+void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 {
-	boxName.Draw(drawList, rectangle, xorstr_("Planted C4"));
+	if (!boxName.IsEnabled() && !timer.enabled && !defuseTimer.enabled)
+		return;
+
+	const std::optional<ImVec4> rectangle = bomb.screenRectangle.Get();
+	if (!rectangle.has_value())
+		return;
+
+	boxName.Draw(drawList, rectangle.value(), xorstr_("Planted C4"));
+
 	if (!bomb.defused && bomb.bombTicking) { // TODO Ask GameRules if the bomb is actually planted
 		if (bomb.bombTime < Memory::globalVars->curtime)
 			return; // You can't defuse the bomb anymore
-		const float middle = rectangle.x + (rectangle.z - rectangle.x) * 0.5f;
+		const float middle = rectangle->x + (rectangle->z - rectangle->x) * 0.5f;
 
 		const float defusableCountDown = bomb.bombTime - Memory::globalVars->curtime;
 
@@ -39,14 +47,14 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, ImVec4 rectangle, const Plant
 				color = defuseImpossible;
 		}
 
-		timer.Draw(drawList, middle, rectangle.w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
+		timer.Draw(drawList, middle, rectangle->w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
 
 		if(bomb.defuser != INVALID_EHANDLE_INDEX) {
 			const float defuseCountDown = bomb.defuseCountDown - Memory::globalVars->curtime;
 			if (defuseCountDown < 0)
 				return; // We are done defusing, no point in showing this anymore
 
-			float y = rectangle.w;
+			float y = rectangle->w;
 
 			if(timer.enabled)
 				y += timer.GetLineHeight();

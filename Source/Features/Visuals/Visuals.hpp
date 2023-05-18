@@ -14,12 +14,14 @@ namespace Features::Visuals {
 	namespace Esp {
 		// Settings
 		extern bool considerSmokedOffEntitiesAsOccluded;
+		extern bool alignBoundingBox;
+		extern bool outOfView;
+		extern float outOfViewSize;
+		extern float outOfViewDistance;
 		extern PlayerSettings players;
 
 		void Update();
 		void ImGuiRender(ImDrawList* drawList);
-
-		bool WorldToScreen(const Matrix4x4& matrix, const Vector& worldPosition, ImVec2& screenPosition);
 
 		// GUI
 		void SetupGUI();

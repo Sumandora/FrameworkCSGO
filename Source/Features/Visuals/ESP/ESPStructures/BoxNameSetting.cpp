@@ -4,10 +4,15 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
-void BoxNameSetting::Draw(ImDrawList* drawList, ImVec4 rectangle, const char* text) const
+void BoxNameSetting::Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const
 {
 	box.Draw(drawList, rectangle);
 	nametag.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y - nametag.GetLineHeight(), true, text);
+}
+
+bool BoxNameSetting::IsEnabled() const
+{
+	return box.enabled || nametag.enabled;
 }
 
 void BoxNameSetting::SetupGUI(const char* id)

@@ -14,11 +14,11 @@
 #include "../../SDK/Definitions/NetworkFlows.hpp"
 
 #include "../../GUI/ImGuiColors.hpp"
+
 #include "../../Utils/Trigonometry.hpp"
+#include "../../Utils/Projection.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
-
-#include "../Visuals/Visuals.hpp"
 
 static bool enabled = false;
 static float scale = 1.0f;
@@ -56,6 +56,15 @@ float CalculateLerpTime()
 
 bool IsTickValid(const Tick& tick)
 {
+	// Does the user even want the tick?
+	if(Memory::globalVars->curtime - tick.simulationTime > ConVarStorage::sv_maxunlag()->GetFloat() * scale)
+		return false;
+
+	// Check if the tick is dead
+	const int deadTime = (int)(Memory::globalVars->curtime - ConVarStorage::sv_maxunlag()->GetFloat());
+	if (tick.simulationTime < deadTime)
+		return false;
+
 	// https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/server/player_lagcompensation.cpp#L246
 	float correct = 0.0f;
 
@@ -70,7 +79,7 @@ bool IsTickValid(const Tick& tick)
 
 	correct += m_fLerpTime;
 
-	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag()->GetFloat() * scale);
+	correct = std::clamp(correct, 0.0f, ConVarStorage::sv_maxunlag()->GetFloat());
 
 	const float flTargetTime = tick.tickCount * Memory::globalVars->interval_per_tick - m_fLerpTime;
 
@@ -227,10 +236,10 @@ void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
 	for (const auto& pair : ticks) {
 		for (const auto& tick : pair.second) {
 			ImVec2 screenOrigin;
-			Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, tick.origin, screenOrigin);
+			Utils::Project(tick.origin, screenOrigin);
 			drawList->AddCircleFilled(screenOrigin, 5.0f, ImGuiColors::white);
 			ImVec2 screenHead;
-			Features::Visuals::Esp::WorldToScreen(Hooks::Game::FrameStageNotify::worldToScreenMatrix, tick.boneMatrix[8].Origin(), screenHead);
+			Utils::Project(tick.boneMatrix[8].Origin(), screenHead);
 			drawList->AddCircleFilled(screenHead, 5.0f, ImGuiColors::red);
 		}
 	}
