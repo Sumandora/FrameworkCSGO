@@ -30,7 +30,6 @@ static GenericEntitySettings dzAmmoBoxes;
 static SentrySettings dzSentries;
 static DroneSettings dzDrones;
 static GenericEntitySettings other;
-// TODO Drone ESP
 
 PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Player& player, PlayerTeamSettings* settings)
 {
@@ -60,21 +59,6 @@ void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPl
 
 	if (settings)
 		settings->Draw(drawList, player);
-}
-
-void DrawSpectator(ImDrawList* drawList, Spectator& player)
-{
-	// TODO Hide if spectated entity isnt dormant
-	// TODO Show name of spectated entity
-	char name[MAX_NAME_LEN];
-
-	if (Features::Visuals::Esp::players.spectators.boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
-		PlayerInfo info{};
-		Interfaces::engine->GetPlayerInfo(player.index, &info);
-		strcpy(name, info.name);
-	}
-
-	Features::Visuals::Esp::players.spectators.Draw(drawList, player, name);
 }
 
 void DrawEntity(ImDrawList* drawList, Entity& entity)
@@ -110,6 +94,9 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 
 	// Give spectators a lower priority than actual players
 	for (Spectator& spectator : EntityCache::GetSpectators()) {
+		if(spectator.dormant)
+			continue; // No point in displaying outdated positions
+
 		if (!localPlayer->alive && localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE) {
 			if (spectator.observerTarget == localPlayer->observerTarget)
 				continue;
@@ -117,10 +104,13 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 			if (spectator.observerTarget == localPlayer->handle)
 				continue;
 		}
-		DrawSpectator(drawList, spectator);
+
+		players.spectators.Draw(drawList, spectator);
 	}
 
 	for (Player& player : EntityCache::GetPlayers()) {
+		if(player.dormant)
+			continue; // No point in displaying outdated positions
 		DrawPlayer(drawList, player, localPlayer.value());
 	}
 

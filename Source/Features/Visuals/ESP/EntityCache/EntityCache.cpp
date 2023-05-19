@@ -93,9 +93,6 @@ void EntityCache::UpdateEntities(int maxDistance)
 		if ((*entity->Origin() - localPlayer->origin).LengthSquared() > (float)(maxDistance * maxDistance))
 			continue;
 
-		if (entity->GetDormant())
-			continue;
-
 		const CBaseHandle handle = entity->GetRefEHandle();
 
 		if (localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE && localPlayer->observerTarget == handle)
@@ -113,29 +110,34 @@ void EntityCache::UpdateEntities(int maxDistance)
 					UpdateEntity<Spectator, CBasePlayer*>(spectators, player, index, handle, clientClass);
 			}
 			continue;
-		} else if (entity->IsWeaponWorldModel()) {
-			UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, reinterpret_cast<CBaseCombatWeapon*>(entity), index,
-				handle, clientClass);
-			continue;
-		} else if (clientClass->m_ClassID == ClientClassID::CPlantedC4) {
-			UpdateEntity<PlantedC4, CPlantedC4*>(bombs, reinterpret_cast<CPlantedC4*>(entity), index, handle,
-				clientClass);
-			continue;
-		} else if (clientClass->m_ClassID == ClientClassID::CHostage) {
-			UpdateEntity<Hostage, CHostage*>(hostages, reinterpret_cast<CHostage*>(entity), index, handle, clientClass);
-			continue;
-		} else if(clientClass->m_ClassID == ClientClassID::CPhysPropLootCrate) {
-			UpdateEntity<LootCrate, CPhysPropLootCrate*>(lootCrates, reinterpret_cast<CPhysPropLootCrate*>(entity), index, handle, clientClass);
-			continue;
-		} else if(clientClass->m_ClassID == ClientClassID::CDrone) {
-			UpdateEntity<Drone, CDrone*>(drones, reinterpret_cast<CDrone*>(entity), index, handle, clientClass);
-			continue;
-		} else if(clientClass->m_ClassID == ClientClassID::CDronegun) {
-			UpdateEntity<Sentry, CDronegun*>(sentries, reinterpret_cast<CDronegun*>(entity), index, handle, clientClass);
-			continue;
-		} else if (std::find(projectileClassIDs.begin(), projectileClassIDs.end(), clientClass->m_ClassID) != projectileClassIDs.end()) {
-			UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
-			continue;
+		} else {
+			if (entity->GetDormant())
+				continue;
+
+			if (entity->IsWeaponWorldModel()) {
+				UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, reinterpret_cast<CBaseCombatWeapon*>(entity), index,
+					handle, clientClass);
+				continue;
+			} else if (clientClass->m_ClassID == ClientClassID::CPlantedC4) {
+				UpdateEntity<PlantedC4, CPlantedC4*>(bombs, reinterpret_cast<CPlantedC4*>(entity), index, handle,
+					clientClass);
+				continue;
+			} else if (clientClass->m_ClassID == ClientClassID::CHostage) {
+				UpdateEntity<Hostage, CHostage*>(hostages, reinterpret_cast<CHostage*>(entity), index, handle, clientClass);
+				continue;
+			} else if(clientClass->m_ClassID == ClientClassID::CPhysPropLootCrate) {
+				UpdateEntity<LootCrate, CPhysPropLootCrate*>(lootCrates, reinterpret_cast<CPhysPropLootCrate*>(entity), index, handle, clientClass);
+				continue;
+			} else if(clientClass->m_ClassID == ClientClassID::CDrone) {
+				UpdateEntity<Drone, CDrone*>(drones, reinterpret_cast<CDrone*>(entity), index, handle, clientClass);
+				continue;
+			} else if(clientClass->m_ClassID == ClientClassID::CDronegun) {
+				UpdateEntity<Sentry, CDronegun*>(sentries, reinterpret_cast<CDronegun*>(entity), index, handle, clientClass);
+				continue;
+			} else if (std::find(projectileClassIDs.begin(), projectileClassIDs.end(), clientClass->m_ClassID) != projectileClassIDs.end()) {
+				UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
+				continue;
+			}
 		}
 
 		UpdateEntity<>(entities, entity, index, handle, clientClass);

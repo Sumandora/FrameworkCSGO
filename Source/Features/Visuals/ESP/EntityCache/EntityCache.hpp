@@ -75,6 +75,7 @@ public:
 	bool alive;
 	bool visible;
 	WeaponID activeWeapon;
+	bool dormant;
 
 	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };

@@ -42,4 +42,6 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 	}
 
 	alive = entity->IsAlive();
+
+	dormant = entity->GetDormant();
 }

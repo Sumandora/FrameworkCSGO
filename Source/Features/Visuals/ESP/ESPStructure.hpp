@@ -234,6 +234,19 @@ public:
 	DECLARE_SERIALIZER(Serializer)
 };
 
+class SpectatorSettings {
+	BoxNameSetting boxName;
+	bool onlyShowWhenSpectatedEntityIsDormant;
+	bool displayNameOfSpectatedEntity;
+
+public:
+	SpectatorSettings() = default;
+
+	void Draw(ImDrawList* drawList, Spectator& spectator) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
 class ProjectileSettings {
 	BoxNameSetting boxName;
 	LineSetting trail; // TODO Separate settings for each type
@@ -264,7 +277,7 @@ public:
 	PlayerTeamSettings teammate;
 	PlayerTeamSettings enemy;
 	PlayerStateSettings local;
-	GenericEntitySettings spectators;
+	SpectatorSettings spectators;
 
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)

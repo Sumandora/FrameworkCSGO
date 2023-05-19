@@ -12,7 +12,7 @@ namespace Memory {
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;
 
-	std::span<std::byte> GetTextSection(const char* name);
+	void* GetBaseAddress(const char* name);
 	void* RelativeToAbsolute(void* addr);
 
 	void Create();
