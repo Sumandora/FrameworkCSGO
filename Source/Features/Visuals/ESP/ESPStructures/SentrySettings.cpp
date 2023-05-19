@@ -10,7 +10,7 @@ void SentrySettings::Draw(ImDrawList* drawList, Sentry& sentry) const
 		return;
 
 	boxName.Draw(drawList, rectangle.value(), xorstr_("Sentry"));
-	healthbar.Draw(drawList, rectangle.value(), sentry.health, 220);	// MaxHealth is hardcoded as 220 (Revealed by doing "ent_dump Dronegun" in console)
+	healthbar.Draw(drawList, rectangle.value(), sentry.health, 220); // MaxHealth is hardcoded as 220 (Revealed by doing "ent_dump Dronegun" in console)
 }
 
 void SentrySettings::SetupGUI(const char* id)

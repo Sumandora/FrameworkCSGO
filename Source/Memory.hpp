@@ -2,6 +2,7 @@
 #define MEMORY
 
 #include "SDK/GameClass/CGlobalVars.hpp"
+#include <span>
 class IMoveHelper;
 class CBasePlayer;
 struct Vector;
@@ -11,7 +12,7 @@ namespace Memory {
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;
 
-	void* GetBaseAddress(const char* name);
+	std::span<std::byte> GetTextSection(const char* name);
 	void* RelativeToAbsolute(void* addr);
 
 	void Create();
