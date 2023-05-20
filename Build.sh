@@ -21,7 +21,7 @@ mkdir Build
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
-LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE=$CXXFLAGS . 2>&1 | tee build.log || error
+LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS" . 2>&1 | tee build.log || error
 LANG=en make $MAKEOPTS -C Build 2>&1 | tee build.log || error
 
 strip -x -s Build/lib$(cat ProjectName).so >> /tmp/build.log 2>&1 || error
