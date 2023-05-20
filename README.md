@@ -10,19 +10,15 @@ Gentoo/Portage Users might want to use [this](https://github.com/Sumandora/porta
 
 Debian stable is not supported until debian 12 releases due to outdated gcc.
 ```sh
-apt-get install patchelf gdb git cmake make build-essential libsdl2-dev
+apt-get install gdb git cmake make build-essential libsdl2-dev
 ```
 **Arch Linux**
 ```sh
-pacman -S base-devel cmake gdb git sdl2 patchelf
+pacman -S base-devel cmake gdb git sdl2
 ```
 **Fedora**
 ```sh
-dnf install patchelf gdb git cmake make gcc-c++ SDL2-devel
-```
-**Gentoo**
-```sh
-emerge cmake dev-vcs/git gdb libsdl2 mesa patchelf sys-devel/binutils
+dnf install gdb git cmake make gcc-c++ SDL2-devel
 ```
 These might be outdated, in that please open an issue or a pull request, which updates the package names.
 
@@ -44,8 +40,11 @@ Make sure that your CPU/Memory is capable of doing this.
 Usually memory consumption will be around twice the number of threads you provide in gigabytes.  
 If you don't know how many threads you have you can execute the `nproc` program.
 
-**Gentoo Users do not have to do this, because the script will take the settings you specified in your `make.conf`.  
-If this behaviour is unwanted then you can supply MAKEOPTS aswell.**
+If you want to supply additional compiler arguments use `CXXFLAGS`
+```sh
+CXXFLAGS="-fstack-protector-strong ./Build.sh"
+```
+Some of these might break the resulting binary however.
 
 A ELF-Binary will be built in the "Build"-subdirectory, which will be created by the script.
 
@@ -59,7 +58,8 @@ echo "MyCoolProjectName" > ProjectName
 ```
 
 ## Usage
-A simple inject script using a debugger like GDB or LLDB is provided.
+A simple inject script using a debugger like GDB or LLDB is provided.  
+Make sure to run it as root user
 ```sh
 ./Load.sh
 ```
@@ -68,13 +68,6 @@ Use the `DEBUGGER` variable to set it to something you have.
 ```sh
 DEBUGGER=lldb ./Load.sh
 ```
-
-The same is true for your 'run as root'-program.  
-If you don't use `sudo` you can set the `SU` variable.  
-```sh
-SU=doas ./Load.sh
-```
-The script is not going to use the program if already root.
 
 After the script loaded the program into the game it will set the ptrace_scope to 3.  
 This means that you will not be able to use ptrace after loading.  
