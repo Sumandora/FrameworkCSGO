@@ -3,14 +3,7 @@
 echo "Building Debug-Binary"
 mkdir -p Build-Debug
 
-if [ -z "$MAKEOPTS" ]; then
-	MAKE_CONF=/etc/portage/make.conf
-	if test -f "$MAKE_CONF"; then
-		source $MAKE_CONF
-	fi
-fi
-
-cmake -B Build-Debug -D CMAKE_BUILD_TYPE=Debug || exit 1
+cmake -B Build-Debug -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_FLAGS_RELEASE=$CXXFLAGS || exit 1
 make $MAKEOPTS -C Build-Debug || exit 1
 
 # Set the DEBUGGER variable on the cmdline to use lldb or any debugger
@@ -49,6 +42,5 @@ $SU cp Build-Debug/$lib_name /usr/lib64/
 $SU sysctl -w kernel.yama.ptrace_scope=2 # Only allows root to inject code. This is temporary until reboot.
 
 $SU $DEBUGGER -p $csgo_pid \
-	-ex "set pagination off" \
 	-ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib64/$lib_name\", 1)" \
 	-ex "continue"
