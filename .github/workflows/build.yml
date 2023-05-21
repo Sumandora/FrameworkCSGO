@@ -57,4 +57,4 @@ jobs:
           name: ${{ steps.distro_name.outputs.name }}
           path: |
             Build/*.so
-            build.log
+            /tmp/build.log
