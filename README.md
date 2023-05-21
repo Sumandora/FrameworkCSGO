@@ -42,7 +42,7 @@ If you don't know how many threads you have you can execute the `nproc` program.
 
 If you want to supply additional compiler arguments use `CXXFLAGS`
 ```sh
-CXXFLAGS="-fstack-protector-strong ./Build.sh"
+CXXFLAGS="-fstack-protector-strong" ./Build.sh"
 ```
 Some of these might break the resulting binary however.
 
