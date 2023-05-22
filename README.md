@@ -20,7 +20,7 @@ pacman -S base-devel cmake gdb git sdl2
 ```sh
 dnf install gdb git cmake make gcc-c++ SDL2-devel
 ```
-**OpenSUSE Leap / OpenSUSE Tumbleweed**
+**OpenSUSE Leap**
 ```sh
 zypper install patchelf gdb git cmake make gcc-c++ SDL2-devel
 ```

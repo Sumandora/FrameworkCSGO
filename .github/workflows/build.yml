@@ -6,7 +6,7 @@ jobs:
   build:
     strategy:
       matrix:
-        distro: ["ubuntu:latest", "debian:unstable", "debian:testing", "dockerscripts/linuxmint:mate", "archlinux:latest", "manjarolinux/base:latest", "fedora:latest", "opensuse/tumbleweed:latest", "opensuse/leap:latest"]
+        distro: ["ubuntu:latest", "debian:unstable", "debian:testing", "dockerscripts/linuxmint:mate", "archlinux:latest", "manjarolinux/base:latest", "fedora:latest", "opensuse/tumbleweed:latest"]
       fail-fast: false
     runs-on: ubuntu-latest
     container: ${{ matrix.distro }}
@@ -26,7 +26,7 @@ jobs:
         run: |
           dnf update -y
           dnf install -y patchelf gdb git cmake make gcc-c++ SDL2-devel
-      - if: matrix.distro == 'opensuse/tumbleweed:latest' || matrix.distro == 'opensuse/leap:latest' 
+      - if: matrix.distro == 'opensuse/tumbleweed:latest'
         name: Setup dependencies
         run: |
           zypper refresh
