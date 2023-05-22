@@ -21,7 +21,15 @@ mkdir Build
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
-LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS" . 2>&1 | tee -a /tmp/build.log || error
+tmpfile=$(mktemp)
+if LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS" . >"$tmpfile" 2>&1; then
+    cat "$tmpfile" >> /tmp/build.log
+else
+    cat "$tmpfile" >> /tmp/build.log
+    rm "$tmpfile"
+    error
+fi
+rm "$tmpfile"
 LANG=en make $MAKEOPTS -C Build 2>&1 | tee -a /tmp/build.log || error
 
 strip -x -s Build/lib$(cat ProjectName).so 2>&1 | tee -a /tmp/build.log || error
