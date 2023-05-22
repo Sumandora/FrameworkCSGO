@@ -6,17 +6,17 @@ jobs:
   build:
     strategy:
       matrix:
-        distro: ["ubuntu:latest", "archlinux:latest", "fedora:latest", "debian:unstable", "debian:testing"]
+        distro: ["ubuntu:latest", "debian:unstable", "debian:testing", "dockerscripts/linuxmint:mate", "archlinux:latest", "manjarolinux/base:latest", "fedora:latest", "opensuse/tumbleweed:latest", "opensuse/leap:latest"]
       fail-fast: false
     runs-on: ubuntu-latest
     container: ${{ matrix.distro }}
     steps:
-      - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'debian:unstable' || matrix.distro == 'debian:testing'
+      - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'debian:unstable' || matrix.distro == 'debian:testing' || matrix.distro == 'dockerscripts/linuxmint:mate'
         name: Setup dependencies
         run: |
           apt-get update
           apt-get install -y patchelf gdb git cmake make build-essential libsdl2-dev
-      - if: matrix.distro == 'archlinux:latest'
+      - if: matrix.distro == 'archlinux:latest' || matrix.distro == 'manjarolinux/base:latest'
         name: Setup dependencies
         run: |
           pacman -Syu --noconfirm
@@ -26,6 +26,11 @@ jobs:
         run: |
           dnf update -y
           dnf install -y patchelf gdb git cmake make gcc-c++ SDL2-devel
+      - if: matrix.distro == 'opensuse/tumbleweed:latest' || matrix.distro == 'opensuse/leap:latest' 
+        name: Setup dependencies
+        run: |
+          zypper refresh
+          zypper install -y patchelf gdb git cmake make gcc-c++ SDL2-devel
 
       - uses: actions/checkout@v3
         with:
