@@ -2,7 +2,6 @@
 #define MEMORY
 
 #include "SDK/GameClass/CGlobalVars.hpp"
-#include <span>
 class IMoveHelper;
 class CBasePlayer;
 struct Vector;
@@ -18,6 +17,7 @@ namespace Memory {
 	void Create();
 
 	bool LineGoesThroughSmoke(const Vector& from, const Vector& to, short _);
+	CBasePlayer* GetLocalPlayer();
 }
 
 #endif

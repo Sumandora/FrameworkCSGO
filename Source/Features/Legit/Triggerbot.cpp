@@ -10,7 +10,6 @@
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
 
 static bool enabled = false;
@@ -18,7 +17,7 @@ static int input = ImGuiKey_None;
 static bool secondaryFireWithR8Revolver = true;
 static bool friendlyFire = false;
 static int maximalFlashAmount = 255;
-static bool dontAimThroughSmoke = false;
+static bool dontShootThroughSmoke = false;
 // TODO Delay
 
 void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
@@ -29,7 +28,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -63,7 +62,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 
 	const Trace trace = Utils::TraceRay(playerEye, forward, &filter);
 
-	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1))
+	if (dontShootThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1))
 		return;
 
 	CBaseEntity* entity = trace.m_pEnt;
@@ -95,7 +94,7 @@ void Features::Legit::Triggerbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Secondary fire with R8 Revolver"), &secondaryFireWithR8Revolver);
 	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
 	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
-	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
+	ImGui::Checkbox(xorstr_("Don't shoot through smoke"), &dontShootThroughSmoke);
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer)
@@ -104,5 +103,5 @@ SERIALIZED_TYPE(xorstr_("Input"), input)
 SERIALIZED_TYPE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver)
 SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
 SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
-SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
+SERIALIZED_TYPE(xorstr_("Don't shoot through smoke"), dontShootThroughSmoke)
 END_SERIALIZED_STRUCT

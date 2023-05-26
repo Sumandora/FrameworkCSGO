@@ -3,7 +3,6 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
@@ -22,13 +21,14 @@ static float offsetZ = 0.0f;
 static float rotationOffsetX = 0.0f;
 static float rotationOffsetY = 0.0f;
 static float rotationOffsetZ = 0.0f;
+//TODO Aspect ratio
 
 void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {
 	if ((!forceFOV && !forceViewModel) || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	CBasePlayer* viewer = localPlayer;
 
 	if (!viewer)

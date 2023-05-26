@@ -59,12 +59,20 @@ void Gui::SwapWindow(SDL_Window* window)
 		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 		ImGui_ImplOpenGL3_Init();
 
-		float dpi;
-		const int displayIndex = SDL_GetWindowDisplayIndex(window);
-		SDL_GetDisplayDPI(displayIndex, &dpi, nullptr, nullptr);
-
 		// We are running straight into the multi monitor dpi issue here, but to my knowledge there is no appropriate solution to this when using ImGui
-		const float fontSize = floor(dpi / 4.0f);
+		SDL_DisplayMode mode;
+		const int displayIndex = SDL_GetWindowDisplayIndex(window);
+		SDL_GetCurrentDisplayMode(displayIndex, &mode);
+
+		// I want the font size to be something around 12 on full hd screens
+		// 4k screens get something around 24
+		// Mathematically expressed:
+		// fontSize(screenHeight) = screenHeight * x
+		// fontSize(1080) = 12
+		// fontSize(2160) = 24
+		// x = 1/90, also technically one pair of values is enough here to solve for x
+
+		const float fontSize = floor(mode.h * (1.0f / 90.0f));
 
 		// Might not work on certain distros/configurations
 		bool loadedFont = false;
@@ -136,7 +144,7 @@ void Gui::PollEvent(SDL_Event* event)
 
 		io.MousePos.x = (float)x;
 		io.MousePos.y = (float)y;
-		if(visible)
+		if(visible && SDL_GetMouseFocus() == Hooks::SDL::windowPtr)
 			reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
 	} else if (event->type == SDL_MOUSEWHEEL) {
 		io.MouseWheelH += (float)event->wheel.x;

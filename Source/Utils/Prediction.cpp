@@ -1,6 +1,5 @@
 #include "Prediction.hpp"
 
-#include "../GameCache.hpp"
 #include "../Interfaces.hpp"
 
 // TODO Support predicting multiple ticks into the future
@@ -9,7 +8,7 @@ float oldFrametime;
 
 bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData)
 {
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 
 	if (!localPlayer)
 		return false;
@@ -32,7 +31,7 @@ bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData)
 
 void Utils::EndPrediction()
 {
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 
 	if (!localPlayer)
 		return;

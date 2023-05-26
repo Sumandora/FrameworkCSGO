@@ -1,6 +1,5 @@
 #include "Visuals.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -18,7 +17,7 @@ void Features::Visuals::NoPunch::HidePunch()
 	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -37,7 +36,7 @@ void Features::Visuals::NoPunch::RestorePunch()
 	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 

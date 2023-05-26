@@ -34,6 +34,11 @@ struct Vector {
 	inline Vector& operator=(const Vector& other) = default;
 
 	// Array-like access
+	inline float* Base()
+	{
+		return (float*)this;
+	}
+
 	inline float& operator[](int i)
 	{
 		return ((float*)this)[i];

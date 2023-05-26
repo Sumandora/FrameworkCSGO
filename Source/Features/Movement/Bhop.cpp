@@ -6,7 +6,6 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../Interfaces.hpp"
@@ -24,7 +23,7 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 

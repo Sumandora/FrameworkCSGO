@@ -1,6 +1,5 @@
 #include "Semirage.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
@@ -24,7 +23,7 @@ bool Features::Semirage::RecoilAssistance::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return false;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return false;
 

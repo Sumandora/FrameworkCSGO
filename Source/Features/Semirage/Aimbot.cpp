@@ -2,7 +2,6 @@
 
 #include "imgui.h"
 
-#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"
@@ -28,13 +27,15 @@ static int autoFireKey = ImGuiKey_None;
 // TODO Only when scoped
 
 struct SemirageAimbotWeaponConfig {
+	bool disabled = false;
+
 	bool onlyWhenShooting = false;
 
-	float fov = 3.0f;
+	float fov = 0.0f;
 	float fovScaleX = 1.0f;
 	float fovScaleY = 1.0f;
 
-	bool controlRecoil = false;
+	bool controlRecoil = true;
 	float recoilScaleX = 1.0f;
 	float recoilScaleY = 1.0f;
 
@@ -73,7 +74,7 @@ static std::optional<Vector> aimTarget;
 
 CBasePlayer* GetLocalPlayer()
 {
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 
 	if (!localPlayer || !localPlayer->IsAlive())
 		return nullptr;
@@ -162,6 +163,9 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 
 bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfig, bool attacking)
 {
+	if(weaponConfig->disabled)
+		return false; // Those who reject aid swim alone in their struggles.
+
 	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
 		return false; // We are flashed - we can't aim now.
 
@@ -413,8 +417,15 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 
 void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
 {
-	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
+	ImGui::Checkbox(xorstr_("Disabled"), &weaponConfig.disabled);
+	if(weaponConfig.disabled)
+		return;
 
+	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
+	if(weaponConfig.onlyWhenShooting && autoFire && autoFireKey == 0)
+		ImGui::TextColored(ImGuiColors::yellow, xorstr_("You are auto-firing without key, this won't make a difference"));
+	
+	
 	ImGui::SliderFloat(xorstr_("FOV"), &weaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Scaling"))) {
@@ -486,6 +497,8 @@ void Features::Semirage::Aimbot::SetupGUI()
 }
 
 BEGIN_SERIALIZED_STRUCT(SemirageAimbotWeaponConfig::Serializer)
+SERIALIZED_TYPE(xorstr_("Disabled"), disabled)
+
 SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
 
 SERIALIZED_TYPE(xorstr_("FOV"), fov)

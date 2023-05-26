@@ -6,7 +6,6 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../Interfaces.hpp"
 #include "../../SDK/MoveType.hpp"
@@ -26,7 +25,7 @@ void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive()) {
 		performing = false;
 		return;

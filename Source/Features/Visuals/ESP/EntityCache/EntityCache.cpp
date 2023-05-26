@@ -4,6 +4,7 @@
 
 #include "../../../../Interfaces.hpp"
 
+// TODO Only capture them if needed
 static std::optional<LocalPlayer> localPlayer;
 static std::vector<Entity> entities;
 static std::vector<Player> players;
@@ -30,15 +31,12 @@ std::array<ClientClassID, 8> projectileClassIDs = {
 template <typename E = Entity>
 inline E* EntityByHandle(std::vector<E>& vector, CBaseHandle handle)
 {
-	for (E& e : vector) {
-		if (e.handle == handle)
-			return &e;
-	}
-	return nullptr;
+	auto playerPtr = std::ranges::find(vector, handle, &Entity::handle);
+	return playerPtr != vector.end() ? &(*playerPtr) : nullptr;
 }
 
 template <typename E = Entity, typename P = CBaseEntity*>
-void UpdateEntity(std::vector<E>& vector, P p, int index, CBaseHandle handle, ClientClass* clientClass)
+static void UpdateEntity(std::vector<E>& vector, P p, int index, CBaseHandle handle, ClientClass* clientClass)
 {
 	auto* playerPtr = EntityByHandle<E>(vector, handle);
 	if (playerPtr)
