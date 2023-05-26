@@ -34,7 +34,7 @@ mkdir Build
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
 LANG=en log_and_check cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS"
-LANG=en log_and_check make $MAKEOPTS -C Build
+LANG=en log_and_check cmake --build Build $MAKEOPTS
 
 log_and_check strip -x -s Build/lib$(cat ProjectName).so
 

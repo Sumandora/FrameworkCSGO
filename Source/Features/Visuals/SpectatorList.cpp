@@ -6,7 +6,6 @@
 #include "../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Interfaces.hpp"
 
@@ -34,7 +33,7 @@ void Features::Visuals::SpectatorList::Update()
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 
 	CBaseEntity* currentTarget = nullptr;
 	if (localPlayer) {

@@ -4,7 +4,6 @@
 
 #include "../../Interfaces.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
@@ -41,7 +40,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 

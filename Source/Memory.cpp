@@ -9,6 +9,7 @@
 #include "Interfaces.hpp"
 
 #include "xorstr.hpp"
+#include "ldisasm.h"
 
 #include "Utils/VMT.hpp"
 
@@ -17,7 +18,7 @@
 void* RetAddrSpoofer::leaveRet = nullptr;
 
 static void* lineGoesThroughSmoke;
-static std::vector<dl_phdr_info> modules;
+static CBasePlayer** localPlayerList;
 
 void* Memory::GetBaseAddress(const char* name)
 {
@@ -37,13 +38,6 @@ void* Memory::RelativeToAbsolute(void* addr)
 
 void Memory::Create()
 {
-	dl_iterate_phdr([](dl_phdr_info* info, size_t, void* data) {
-		auto* modules = reinterpret_cast<std::vector<dl_phdr_info>*>(data);
-		modules->push_back(*info);
-		return 0;
-	},
-		&modules);
-
 	void** baseClientVTable = Utils::GetVTable(Interfaces::baseClient);
 	void** gameMovementVTable = Utils::GetVTable(Interfaces::gameMovement);
 
@@ -67,6 +61,13 @@ void Memory::Create()
 
 	void* leaInstr = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("48 8d 05") /* lea rax */), categorizeGroundSurface);
 	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
+
+	// Has reference to "splitscreenplayer" inside itself
+	void* fireGameEvent = Utils::GetVTable(clientMode)[55];
+	void* movBeforeCall = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("48 89 85 10 d2 ff ff")), fireGameEvent);
+	void* getLocalPlayer = Memory::RelativeToAbsolute(reinterpret_cast<char*>(movBeforeCall) + 8);
+
+	localPlayerList = reinterpret_cast<CBasePlayer**>(RelativeToAbsolute(reinterpret_cast<char*>(getLocalPlayer) + 7));
 
 	lineGoesThroughSmoke = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 e5 41 56 41 55 41 54 53 48 83 ec 30 8b 05 ?? ?? ?? ?? 66")), GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
 }
@@ -93,4 +94,9 @@ bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const sh
 	toStruct.z = to.z;
 
 	return InvokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, fromStruct, toStruct, _);
+}
+
+CBasePlayer* Memory::GetLocalPlayer()
+{
+	return localPlayerList[0]; // There are no split screens in csgo, so safely assume we never want to have something else than 0
 }

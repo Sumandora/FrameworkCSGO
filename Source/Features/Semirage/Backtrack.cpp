@@ -7,7 +7,6 @@
 
 #include "../General/General.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Interfaces.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
@@ -105,7 +104,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (!enabled)
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -181,7 +180,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		return;
 	}
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer) {
 		ticks.clear();
 		return;

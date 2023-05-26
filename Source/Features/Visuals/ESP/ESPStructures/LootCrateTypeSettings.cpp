@@ -35,7 +35,10 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 	case LootCrateType::RANDOM_DROP:
 		return randomDrop;
 	}
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wreturn-type"
 }
+#pragma GCC diagnostic pop
 
 void LootCrateTypeSettings::Draw(ImDrawList* drawList, LootCrate& lootCrate) const
 {

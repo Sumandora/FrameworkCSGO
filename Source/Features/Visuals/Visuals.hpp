@@ -67,6 +67,15 @@ namespace Features::Visuals {
 		// Serialization
 		DECLARE_SERIALIZER(Serializer)
 	}
+	namespace Fog {
+		void FrameStageNotify();
+
+		// GUI
+		void SetupGUI();
+
+		// Serialization
+		DECLARE_SERIALIZER(Serializer)
+	}
 
 	// GUI
 	void SetupGUI();

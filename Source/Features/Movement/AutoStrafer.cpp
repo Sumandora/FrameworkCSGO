@@ -8,7 +8,6 @@
 #include "../../SDK/Definitions/StateFlags.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../Hooks/Game/GameFunctions.hpp"
 #include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
@@ -50,7 +49,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 

@@ -10,7 +10,6 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
@@ -31,7 +30,7 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 

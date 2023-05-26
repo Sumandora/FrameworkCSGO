@@ -5,6 +5,8 @@
 
 #include "imgui.h"
 
+#include "../SDK/Math/Vector.hpp"
+
 enum Direction {
 	SERIALIZE,
 	DESERIALIZE
@@ -24,6 +26,11 @@ namespace Serialization {
 		void Serialize(const char* name, bool& type, Direction direction);
 		void Serialize(const char* name, int& type, Direction direction);
 		void Serialize(const char* name, float& type, Direction direction);
+		
+		// TODO Save these as structures rather than types
+
+		// Types
+		void Serialize(const char* name, Vector& type, Direction direction);
 
 		// ImGui
 		void Serialize(const char* name, ImColor& type, Direction direction);

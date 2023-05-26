@@ -2,19 +2,18 @@
 
 #include "../../../Features/Semirage/Semirage.hpp"
 #include "../../../Features/Visuals/Visuals.hpp"
-#include "../../../GameCache.hpp"
 #include "../../../Interfaces.hpp"
 
 void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
 	case ClientFrameStage::FRAME_START: {
-		GameCache::ClearLocalPlayer();
 		Features::Visuals::SpectatorList::Update();
 		Features::Visuals::Esp::Update();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_START: {
+		Features::Visuals::Fog::FrameStageNotify();
 		Features::Semirage::Backtrack::FrameStageNotify();
 
 		Features::Visuals::NoPunch::HidePunch();

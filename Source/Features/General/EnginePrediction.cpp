@@ -3,7 +3,6 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../GameCache.hpp"
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Interfaces.hpp"
@@ -32,7 +31,7 @@ void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GameCache::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
@@ -57,7 +56,7 @@ void Features::General::EnginePrediction::EndPrediction()
 	Utils::EndPrediction();
 
 	if (forceResetVelocityModifier) // I'm curious why people on UC seem to have so many problems figuring this out... Does this have some major downside, which I haven't noticed yet?
-		*GameCache::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;
+		*Memory::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;
 }
 
 void Features::General::EnginePrediction::SetupGUI()
