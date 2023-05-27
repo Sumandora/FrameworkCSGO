@@ -5,8 +5,11 @@
 
 #include "xorstr.hpp"
 
-#define LAZY_CONVAR(name) \
-	inline ConVar* name() { return GetConVar(xorstr_(#name)); }
+#define LAZY_CONVAR(name)                 \
+	inline ConVar* name()                 \
+	{                                     \
+		return GetConVar(xorstr_(#name)); \
+	}
 
 namespace ConVarStorage {
 
@@ -16,7 +19,7 @@ namespace ConVarStorage {
 	LAZY_CONVAR(mp_teammates_are_enemies)
 
 	// Gamemode
-	LAZY_CONVAR(game_mode)
+	LAZY_CONVAR(game_type)
 
 	// Pitch
 	LAZY_CONVAR(cl_pitchup)

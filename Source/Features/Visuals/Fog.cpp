@@ -1,7 +1,5 @@
 #include "Visuals.hpp"
 
-#include "../General/General.hpp"
-
 #include "../../Interfaces.hpp"
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"

@@ -24,4 +24,6 @@ private:
 	int nTimestampRandomizeWindow;
 };
 
+// TODO Calculate accurate curtime using tickbase
+
 #endif

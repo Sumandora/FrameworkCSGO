@@ -64,7 +64,7 @@ public:
 	{
 		if (ConVarStorage::mp_teammates_are_enemies()->GetBool())
 			return true;
-		if (ConVarStorage::game_mode()->GetInt() == 6) {
+		if (ConVarStorage::game_type()->GetInt() == 6) {
 			const int viewerSurvivalTeam = *view->SurvivalTeam();
 			if (viewerSurvivalTeam < 0) // DZ without teams
 				return true;
