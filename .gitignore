@@ -11,3 +11,6 @@ cmake-build-debug/
 
 # VSCode
 .vscode/
+
+# Clangd
+.cache/
