@@ -38,6 +38,8 @@ void* Memory::RelativeToAbsolute(void* addr)
 
 void Memory::Create()
 {
+	void* clientBaseAddress = GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so"));
+
 	void** baseClientVTable = Utils::GetVTable(Interfaces::baseClient);
 	void** gameMovementVTable = Utils::GetVTable(Interfaces::gameMovement);
 
@@ -69,7 +71,7 @@ void Memory::Create()
 
 	localPlayerList = reinterpret_cast<CBasePlayer**>(RelativeToAbsolute(reinterpret_cast<char*>(getLocalPlayer) + 7));
 
-	lineGoesThroughSmoke = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 e5 41 56 41 55 41 54 53 48 83 ec 30 8b 05 ?? ?? ?? ?? 66")), GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so")));
+	lineGoesThroughSmoke = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 e5 41 56 41 55 41 54 53 48 83 ec 30 8b 05 ?? ?? ?? ?? 66")), clientBaseAddress);
 }
 
 bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
