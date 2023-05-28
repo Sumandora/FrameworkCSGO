@@ -25,15 +25,15 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 	Entity::Update(entity, index, handle, clientClass);
 
 	activeWeapon = WeaponID::WEAPON_NONE;
-	if(*entity->ActiveWeapon() != INVALID_EHANDLE_INDEX) {
+	if (*entity->ActiveWeapon() != INVALID_EHANDLE_INDEX) {
 		CBaseEntity* weaponEntity = Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon());
-		if(weaponEntity)
+		if (weaponEntity)
 			activeWeapon = *reinterpret_cast<CBaseAttributableItem*>(weaponEntity)->WeaponDefinitionIndex();
 	}
 	health = *entity->Health();
 	flashAlpha = entity->GetFlashAlpha();
 
-	std::optional<LocalPlayer> localPlayer = EntityCache::GetLocalPlayer();
+	std::optional<LocalPlayer> localPlayer = EntityCache::localPlayer;
 	if (localPlayer.has_value()) {
 		auto* backingLocalPlayerEntity = reinterpret_cast<CBasePlayer*>(localPlayer.value().backingEntity);
 		enemy = entity->IsEnemy(backingLocalPlayerEntity);

@@ -10,9 +10,14 @@ HostageSettings::HostageSettings()
 {
 }
 
+bool HostageSettings::IsEnabled() const
+{
+	return boxName.IsEnabled() || timer.enabled;
+}
+
 void HostageSettings::Draw(ImDrawList* drawList, Hostage& hostage) const
 {
-	if (!boxName.IsEnabled() && !timer.enabled)
+	if (!IsEnabled())
 		return;
 
 	const std::optional<ImVec4> rectangle = hostage.screenRectangle.Get();

@@ -1,21 +1,11 @@
 #include "EntityCache.hpp"
 
 #include <array>
+#include <unordered_map>
 
 #include "../../../../Interfaces.hpp"
 
 // TODO Only capture them if needed
-static std::optional<LocalPlayer> localPlayer;
-static std::vector<Entity> entities;
-static std::vector<Player> players;
-static std::vector<Spectator> spectators;
-static std::vector<Weapon> weapons;
-static std::vector<Hostage> hostages;
-static std::vector<Projectile> projectiles;
-static std::vector<PlantedC4> bombs;
-static std::vector<LootCrate> lootCrates;
-static std::vector<Drone> drones;
-static std::vector<Sentry> sentries;
 
 std::array<ClientClassID, 8> projectileClassIDs = {
 	ClientClassID::CBaseCSGrenadeProjectile,
@@ -28,27 +18,30 @@ std::array<ClientClassID, 8> projectileClassIDs = {
 	ClientClassID::CSnowballProjectile
 };
 
-template <typename E = Entity>
-inline E* EntityByHandle(std::vector<E>& vector, CBaseHandle handle)
-{
-	auto playerPtr = std::ranges::find(vector, handle, &Entity::handle);
-	return playerPtr != vector.end() ? &(*playerPtr) : nullptr;
-}
-
 template <typename E = Entity, typename P = CBaseEntity*>
-static void UpdateEntity(std::vector<E>& vector, P p, int index, CBaseHandle handle, ClientClass* clientClass)
+static void UpdateEntity(std::unordered_map<CBaseHandle, E>& map, P p, int index, CBaseHandle handle, ClientClass* clientClass)
 {
-	auto* playerPtr = EntityByHandle<E>(vector, handle);
-	if (playerPtr)
-		playerPtr->Update(p, index, handle, clientClass);
+	if (map.contains(handle))
+		map[handle].Update(p, index, handle, clientClass);
 	else {
 		E e;
 		e.Update(p, index, handle, clientClass);
-		vector.push_back(e);
+		map[handle] = e;
 	}
 }
 
-void EntityCache::UpdateEntities(int maxDistance)
+void EntityCache::UpdateEntities(
+	int maxDistance,
+	bool captureEntities,
+	bool capturePlayers,
+	bool captureSpectators,
+	bool captureWeapons,
+	bool captureHostages,
+	bool captureProjectiles,
+	bool captureBombs,
+	bool captureLootCrates,
+	bool captureDrones,
+	bool captureSentries)
 {
 	static int lastTickcount;
 	if (lastTickcount == Memory::globalVars->tickcount)
@@ -65,20 +58,22 @@ void EntityCache::UpdateEntities(int maxDistance)
 	if (localPlayerEntity)
 		localPlayer = LocalPlayer(localPlayerEntity, localPlayerIndex);
 
-	auto MarkForRemoval = [](Entity& entity) {
-		entity.markForRemoval = true;
-	};
-	// Mark all entities for removal, they will unmark themselves when updated
-	std::for_each(entities.begin(), entities.end(), MarkForRemoval);
-	std::for_each(players.begin(), players.end(), MarkForRemoval);
-	std::for_each(spectators.begin(), spectators.end(), MarkForRemoval);
-	std::for_each(weapons.begin(), weapons.end(), MarkForRemoval);
-	std::for_each(hostages.begin(), hostages.end(), MarkForRemoval);
-	std::for_each(projectiles.begin(), projectiles.end(), MarkForRemoval);
-	std::for_each(bombs.begin(), bombs.end(), MarkForRemoval);
-	std::for_each(lootCrates.begin(), lootCrates.end(), MarkForRemoval);
-	std::for_each(drones.begin(), drones.end(), MarkForRemoval);
-	std::for_each(sentries.begin(), sentries.end(), MarkForRemoval);
+		// Mark all entities for removal, they will unmark themselves when updated
+#define MARK_FOR_REMOVAL(map)            \
+	for (auto& [handle, entity] : map) { \
+		entity.markForRemoval = true;    \
+	}
+
+	MARK_FOR_REMOVAL(entities);
+	MARK_FOR_REMOVAL(players);
+	MARK_FOR_REMOVAL(spectators);
+	MARK_FOR_REMOVAL(weapons);
+	MARK_FOR_REMOVAL(hostages);
+	MARK_FOR_REMOVAL(projectiles);
+	MARK_FOR_REMOVAL(bombs);
+	MARK_FOR_REMOVAL(lootCrates);
+	MARK_FOR_REMOVAL(drones);
+	MARK_FOR_REMOVAL(sentries);
 
 	for (int index = 0; index <= Interfaces::entityList->GetHighestEntityIndex(); index++) {
 		if (localPlayerIndex == index)
@@ -102,10 +97,13 @@ void EntityCache::UpdateEntities(int maxDistance)
 			auto* player = reinterpret_cast<CBasePlayer*>(entity);
 			const TeamID team = *player->Team();
 			if (team != TeamID::TEAM_UNASSIGNED) {
-				if (player->IsAlive())
-					UpdateEntity<Player, CBasePlayer*>(players, player, index, handle, clientClass);
-				else
-					UpdateEntity<Spectator, CBasePlayer*>(spectators, player, index, handle, clientClass);
+				if (player->IsAlive()) {
+					if (capturePlayers)
+						UpdateEntity<Player, CBasePlayer*>(players, player, index, handle, clientClass);
+				} else {
+					if (captureSpectators)
+						UpdateEntity<Spectator, CBasePlayer*>(spectators, player, index, handle, clientClass);
+				}
 			}
 			continue;
 		} else {
@@ -113,36 +111,44 @@ void EntityCache::UpdateEntities(int maxDistance)
 				continue;
 
 			if (entity->IsWeaponWorldModel()) {
-				UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, reinterpret_cast<CBaseCombatWeapon*>(entity), index,
-					handle, clientClass);
+				if (captureWeapons)
+					UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, reinterpret_cast<CBaseCombatWeapon*>(entity), index,
+						handle, clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CPlantedC4) {
-				UpdateEntity<PlantedC4, CPlantedC4*>(bombs, reinterpret_cast<CPlantedC4*>(entity), index, handle,
-					clientClass);
+				if (captureBombs)
+					UpdateEntity<PlantedC4, CPlantedC4*>(bombs, reinterpret_cast<CPlantedC4*>(entity), index, handle,
+						clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CHostage) {
-				UpdateEntity<Hostage, CHostage*>(hostages, reinterpret_cast<CHostage*>(entity), index, handle, clientClass);
+				if (captureHostages)
+					UpdateEntity<Hostage, CHostage*>(hostages, reinterpret_cast<CHostage*>(entity), index, handle, clientClass);
 				continue;
-			} else if(clientClass->m_ClassID == ClientClassID::CPhysPropLootCrate) {
-				UpdateEntity<LootCrate, CPhysPropLootCrate*>(lootCrates, reinterpret_cast<CPhysPropLootCrate*>(entity), index, handle, clientClass);
+			} else if (clientClass->m_ClassID == ClientClassID::CPhysPropLootCrate) {
+				if (captureLootCrates)
+					UpdateEntity<LootCrate, CPhysPropLootCrate*>(lootCrates, reinterpret_cast<CPhysPropLootCrate*>(entity), index, handle, clientClass);
 				continue;
-			} else if(clientClass->m_ClassID == ClientClassID::CDrone) {
-				UpdateEntity<Drone, CDrone*>(drones, reinterpret_cast<CDrone*>(entity), index, handle, clientClass);
+			} else if (clientClass->m_ClassID == ClientClassID::CDrone) {
+				if (captureDrones)
+					UpdateEntity<Drone, CDrone*>(drones, reinterpret_cast<CDrone*>(entity), index, handle, clientClass);
 				continue;
-			} else if(clientClass->m_ClassID == ClientClassID::CDronegun) {
-				UpdateEntity<Sentry, CDronegun*>(sentries, reinterpret_cast<CDronegun*>(entity), index, handle, clientClass);
+			} else if (clientClass->m_ClassID == ClientClassID::CDronegun) {
+				if (captureSentries)
+					UpdateEntity<Sentry, CDronegun*>(sentries, reinterpret_cast<CDronegun*>(entity), index, handle, clientClass);
 				continue;
 			} else if (std::find(projectileClassIDs.begin(), projectileClassIDs.end(), clientClass->m_ClassID) != projectileClassIDs.end()) {
-				UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
+				if (captureProjectiles)
+					UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
 				continue;
 			}
 		}
 
-		UpdateEntity<>(entities, entity, index, handle, clientClass);
+		if (captureEntities)
+			UpdateEntity<>(entities, entity, index, handle, clientClass);
 	}
 
-	auto EraseMarkedForRemoval = [](Entity& entity) { // Remove old records
-		return entity.markForRemoval;
+	auto EraseMarkedForRemoval = [](const auto& pair) { // Remove old records
+		return pair.second.markForRemoval;
 	};
 
 	std::erase_if(entities, EraseMarkedForRemoval);
@@ -155,59 +161,4 @@ void EntityCache::UpdateEntities(int maxDistance)
 	std::erase_if(lootCrates, EraseMarkedForRemoval);
 	std::erase_if(drones, EraseMarkedForRemoval);
 	std::erase_if(sentries, EraseMarkedForRemoval);
-}
-
-std::optional<LocalPlayer>& EntityCache::GetLocalPlayer()
-{
-	return localPlayer;
-}
-
-std::vector<Entity>& EntityCache::GetEntities()
-{
-	return entities;
-}
-
-std::vector<Player>& EntityCache::GetPlayers()
-{
-	return players;
-}
-
-std::vector<Spectator>& EntityCache::GetSpectators()
-{
-	return spectators;
-}
-
-std::vector<Weapon>& EntityCache::GetWeapons()
-{
-	return weapons;
-}
-
-std::vector<Hostage>& EntityCache::GetHostages()
-{
-	return hostages;
-}
-
-std::vector<Projectile>& EntityCache::GetProjectiles()
-{
-	return projectiles;
-}
-
-std::vector<PlantedC4>& EntityCache::GetBombs()
-{
-	return bombs;
-}
-
-std::vector<LootCrate>& EntityCache::GetLootCrates()
-{
-	return lootCrates;
-}
-
-std::vector<Drone>& EntityCache::GetDrones()
-{
-	return drones;
-}
-
-std::vector<Sentry>& EntityCache::GetSentries()
-{
-	return sentries;
 }

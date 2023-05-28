@@ -78,12 +78,12 @@ void Gui::Construction::Configuration::SaveLoadTab()
 
 	const char* configsArray[configs.size()];
 	for (size_t i = 0; i < configs.size(); i++) {
-		configsArray[i] = configs.at(i).c_str();
+		configsArray[i] = configs[i].c_str();
 	}
 
 	if (ImGui::ListBox(xorstr_("##Configs"), &configSelected, configsArray, (int)configs.size(), (int)configs.size())) {
 		if (configSelected >= 0 && configSelected < (int)configs.size()) {
-			const char* configName = configs.at(configSelected).c_str();
+			const char* configName = configs[configSelected].c_str();
 			if (Serialization::Load(GetConfigFile(configName)))
 				Features::General::EventLog::CreateReport(xorstr_("Loaded config '%s'"), configName);
 			else

@@ -23,10 +23,13 @@ void BoxSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle) const
 {
 	if (!enabled)
 		return;
+
 	if (fill)
 		drawList->AddRectFilled(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), fillColor, rounding, ImDrawFlags_None);
+
 	if (outlined)
 		drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), outlineColor, rounding, ImDrawFlags_None, thickness + outlineThickness);
+
 	drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), color, rounding, ImDrawFlags_None, thickness);
 }
 

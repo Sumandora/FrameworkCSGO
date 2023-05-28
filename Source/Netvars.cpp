@@ -2,8 +2,12 @@
 
 #include <cstdio>
 #include <cstring>
+#include <tuple>
+#include <unordered_map>
 
 #include "Interfaces.hpp"
+#include "SDK/ClientClassIDs.hpp"
+#include "SDK/Netvars/RecvProp.hpp"
 #include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
@@ -46,19 +50,26 @@ void Netvars::DumpNetvars()
 	}
 }
 
-RecvProp* Netvars::GetOffset(ClientClassID clientClass, const char* table, const char* name)
-{
-	for (const auto& [key, value] : netvars) {
-		if (key->m_ClassID == clientClass)
-			for (const auto& [key2, value2] : value) {
-				if (strcmp(key2->m_pNetTableName, table) == 0)
-					for (const auto& variable : value2) {
-						if (strcmp(name, variable->m_pVarName) == 0)
+RecvProp* LookupRecvProp(ClientClassID clientClassID, std::string tableName, std::string variableName) {
+	for (const auto& [clientClass, tables] : Netvars::netvars)
+		if (clientClass->m_ClassID == clientClassID)
+			for (const auto& [table, variables] : tables)
+				if (table->m_pNetTableName == tableName)
+					for (const auto& variable : variables)
+						if (variable->m_pVarName == variableName)
 							return variable;
-					}
-			}
-	}
-
-	printf(xorstr_("Couldn't find netvar %s in %s\n"), name, table);
+	__asm ("int3");
 	return nullptr;
+}
+
+int Netvars::GetOffset(ClientClassID clientClass, std::string table, std::string name)
+{
+	static std::map<std::tuple<ClientClassID, std::string, std::string>, int> cache;
+
+	auto tuple = std::make_tuple(clientClass, table, name);
+	
+	if(!cache.contains(tuple))
+		cache[tuple] = LookupRecvProp(clientClass, table, name)->m_Offset;
+	
+	return cache[tuple];
 }

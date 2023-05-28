@@ -110,9 +110,9 @@ void ScreenRectangle::Update(Vector origin, std::optional<BoundingBox> boundingB
 
 std::optional<ImVec4> ScreenRectangle::Get()
 {
-	std::optional<LocalPlayer> localPlayer = EntityCache::GetLocalPlayer();
+	std::optional<LocalPlayer> localPlayer = EntityCache::localPlayer;
 
-	if(!localPlayer.has_value())
+	if (!localPlayer.has_value())
 		return std::nullopt;
 
 	ImVec4 rectangle;
@@ -122,7 +122,7 @@ std::optional<ImVec4> ScreenRectangle::Get()
 		visible = true; // We just made them visible ^^
 	}
 
-	if(!visible)
+	if (!visible)
 		return std::nullopt;
 
 	return rectangle;

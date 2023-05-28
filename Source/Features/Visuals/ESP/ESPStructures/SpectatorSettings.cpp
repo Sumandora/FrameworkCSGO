@@ -1,21 +1,26 @@
 #include "../../../../Interfaces.hpp"
 #include "../ESPStructure.hpp"
 
+bool SpectatorSettings::IsEnabled() const
+{
+	return boxName.IsEnabled();
+}
+
 void SpectatorSettings::Draw(ImDrawList* drawList, Spectator& spectator) const
 {
-	if (!boxName.IsEnabled())
+	if (!IsEnabled())
 		return;
 
 	const Player* spectated = nullptr;
 
 	if (onlyShowWhenSpectatedEntityIsDormant || displayNameOfSpectatedEntity) {
-		for (const Player& player : EntityCache::GetPlayers()) {
+		for (const auto& [_, player] : EntityCache::players) {
 			if (player.handle == spectator.observerTarget)
 				spectated = &player;
 		}
 	}
 
-	if(onlyShowWhenSpectatedEntityIsDormant && spectated && !spectated->dormant)
+	if (onlyShowWhenSpectatedEntityIsDormant && spectated && !spectated->dormant)
 		return;
 
 	char name[MAX_NAME_LEN];

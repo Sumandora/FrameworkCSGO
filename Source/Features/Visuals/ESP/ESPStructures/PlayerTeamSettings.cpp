@@ -4,6 +4,11 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
+bool PlayerTeamSettings::IsEnabled() const
+{
+	return visible.IsEnabled() || occluded.IsEnabled();
+}
+
 void PlayerTeamSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);

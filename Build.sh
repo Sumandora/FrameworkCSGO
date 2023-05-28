@@ -25,7 +25,7 @@ log_and_check() {
 echo "Building..."
 echo "This can take up to a couple minutes on slow hardware"
 
-rm -f build.log
+rm -f /tmp/build.log
 rm -rf Build
 mkdir Build
 

@@ -13,6 +13,11 @@ static std::map<LootCrateType, const char*> lootCrateNames{
 	{ LootCrateType::RANDOM_DROP, strdup(xorstr_("Random Drop")) }
 };
 
+bool LootCrateTypeSettings::IsEnabled() const
+{
+	return pistolCase.IsEnabled() || lightCase.IsEnabled() || heavyCase.IsEnabled() || explosiveCase.IsEnabled() || toolsCase.IsEnabled() || cashDufflebag.IsEnabled();
+}
+
 LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 {
 	switch (type) {
@@ -49,13 +54,13 @@ void LootCrateTypeSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar(xorstr_("#Loot crate config selection"), ImGuiTabBarFlags_Reorderable)) {
-		for(const auto& [ type, name ] : lootCrateNames) {
+		for (const auto& [type, name] : lootCrateNames) {
 			if (ImGui::BeginTabItem(name)) {
 				LootCrateSettings& lootCrateSettings = GetSettings(type);
 
 				if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
-					for(const auto& [ type2, name2 ] : lootCrateNames) {
-						if(type == type2)
+					for (const auto& [type2, name2] : lootCrateNames) {
+						if (type == type2)
 							continue;
 
 						if (ImGui::Selectable(name2)) {
