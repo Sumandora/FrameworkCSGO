@@ -107,9 +107,9 @@ public:
 
 	BoxNameSetting() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const;
 	bool operator<=>(const BoxNameSetting& other) const = default;
-	[[nodiscard]] bool IsEnabled() const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
@@ -120,6 +120,7 @@ public:
 
 	GenericEntitySettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Entity& entity, const char* text) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -130,6 +131,9 @@ class SentrySettings {
 	HealthbarSettings healthbar;
 
 public:
+	SentrySettings() = default;
+
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Sentry& sentry) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -140,6 +144,9 @@ class LootCrateSettings {
 	HealthbarSettings healthbar;
 
 public:
+	LootCrateSettings() = default;
+
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -159,6 +166,7 @@ class LootCrateTypeSettings {
 public:
 	LootCrateTypeSettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, LootCrate& lootCrate) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -171,6 +179,7 @@ class DroneSettings {
 public:
 	DroneSettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Drone& drone) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -186,6 +195,7 @@ class PlayerStateSettings {
 public:
 	PlayerStateSettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Player& player) const;
 	bool operator<=>(const PlayerStateSettings& other) const = default;
 	void SetupGUI(const char* id);
@@ -199,6 +209,7 @@ class WeaponSettings {
 public:
 	WeaponSettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Weapon& weapon) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -216,6 +227,7 @@ class PlantedC4Settings {
 public:
 	PlantedC4Settings();
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, PlantedC4& bomb) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -229,6 +241,7 @@ class HostageSettings {
 public:
 	HostageSettings();
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Hostage& hostage) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -242,6 +255,7 @@ class SpectatorSettings {
 public:
 	SpectatorSettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Spectator& spectator) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -254,6 +268,7 @@ class ProjectileSettings {
 public:
 	ProjectileSettings() = default;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Projectile& projectile) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
@@ -266,6 +281,7 @@ public:
 	PlayerStateSettings visible;
 	PlayerStateSettings occluded;
 
+	[[nodiscard]] bool IsEnabled() const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };

@@ -17,10 +17,18 @@ static std::map<ProjectileType, const char*> projectileNames{
 	{ ProjectileType::FLASHBANG, strdup(xorstr_("Flashbang")) },
 };
 
+bool ProjectileSettings::IsEnabled() const
+{
+	return boxName.IsEnabled() || trail.enabled;
+}
+
 void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile) const
 {
+	if (IsEnabled())
+		return;
+
 	// Render trail even if we don't have a rectangle
-	if(trail.enabled) {
+	if (trail.enabled) {
 		std::vector<ImVec2> points;
 
 		for (const Vector& pos : projectile.trail) {
@@ -45,7 +53,7 @@ void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile) cons
 	if (!rectangle.has_value())
 		return;
 
-	if(projectile.type == ProjectileType::INVALID)
+	if (projectile.type == ProjectileType::INVALID)
 		__asm("int3");
 
 	boxName.Draw(drawList, rectangle.value(), projectileNames[projectile.type]);

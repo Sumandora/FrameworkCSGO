@@ -3,8 +3,16 @@
 #include "../../../../GUI/Elements/Popup.hpp"
 #include "../../../General/General.hpp"
 
+bool LootCrateSettings::IsEnabled() const
+{
+	return boxName.IsEnabled() || healthbar.enabled;
+}
+
 void LootCrateSettings::Draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const
 {
+	if (!IsEnabled())
+		return;
+
 	const std::optional<ImVec4> rectangle = lootCrate.screenRectangle.Get();
 	if (!rectangle.has_value())
 		return;

@@ -9,9 +9,14 @@
 
 #include "../../Visuals.hpp"
 
+bool PlayerStateSettings::IsEnabled() const
+{
+	return boxName.IsEnabled() || healthbar.enabled || weapon.enabled || flashDuration.enabled;
+}
+
 void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 {
-	if (!boxName.IsEnabled() && !healthbar.enabled && !weapon.enabled && !flashDuration.enabled)
+	if (!IsEnabled())
 		return;
 
 	const std::optional<ImVec4> rectangle = player.screenRectangle.Get();

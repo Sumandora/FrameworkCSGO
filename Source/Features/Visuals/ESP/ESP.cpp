@@ -1,5 +1,6 @@
 #include "../Visuals.hpp"
 
+#include "EntityCache/EntityCache.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
 
@@ -81,7 +82,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	std::optional<LocalPlayer> localPlayer = EntityCache::GetLocalPlayer();
+	std::optional<LocalPlayer> localPlayer = EntityCache::localPlayer;
 	if (!localPlayer.has_value())
 		return;
 
@@ -93,8 +94,8 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	Features::Visuals::Esp::players.local.Draw(drawList, localPlayer.value());
 
 	// Give spectators a lower priority than actual players
-	for (Spectator& spectator : EntityCache::GetSpectators()) {
-		if(spectator.dormant)
+	for (auto& [_, spectator] : EntityCache::spectators) {
+		if (spectator.dormant)
 			continue; // No point in displaying outdated positions
 
 		if (!localPlayer->alive && localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE) {
@@ -108,42 +109,42 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		players.spectators.Draw(drawList, spectator);
 	}
 
-	for (Player& player : EntityCache::GetPlayers()) {
-		if(player.dormant)
+	for (auto& [_, player] : EntityCache::players) {
+		if (player.dormant)
 			continue; // No point in displaying outdated positions
 		DrawPlayer(drawList, player, localPlayer.value());
 	}
 
-	for (Weapon& weapon : EntityCache::GetWeapons()) {
+	for (auto& [_, weapon] : EntityCache::weapons) {
 		if (weapon.ownerEntity == -1)
 			weapons.Draw(drawList, weapon);
 	}
 
-	for (Hostage& hostage : EntityCache::GetHostages()) {
+	for (auto& [_, hostage] : EntityCache::hostages) {
 		hostages.Draw(drawList, hostage);
 	}
 
-	for (Projectile& projectile : EntityCache::GetProjectiles()) {
+	for (auto& [_, projectile] : EntityCache::projectiles) {
 		projectiles.Draw(drawList, projectile);
 	}
 
-	for (PlantedC4& bomb : EntityCache::GetBombs()) {
+	for (auto& [_, bomb] : EntityCache::bombs) {
 		plantedC4.Draw(drawList, bomb);
 	}
 
-	for(LootCrate& lootCrate : EntityCache::GetLootCrates()) {
+	for (auto& [_, lootCrate] : EntityCache::lootCrates) {
 		dzLootCrates.Draw(drawList, lootCrate);
 	}
 
-	for(Drone& drone : EntityCache::GetDrones()) {
+	for (auto& [_, drone] : EntityCache::drones) {
 		dzDrones.Draw(drawList, drone);
 	}
 
-	for(Sentry& sentry : EntityCache::GetSentries()) {
+	for (auto& [_, sentry] : EntityCache::sentries) {
 		dzSentries.Draw(drawList, sentry);
 	}
 
-	for (Entity& entity : EntityCache::GetEntities()) {
+	for (auto& [_, entity] : EntityCache::entities) {
 		DrawEntity(drawList, entity);
 	}
 }
@@ -156,7 +157,18 @@ void Features::Visuals::Esp::Update()
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	EntityCache::UpdateEntities(drawDistance);
+	EntityCache::UpdateEntities(
+		drawDistance,
+		other.IsEnabled(),
+		players.teammate.IsEnabled() || players.enemy.IsEnabled() || players.teammate.IsEnabled(),
+		players.spectators.IsEnabled(),
+		weapons.IsEnabled(),
+		hostages.IsEnabled(),
+		projectiles.IsEnabled(),
+		plantedC4.IsEnabled(),
+		dzLootCrates.IsEnabled(),
+		dzDrones.IsEnabled(),
+		dzSentries.IsEnabled());
 }
 
 void Features::Visuals::Esp::SetupGUI()
@@ -236,13 +248,16 @@ void Features::Visuals::Esp::SetupGUI()
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("Entities: %d"), EntityCache::GetEntities().size());
-	ImGui::Text(xorstr_("Players: %d"), EntityCache::GetPlayers().size());
-	ImGui::Text(xorstr_("Spectators: %d"), EntityCache::GetSpectators().size());
-	ImGui::Text(xorstr_("Weapons: %d"), EntityCache::GetWeapons().size());
-	ImGui::Text(xorstr_("Hostages: %d"), EntityCache::GetHostages().size());
-	ImGui::Text(xorstr_("Projectiles: %d"), EntityCache::GetProjectiles().size());
-	ImGui::Text(xorstr_("Bombs: %d"), EntityCache::GetBombs().size());
+	ImGui::Text(xorstr_("Entities: %d"), EntityCache::entities.size());
+	ImGui::Text(xorstr_("Players: %d"), EntityCache::players.size());
+	ImGui::Text(xorstr_("Spectators: %d"), EntityCache::spectators.size());
+	ImGui::Text(xorstr_("Weapons: %d"), EntityCache::weapons.size());
+	ImGui::Text(xorstr_("Hostages: %d"), EntityCache::hostages.size());
+	ImGui::Text(xorstr_("Projectiles: %d"), EntityCache::projectiles.size());
+	ImGui::Text(xorstr_("Bombs: %d"), EntityCache::bombs.size());
+	ImGui::Text(xorstr_("Loot crates: %d"), EntityCache::lootCrates.size());
+	ImGui::Text(xorstr_("Drones: %d"), EntityCache::drones.size());
+	ImGui::Text(xorstr_("Sentries: %d"), EntityCache::sentries.size());
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer)

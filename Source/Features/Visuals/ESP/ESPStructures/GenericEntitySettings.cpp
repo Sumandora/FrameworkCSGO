@@ -1,8 +1,13 @@
 #include "../ESPStructure.hpp"
 
+bool GenericEntitySettings::IsEnabled() const
+{
+	return boxName.IsEnabled();
+}
+
 void GenericEntitySettings::Draw(ImDrawList* drawList, Entity& entity, const char* text) const
 {
-	if (!boxName.IsEnabled())
+	if (!IsEnabled())
 		return;
 
 	const std::optional<ImVec4> rectangle = entity.screenRectangle.Get();

@@ -3,8 +3,16 @@
 #include "../../../../GUI/Elements/Popup.hpp"
 #include "../../../General/General.hpp"
 
+bool SentrySettings::IsEnabled() const
+{
+	return boxName.IsEnabled() || healthbar.enabled;
+}
+
 void SentrySettings::Draw(ImDrawList* drawList, Sentry& sentry) const
 {
+	if (!IsEnabled())
+		return;
+
 	const std::optional<ImVec4> rectangle = sentry.screenRectangle.Get();
 	if (!rectangle.has_value())
 		return;

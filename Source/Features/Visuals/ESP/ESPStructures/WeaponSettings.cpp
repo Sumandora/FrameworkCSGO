@@ -4,9 +4,14 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
+bool WeaponSettings::IsEnabled() const
+{
+	return boxName.IsEnabled() || ammo.enabled;
+}
+
 void WeaponSettings::Draw(ImDrawList* drawList, Weapon& weapon) const
 {
-	if (!boxName.IsEnabled() && !ammo.enabled)
+	if (!IsEnabled())
 		return;
 
 	const std::optional<ImVec4> rectangle = weapon.screenRectangle.Get();

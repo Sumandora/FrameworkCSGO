@@ -4,14 +4,15 @@
 #include "../../../../SDK/GameClass/CBaseCombatWeapon.hpp"
 #include "../../../../SDK/GameClass/CBaseEntity.hpp"
 #include "../../../../SDK/GameClass/CBasePlayer.hpp"
-#include "../../../../SDK/GameClass/CHostage.hpp"
-#include "../../../../SDK/GameClass/CPlantedC4.hpp"
 #include "../../../../SDK/GameClass/CDrone.hpp"
-#include "../../../../SDK/GameClass/CPhysPropLootCrate.hpp"
 #include "../../../../SDK/GameClass/CDronegun.hpp"
+#include "../../../../SDK/GameClass/CHostage.hpp"
+#include "../../../../SDK/GameClass/CPhysPropLootCrate.hpp"
+#include "../../../../SDK/GameClass/CPlantedC4.hpp"
 
 #include "imgui.h"
 
+#include <unordered_map>
 #include <vector>
 
 class ScreenRectangle {
@@ -176,20 +177,31 @@ public:
 };
 
 namespace EntityCache {
-	std::optional<LocalPlayer>& GetLocalPlayer();
+	inline std::optional<LocalPlayer> localPlayer;
 
-	std::vector<Entity>& GetEntities();
-	std::vector<Player>& GetPlayers();
-	std::vector<Spectator>& GetSpectators();
-	std::vector<Weapon>& GetWeapons();
-	std::vector<Hostage>& GetHostages();
-	std::vector<Projectile>& GetProjectiles();
-	std::vector<PlantedC4>& GetBombs();
-	std::vector<LootCrate>& GetLootCrates();
-	std::vector<Drone>& GetDrones();
-	std::vector<Sentry>& GetSentries();
+	inline std::unordered_map<CBaseHandle, Entity> entities;
+	inline std::unordered_map<CBaseHandle, Player> players;
+	inline std::unordered_map<CBaseHandle, Spectator> spectators;
+	inline std::unordered_map<CBaseHandle, Weapon> weapons;
+	inline std::unordered_map<CBaseHandle, Hostage> hostages;
+	inline std::unordered_map<CBaseHandle, Projectile> projectiles;
+	inline std::unordered_map<CBaseHandle, PlantedC4> bombs;
+	inline std::unordered_map<CBaseHandle, LootCrate> lootCrates;
+	inline std::unordered_map<CBaseHandle, Drone> drones;
+	inline std::unordered_map<CBaseHandle, Sentry> sentries;
 
-	void UpdateEntities(int maxDistance);
+	void UpdateEntities(
+		int maxDistance,
+		bool captureEntities,
+		bool capturePlayers,
+		bool captureSpectators,
+		bool captureWeapons,
+		bool captureHostages,
+		bool captureProjectiles,
+		bool captureBombs,
+		bool captureLootCrates,
+		bool captureDrones,
+		bool captureSentries);
 }
 
 #endif

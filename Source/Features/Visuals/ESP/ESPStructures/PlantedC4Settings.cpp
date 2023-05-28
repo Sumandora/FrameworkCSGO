@@ -14,6 +14,11 @@ PlantedC4Settings::PlantedC4Settings()
 {
 }
 
+bool PlantedC4Settings::IsEnabled() const
+{
+	return boxName.IsEnabled() || timer.enabled || defuseTimer.enabled;
+}
+
 std::string FloatToString(float num, int accuracy)
 {
 	std::stringstream stream;
@@ -23,7 +28,7 @@ std::string FloatToString(float num, int accuracy)
 
 void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 {
-	if (!boxName.IsEnabled() && !timer.enabled && !defuseTimer.enabled)
+	if (!IsEnabled())
 		return;
 
 	const std::optional<ImVec4> rectangle = bomb.screenRectangle.Get();
@@ -49,14 +54,14 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 
 		timer.Draw(drawList, middle, rectangle->w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
 
-		if(bomb.defuser != INVALID_EHANDLE_INDEX) {
+		if (bomb.defuser != INVALID_EHANDLE_INDEX) {
 			const float defuseCountDown = bomb.defuseCountDown - Memory::globalVars->curtime;
 			if (defuseCountDown < 0)
 				return; // We are done defusing, no point in showing this anymore
 
 			float y = rectangle->w;
 
-			if(timer.enabled)
+			if (timer.enabled)
 				y += timer.GetLineHeight();
 
 			defuseTimer.Draw(drawList, middle, y, true, FloatToString(defuseCountDown, accuracy).c_str(), defuseCountDown > defusableCountDown ? std::optional<ImColor>(defuseImpossible) : std::nullopt);
@@ -71,7 +76,7 @@ void PlantedC4Settings::SetupGUI(const char* id)
 	timer.SetupGUI(xorstr_("Timer"));
 	defuseTimer.SetupGUI(xorstr_("Defuse timer"));
 
-	if(timer.enabled) {
+	if (timer.enabled) {
 		ImGui::Checkbox(xorstr_("Override defuse color"), &overrideDefuseColor);
 		if (overrideDefuseColor) {
 			ImGui::ClickableColorButton(xorstr_("Defuse possible with kit"), defusePossibleWithKit);
@@ -79,7 +84,7 @@ void PlantedC4Settings::SetupGUI(const char* id)
 		}
 	}
 
-	if(timer.enabled || defuseTimer.enabled)
+	if (timer.enabled || defuseTimer.enabled)
 		ImGui::SliderInt(xorstr_("Accuracy"), &accuracy, 1, 5);
 	ImGui::PopID();
 }
