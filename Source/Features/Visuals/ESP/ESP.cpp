@@ -9,12 +9,13 @@
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../GUI/Elements/Popup.hpp"
 
+#include <optional>
 #include <vector>
 
 static bool enabled = false;
 static int onKey = ImGuiKey_None;
 static int drawDistance = 1024 * 8;
-static bool considerSpottedEntitiesAsVisible = false;
+bool Features::Visuals::Esp::considerSpottedEntitiesAsVisible = false;
 bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
 static bool considerEveryoneVisibleWhenDead = false;
 bool Features::Visuals::Esp::alignBoundingBox = true;
@@ -36,9 +37,6 @@ PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Pla
 {
 	if (settings->visible == settings->occluded)
 		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
-
-	if (considerSpottedEntitiesAsVisible && player.spotted)
-		return &settings->visible; // Don't even have to raytrace for that.
 
 	if (considerEveryoneVisibleWhenDead && !localPlayer.alive)
 		return &settings->visible;
@@ -62,21 +60,9 @@ void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPl
 		settings->Draw(drawList, player);
 }
 
-void DrawEntity(ImDrawList* drawList, Entity& entity)
-{
-	switch (entity.clientClass->m_ClassID) {
-	case ClientClassID::CPhysPropAmmoBox:
-		dzAmmoBoxes.Draw(drawList, entity, xorstr_("Ammo box"));
-		break;
-	default:
-		other.Draw(drawList, entity, entity.clientClass->m_pNetworkName);
-		break;
-	}
-}
-
 void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 {
-	if (!enabled || !IsInputDown(onKey, true))
+	if (!enabled || !IsInputDown(onKey, true, std::nullopt))
 		return;
 
 	if (!Interfaces::engine->IsInGame())
@@ -144,14 +130,18 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		dzSentries.Draw(drawList, sentry);
 	}
 
+	for (auto& [_, entity] : EntityCache::ammoBoxes) {
+		dzAmmoBoxes.Draw(drawList, entity, xorstr_("Ammo box"));
+	}
+
 	for (auto& [_, entity] : EntityCache::entities) {
-		DrawEntity(drawList, entity);
+		other.Draw(drawList, entity, entity.clientClass->m_pNetworkName);
 	}
 }
 
 void Features::Visuals::Esp::Update()
 {
-	if (!enabled || !IsInputDown(onKey, true))
+	if (!enabled || !IsInputDown(onKey, true, std::nullopt))
 		return;
 
 	if (!Interfaces::engine->IsInGame())
@@ -166,6 +156,7 @@ void Features::Visuals::Esp::Update()
 		hostages.IsEnabled(),
 		projectiles.IsEnabled(),
 		plantedC4.IsEnabled(),
+		dzAmmoBoxes.IsEnabled(),
 		dzLootCrates.IsEnabled(),
 		dzDrones.IsEnabled(),
 		dzSentries.IsEnabled());

@@ -1,17 +1,17 @@
 #ifndef SDK_GAMECLASS_CBASEENTITY
 #define SDK_GAMECLASS_CBASEENTITY
 
-#include "CCollideable.hpp"
+#include "CCollisionProperty.hpp"
 #include "VirtualMethod.hpp"
 #include "xorstr.hpp"
 
+#include "../CBaseHandle.hpp"
 #include "../Definitions/Bones.hpp"
-#include "../Math/Matrix3x4.hpp"
 #include "../Math/BoundingBox.hpp"
+#include "../Math/Matrix3x4.hpp"
 #include "../Model/Model.hpp"
 #include "../Netvars/ClientClass.hpp"
 #include "../TeamID.hpp"
-#include "../CBaseHandle.hpp"
 
 #include "../../Memory.hpp"
 #include "../../Netvars.hpp"
@@ -26,7 +26,7 @@ public:
 	NETVAR_FUNCTION(int, SpottedByMask, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_bSpottedByMask"))
 	NETVAR_FUNCTION(Vector, Origin, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_vecOrigin"))
 
-	NETVAR_FUNCTION(CCollideable, Collision, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_Collision"))
+	NETVAR_FUNCTION(CCollisionProperty, Collision, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_Collision"))
 
 	NETVAR_FUNCTION(float, SimulationTime, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
 	NETVAR_FUNCTION(int, OwnerEntity, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_hOwnerEntity"))
@@ -83,10 +83,10 @@ public:
 
 	inline std::optional<BoundingBox> EntityBounds()
 	{
-		CCollideable* collision = Collision();
-		if(!collision)
+		CCollisionProperty* collision = Collision();
+		if (!collision)
 			return std::nullopt;
-		return BoundingBox{ *collision->ObbMins(), *collision->ObbMaxs() };
+		return BoundingBox{ *collision->VecMins(), *collision->VecMaxs() };
 	}
 };
 

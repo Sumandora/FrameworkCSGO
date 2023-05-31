@@ -38,7 +38,14 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 		auto* backingLocalPlayerEntity = reinterpret_cast<CBasePlayer*>(localPlayer.value().backingEntity);
 		enemy = entity->IsEnemy(backingLocalPlayerEntity);
 
-		visible = IsVisible(entity, backingLocalPlayerEntity);
+		if (Features::Visuals::Esp::considerSpottedEntitiesAsVisible && spotted)
+			visible = true;
+		else
+			visible = IsVisible(entity, backingLocalPlayerEntity);
+	} else {
+		enemy = false;
+
+		visible = true;
 	}
 
 	alive = entity->IsAlive();

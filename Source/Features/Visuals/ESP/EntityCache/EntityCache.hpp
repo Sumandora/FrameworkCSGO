@@ -186,6 +186,7 @@ namespace EntityCache {
 	inline std::unordered_map<CBaseHandle, Hostage> hostages;
 	inline std::unordered_map<CBaseHandle, Projectile> projectiles;
 	inline std::unordered_map<CBaseHandle, PlantedC4> bombs;
+	inline std::unordered_map<CBaseHandle, Entity> ammoBoxes;
 	inline std::unordered_map<CBaseHandle, LootCrate> lootCrates;
 	inline std::unordered_map<CBaseHandle, Drone> drones;
 	inline std::unordered_map<CBaseHandle, Sentry> sentries;
@@ -199,6 +200,7 @@ namespace EntityCache {
 		bool captureHostages,
 		bool captureProjectiles,
 		bool captureBombs,
+		bool captureAmmoBoxes,
 		bool captureLootCrates,
 		bool captureDrones,
 		bool captureSentries);

@@ -3,8 +3,8 @@
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 #include "../../SDK/GameClass/CViewSetup.hpp"
-#include "../../SDK/Math/Matrix4x4.hpp"
 #include "../../SDK/GameClass/IMaterial.hpp"
+#include "../../SDK/Math/Matrix4x4.hpp"
 
 #include "../../Serialization/Serializer.hpp"
 
@@ -13,6 +13,7 @@
 namespace Features::Visuals {
 	namespace Esp {
 		// Settings
+		extern bool considerSpottedEntitiesAsVisible;
 		extern bool considerSmokedOffEntitiesAsOccluded;
 		extern bool alignBoundingBox;
 		extern bool outOfView;

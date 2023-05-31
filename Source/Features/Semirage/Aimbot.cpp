@@ -5,17 +5,17 @@
 #include "../../Interfaces.hpp"
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../GUI/Elements/Popup.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
+#include "../../GUI/Elements/Popup.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
+#include "../../Utils/Projection.hpp"
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
-#include "../../Utils/Projection.hpp"
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include <optional>
@@ -23,11 +23,12 @@
 static bool enabled = false;
 static bool autoFire = false;
 static int autoFireKey = ImGuiKey_None;
-// TODO Auto Fire regardless of ray intersection
 // TODO Only when scoped
 
 struct SemirageAimbotWeaponConfig {
 	bool disabled = false;
+
+	bool autoFireRecklessly = false;
 
 	bool onlyWhenShooting = false;
 
@@ -163,7 +164,7 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 
 bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfig, bool attacking)
 {
-	if(weaponConfig->disabled)
+	if (weaponConfig->disabled)
 		return false; // Those who reject aid swim alone in their struggles.
 
 	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
@@ -223,8 +224,11 @@ Vector SetRotation(SemirageAimbotWeaponConfig* weaponConfig, const Vector& targe
 	return target;
 }
 
-bool AutoFire(CBasePlayer* localPlayer, const Vector& viewangles)
+bool AutoFire(SemirageAimbotWeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles)
 {
+	if (weaponConfig->autoFireRecklessly && hasTarget)
+		return true; // We got an entity in our fov, fire regardless of the trace ray...
+
 	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
 		return false;
 
@@ -313,6 +317,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	const Vector viewAngles = GetViewAngles(lastWeaponConfig, cmd->viewangles);
 	const Vector recoilView = cmd->viewangles + *localPlayer->AimPunchAngle() * 2.0f;
 
+	bool hasTarget = false;
+
 	if (ShouldAim(localPlayer, weaponConfig, cmd->buttons & IN_ATTACK)) {
 		CBasePlayer* target = FindTarget(localPlayer, recoilView);
 		if (!target) {
@@ -331,6 +337,8 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 				willBeSilent = Relax(viewAngles, cmd->viewangles);
 			} else {
 				// No more playing around from here
+
+				hasTarget = true;
 
 				if (wasFaked && !weaponConfig->silent) {
 					// If we were faking, then we need to calculate another view for the player, because the server view is not real
@@ -364,7 +372,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 
 	if (autoFire) {
 		if (IsInputDown(autoFireKey, true))
-			if (AutoFire(localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
+			if (AutoFire(weaponConfig, hasTarget, localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
 				cmd->buttons |= IN_ATTACK; // FIRE!!!
 	}
 
@@ -418,14 +426,16 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
 {
 	ImGui::Checkbox(xorstr_("Disabled"), &weaponConfig.disabled);
-	if(weaponConfig.disabled)
+	if (weaponConfig.disabled)
 		return;
 
 	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
-	if(weaponConfig.onlyWhenShooting && autoFire && autoFireKey == 0)
+	if (weaponConfig.onlyWhenShooting && autoFire && autoFireKey == 0)
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("You are auto-firing without key, this won't make a difference"));
-	
-	
+
+	if (autoFire)
+		ImGui::Checkbox(xorstr_("Auto fire recklessly"), &weaponConfig.autoFireRecklessly);
+
 	ImGui::SliderFloat(xorstr_("FOV"), &weaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Scaling"))) {
@@ -500,6 +510,8 @@ BEGIN_SERIALIZED_STRUCT(SemirageAimbotWeaponConfig::Serializer)
 SERIALIZED_TYPE(xorstr_("Disabled"), disabled)
 
 SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
+
+SERIALIZED_TYPE(xorstr_("Auto fire recklessly"), autoFireRecklessly)
 
 SERIALIZED_TYPE(xorstr_("FOV"), fov)
 SERIALIZED_TYPE(xorstr_("FOV scale X"), fovScaleX)

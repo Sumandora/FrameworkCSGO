@@ -37,6 +37,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/imgui)
 file(GLOB IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/*.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_sdl2.cpp")
 list(APPEND IMGUI_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/imgui/backends/imgui_impl_opengl3.cpp")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC IMGUI_DEFINE_MATH_OPERATORS) # TODO are there more improvements that can be made with this?
 
 if (MENUPREVIEW)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC MENUPREVIEW)
