@@ -7,18 +7,19 @@
 #include <cstdlib>
 #include <optional>
 
-bool IsInputDown(int key, bool _default, bool disableInMenu)
+// TODO Rewrite input values
+bool IsInputDown(int key, bool _default, std::optional<bool> inMenu)
 {
-	if (!Gui::visible || !disableInMenu) {
-		if (key > 0)
-			return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
-		if (key < 0)
-			return ImGui::IsMouseDown(abs(key) - 1);
-		if (key == 0)
-			return _default;
-		return false;
-	}
-	return _default;
+	if (Gui::visible && inMenu.has_value())
+		return inMenu.value();
+
+	if (key > 0)
+		return ImGui::IsKeyDown(static_cast<ImGuiKey>(key));
+	if (key < 0)
+		return ImGui::IsMouseDown(abs(key) - 1);
+	if (key == 0)
+		return _default;
+	return false;
 }
 
 IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& size)

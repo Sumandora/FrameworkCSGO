@@ -5,8 +5,6 @@
 
 #include "../../../../Interfaces.hpp"
 
-// TODO Only capture them if needed
-
 std::array<ClientClassID, 8> projectileClassIDs = {
 	ClientClassID::CBaseCSGrenadeProjectile,
 	ClientClassID::CBreachChargeProjectile,
@@ -39,6 +37,7 @@ void EntityCache::UpdateEntities(
 	bool captureHostages,
 	bool captureProjectiles,
 	bool captureBombs,
+	bool captureAmmoBoxes,
 	bool captureLootCrates,
 	bool captureDrones,
 	bool captureSentries)
@@ -71,6 +70,7 @@ void EntityCache::UpdateEntities(
 	MARK_FOR_REMOVAL(hostages);
 	MARK_FOR_REMOVAL(projectiles);
 	MARK_FOR_REMOVAL(bombs);
+	MARK_FOR_REMOVAL(ammoBoxes);
 	MARK_FOR_REMOVAL(lootCrates);
 	MARK_FOR_REMOVAL(drones);
 	MARK_FOR_REMOVAL(sentries);
@@ -136,6 +136,10 @@ void EntityCache::UpdateEntities(
 				if (captureSentries)
 					UpdateEntity<Sentry, CDronegun*>(sentries, reinterpret_cast<CDronegun*>(entity), index, handle, clientClass);
 				continue;
+			} else if (clientClass->m_ClassID == ClientClassID::CPhysPropAmmoBox) {
+				if (captureAmmoBoxes)
+					UpdateEntity<Entity, CBaseEntity*>(ammoBoxes, entity, index, handle, clientClass);
+				continue;
 			} else if (std::find(projectileClassIDs.begin(), projectileClassIDs.end(), clientClass->m_ClassID) != projectileClassIDs.end()) {
 				if (captureProjectiles)
 					UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
@@ -147,18 +151,19 @@ void EntityCache::UpdateEntities(
 			UpdateEntity<>(entities, entity, index, handle, clientClass);
 	}
 
-	auto EraseMarkedForRemoval = [](const auto& pair) { // Remove old records
+	auto IsMarkedForRemoval = [](const auto& pair) { // Remove old records
 		return pair.second.markForRemoval;
 	};
 
-	std::erase_if(entities, EraseMarkedForRemoval);
-	std::erase_if(players, EraseMarkedForRemoval);
-	std::erase_if(spectators, EraseMarkedForRemoval);
-	std::erase_if(weapons, EraseMarkedForRemoval);
-	std::erase_if(hostages, EraseMarkedForRemoval);
-	std::erase_if(projectiles, EraseMarkedForRemoval);
-	std::erase_if(bombs, EraseMarkedForRemoval);
-	std::erase_if(lootCrates, EraseMarkedForRemoval);
-	std::erase_if(drones, EraseMarkedForRemoval);
-	std::erase_if(sentries, EraseMarkedForRemoval);
+	std::erase_if(entities, IsMarkedForRemoval);
+	std::erase_if(players, IsMarkedForRemoval);
+	std::erase_if(spectators, IsMarkedForRemoval);
+	std::erase_if(weapons, IsMarkedForRemoval);
+	std::erase_if(hostages, IsMarkedForRemoval);
+	std::erase_if(projectiles, IsMarkedForRemoval);
+	std::erase_if(bombs, IsMarkedForRemoval);
+	std::erase_if(ammoBoxes, IsMarkedForRemoval);
+	std::erase_if(lootCrates, IsMarkedForRemoval);
+	std::erase_if(drones, IsMarkedForRemoval);
+	std::erase_if(sentries, IsMarkedForRemoval);
 }

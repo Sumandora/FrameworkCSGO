@@ -8,6 +8,7 @@
 #include "../../GUI/GUI.hpp"
 
 #include "../../Utils/Platform/CompilerSupport.hpp"
+#include <optional>
 
 static int menuKey = ImGuiKey_Insert;
 static int style = 0;
@@ -60,7 +61,7 @@ void Features::General::Menu::ImGuiLoop()
 	}
 #endif
 
-	const bool isPressed = IsInputDown(menuKey, false, false);
+	const bool isPressed = IsInputDown(menuKey, false, std::nullopt);
 
 	if (isPressed && !wasPressed) {
 		Gui::visible = !Gui::visible;

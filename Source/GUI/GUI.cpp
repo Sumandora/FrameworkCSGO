@@ -4,6 +4,7 @@
 #include <mutex>
 
 #include "imgui.h"
+#include "ImGuiColors.hpp"
 #include "xorstr.hpp"
 
 #include "backends/imgui_impl_opengl3.h"
@@ -144,7 +145,7 @@ void Gui::PollEvent(SDL_Event* event)
 
 		io.MousePos.x = (float)x;
 		io.MousePos.y = (float)y;
-		if(visible && SDL_GetMouseFocus() == Hooks::SDL::windowPtr)
+		if (visible && SDL_GetMouseFocus() == Hooks::SDL::windowPtr)
 			reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
 	} else if (event->type == SDL_MOUSEWHEEL) {
 		io.MouseWheelH += (float)event->wheel.x;
