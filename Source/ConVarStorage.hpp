@@ -5,11 +5,11 @@
 
 #include "xorstr.hpp"
 
-#define LAZY_CONVAR(name)        \
-	inline ConVar* name()        \
-	{                            \
-		return GetConVar(#name); \
-	} // TODO Why does xorstr_ not work here?
+#define LAZY_CONVAR(name)                 \
+	inline ConVar* name()                 \
+	{                                     \
+		return GetConVar(xorstr_(#name)); \
+	}
 
 namespace ConVarStorage {
 

@@ -1,10 +1,11 @@
 #include "ConVarStorage.hpp"
 
 #include "Interfaces.hpp"
+#include <unordered_map>
 
 ConVar* ConVarStorage::GetConVar(const char* name)
 {
-	static std::map<const char*, ConVar*> conVarMap{};
+	static std::unordered_map<std::string, ConVar*> conVarMap{};
 
 	if (!conVarMap.contains(name))
 		conVarMap[name] = Interfaces::icvar->FindVar(name);
