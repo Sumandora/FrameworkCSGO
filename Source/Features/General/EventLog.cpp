@@ -13,7 +13,7 @@ static int duration = 5000;
 
 struct Entry {
 	long time{};
-	char text[512]{}; // When your message is longer than that, you should probably rephrase it lmao
+	char text[512]{}; // TODO std::string
 };
 
 std::vector<Entry> entries;

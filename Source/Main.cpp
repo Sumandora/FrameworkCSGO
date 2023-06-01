@@ -25,7 +25,7 @@
 
 // TODO World & Sky Color
 
-// TODO Reveal ranks, money, suspect, votes
+// TODO Reveal ranks, money, suspect (https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/client/c_playerresource.cpp#L426), votes
 // TODO Auto accept
 // TODO Auto pistol
 

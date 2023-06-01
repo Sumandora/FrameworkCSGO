@@ -2,14 +2,17 @@
 #define HOOKS_GAME_GAMEFUNCTIONS
 
 #include "../../SDK/ClientFrameStage.hpp"
+#include "../../SDK/GameClass/CGameEvent.hpp"
 #include "../../SDK/GameClass/CUserCmd.hpp"
 #include "../../SDK/GameClass/CViewSetup.hpp"
+#include "../../SDK/GameClass/IMaterial.hpp"
 #include "../../SDK/Math/Matrix4x4.hpp"
 
 #include "../Hooks.hpp"
-
-#include "../../SDK/GameClass/IMaterial.hpp"
 #include "GameHook.hpp"
+
+#include <unordered_map>
+#include <vector>
 
 namespace Hooks::Game {
 	namespace CreateMove {
@@ -41,6 +44,14 @@ namespace Hooks::Game {
 		inline GameHook* hook;
 
 		void HookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen);
+	}
+
+	namespace FireEvent {
+		inline GameHook* hook;
+
+		inline std::unordered_map<std::string, int> events;
+
+		void HookFunc(void* thisptr, CGameEvent* event, bool bServerOnly, bool bClientOnly);
 	}
 
 	void Hook();

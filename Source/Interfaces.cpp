@@ -85,4 +85,5 @@ void Interfaces::GetInterfaces()
 	prediction = GetInterface<IPrediction>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction"));
 	gameMovement = GetInterface<CGameMovement>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement"));
 	materialSystem = GetInterface<CMaterialSystem>(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VMaterialSystem"));
+	engineRenderView = GetInterface<void>(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineRenderView"));
 }

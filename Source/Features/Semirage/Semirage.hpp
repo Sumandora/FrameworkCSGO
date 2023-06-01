@@ -1,6 +1,7 @@
 #ifndef FEATURES_SEMIRAGE
 #define FEATURES_SEMIRAGE
 
+#include "../../SDK/GameClass/CGameEvent.hpp"
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 #include "../../Serialization/Serializer.hpp"
@@ -9,6 +10,7 @@ namespace Features::Semirage {
 	namespace Aimbot {
 		bool CreateMove(CUserCmd* cmd);
 		void ImGuiRender(ImDrawList* drawList);
+		void FireEvent(CGameEvent* gameEvent);
 
 		// GUI
 		void SetupGUI();

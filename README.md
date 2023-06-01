@@ -36,23 +36,16 @@ The build script can be used to build the program.
 ```sh
 ./Build.sh
 ```
-If you want to speed up the compilation you can use multiple threads to build the program.
-```sh
-MAKEOPTS="-j2" ./Build.sh
-```
-Make sure that your CPU/Memory is capable of doing this.  
-Usually memory consumption will be around twice the number of threads you provide in gigabytes.  
-If you don't know how many threads you have you can execute the `nproc` program.
 
 If you want to supply additional compiler arguments use `CXXFLAGS`
 ```sh
-CXXFLAGS="-fstack-protector-strong" ./Build.sh"
+CXXFLAGS="-fstack-protector-strong" ./Build.sh
 ```
 Some of these might break the resulting binary however.
 
 A ELF-Binary will be built in the "Build"-subdirectory, which will be created by the script.
 
-#### Custom library names
+### Custom library names
 
 In case you want to build the project using a different name you can do something like this:
 ```sh
