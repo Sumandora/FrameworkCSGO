@@ -18,6 +18,7 @@ namespace Interfaces {
 	inline IPrediction* prediction;
 	inline CGameMovement* gameMovement;
 	inline CMaterialSystem* materialSystem;
+	inline void* engineRenderView;
 
 	void GetInterfaces();
 

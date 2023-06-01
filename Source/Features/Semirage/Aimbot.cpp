@@ -2,6 +2,8 @@
 
 #include "imgui.h"
 
+#include "../General/General.hpp"
+
 #include "../../Interfaces.hpp"
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"
@@ -18,12 +20,14 @@
 #include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
+#include <cstring>
 #include <optional>
 
 static bool enabled = false;
 static bool autoFire = false;
 static int autoFireKey = ImGuiKey_None;
 // TODO Only when scoped
+// TODO Bones
 
 struct SemirageAimbotWeaponConfig {
 	bool disabled = false;
@@ -284,6 +288,25 @@ void CalculateAimTarget(CBasePlayer* localPlayer)
 	const Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
 
 	aimTarget = trace.endpos;
+}
+
+void Features::Semirage::Aimbot::FireEvent(CGameEvent* gameEvent)
+{
+	if (!wasFaked)
+		return; // No point in trying to reset our view when there is nothing to reset
+
+	if (strcmp(gameEvent->GetName(), xorstr_("player_spawn")) != 0)
+		return;
+
+	if (Interfaces::engine->GetPlayerForUserID(gameEvent->GetInt(xorstr_("userid"))) != Interfaces::engine->GetLocalPlayer())
+		return;
+
+	// We just respawned, keeping a desynced view is pointless
+	wasFaked = false;
+	Vector oldView = Hooks::Game::CreateMove::lastCmd.viewangles;
+	Interfaces::engine->SetViewAngles(&oldView);
+
+	Features::General::EventLog::CreateReport(xorstr_("Gracefully undesynced view"));
 }
 
 bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)

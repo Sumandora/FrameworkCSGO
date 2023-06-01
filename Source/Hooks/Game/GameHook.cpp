@@ -2,6 +2,8 @@
 
 #include "ldisasm.h"
 
+// TODO Alternative hooking methods?
+
 GameHook::GameHook(void* original, void* hook)
 {
 	size_t len = 0;

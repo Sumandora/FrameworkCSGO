@@ -4,7 +4,7 @@ echo "Building Debug-Binary"
 mkdir -p Build-Debug
 
 cmake -B Build-Debug -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS" || exit 1
-cmake --build Build-Debug $MAKEOPTS || exit 1
+cmake --build Build-Debug -j $(nproc) || exit 1
 
 # Set the DEBUGGER variable on the cmdline to use lldb or any debugger
 # Make sure it supports the following commands

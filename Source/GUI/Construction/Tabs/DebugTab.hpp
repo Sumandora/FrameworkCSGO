@@ -4,6 +4,7 @@
 namespace Gui::Construction::Debug {
 	void NetvarsTab();
 	void InterfacesTab();
+	void GameEventsTab();
 }
 
 #endif

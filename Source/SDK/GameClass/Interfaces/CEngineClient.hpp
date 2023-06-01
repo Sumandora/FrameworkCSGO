@@ -13,6 +13,7 @@
 class CEngineClient {
 public:
 	VIRTUAL_METHOD(8, GetPlayerInfo, bool, (int index, PlayerInfo* playerInfo), (this, index, playerInfo))
+	VIRTUAL_METHOD(9, GetPlayerForUserID, int, (int userID), (this, userID))
 	VIRTUAL_METHOD(12, GetLocalPlayer, int, (), (this))
 	VIRTUAL_METHOD(18, GetViewAngles, void, (Vector * angle), (this, angle))
 	VIRTUAL_METHOD(19, SetViewAngles, void, (Vector * angle), (this, angle))
