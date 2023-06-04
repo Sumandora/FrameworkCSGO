@@ -20,14 +20,15 @@ void Gui::Construction::Debug::InterfacesTab()
 
 	std::call_once(init, []() {
 		dl_iterate_phdr([](struct dl_phdr_info* info, size_t size, void* data) {
-			void* library = dlopen(info->dlpi_name, RTLD_NOLOAD | RTLD_NOW);
+			void* library = dlopen(info->dlpi_name, RTLD_LOCAL | RTLD_NOLOAD | RTLD_NOW);
 			if (!library)
 				return 0;
 
 			void* interfaces = dlsym(library, xorstr_("s_pInterfaceRegs"));
-			dlclose(library);
-			if (!interfaces)
+			if (!interfaces) {
+				dlclose(library);
 				return 0;
+			}
 
 			interfaceStorage[info->dlpi_name] = {};
 
@@ -41,6 +42,7 @@ void Gui::Construction::Debug::InterfacesTab()
 				interfaceStorage[info->dlpi_name][interface->m_pName] = t;
 				interface = interface->m_pNext;
 			}
+			dlclose(library);
 			return 0;
 		},
 			nullptr);

@@ -102,7 +102,7 @@ bool ScreenRectangle::HandleOutOfView(const Vector& localOrigin, const Vector& v
 	return false;
 }
 
-void ScreenRectangle::Update(Vector origin, std::optional<BoundingBox> boundingBox)
+void ScreenRectangle::Update(const Vector& origin, const std::optional<BoundingBox>& boundingBox)
 {
 	this->origin = origin;
 	this->boundingBox = boundingBox;

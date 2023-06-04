@@ -6,19 +6,21 @@
 #include "../../GUI/ImGuiColors.hpp"
 
 #include <cmath>
+#include <cstddef>
+#include <unordered_map>
 #include <vector>
 
 static bool enabled = true;
 static int duration = 5000;
 
 struct Entry {
-	long time{};
-	char text[512]{}; // TODO std::string
+	long time;
+	std::string text;
 };
 
 std::vector<Entry> entries;
 
-long time()
+static long time()
 {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
@@ -30,8 +32,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 
 	const long currentTime = time();
 
-	while (!entries.empty() && currentTime - entries.front().time > duration)
-		entries.erase(entries.begin());
+	std::erase_if(entries, [currentTime](const Entry& entry) { return currentTime - entry.time > duration; });
 
 	// Do the enabled check after erasing to prevent memory leaks
 	if (!enabled)
@@ -43,7 +44,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 		yOffset += ImGui::GetTextLineHeightWithSpacing();
 	}
 
-	for (Entry entry : entries) {
+	for (const Entry& entry : entries) {
 		// Normalized from 0.0-1.0
 		double animation = (double)(currentTime - entry.time) / (double)duration;
 		// If you are curious, what this formula does, then just put it into geogebra or wolframalpha
@@ -54,10 +55,12 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 		// If we are close to 1.0 then just set it to 1.0, we don't care about movements in the 0.99-1.0 range
 		animation = fmin(animation + 0.01, 1.0);
 
-		const ImVec2 size = ImGui::CalcTextSize(entry.text);
+		const char* cstr = entry.text.c_str();
+
+		const ImVec2 size = ImGui::CalcTextSize(cstr);
 		const ImVec2 position((float)(-size.x * (1.0 - animation) + 10.0), (float)(yOffset + 10.0));
 
-		ShadowString::AddText(drawList, position, ImGuiColors::white, entry.text);
+		ShadowString::AddText(drawList, position, ImGuiColors::white, cstr);
 
 		yOffset += ImGui::GetTextLineHeightWithSpacing() * animation;
 	}
@@ -74,15 +77,20 @@ void Features::General::EventLog::SetupGUI()
 
 void Features::General::EventLog::CreateReport(const char* fmt, ...)
 {
-	Entry entry;
-	entry.time = time();
-
 	va_list args;
+
+	size_t size = 0;
 	va_start(args, fmt);
-	vsnprintf(entry.text, sizeof(Entry::text), fmt, args);
+	size = vsnprintf(nullptr, size, fmt, args);
 	va_end(args);
 
-	entries.push_back(entry);
+	char str[size];
+
+	va_start(args, fmt);
+	vsnprintf(str, size, fmt, args);
+	va_end(args);
+
+	entries.push_back({ time(), str });
 }
 
 BEGIN_SERIALIZED_STRUCT(Features::General::EventLog::Serializer)

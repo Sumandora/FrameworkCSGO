@@ -21,7 +21,7 @@ static float offsetZ = 0.0f;
 static float rotationOffsetX = 0.0f;
 static float rotationOffsetY = 0.0f;
 static float rotationOffsetZ = 0.0f;
-//TODO Aspect ratio
+// TODO Aspect ratio
 
 void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 {
@@ -35,7 +35,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 		return;
 
 	if (!localPlayer->IsAlive() && *viewer->ObserverMode() == ObserverMode::OBS_MODE_IN_EYE && viewer->ObserverTarget()) {
-		auto* observerTarget = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
+		auto* observerTarget = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntityFromHandle(viewer->ObserverTarget()));
 		if (observerTarget && observerTarget->IsAlive())
 			viewer = observerTarget;
 		else

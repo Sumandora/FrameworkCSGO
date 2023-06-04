@@ -13,8 +13,8 @@ bool Utils::Project(const Vector& world, ImVec2& screen)
 		return false;
 
 	screen = ImGui::GetIO().DisplaySize;
-	screen.x /= 2.0f;
-	screen.y /= 2.0f;
+	screen.x *= 0.5f;
+	screen.y *= 0.5f;
 
 	screen.x *= 1.0f + (matrix[0][0] * world.x + matrix[0][1] * world.y + matrix[0][2] * world.z + matrix[0][3]) / w;
 	screen.y *= 1.0f - (matrix[1][0] * world.x + matrix[1][1] * world.y + matrix[1][2] * world.z + matrix[1][3]) / w;

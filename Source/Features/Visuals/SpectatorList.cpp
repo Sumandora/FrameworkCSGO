@@ -47,7 +47,7 @@ void Features::Visuals::SpectatorList::Update()
 	}
 
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto* player = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player)
 			continue;
 
@@ -87,7 +87,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 		ss << first.name;
 		if (showAllSpectators)
 			ss << xorstr_(" -> ") << second.name;
-		if(showMode)
+		if (showMode)
 			ss << xorstr_(" (") << observerModeName << xorstr_(")");
 
 		const std::string str = ss.str();
@@ -107,7 +107,7 @@ void Features::Visuals::SpectatorList::SetupGUI()
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Show mode"), &showMode);
 	ImGui::Checkbox(xorstr_("Show all spectators"), &showAllSpectators);
-	if(showAllSpectators)
+	if (showAllSpectators)
 		ImGui::ClickableColorButton(xorstr_("Other target color"), otherTargetColor);
 	ImGui::ClickableColorButton(xorstr_("Same target color"), sameTargetColor);
 }

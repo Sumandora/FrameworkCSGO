@@ -50,7 +50,8 @@ void Netvars::DumpNetvars()
 	}
 }
 
-RecvProp* LookupRecvProp(ClientClassID clientClassID, std::string tableName, std::string variableName) {
+RecvProp* LookupRecvProp(ClientClassID clientClassID, const std::string& tableName, const std::string& variableName)
+{
 	for (const auto& [clientClass, tables] : Netvars::netvars)
 		if (clientClass->m_ClassID == clientClassID)
 			for (const auto& [table, variables] : tables)
@@ -58,18 +59,17 @@ RecvProp* LookupRecvProp(ClientClassID clientClassID, std::string tableName, std
 					for (const auto& variable : variables)
 						if (variable->m_pVarName == variableName)
 							return variable;
-	__asm ("int3");
-	return nullptr;
+	__builtin_unreachable();
 }
 
-int Netvars::GetOffset(ClientClassID clientClass, std::string table, std::string name)
+int Netvars::GetOffset(ClientClassID clientClass, const std::string& table, const std::string& name)
 {
 	static std::map<std::tuple<ClientClassID, std::string, std::string>, int> cache;
 
 	auto tuple = std::make_tuple(clientClass, table, name);
-	
-	if(!cache.contains(tuple))
+
+	if (!cache.contains(tuple))
 		cache[tuple] = LookupRecvProp(clientClass, table, name)->m_Offset;
-	
+
 	return cache[tuple];
 }

@@ -8,7 +8,7 @@ void InverseApplyMouse(const Vector& newViewAngles, const Vector& oldViewAngles,
 
 void Utils::CorrectMouseDeltas(CUserCmd* cmd)
 {
-	if(cmd->viewangles == cmd->viewangles_copy)
+	if (cmd->viewangles == cmd->viewangles_copy)
 		return;
 
 	float mouse_x;
@@ -16,6 +16,6 @@ void Utils::CorrectMouseDeltas(CUserCmd* cmd)
 
 	InverseApplyMouse(cmd->viewangles, cmd->viewangles_copy /* This thing actually comes in handy, thanks valve */, mouse_x, mouse_y);
 
-	cmd->mousedx += (int) mouse_x;
-	cmd->mousedy += (int) mouse_y;
+	cmd->mousedx += (int)mouse_x;
+	cmd->mousedy += (int)mouse_y;
 }

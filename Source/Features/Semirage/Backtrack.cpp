@@ -14,8 +14,8 @@
 
 #include "../../GUI/ImGuiColors.hpp"
 
-#include "../../Utils/Trigonometry.hpp"
 #include "../../Utils/Projection.hpp"
+#include "../../Utils/Trigonometry.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 
@@ -56,7 +56,7 @@ float CalculateLerpTime()
 bool IsTickValid(const Tick& tick)
 {
 	// Does the user even want the tick?
-	if(Memory::globalVars->curtime - tick.simulationTime > ConVarStorage::sv_maxunlag()->GetFloat() * scale)
+	if (Memory::globalVars->curtime - tick.simulationTime > ConVarStorage::sv_maxunlag()->GetFloat() * scale)
 		return false;
 
 	// Check if the tick is dead
@@ -111,7 +111,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	if (!IsParticipatingTeam(*localPlayer->Team()))
 		return;
 
-	auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	auto* weapon = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 
 	if (!weapon)
 		return;
@@ -128,7 +128,7 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	int tickCount = 0;
 
 	std::erase_if(ticks, [&](const auto& pair) {
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
+		auto* player = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(pair.first));
 		if (!player || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			return true;
 		}
@@ -149,9 +149,9 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 
 #ifdef __clang__
 		for (size_t index = records.size(); index--;) {
-			auto& tick = records[index];
+			const Tick& tick = records[index];
 #else
-		for (auto& tick : std::ranges::views::reverse(records)) {
+		for (const Tick& tick : std::ranges::views::reverse(records)) {
 #endif
 			float delta;
 			if (!hasLimitedDistance)
@@ -193,7 +193,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto* player = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity() || !IsParticipatingTeam(*player->Team())) {
 			ticks[i].clear();
 			continue;
@@ -211,16 +211,14 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		if (!ticks[i].empty()) {
 			if (ticks[i].back().simulationTime == currentSimulationTime)
 				continue; // We don't have a new position yet
-			ticks[i].erase(std::remove_if(ticks[i].begin(), ticks[i].end(), [&](const auto& tick) {
-				return !IsTickValid(tick);
-			}),
-				ticks[i].end());
+			std::erase_if(ticks[i], [](const Tick& tick) { return !IsTickValid(tick); });
 		}
 
 		Tick tick{};
 		tick.simulationTime = currentSimulationTime;
 		tick.tickCount = Memory::globalVars->tickcount;
 		tick.origin = *player->Origin();
+		// TODO This SetupBones call seems to break leg animations to some extent, this might be the wrong frame stage...
 		memcpy(tick.boneMatrix, player->SetupBones(), sizeof(Matrix3x4[MAXSTUDIOBONES]));
 
 		ticks[i].push_back(tick);

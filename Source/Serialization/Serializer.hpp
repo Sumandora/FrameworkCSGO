@@ -26,7 +26,7 @@ namespace Serialization {
 		void Serialize(const char* name, bool& type, Direction direction);
 		void Serialize(const char* name, int& type, Direction direction);
 		void Serialize(const char* name, float& type, Direction direction);
-		
+
 		// TODO Save these as structures rather than types
 
 		// Types

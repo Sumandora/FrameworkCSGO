@@ -8,8 +8,8 @@
 
 #include "Interfaces.hpp"
 
-#include "xorstr.hpp"
 #include "ldisasm.h"
+#include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
 
@@ -23,9 +23,16 @@ static CBasePlayer** localPlayerList;
 void* Memory::GetBaseAddress(const char* name)
 {
 	void* handle = dlopen(name, RTLD_NOLOAD | RTLD_NOW);
-	void* baseAddress = *static_cast<void**>(handle);
-	dlclose(handle); // Reset ref count
-	return baseAddress;
+	if (!handle)
+		return nullptr;
+	link_map* linkMap;
+	if (dlinfo(handle, RTLD_DL_LINKMAP, &linkMap) != 0) {
+		dlclose(handle);
+		return nullptr;
+	}
+	void* base = reinterpret_cast<void*>(linkMap->l_addr);
+	dlclose(handle);
+	return base;
 }
 
 void* Memory::RelativeToAbsolute(void* addr)
@@ -33,7 +40,7 @@ void* Memory::RelativeToAbsolute(void* addr)
 	// RIP-Relatives start after the instruction using it
 	// The relative offsets are 4 bytes long
 
-	return static_cast<char*>(addr) + 4 + *static_cast<int32_t*>(addr);
+	return reinterpret_cast<char*>(addr) + 4 + *reinterpret_cast<int32_t*>(addr);
 }
 
 void Memory::Create()
