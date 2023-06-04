@@ -10,20 +10,6 @@ if ! [ -x "$(command -v $DEBUGGER)" ]; then
 	exit 1
 fi
 
-# Set the SU variable on the cmdline to use e.g. doas
-SU="${SU:=sudo}"
-if ! [ $(id -u) = 0 ]; then
-	echo "Using '$SU' for upgrading privileges"
-	if ! [ -x "$(command -v $SU)" ]; then
-		echo "$SU does not exist"
-		echo "Install it or set the SU variable to a replacement"
-		exit 1
-	fi
-else
-	SU=""
-fi
-
-
 csgo_pid=$(pidof csgo_linux64)
 if [ -z "$csgo_pid" ]; then
 	echo "CS:GO can't be found, is the game running?"
@@ -32,12 +18,12 @@ fi
 
 lib_name="lib$(cat ProjectName).so"
 
-$SU killall -19 steam
-$SU killall -19 steamwebhelper
+killall -19 steam
+killall -19 steamwebhelper
 
 rm -f gdb.log
 
-$SU $DEBUGGER -p $csgo_pid -n -q -batch \
+$DEBUGGER -p $csgo_pid -n -q -batch \
   -ex "set \$library = ((void*(*)(char*, int)) dlopen)(\"/usr/lib/$lib_name\", 6)" \
   -ex "set \$dlclose = (int(*)(void*)) dlclose" \
   -ex "call \$dlclose(\$library)" \
@@ -54,8 +40,8 @@ $SU $DEBUGGER -p $csgo_pid -n -q -batch \
 }
 
 sleep 1
-$SU killall -18 steamwebhelper
-$SU killall -18 steam
+killall -18 steamwebhelper
+killall -18 steam
 
 echo "Process complete"
 echo "If you face problems related to the unload process"
