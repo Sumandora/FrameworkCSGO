@@ -5,7 +5,7 @@
 
 #include "../../SDK/Weapons/WeaponIDs.hpp"
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 enum class WeaponClass {
@@ -14,19 +14,15 @@ enum class WeaponClass {
 
 	PISTOL,
 	HEAVY_PISTOL,
-
 	SMG,
-
 	RIFLE,
-
 	SNIPER,
 	AUTO_SNIPER,
-
 	MACHINE_GUN,
 	SHOTGUN
 };
 
-static std::map<WeaponClass, const char*> weaponClassLocalization{
+static std::unordered_map<WeaponClass, const char*> weaponClassLocalization{
 	{ WeaponClass::NONE, strdup(xorstr_("None")) },
 
 	{ WeaponClass::PISTOL, strdup(xorstr_("Pistol")) },
@@ -43,7 +39,7 @@ static std::map<WeaponClass, const char*> weaponClassLocalization{
 	{ WeaponClass::SHOTGUN, strdup(xorstr_("Shotgun")) }
 };
 
-static std::map<WeaponClass, std::vector<WeaponID>> weaponClassification{
+static std::unordered_map<WeaponClass, std::vector<WeaponID>> weaponClassification{
 	{ WeaponClass::PISTOL, { WeaponID::WEAPON_HKP2000, WeaponID::WEAPON_USP_SILENCER, WeaponID::WEAPON_GLOCK, WeaponID::WEAPON_ELITE, WeaponID::WEAPON_P250, WeaponID::WEAPON_CZ75A, WeaponID::WEAPON_FIVESEVEN, WeaponID::WEAPON_TEC9 } },
 	{ WeaponClass::HEAVY_PISTOL, { WeaponID::WEAPON_DEAGLE, WeaponID::WEAPON_REVOLVER } },
 	{ WeaponClass::SMG, { WeaponID::WEAPON_MP9, WeaponID::WEAPON_MAC10, WeaponID::WEAPON_MP5SD, WeaponID::WEAPON_MP7, WeaponID::WEAPON_UMP45, WeaponID::WEAPON_P90, WeaponID::WEAPON_BIZON } },
@@ -56,12 +52,10 @@ static std::map<WeaponClass, std::vector<WeaponID>> weaponClassification{
 
 inline WeaponClass WeaponClassByID(WeaponID weaponId)
 {
-	for (auto [weaponClass, weaponIds] : weaponClassification) {
-		for (const WeaponID weaponId2 : weaponIds) {
+	for (auto [weaponClass, weaponIds] : weaponClassification)
+		for (const WeaponID weaponId2 : weaponIds)
 			if (weaponId == weaponId2)
 				return weaponClass;
-		}
-	}
 	return WeaponClass::NONE;
 }
 

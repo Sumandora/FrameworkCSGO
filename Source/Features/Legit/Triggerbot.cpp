@@ -38,7 +38,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
 		return;
 
-	auto* weapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	auto* weapon = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 
 	if (!weapon)
 		return;
@@ -69,7 +69,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 	if (!entity || !entity->IsPlayer() || entity->GetDormant())
 		return;
 
-	auto* player = reinterpret_cast<CBasePlayer*>(entity);
+	auto* player = static_cast<CBasePlayer*>(entity);
 	if (!player->IsAlive() || *player->GunGameImmunity())
 		return;
 

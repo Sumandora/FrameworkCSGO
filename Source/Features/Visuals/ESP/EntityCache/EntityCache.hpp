@@ -26,7 +26,7 @@ class ScreenRectangle {
 	bool HandleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const;
 
 public:
-	void Update(Vector origin, std::optional<BoundingBox> boundingBox);
+	void Update(const Vector& origin, const std::optional<BoundingBox>& boundingBox);
 
 	std::optional<ImVec4> Get();
 };

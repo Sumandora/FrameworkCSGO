@@ -53,7 +53,7 @@ void EntityCache::UpdateEntities(
 	localPlayer.reset();
 
 	const int localPlayerIndex = Interfaces::engine->GetLocalPlayer();
-	auto* localPlayerEntity = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
+	auto* localPlayerEntity = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(localPlayerIndex));
 	if (localPlayerEntity)
 		localPlayer = LocalPlayer(localPlayerEntity, localPlayerIndex);
 
@@ -63,17 +63,17 @@ void EntityCache::UpdateEntities(
 		entity.markForRemoval = true;    \
 	}
 
-	MARK_FOR_REMOVAL(entities);
-	MARK_FOR_REMOVAL(players);
-	MARK_FOR_REMOVAL(spectators);
-	MARK_FOR_REMOVAL(weapons);
-	MARK_FOR_REMOVAL(hostages);
-	MARK_FOR_REMOVAL(projectiles);
-	MARK_FOR_REMOVAL(bombs);
-	MARK_FOR_REMOVAL(ammoBoxes);
-	MARK_FOR_REMOVAL(lootCrates);
-	MARK_FOR_REMOVAL(drones);
-	MARK_FOR_REMOVAL(sentries);
+	MARK_FOR_REMOVAL(entities)
+	MARK_FOR_REMOVAL(players)
+	MARK_FOR_REMOVAL(spectators)
+	MARK_FOR_REMOVAL(weapons)
+	MARK_FOR_REMOVAL(hostages)
+	MARK_FOR_REMOVAL(projectiles)
+	MARK_FOR_REMOVAL(bombs)
+	MARK_FOR_REMOVAL(ammoBoxes)
+	MARK_FOR_REMOVAL(lootCrates)
+	MARK_FOR_REMOVAL(drones)
+	MARK_FOR_REMOVAL(sentries)
 
 	for (int index = 0; index <= Interfaces::entityList->GetHighestEntityIndex(); index++) {
 		if (localPlayerIndex == index)
@@ -94,7 +94,7 @@ void EntityCache::UpdateEntities(
 		ClientClass* clientClass = entity->GetClientClass();
 
 		if (entity->IsPlayer()) {
-			auto* player = reinterpret_cast<CBasePlayer*>(entity);
+			auto* player = static_cast<CBasePlayer*>(entity);
 			const TeamID team = *player->Team();
 			if (team != TeamID::TEAM_UNASSIGNED) {
 				if (player->IsAlive()) {
@@ -112,29 +112,29 @@ void EntityCache::UpdateEntities(
 
 			if (entity->IsWeaponWorldModel()) {
 				if (captureWeapons)
-					UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, reinterpret_cast<CBaseCombatWeapon*>(entity), index,
+					UpdateEntity<Weapon, CBaseCombatWeapon*>(weapons, static_cast<CBaseCombatWeapon*>(entity), index,
 						handle, clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CPlantedC4) {
 				if (captureBombs)
-					UpdateEntity<PlantedC4, CPlantedC4*>(bombs, reinterpret_cast<CPlantedC4*>(entity), index, handle,
+					UpdateEntity<PlantedC4, CPlantedC4*>(bombs, static_cast<CPlantedC4*>(entity), index, handle,
 						clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CHostage) {
 				if (captureHostages)
-					UpdateEntity<Hostage, CHostage*>(hostages, reinterpret_cast<CHostage*>(entity), index, handle, clientClass);
+					UpdateEntity<Hostage, CHostage*>(hostages, static_cast<CHostage*>(entity), index, handle, clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CPhysPropLootCrate) {
 				if (captureLootCrates)
-					UpdateEntity<LootCrate, CPhysPropLootCrate*>(lootCrates, reinterpret_cast<CPhysPropLootCrate*>(entity), index, handle, clientClass);
+					UpdateEntity<LootCrate, CPhysPropLootCrate*>(lootCrates, static_cast<CPhysPropLootCrate*>(entity), index, handle, clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CDrone) {
 				if (captureDrones)
-					UpdateEntity<Drone, CDrone*>(drones, reinterpret_cast<CDrone*>(entity), index, handle, clientClass);
+					UpdateEntity<Drone, CDrone*>(drones, static_cast<CDrone*>(entity), index, handle, clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CDronegun) {
 				if (captureSentries)
-					UpdateEntity<Sentry, CDronegun*>(sentries, reinterpret_cast<CDronegun*>(entity), index, handle, clientClass);
+					UpdateEntity<Sentry, CDronegun*>(sentries, static_cast<CDronegun*>(entity), index, handle, clientClass);
 				continue;
 			} else if (clientClass->m_ClassID == ClientClassID::CPhysPropAmmoBox) {
 				if (captureAmmoBoxes)

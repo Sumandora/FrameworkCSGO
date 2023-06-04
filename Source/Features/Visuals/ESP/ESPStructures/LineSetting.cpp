@@ -22,9 +22,9 @@ void LineSetting::Draw(ImDrawList* drawList, std::vector<ImVec2> points) const
 		return;
 
 	if (outlined)
-		drawList->AddPolyline(points.data(), points.size(), outlineColor, ImDrawFlags_None, thickness + outlineThickness);
+		drawList->AddPolyline(points.data(), (int)points.size(), outlineColor, ImDrawFlags_None, thickness + outlineThickness);
 
-	drawList->AddPolyline(points.data(), points.size(), lineColor, ImDrawFlags_None, thickness);
+	drawList->AddPolyline(points.data(), (int)points.size(), lineColor, ImDrawFlags_None, thickness);
 }
 
 void LineSetting::SetupGUI(const char* id)

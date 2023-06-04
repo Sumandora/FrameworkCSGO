@@ -50,26 +50,19 @@ void* Interfaces::UncoverCreateFunction(void* createFunc)
 }
 
 template <typename T>
-T* GetInterface(const char* file, const char* name)
+T* GetInterface(void* handle, const char* name)
 {
-	void* library = dlopen(file, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
-	if (!library)
-		return nullptr;
-
-	void* interfacesList = dlsym(library, xorstr_("s_pInterfaceRegs"));
-
-	dlclose(library);
+	void* interfacesList = dlsym(handle, xorstr_("s_pInterfaceRegs"));
 
 	if (!interfacesList)
 		return nullptr;
 
-	InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList);
+	;
 
-	while (interface != nullptr) {
-		if (strncmp(interface->m_pName, name, strlen(interface->m_pName) - 3) == 0) {
+	for (InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList); interface; interface = interface->m_pNext) {
+		if (std::strncmp(interface->m_pName, name, std::strlen(interface->m_pName) - 3) == 0) {
 			return reinterpret_cast<T*>(Interfaces::UncoverCreateFunction(interface->m_CreateFn));
 		}
-		interface = interface->m_pNext;
 	}
 
 	return nullptr;
@@ -77,13 +70,21 @@ T* GetInterface(const char* file, const char* name)
 
 void Interfaces::GetInterfaces()
 {
-	baseClient = GetInterface<void>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClient"));
-	engine = GetInterface<CEngineClient>(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineClient"));
-	entityList = GetInterface<CClientEntityList>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientEntityList"));
-	engineTrace = GetInterface<CEngineTrace>(xorstr_("./bin/linux64/engine_client.so"), xorstr_("EngineTraceClient"));
-	icvar = GetInterface<ICvar>(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VEngineCvar"));
-	prediction = GetInterface<IPrediction>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("VClientPrediction"));
-	gameMovement = GetInterface<CGameMovement>(xorstr_("./csgo/bin/linux64/client_client.so"), xorstr_("GameMovement"));
-	materialSystem = GetInterface<CMaterialSystem>(xorstr_("./bin/linux64/materialsystem_client.so"), xorstr_("VMaterialSystem"));
-	engineRenderView = GetInterface<void>(xorstr_("./bin/linux64/engine_client.so"), xorstr_("VEngineRenderView"));
+	void* client_client = dlopen(xorstr_("./csgo/bin/linux64/client_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* engine_client = dlopen(xorstr_("./bin/linux64/engine_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* materialsystem_client = dlopen(xorstr_("./bin/linux64/materialsystem_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+
+	baseClient = GetInterface<void>(client_client, xorstr_("VClient"));
+	engine = GetInterface<CEngineClient>(engine_client, xorstr_("VEngineClient"));
+	entityList = GetInterface<CClientEntityList>(client_client, xorstr_("VClientEntityList"));
+	engineTrace = GetInterface<CEngineTrace>(engine_client, xorstr_("EngineTraceClient"));
+	icvar = GetInterface<ICvar>(materialsystem_client, xorstr_("VEngineCvar"));
+	prediction = GetInterface<IPrediction>(client_client, xorstr_("VClientPrediction"));
+	gameMovement = GetInterface<CGameMovement>(client_client, xorstr_("GameMovement"));
+	materialSystem = GetInterface<CMaterialSystem>(materialsystem_client, xorstr_("VMaterialSystem"));
+	engineRenderView = GetInterface<void>(engine_client, xorstr_("VEngineRenderView"));
+
+	dlclose(client_client);
+	dlclose(engine_client);
+	dlclose(materialsystem_client);
 }

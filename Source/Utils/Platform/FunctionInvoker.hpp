@@ -8,7 +8,7 @@
 template <typename Ret, typename... Args>
 inline auto InvokeFunction(void* method, Args... args) -> Ret
 {
-	return reinterpret_cast<Ret (*)(Args...)>(method)(args...);
+	return static_cast<Ret (*)(Args...)>(method)(args...);
 }
 
 #else

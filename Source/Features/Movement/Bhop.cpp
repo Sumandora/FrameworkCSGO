@@ -46,7 +46,7 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 	static int nextRandomDelay = 0;
 
 	if (cmd->buttons & IN_JUMP) {
-		float randomValue = rand() / (float)RAND_MAX;
+		const float randomValue = (float)rand() / (float)RAND_MAX;
 		if (!(flags & FL_ONGROUND)) {
 			if (randomValue > inAirDistortion && tick > lastJump + nextRandomDelay)
 				cmd->buttons &= ~IN_JUMP;
@@ -60,8 +60,8 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 	if (flags & FL_ONGROUND && cmd->buttons & IN_JUMP) {
 		lastJump = tick; // We just did a jump
 
-		float randomValue = rand() / (float)RAND_MAX;
-		nextRandomDelay = minimumReleaseDelay + (maximumRelaseDelay - minimumReleaseDelay) * randomValue;
+		const float randomValue = (float)rand() / (float)RAND_MAX;
+		nextRandomDelay = (int)((float)minimumReleaseDelay + (float)(maximumRelaseDelay - minimumReleaseDelay) * randomValue);
 	}
 }
 

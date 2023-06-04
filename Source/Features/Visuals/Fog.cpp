@@ -20,11 +20,14 @@ static float maxDensity = 1.0f;
 static float hdrColorScale = 1.0f;
 static float zoomFogScale = 1.0f;
 
+// TODO Reset the fog when turned off
+// TODO also some maps might not have a fog controller (?)
+
 void Features::Visuals::Fog::FrameStageNotify()
 {
 	if (!enabled)
 		return;
-	
+
 	for (int index = 0; index <= Interfaces::entityList->GetHighestEntityIndex(); index++) {
 		CBaseEntity* entity = Interfaces::entityList->GetClientEntity(index);
 		if (!entity)
@@ -34,7 +37,7 @@ void Features::Visuals::Fog::FrameStageNotify()
 		if (clientClass->m_ClassID != ClientClassID::CFogController)
 			continue;
 
-		auto* fogController = reinterpret_cast<CFogController*>(entity);
+		auto* fogController = static_cast<CFogController*>(entity);
 
 		*fogController->Enable() = !hideFog;
 		if (!hideFog) {
@@ -65,13 +68,13 @@ void Features::Visuals::Fog::SetupGUI()
 
 	ImGui::Checkbox(xorstr_("Hide fog"), &hideFog);
 
-	if(hideFog)
+	if (hideFog)
 		return;
 
 	ImGui::ClickableColorButton(xorstr_("Color primary"), colorPrimary);
 
 	ImGui::Checkbox(xorstr_("Blend"), &blend);
-	
+
 	if (blend) {
 		ImGui::DragFloat3(xorstr_("Dir Primary"), dirPrimary.Base(), 0.01f, -1.0f, 1.0f);
 		ImGui::ClickableColorButton(xorstr_("Color secondary"), colorSecondary);

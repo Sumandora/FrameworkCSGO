@@ -55,7 +55,32 @@ struct SemirageAimbotWeaponConfig {
 	float verticalRotateToOriginSpeed = 0.2f;
 	float recombineViews = 0.1f;
 
-	DECLARE_SERIALIZER(Serializer);
+	BEGIN_SERIALIZED_STRUCT(Serializer)
+	SERIALIZED_TYPE(xorstr_("Disabled"), disabled)
+
+	SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
+
+	SERIALIZED_TYPE(xorstr_("Auto fire recklessly"), autoFireRecklessly)
+
+	SERIALIZED_TYPE(xorstr_("FOV"), fov)
+	SERIALIZED_TYPE(xorstr_("FOV scale X"), fovScaleX)
+	SERIALIZED_TYPE(xorstr_("FOV scale Y"), fovScaleY)
+
+	SERIALIZED_TYPE(xorstr_("Control recoil"), controlRecoil)
+	SERIALIZED_TYPE(xorstr_("Recoil scale X"), recoilScaleX)
+	SERIALIZED_TYPE(xorstr_("Recoil scale Y"), recoilScaleY)
+
+	SERIALIZED_TYPE(xorstr_("Smooth out"), smoothOut)
+	SERIALIZED_TYPE(xorstr_("Horizontal aim speed"), horizontalAimSpeed)
+	SERIALIZED_TYPE(xorstr_("Vertical aim speed"), verticalAimSpeed)
+
+	SERIALIZED_TYPE(xorstr_("Silent"), silent)
+
+	SERIALIZED_TYPE(xorstr_("Smooth rotate to origin"), smoothRotateToOrigin)
+	SERIALIZED_TYPE(xorstr_("Horizontal rotate to origin speed"), horizontalRotateToOriginSpeed)
+	SERIALIZED_TYPE(xorstr_("Vertical rotate to origin speed"), verticalRotateToOriginSpeed)
+	SERIALIZED_TYPE(xorstr_("Recombine views"), recombineViews)
+	END_SERIALIZED_STRUCT
 };
 void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig);
 
@@ -92,7 +117,7 @@ CBasePlayer* GetLocalPlayer()
 
 SemirageAimbotWeaponConfig* GetWeaponConfig(CBasePlayer* localPlayer)
 {
-	auto* combatWeapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	auto* combatWeapon = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 	if (!combatWeapon)
 		return nullptr;
 
@@ -145,7 +170,7 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto* player = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!ShouldAttackPlayer(localPlayer, player))
 			continue;
 
@@ -247,7 +272,7 @@ bool AutoFire(SemirageAimbotWeaponConfig* weaponConfig, bool hasTarget, CBasePla
 	if (!dontAimThroughSmoke || !Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1)) {
 		CBaseEntity* entity = trace.m_pEnt;
 		if (entity && entity->IsPlayer() && !entity->GetDormant()) {
-			auto* player = reinterpret_cast<CBasePlayer*>(entity);
+			auto* player = static_cast<CBasePlayer*>(entity);
 			if (player->IsAlive() && !*player->GunGameImmunity()) {
 				if (IsParticipatingTeam(*player->Team())) {
 					if (friendlyFire || player->IsEnemy(localPlayer)) {
@@ -528,33 +553,6 @@ void Features::Semirage::Aimbot::SetupGUI()
 
 	weaponConfigurator.SetupGUI();
 }
-
-BEGIN_SERIALIZED_STRUCT(SemirageAimbotWeaponConfig::Serializer)
-SERIALIZED_TYPE(xorstr_("Disabled"), disabled)
-
-SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
-
-SERIALIZED_TYPE(xorstr_("Auto fire recklessly"), autoFireRecklessly)
-
-SERIALIZED_TYPE(xorstr_("FOV"), fov)
-SERIALIZED_TYPE(xorstr_("FOV scale X"), fovScaleX)
-SERIALIZED_TYPE(xorstr_("FOV scale Y"), fovScaleY)
-
-SERIALIZED_TYPE(xorstr_("Control recoil"), controlRecoil)
-SERIALIZED_TYPE(xorstr_("Recoil scale X"), recoilScaleX)
-SERIALIZED_TYPE(xorstr_("Recoil scale Y"), recoilScaleY)
-
-SERIALIZED_TYPE(xorstr_("Smooth out"), smoothOut)
-SERIALIZED_TYPE(xorstr_("Horizontal aim speed"), horizontalAimSpeed)
-SERIALIZED_TYPE(xorstr_("Vertical aim speed"), verticalAimSpeed)
-
-SERIALIZED_TYPE(xorstr_("Silent"), silent)
-
-SERIALIZED_TYPE(xorstr_("Smooth rotate to origin"), smoothRotateToOrigin)
-SERIALIZED_TYPE(xorstr_("Horizontal rotate to origin speed"), horizontalRotateToOriginSpeed)
-SERIALIZED_TYPE(xorstr_("Vertical rotate to origin speed"), verticalRotateToOriginSpeed)
-SERIALIZED_TYPE(xorstr_("Recombine views"), recombineViews)
-END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)

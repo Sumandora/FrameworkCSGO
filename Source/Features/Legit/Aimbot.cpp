@@ -19,7 +19,11 @@ struct LegitAimbotWeaponConfig {
 	float smoothness = 4.0f;
 	int maximalInfluence = 1;
 
-	DECLARE_SERIALIZER(Serializer);
+	BEGIN_SERIALIZED_STRUCT(Serializer)
+	SERIALIZED_TYPE(xorstr_("FOV"), fov)
+	SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
+	SERIALIZED_TYPE(xorstr_("Maximal influence"), maximalInfluence)
+	END_SERIALIZED_STRUCT
 };
 void WeaponGUI(LegitAimbotWeaponConfig& LegitAimbotWeaponConfig);
 
@@ -50,7 +54,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (localPlayer->GetFlashAlpha() > (float)maximalFlashAmount)
 		return;
 
-	auto* combatWeapon = reinterpret_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
+	auto* combatWeapon = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 	if (!combatWeapon)
 		return;
 
@@ -74,7 +78,7 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
-		auto* player = reinterpret_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
+		auto* player = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
 		if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
 			continue;
 		if (!IsParticipatingTeam(*player->Team()))
@@ -144,12 +148,6 @@ void Features::Legit::Aimbot::SetupGUI()
 
 	weaponConfigurator.SetupGUI();
 }
-
-BEGIN_SERIALIZED_STRUCT(LegitAimbotWeaponConfig::Serializer)
-SERIALIZED_TYPE(xorstr_("FOV"), fov)
-SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
-SERIALIZED_TYPE(xorstr_("Maximal influence"), maximalInfluence)
-END_SERIALIZED_STRUCT
 
 BEGIN_SERIALIZED_STRUCT(Features::Legit::Aimbot::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)

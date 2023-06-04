@@ -1,6 +1,7 @@
 #include "GUI.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <mutex>
 
 #include "imgui.h"
@@ -73,7 +74,7 @@ void Gui::SwapWindow(SDL_Window* window)
 		// fontSize(2160) = 24
 		// x = 1/90, also technically one pair of values is enough here to solve for x
 
-		const float fontSize = floor(mode.h * (1.0f / 90.0f));
+		const float fontSize = floorf((float)mode.h * (1.0f / 90.0f));
 
 		// Might not work on certain distros/configurations
 		bool loadedFont = false;

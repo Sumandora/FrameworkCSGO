@@ -24,7 +24,7 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 	case LootCrateType::INVALID:
 		// Something did go horribly wrong
 		Features::General::EventLog::CreateReport(xorstr_("Invalid loot crate found?"));
-		__asm("int3");
+		__builtin_unreachable();
 	case LootCrateType::PISTOL_CASE:
 		return pistolCase;
 	case LootCrateType::LIGHT_CASE:
@@ -40,10 +40,7 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 	case LootCrateType::RANDOM_DROP:
 		return randomDrop;
 	}
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wreturn-type"
 }
-#pragma GCC diagnostic pop
 
 void LootCrateTypeSettings::Draw(ImDrawList* drawList, LootCrate& lootCrate) const
 {

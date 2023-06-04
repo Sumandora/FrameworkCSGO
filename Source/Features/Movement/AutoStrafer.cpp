@@ -31,6 +31,9 @@ void AdjustButtons(CUserCmd* cmd)
 	} else if (cmd->forwardmove < 0) {
 		cmd->buttons |= IN_BACK;
 		cmd->buttons &= ~IN_FORWARD;
+	} else {
+		cmd->buttons &= ~IN_FORWARD;
+		cmd->buttons &= ~IN_BACK;
 	}
 	if (cmd->sidemove < 0) {
 		cmd->buttons |= IN_MOVELEFT;
@@ -38,6 +41,9 @@ void AdjustButtons(CUserCmd* cmd)
 	} else if (cmd->sidemove > 0) {
 		cmd->buttons |= IN_MOVERIGHT;
 		cmd->buttons &= ~IN_MOVELEFT;
+	} else {
+		cmd->buttons &= ~IN_MOVELEFT;
+		cmd->buttons &= ~IN_MOVERIGHT;
 	}
 }
 
