@@ -25,6 +25,7 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 		// Something did go horribly wrong
 		Features::General::EventLog::CreateReport(xorstr_("Invalid loot crate found?"));
 		__builtin_unreachable();
+		// return dummy
 	case LootCrateType::PISTOL_CASE:
 		return pistolCase;
 	case LootCrateType::LIGHT_CASE:
