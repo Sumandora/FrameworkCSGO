@@ -4,7 +4,7 @@
 #include "DetourHooking.hpp"
 
 class GameHook {
-	Hook* backingHook;
+	DetourHooking::Hook* backingHook;
 
 public:
 	void* proxy;
