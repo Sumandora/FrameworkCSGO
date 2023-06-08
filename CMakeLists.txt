@@ -8,8 +8,14 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall -march=native -mtune=native -ggdb --no-gnu-unique -DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_CXX_FLAGS_RELEASE "-Os -fdata-sections -ffunction-sections -Wl,--gc-sections -s -march=native -mtune=native -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti --no-gnu-unique -D'IM_ASSERT(_EXPR)=((void)(_EXPR))' ${CMAKE_CXX_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall -march=native -ggdb -DDEBUG ${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_RELEASE "-Os -march=native -fvisibility=hidden -fvisibility-inlines-hidden -fno-rtti -D'IM_ASSERT(_EXPR)=((void)(_EXPR))' ${CMAKE_CXX_FLAGS_RELEASE}")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS_DEBUG "--no-gnu-unique ${CMAKE_CXX_FLAGS_DEBUG}")
+    set(CMAKE_CXX_FLAGS_RELEASE "-fdata-sections -ffunction-sections -Wl,--gc-sections -s --no-gnu-unique ${CMAKE_CXX_FLAGS_RELEASE}")
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "-Wno-unknown-attributes ${CMAKE_CXX_FLAGS}")
+endif ()
 
 option(MENUPREVIEW "Builds a executable which previews the menu" OFF)
 

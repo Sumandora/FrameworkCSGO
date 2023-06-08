@@ -54,6 +54,9 @@ echo "MyCoolProjectName" > ProjectName
 # Rebuild here using Debug.sh or Build.sh
 ```
 
+### The situation with Clang
+Using Clang is inappropriate and should be avoided. Clang's machine code is too unpredictable, so it is necessary to disable security features. However, you can use clang by setting your `CC` and `CXX` environment variables to `clang` and `clang++` respectively.
+
 ## Usage
 A simple inject script using a debugger like GDB or LLDB is provided.  
 Make sure to run it as root user
