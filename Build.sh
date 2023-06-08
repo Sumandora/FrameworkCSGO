@@ -12,7 +12,7 @@ error () {
 
 log_and_check() {
     tmpfile=$(mktemp)
-    if "$@" >"$tmpfile" 2>&1; then
+    if "$@" 2>&1 | tee -a "$tmpfile"; then
         cat "$tmpfile" >> /tmp/build.log
     else
         cat "$tmpfile" >> /tmp/build.log
