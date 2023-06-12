@@ -44,6 +44,8 @@ namespace ConVarStorage {
 	LAZY_CONVAR(sv_maxspeed)
 	LAZY_CONVAR(sv_airaccelerate)
 	LAZY_CONVAR(sv_air_max_wishspeed)
+	LAZY_CONVAR(cl_forwardspeed)
+	LAZY_CONVAR(cl_sidespeed)
 
 	// Mouse
 	LAZY_CONVAR(m_yaw)

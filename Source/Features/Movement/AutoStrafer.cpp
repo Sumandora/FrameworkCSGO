@@ -106,8 +106,8 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 			newDirection = realDirection + (delta > 0.0 ? perfectDelta : -perfectDelta);
 		}
 
-		cmd->forwardmove = cosf(newDirection) * 450.0f;
-		cmd->sidemove = -sinf(newDirection) * 450.0f;
+		cmd->forwardmove = cosf(newDirection) * ConVarStorage::cl_forwardspeed()->GetFloat();
+		cmd->sidemove = -sinf(newDirection) * ConVarStorage::cl_sidespeed()->GetFloat();
 		AdjustButtons(cmd);
 	} else {
 		const float oldYaw = Hooks::Game::CreateMove::lastCmd.viewangles.y;
@@ -117,9 +117,9 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 		if (!onlyWhenIdle || (cmd->sidemove == 0.0f && cmd->forwardmove == 0.0f)) {
 			cmd->forwardmove = 0.0f;
 			if (change < 0.0)
-				cmd->sidemove = 450.0f;
+				cmd->sidemove = ConVarStorage::cl_sidespeed()->GetFloat();
 			else if (change > 0.0)
-				cmd->sidemove = -450.0f;
+				cmd->sidemove = -ConVarStorage::cl_sidespeed()->GetFloat();
 			else
 				cmd->sidemove = 0;
 			AdjustButtons(cmd);

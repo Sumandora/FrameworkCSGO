@@ -33,7 +33,6 @@ bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 		ImVec2 point2D;
 
 		if (!Utils::Project(point, point2D)) {
-			lastScreenRectangle.reset();
 			return false;
 		}
 
@@ -48,22 +47,7 @@ bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 			rectangle.w = point2D.y;
 	}
 
-	const int currTick = Memory::globalVars->tickcount;
-	if (lastScreenRectangleUpdate != currTick) { // Remember this rectangle
-		lastScreenRectangleUpdate = currTick;
-		lastScreenRectangle = rectangle;
-	} else if (lastScreenRectangle.has_value()) {
-		// We got a new one now, lets get the middle between the new and old one based on the interp amount
-		const ImVec4 old = lastScreenRectangle.value();
-
-		rectangle.x += (old.x - rectangle.x) * Memory::globalVars->interpolation_amount;
-		rectangle.y += (old.y - rectangle.y) * Memory::globalVars->interpolation_amount;
-		rectangle.z += (old.z - rectangle.z) * Memory::globalVars->interpolation_amount;
-		rectangle.w += (old.w - rectangle.w) * Memory::globalVars->interpolation_amount;
-	}
-
 	if (!std::isfinite(rectangle.x) || !std::isfinite(rectangle.y) || !std::isfinite(rectangle.z) || !std::isfinite(rectangle.w)) {
-		lastScreenRectangle.reset();
 		return false;
 	}
 

@@ -34,7 +34,7 @@ public:
 	NETVAR_FUNCTION(unsigned char, RenderMode, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_nRenderMode"))
 
 	// MoveType used to be a netvar but got removed, RenderMode is still there.
-	unsigned char GetMoveType()
+	inline unsigned char GetMoveType()
 	{
 		return *(RenderMode() + 1);
 	}

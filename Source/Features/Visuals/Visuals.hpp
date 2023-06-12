@@ -15,6 +15,7 @@ namespace Features::Visuals {
 		// Settings
 		extern bool considerSpottedEntitiesAsVisible;
 		extern bool considerSmokedOffEntitiesAsOccluded;
+		extern bool considerEveryoneVisibleWhenDead;
 		extern bool alignBoundingBox;
 		extern bool outOfView;
 		extern float outOfViewSize;

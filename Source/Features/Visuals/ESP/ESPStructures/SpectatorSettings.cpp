@@ -14,10 +14,9 @@ void SpectatorSettings::Draw(ImDrawList* drawList, Spectator& spectator) const
 	const Player* spectated = nullptr;
 
 	if (onlyShowWhenSpectatedEntityIsDormant || displayNameOfSpectatedEntity) {
-		for (const auto& [_, player] : EntityCache::players) {
-			if (player.handle == spectator.observerTarget)
-				spectated = &player;
-		}
+		Player* player = EntityCache::PlayerByHandle(spectator.observerTarget);
+		if (player)
+			spectated = player;
 	}
 
 	if (onlyShowWhenSpectatedEntityIsDormant && spectated && !spectated->dormant)

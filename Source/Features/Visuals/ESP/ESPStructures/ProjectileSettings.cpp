@@ -5,26 +5,21 @@
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../Utils/Projection.hpp"
 
-static std::map<ProjectileType, const char*> projectileNames{
-	{ ProjectileType::BREACH_CHARGE, strdup(xorstr_("Breach charge")) },
-	{ ProjectileType::BUMP_MINE, strdup(xorstr_("Bump Mine")) },
-	{ ProjectileType::DECOY, strdup(xorstr_("Decoy")) },
-	{ ProjectileType::MOLOTOV, strdup(xorstr_("Molotov")) },
-	{ ProjectileType::SENSOR_GRENADE, strdup(xorstr_("Sensor Grenade")) },
-	{ ProjectileType::SMOKE_GRENADE, strdup(xorstr_("Smoke Grenade")) },
-	{ ProjectileType::SNOWBALL, strdup(xorstr_("Snowball")) },
-	{ ProjectileType::HIGH_EXPLOSIVE_GRENADE, strdup(xorstr_("High Explosive Grenade")) },
-	{ ProjectileType::FLASHBANG, strdup(xorstr_("Flashbang")) },
-};
+#include "../../../../Interfaces.hpp"
 
 bool ProjectileSettings::IsEnabled() const
 {
-	return boxName.IsEnabled() || trail.enabled;
+	return boxName.IsEnabled() || ownerName.enabled || trail.enabled;
 }
 
-void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile) const
+void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile, const char* name) const
 {
-	if (IsEnabled())
+	if (projectile.type == ProjectileType::INVALID) {
+		__asm("int3");
+		return;
+	}
+
+	if (!IsEnabled())
 		return;
 
 	// Render trail even if we don't have a rectangle
@@ -46,28 +41,31 @@ void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile) cons
 		trail.Draw(drawList, points);
 	}
 
-	if (!boxName.IsEnabled())
-		return;
-
 	const std::optional<ImVec4> rectangle = projectile.screenRectangle.Get();
 	if (!rectangle.has_value())
 		return;
 
-	if (projectile.type == ProjectileType::INVALID)
-		__asm("int3");
+	boxName.Draw(drawList, rectangle.value(), name);
 
-	boxName.Draw(drawList, rectangle.value(), projectileNames[projectile.type]);
+	Player* player = EntityCache::PlayerByHandle(projectile.thrower);
+	if (player) {
+		PlayerInfo info{};
+		Interfaces::engine->GetPlayerInfo(player->index, &info);
+		ownerName.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
+	}
 }
 
 void ProjectileSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
+	ownerName.SetupGUI(xorstr_("Owner name"));
 	trail.SetupGUI(xorstr_("Trail"));
 	ImGui::PopID();
 }
 
 BEGIN_SERIALIZED_STRUCT(ProjectileSettings::Serializer)
 SERIALIZED_STRUCTURE(name, boxName)
+SERIALIZED_STRUCTURE(xorstr_("Owner name"), ownerName)
 SERIALIZED_STRUCTURE(xorstr_("Trail"), trail)
 END_SERIALIZED_STRUCT

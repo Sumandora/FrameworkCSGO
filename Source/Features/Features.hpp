@@ -9,6 +9,7 @@
 #include "Semirage/Semirage.hpp"
 #include "Visuals/Visuals.hpp"
 
+// TODO OOP
 namespace Features {
 	// GUI
 	void SetupGUI();

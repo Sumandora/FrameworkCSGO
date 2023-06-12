@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <mutex>
 
 #include "imgui.h"
@@ -19,6 +20,8 @@
 
 #include "Construction/Settings.hpp"
 
+#include "../Serialization/Serialization.hpp"
+
 bool Gui::visible = true;
 
 void Gui::Create()
@@ -26,7 +29,7 @@ void Gui::Create()
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
 
-	io.IniFilename = nullptr;
+	io.IniFilename = nullptr; // TODO Bring it back
 	io.LogFilename = nullptr;
 }
 

@@ -4,6 +4,24 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
+bool PlayerSettings::IsEnabled() const
+{
+	return teammate.IsEnabled() || enemy.IsEnabled() || local.IsEnabled();
+}
+
+void PlayerSettings::Draw(ImDrawList* drawList, Player& player) const
+{
+	if (!IsEnabled())
+		return;
+
+	if (player == EntityCache::localPlayer)
+		local.Draw(drawList, player);
+	else if (!player.enemy)
+		teammate.Draw(drawList, player);
+	else
+		enemy.Draw(drawList, player);
+}
+
 void PlayerSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
@@ -20,10 +38,6 @@ void PlayerSettings::SetupGUI(const char* id)
 			local.SetupGUI(xorstr_("Local"));
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Spectators"))) {
-			spectators.SetupGUI(xorstr_("Spectators"));
-			ImGui::EndTabItem();
-		}
 		ImGui::EndTabBar();
 	}
 	ImGui::PopID();
@@ -33,5 +47,4 @@ BEGIN_SERIALIZED_STRUCT(PlayerSettings::Serializer)
 SERIALIZED_STRUCTURE(xorstr_("Teammate"), teammate)
 SERIALIZED_STRUCTURE(xorstr_("Enemy"), enemy)
 SERIALIZED_STRUCTURE(xorstr_("Local"), local)
-SERIALIZED_STRUCTURE(xorstr_("Spectators"), spectators)
 END_SERIALIZED_STRUCT

@@ -4,9 +4,22 @@
 
 #include "../../../../GUI/Elements/ClickableColorButton.hpp"
 
+#include "../../Visuals.hpp"
+
 bool PlayerTeamSettings::IsEnabled() const
 {
 	return visible.IsEnabled() || occluded.IsEnabled();
+}
+
+void PlayerTeamSettings::Draw(ImDrawList* drawList, Player& player) const
+{
+	if (!IsEnabled())
+		return;
+
+	if (player.visible)
+		visible.Draw(drawList, player);
+	else
+		occluded.Draw(drawList, player);
 }
 
 void PlayerTeamSettings::SetupGUI(const char* id)

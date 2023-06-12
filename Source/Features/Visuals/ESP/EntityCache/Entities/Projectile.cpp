@@ -1,6 +1,6 @@
 #include "../EntityCache.hpp"
 
-static std::map<ClientClassID, ProjectileType> projectileMap {
+static std::map<ClientClassID, ProjectileType> projectileMap{
 	{ ClientClassID::CBreachChargeProjectile, ProjectileType::BREACH_CHARGE },
 	{ ClientClassID::CBumpMineProjectile, ProjectileType::BUMP_MINE },
 	{ ClientClassID::CDecoyProjectile, ProjectileType::DECOY },
@@ -10,9 +10,11 @@ static std::map<ClientClassID, ProjectileType> projectileMap {
 	{ ClientClassID::CSnowballProjectile, ProjectileType::SNOWBALL },
 };
 
-void Projectile::Update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
+void Projectile::Update(CBaseGrenade* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
 	Entity::Update(entity, index, handle, clientClass);
+
+	thrower = *entity->Thrower();
 
 	trail.push_back(*entity->Origin());
 
@@ -21,7 +23,7 @@ void Projectile::Update(CBaseEntity* entity, int index, const CBaseHandle& handl
 			type = ProjectileType::FLASHBANG;
 		else
 			type = ProjectileType::HIGH_EXPLOSIVE_GRENADE;
-	} else if(projectileMap.contains(clientClass->m_ClassID)) {
+	} else if (projectileMap.contains(clientClass->m_ClassID)) {
 		type = projectileMap[clientClass->m_ClassID];
 	} else
 		type = ProjectileType::INVALID;
