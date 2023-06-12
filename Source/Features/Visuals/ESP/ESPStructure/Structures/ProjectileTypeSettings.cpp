@@ -1,7 +1,7 @@
 #include "../ESPStructure.hpp"
 
-#include "../../../../GUI/Elements/Popup.hpp"
-#include "../../../General/General.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../General/General.hpp"
 
 static std::map<ProjectileType, const char*> projectileNames{
 	{ ProjectileType::BREACH_CHARGE, strdup(xorstr_("Breach charge")) },

@@ -37,6 +37,10 @@
 
 // TODO Third person
 
+// TODO 3d Skybox changer (Fog, Scale, Origin; Disable?)
+
+// TODO Player List, Reclass ingame (?)
+
 void Initializer()
 {
 	srand(time(nullptr));

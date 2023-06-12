@@ -224,4 +224,9 @@ inline bool IsKnife(WeaponID weaponID)
 	return (weaponID >= WeaponID::WEAPON_KNIFEGG && weaponID <= WeaponID::WEAPON_KNIFE) || weaponID == WeaponID::WEAPON_KNIFE_T || weaponID == WeaponID::WEAPON_KNIFE_GHOST || (weaponID >= WeaponID::WEAPON_KNIFE_CSS && weaponID <= WeaponID::WEAPON_KNIFE_SKELETON);
 }
 
+inline bool IsGrenade(WeaponID weaponID)
+{
+	return (weaponID >= WeaponID::WEAPON_FLASHBANG && weaponID <= WeaponID::WEAPON_INCGRENADE) || weaponID == WeaponID::WEAPON_TAGRENADE || weaponID == WeaponID::WEAPON_BREACHCHARGE || (weaponID >= WeaponID::WEAPON_FIREBOMB && weaponID <= WeaponID::WEAPON_SNOWBALL);
+}
+
 #endif

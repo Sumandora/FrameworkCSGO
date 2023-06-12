@@ -1,7 +1,5 @@
 #include "../Visuals.hpp"
 
-#include "EntityCache/EntityCache.hpp"
-#include "ESPStructure.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
 
@@ -9,6 +7,9 @@
 
 #include "../../../GUI/Elements/Keybind.hpp"
 #include "../../../GUI/Elements/Popup.hpp"
+
+#include "EntityCache/EntityCache.hpp"
+#include "ESPStructure/ESPStructure.hpp"
 
 #include <optional>
 #include <vector>

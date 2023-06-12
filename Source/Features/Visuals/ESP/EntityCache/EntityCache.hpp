@@ -73,8 +73,13 @@ public:
 	bool enemy;
 	bool alive;
 	bool visible;
+	CBaseHandle weapon;
 	WeaponID activeWeapon;
 	bool dormant;
+
+	int account;
+	bool scoped;
+	bool pinPulled;
 
 	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };

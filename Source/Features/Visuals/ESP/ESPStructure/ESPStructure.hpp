@@ -3,9 +3,11 @@
 
 #include "imgui.h"
 
-#include "../../../Serialization/Serializer.hpp"
+#include "../../../../Serialization/Serializer.hpp"
 
-#include "EntityCache/EntityCache.hpp"
+#include "../EntityCache/EntityCache.hpp"
+
+#include "PlayerFlags.hpp"
 
 // TODO Generate the boilerplate for implementations
 class BoxSettings {
@@ -100,6 +102,26 @@ public:
 	DECLARE_SERIALIZER(Serializer)
 };
 
+class FlagsSetting {
+private:
+	bool enabled;
+	float fontScale;
+	float alphaScale;
+	bool shadow;
+	ImColor shadowColor;
+
+	std::vector<Flag*> flags;
+
+public:
+	FlagsSetting(std::vector<Flag*> flags);
+
+	[[nodiscard]] bool IsEnabled() const;
+	void Draw(ImDrawList* drawList, float x, float y, const Player& player) const;
+	bool operator<=>(const FlagsSetting& other) const = default;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
 class BoxNameSetting {
 public:
 	BoxSettings box;
@@ -189,11 +211,11 @@ class PlayerStateSettings {
 	BoxNameSetting boxName;
 	HealthbarSettings healthbar;
 	TextSetting weapon;
-	TextSetting flashDuration; // Make flag with opacity
-	// TODO Flags (Money, Has Armor/Helmet/Defuse Kit, Is Defusing, Has Bomb, Is throwing grenade, Is Bot, Scoped)
+	FlagsSetting flags;
+	// TODO Flags (Has Armor (m_ArmorValue)/Heavy Armor/Helmet/Defuse Kit, Is Defusing/Carring Hostage/GunGame level (Objective), Is Walking, Spotted, Ammo, Is Immune, Has Bomb, Is Bot)
 
 public:
-	PlayerStateSettings() = default;
+	PlayerStateSettings();
 
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Player& player) const;

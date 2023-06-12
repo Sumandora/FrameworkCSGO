@@ -1,7 +1,7 @@
 #include "../ESPStructure.hpp"
 
-#include "../../../../GUI/Elements/Popup.hpp"
-#include "../../../General/General.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../General/General.hpp"
 
 static std::map<LootCrateType, const char*> lootCrateNames{
 	{ LootCrateType::PISTOL_CASE, strdup(xorstr_("Pistol Case")) },

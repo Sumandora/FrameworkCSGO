@@ -2,7 +2,7 @@
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
 bool WeaponSettings::IsEnabled() const
 {

@@ -4,9 +4,9 @@
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../GUI/Elements/Popup.hpp"
-#include "../../../../GUI/ImGuiColors.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../../GUI/ImGuiColors.hpp"
 
 HealthbarSettings::HealthbarSettings()
 	: enabled(false)

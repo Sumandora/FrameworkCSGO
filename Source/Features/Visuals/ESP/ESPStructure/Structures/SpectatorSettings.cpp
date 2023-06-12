@@ -1,5 +1,6 @@
-#include "../../../../Interfaces.hpp"
 #include "../ESPStructure.hpp"
+
+#include "../../../../../Interfaces.hpp"
 
 bool SpectatorSettings::IsEnabled() const
 {
