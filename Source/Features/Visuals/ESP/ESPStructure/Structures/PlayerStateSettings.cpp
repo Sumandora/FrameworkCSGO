@@ -2,16 +2,22 @@
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../GUI/Elements/Popup.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
 
-#include "../../../../Interfaces.hpp"
+#include "../../../../../Interfaces.hpp"
 
-#include "../../Visuals.hpp"
+#include "../../../Visuals.hpp"
+#include <memory>
+
+PlayerStateSettings::PlayerStateSettings()
+	: flags(FlagsSetting{ { new Money(), new Scoped(), new Flashed(), new PinPulled() } })
+{
+}
 
 bool PlayerStateSettings::IsEnabled() const
 {
-	return boxName.IsEnabled() || healthbar.enabled || weapon.enabled || flashDuration.enabled;
+	return boxName.IsEnabled() || healthbar.enabled || weapon.enabled || flags.IsEnabled();
 }
 
 void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
@@ -41,9 +47,7 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 		}
 	}
 
-	if (player.flashAlpha > 0.0) {
-		this->flashDuration.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->y + (rectangle->w - rectangle->y) * 0.5f - this->flashDuration.GetLineHeight() / 2.0f, true, std::to_string((int)player.flashAlpha).c_str());
-	}
+	flags.Draw(drawList, rectangle->z, rectangle->y, player);
 }
 
 void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
@@ -78,7 +82,7 @@ void PlayerStateSettings::SetupGUI(const char* id)
 	boxName.SetupGUI(id);
 	healthbar.SetupGUI(xorstr_("Healthbar"));
 	weapon.SetupGUI(xorstr_("Weapon"));
-	flashDuration.SetupGUI(xorstr_("Flash duration"));
+	flags.SetupGUI(xorstr_("Flags"));
 	ImGui::PopID();
 }
 
@@ -86,5 +90,5 @@ BEGIN_SERIALIZED_STRUCT(PlayerStateSettings::Serializer)
 SERIALIZED_STRUCTURE(name, boxName)
 SERIALIZED_STRUCTURE(xorstr_("Healthbar"), healthbar)
 SERIALIZED_STRUCTURE(xorstr_("Weapon"), weapon)
-SERIALIZED_STRUCTURE(xorstr_("Flash duration"), flashDuration)
+SERIALIZED_STRUCTURE(xorstr_("Flags"), flags)
 END_SERIALIZED_STRUCT

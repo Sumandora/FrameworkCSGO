@@ -4,6 +4,8 @@
 #include "../../../../../Utils/Raytrace.hpp"
 #include "../../../Visuals.hpp"
 
+#include "../../../../../SDK/GameClass/CBaseCSGrenade.hpp"
+
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
 	if (Features::Visuals::Esp::considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
@@ -28,8 +30,9 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 	Entity::Update(entity, index, handle, clientClass);
 
 	activeWeapon = WeaponID::WEAPON_NONE;
+	CBaseEntity* weaponEntity = nullptr;
 	if (*entity->ActiveWeapon() != INVALID_EHANDLE_INDEX) {
-		CBaseEntity* weaponEntity = Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon());
+		weaponEntity = Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon());
 		if (weaponEntity)
 			activeWeapon = *static_cast<CBaseAttributableItem*>(weaponEntity)->WeaponDefinitionIndex();
 	}
@@ -54,4 +57,11 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 	alive = entity->IsAlive();
 
 	dormant = entity->GetDormant();
+
+	account = *entity->Account();
+	scoped = *entity->Scoped();
+	if (IsGrenade(activeWeapon)) {
+		pinPulled = *static_cast<CBaseCSGrenade*>(weaponEntity)->PinPulled();
+	} else
+		pinPulled = false;
 }

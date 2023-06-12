@@ -2,9 +2,9 @@
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-#include "../../Visuals.hpp"
+#include "../../../Visuals.hpp"
 
 bool PlayerTeamSettings::IsEnabled() const
 {

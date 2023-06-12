@@ -2,8 +2,8 @@
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../Interfaces.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../Interfaces.hpp"
 
 bool DroneSettings::IsEnabled() const
 {

@@ -1,7 +1,7 @@
 #include "../ESPStructure.hpp"
 
-#include "../../../../GUI/Elements/Popup.hpp"
-#include "../../../General/General.hpp"
+#include "../../../../../GUI/Elements/Popup.hpp"
+#include "../../../../General/General.hpp"
 
 bool LootCrateSettings::IsEnabled() const
 {

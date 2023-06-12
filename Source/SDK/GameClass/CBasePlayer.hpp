@@ -50,6 +50,8 @@ public:
 	NETVAR_FUNCTION(CBaseHandle, ViewModel, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_hViewModel[0]"))
 	NETVAR_FUNCTION(bool, Scoped, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsScoped"))
 
+	NETVAR_FUNCTION(int, Account, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_iAccount"))
+
 	inline Vector GetEyePosition()
 	{
 		return *this->Origin() + *this->VecViewOffset();

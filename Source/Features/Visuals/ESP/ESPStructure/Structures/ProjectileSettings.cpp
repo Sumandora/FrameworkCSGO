@@ -2,10 +2,11 @@
 
 #include "xorstr.hpp"
 
-#include "../../../../GUI/Elements/ClickableColorButton.hpp"
-#include "../../../../Utils/Projection.hpp"
+#include "../../../../../GUI/Elements/ClickableColorButton.hpp"
+#include "../../../../../Utils/Projection.hpp"
 
-#include "../../../../Interfaces.hpp"
+#include "../../../../../Interfaces.hpp"
+#include <cstdio>
 
 bool ProjectileSettings::IsEnabled() const
 {

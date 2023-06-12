@@ -8,7 +8,7 @@
 
 #include "../../Serialization/Serializer.hpp"
 
-#include "ESP/ESPStructure.hpp"
+#include "ESP/ESPStructure/ESPStructure.hpp"
 
 namespace Features::Visuals {
 	namespace Esp {
