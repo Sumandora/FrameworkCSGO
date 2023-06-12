@@ -6,6 +6,9 @@
 
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
+	if (Features::Visuals::Esp::considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
+		return true;
+
 	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
 
 	const Vector playerEye = localPlayer->GetEyePosition();

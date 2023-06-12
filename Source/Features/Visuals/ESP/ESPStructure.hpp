@@ -190,7 +190,7 @@ class PlayerStateSettings {
 	HealthbarSettings healthbar;
 	TextSetting weapon;
 	TextSetting flashDuration; // Make flag with opacity
-	// TODO Flags
+	// TODO Flags (Money, Has Armor/Helmet/Defuse Kit, Is Defusing, Has Bomb, Is throwing grenade, Is Bot, Scoped)
 
 public:
 	PlayerStateSettings() = default;
@@ -263,10 +263,33 @@ public:
 
 class ProjectileSettings {
 	BoxNameSetting boxName;
-	LineSetting trail; // TODO Separate settings for each type
+	TextSetting ownerName;
+	LineSetting trail;
 
 public:
 	ProjectileSettings() = default;
+
+	[[nodiscard]] bool IsEnabled() const;
+	void Draw(ImDrawList* drawList, Projectile& projectile, const char* name) const;
+	void SetupGUI(const char* id);
+	DECLARE_SERIALIZER(Serializer)
+};
+
+class ProjectileTypeSettings {
+	mutable ProjectileSettings breachCharge;
+	mutable ProjectileSettings bumpMine;
+	mutable ProjectileSettings decoy;
+	mutable ProjectileSettings molotov;
+	mutable ProjectileSettings sensorGrenade;
+	mutable ProjectileSettings smokeGrenade;
+	mutable ProjectileSettings snowball;
+	mutable ProjectileSettings highExplosiveGrenade;
+	mutable ProjectileSettings flashbang;
+
+	ProjectileSettings& GetSettings(ProjectileType type) const;
+
+public:
+	ProjectileTypeSettings() = default;
 
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Projectile& projectile) const;
@@ -276,25 +299,27 @@ public:
 
 class PlayerTeamSettings {
 public:
-	PlayerTeamSettings() = default;
-
 	PlayerStateSettings visible;
 	PlayerStateSettings occluded;
 
+	PlayerTeamSettings() = default;
+
 	[[nodiscard]] bool IsEnabled() const;
+	void Draw(ImDrawList* drawList, Player& player) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };
 
 class PlayerSettings {
 public:
-	PlayerSettings() = default;
-
 	PlayerTeamSettings teammate;
 	PlayerTeamSettings enemy;
 	PlayerStateSettings local;
-	SpectatorSettings spectators;
 
+	PlayerSettings() = default;
+
+	[[nodiscard]] bool IsEnabled() const;
+	void Draw(ImDrawList* drawList, Player& player) const;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
 };

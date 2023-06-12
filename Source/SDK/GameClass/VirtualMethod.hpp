@@ -9,7 +9,7 @@
 
 namespace VirtualMethod {
 	template <typename Ret, unsigned long Index, typename... Args>
-	auto Invoke(void* gameClass, Args... args) -> Ret
+	inline auto Invoke(void* gameClass, Args... args) -> Ret
 	{
 		return InvokeFunction<Ret, void*, Args...>(Utils::GetVTable(gameClass)[Index], gameClass, args...);
 	}

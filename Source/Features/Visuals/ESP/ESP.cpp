@@ -1,6 +1,7 @@
 #include "../Visuals.hpp"
 
 #include "EntityCache/EntityCache.hpp"
+#include "ESPStructure.hpp"
 #include "imgui.h"
 #include "xorstr.hpp"
 
@@ -17,14 +18,15 @@ static int onKey = ImGuiKey_None;
 static int drawDistance = 1024 * 8;
 bool Features::Visuals::Esp::considerSpottedEntitiesAsVisible = false;
 bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
-static bool considerEveryoneVisibleWhenDead = false;
+bool Features::Visuals::Esp::considerEveryoneVisibleWhenDead = false;
 bool Features::Visuals::Esp::alignBoundingBox = true;
 bool Features::Visuals::Esp::outOfView = false;
 float Features::Visuals::Esp::outOfViewSize = 30.0f;
 float Features::Visuals::Esp::outOfViewDistance = 300.0f;
 PlayerSettings Features::Visuals::Esp::players;
+static SpectatorSettings spectators;
 static WeaponSettings weapons;
-static ProjectileSettings projectiles;
+static ProjectileTypeSettings projectiles;
 static PlantedC4Settings plantedC4;
 static HostageSettings hostages;
 static LootCrateTypeSettings dzLootCrates;
@@ -32,33 +34,6 @@ static GenericEntitySettings dzAmmoBoxes;
 static SentrySettings dzSentries;
 static DroneSettings dzDrones;
 static GenericEntitySettings other;
-
-PlayerStateSettings* SelectPlayerState(const LocalPlayer& localPlayer, const Player& player, PlayerTeamSettings* settings)
-{
-	if (settings->visible == settings->occluded)
-		return &settings->visible; // Having visible == occluded is a common configuration, we can skip most of this function if it is the case
-
-	if (considerEveryoneVisibleWhenDead && !localPlayer.alive)
-		return &settings->visible;
-
-	if (player.visible)
-		return &settings->visible;
-	else
-		return &settings->occluded;
-}
-
-void DrawPlayer(ImDrawList* drawList, Player& player, const LocalPlayer& localPlayer)
-{
-	PlayerStateSettings* settings;
-
-	if (!player.enemy)
-		settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.teammate);
-	else
-		settings = SelectPlayerState(localPlayer, player, &Features::Visuals::Esp::players.enemy);
-
-	if (settings)
-		settings->Draw(drawList, player);
-}
 
 void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 {
@@ -77,7 +52,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 		Interfaces::engine->GetViewAngles(&viewangles);
 	}
 
-	Features::Visuals::Esp::players.local.Draw(drawList, localPlayer.value());
+	players.Draw(drawList, localPlayer.value());
 
 	// Give spectators a lower priority than actual players
 	for (auto& [_, spectator] : EntityCache::spectators) {
@@ -92,13 +67,13 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 				continue;
 		}
 
-		players.spectators.Draw(drawList, spectator);
+		spectators.Draw(drawList, spectator);
 	}
 
 	for (auto& [_, player] : EntityCache::players) {
 		if (player.dormant)
 			continue; // No point in displaying outdated positions
-		DrawPlayer(drawList, player, localPlayer.value());
+		players.Draw(drawList, player);
 	}
 
 	for (auto& [_, weapon] : EntityCache::weapons) {
@@ -151,7 +126,7 @@ void Features::Visuals::Esp::Update()
 		drawDistance,
 		other.IsEnabled(),
 		players.teammate.IsEnabled() || players.enemy.IsEnabled() || players.teammate.IsEnabled(),
-		players.spectators.IsEnabled(),
+		spectators.IsEnabled(),
 		weapons.IsEnabled(),
 		hostages.IsEnabled(),
 		projectiles.IsEnabled(),
@@ -189,6 +164,10 @@ void Features::Visuals::Esp::SetupGUI()
 	if (ImGui::BeginTabBar(xorstr_("#Config selection"), ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem(xorstr_("Players"))) {
 			players.SetupGUI(xorstr_("Players"));
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem(xorstr_("Spectators"))) {
+			spectators.SetupGUI(xorstr_("Spectators"));
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem(xorstr_("Weapons"))) {
@@ -267,6 +246,7 @@ SERIALIZED_TYPE(xorstr_("Out of view distance"), outOfViewDistance)
 SERIALIZED_TYPE(xorstr_("Align bounding box"), alignBoundingBox)
 
 SERIALIZED_STRUCTURE(xorstr_("Players"), players)
+SERIALIZED_STRUCTURE(xorstr_("Spectators"), spectators)
 SERIALIZED_STRUCTURE(xorstr_("Weapons"), weapons)
 SERIALIZED_STRUCTURE(xorstr_("Projectiles"), projectiles)
 SERIALIZED_STRUCTURE(xorstr_("Planted C4"), plantedC4)

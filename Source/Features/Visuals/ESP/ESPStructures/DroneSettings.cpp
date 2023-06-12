@@ -21,15 +21,11 @@ void DroneSettings::Draw(ImDrawList* drawList, Drone& drone) const
 
 	boxName.Draw(drawList, rectangle.value(), xorstr_("Drone"));
 
-	if (drone.target != INVALID_EHANDLE_INDEX) {
-		for (const auto& [_, player] : EntityCache::players) {
-			if (player.handle == drone.target) {
-				PlayerInfo info{};
-				Interfaces::engine->GetPlayerInfo(player.index, &info);
-				target.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
-				return;
-			}
-		}
+	Player* player = EntityCache::PlayerByHandle(drone.target);
+	if (player) {
+		PlayerInfo info{};
+		Interfaces::engine->GetPlayerInfo(player->index, &info);
+		target.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
 	}
 }
 

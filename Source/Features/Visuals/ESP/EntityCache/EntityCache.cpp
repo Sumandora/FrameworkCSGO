@@ -28,6 +28,22 @@ static void UpdateEntity(std::unordered_map<CBaseHandle, E>& map, P p, int index
 	}
 }
 
+Player* EntityCache::PlayerByHandle(const CBaseHandle& handle)
+{
+	if (handle == INVALID_EHANDLE_INDEX)
+		return nullptr;
+
+	if (localPlayer.has_value() && localPlayer->handle == handle)
+		return &localPlayer.value();
+
+	for (auto& [otherHandle, entity] : players) {
+		if (handle == otherHandle)
+			return &entity;
+	}
+
+	return nullptr;
+}
+
 void EntityCache::UpdateEntities(
 	int maxDistance,
 	bool captureEntities,
@@ -142,7 +158,7 @@ void EntityCache::UpdateEntities(
 				continue;
 			} else if (std::find(projectileClassIDs.begin(), projectileClassIDs.end(), clientClass->m_ClassID) != projectileClassIDs.end()) {
 				if (captureProjectiles)
-					UpdateEntity<Projectile, CBaseEntity*>(projectiles, entity, index, handle, clientClass);
+					UpdateEntity<Projectile, CBaseGrenade*>(projectiles, static_cast<CBaseGrenade*>(entity), index, handle, clientClass);
 				continue;
 			}
 		}

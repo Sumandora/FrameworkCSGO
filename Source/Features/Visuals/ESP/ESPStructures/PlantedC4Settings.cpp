@@ -54,7 +54,7 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 
 		timer.Draw(drawList, middle, rectangle->w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
 
-		if (bomb.defuser != INVALID_EHANDLE_INDEX) {
+		if (EntityCache::PlayerByHandle(bomb.defuser)) {
 			const float defuseCountDown = bomb.defuseCountDown - Memory::globalVars->curtime;
 			if (defuseCountDown < 0)
 				return; // We are done defusing, no point in showing this anymore

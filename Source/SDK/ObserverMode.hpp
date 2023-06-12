@@ -1,6 +1,11 @@
 #ifndef SDK_OBSERVERMODE
 #define SDK_OBSERVERMODE
 
+#include <cstring>
+#include <map>
+
+#include "xorstr.hpp"
+
 enum class ObserverMode : int {
 	OBS_MODE_NONE = 0,
 	OBS_MODE_DEATHCAM,

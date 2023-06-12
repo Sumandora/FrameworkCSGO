@@ -3,6 +3,7 @@
 
 #include "../../../../SDK/GameClass/CBaseCombatWeapon.hpp"
 #include "../../../../SDK/GameClass/CBaseEntity.hpp"
+#include "../../../../SDK/GameClass/CBaseGrenade.hpp"
 #include "../../../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../../../SDK/GameClass/CDrone.hpp"
 #include "../../../../SDK/GameClass/CDronegun.hpp"
@@ -18,9 +19,6 @@
 class ScreenRectangle {
 	Vector origin;
 	std::optional<BoundingBox> boundingBox;
-
-	int lastScreenRectangleUpdate;
-	std::optional<ImVec4> lastScreenRectangle;
 
 	bool CalculateScreenRectangle(ImVec4& rectangle);
 	bool HandleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const;
@@ -134,10 +132,10 @@ enum class ProjectileType {
 class Projectile : public Entity {
 public:
 	std::vector<Vector> trail;
-
+	CBaseHandle thrower;
 	ProjectileType type;
 
-	void Update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void Update(CBaseGrenade* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 enum class LootCrateType {
@@ -190,6 +188,8 @@ namespace EntityCache {
 	inline std::unordered_map<CBaseHandle, LootCrate> lootCrates;
 	inline std::unordered_map<CBaseHandle, Drone> drones;
 	inline std::unordered_map<CBaseHandle, Sentry> sentries;
+
+	Player* PlayerByHandle(const CBaseHandle& handle);
 
 	void UpdateEntities(
 		int maxDistance,
