@@ -5,6 +5,7 @@
 #include "../../../Visuals.hpp"
 
 #include "../../../../../SDK/GameClass/CBaseCSGrenade.hpp"
+#include "../../../../../SDK/GameClass/CC4.hpp"
 
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
@@ -30,11 +31,14 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 	Entity::Update(entity, index, handle, clientClass);
 
 	activeWeapon = WeaponID::WEAPON_NONE;
-	CBaseEntity* weaponEntity = nullptr;
+	CBaseCombatWeapon* weaponEntity = nullptr;
 	if (*entity->ActiveWeapon() != INVALID_EHANDLE_INDEX) {
-		weaponEntity = Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon());
-		if (weaponEntity)
-			activeWeapon = *static_cast<CBaseAttributableItem*>(weaponEntity)->WeaponDefinitionIndex();
+		weaponEntity = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon()));
+		if (weaponEntity) {
+			activeWeapon = *weaponEntity->WeaponDefinitionIndex();
+			ammo = *weaponEntity->Ammo();
+			reserveAmmoCount = *weaponEntity->ReserveAmmoCount();
+		}
 	}
 	health = *entity->Health();
 	flashAlpha = entity->GetFlashAlpha();
@@ -64,4 +68,31 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 		pinPulled = *static_cast<CBaseCSGrenade*>(weaponEntity)->PinPulled();
 	} else
 		pinPulled = false;
+
+	// The place name can't be longer than this, if the game changes however, we just copy MAX_PLACE_NAME_LENGTH bytes even if it is more than that
+	// In case you are here wondering why sometimes place names get cut off, check if the MAX_PLACE_NAME_LENGTH changed
+	strncpy(location, entity->LastPlaceName(), MAX_PLACE_NAME_LENGTH);
+
+	defusing = *entity->IsDefusing();
+	grabbingHostage = *entity->IsGrabbingHostage();
+	rescuing = *entity->IsRescuing();
+
+	hasDefuser = *entity->HasDefuser();
+
+	hasBomb = false;
+	planting = false;
+	for (unsigned short i = 0; i < MAX_WEAPONS; i++) {
+		CBaseCombatWeapon* weaponEntity = (CBaseCombatWeapon*)Interfaces::entityList->GetClientEntityFromHandle(entity->Weapons() + i);
+		if (!weaponEntity)
+			continue;
+
+		if (*weaponEntity->WeaponDefinitionIndex() == WeaponID::WEAPON_C4) {
+			hasBomb = true;
+			planting = *static_cast<CC4*>(weaponEntity)->StartedArming();
+			break;
+		}
+	}
+
+	immune = *entity->GunGameImmunity();
+	walking = *entity->IsWalking();
 }

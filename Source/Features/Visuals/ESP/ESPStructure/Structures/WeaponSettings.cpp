@@ -27,7 +27,7 @@ void WeaponSettings::Draw(ImDrawList* drawList, Weapon& weapon) const
 
 	const int ammoClip = weapon.ammo;
 	if (ammoClip != -1) { // Does this weapon even have an ammo capacity? (Knifes, Bombs etc...)
-		char buf[128];
+		char buf[32];
 		sprintf(buf, xorstr_("%d/%d"), ammoClip, weapon.reserveAmmoCount);
 		ammo.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, buf);
 	}

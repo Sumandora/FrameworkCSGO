@@ -12,7 +12,6 @@
 FlagsSetting::FlagsSetting(std::vector<Flag*> flags)
 	: enabled(false)
 	, fontScale(1.0f)
-	, alphaScale(1.0f)
 	, shadow(true)
 	, shadowColor(ImGuiColors::black)
 	, flags(flags)
@@ -42,9 +41,6 @@ void FlagsSetting::Draw(ImDrawList* drawList, float x, float y, const Player& pl
 	ImGui::GetFont()->Scale *= fontScale;
 	ImGui::PushFont(ImGui::GetFont());
 
-	ImColor shadowColor = this->shadowColor;
-	shadowColor.Value.w *= alphaScale;
-
 	for (const Flag* flag : flags) {
 		if (!flag->enabled)
 			continue;
@@ -58,12 +54,17 @@ void FlagsSetting::Draw(ImDrawList* drawList, float x, float y, const Player& pl
 		const ImVec2 size = ImGui::CalcTextSize(cstring);
 		const ImVec2 position(x, y);
 
-		if (shadow)
+		float alphaScale = flag->GetAlpha(player);
+
+		if (shadow) {
+
+			ImColor shadowColor = this->shadowColor;
+			shadowColor.Value.w *= alphaScale;
 			drawList->AddText(ImVec2(position.x + 1.0f, position.y + 1.0f), shadowColor, cstring);
+		}
 
 		ImColor color = flag->color;
 		color.Value.w *= alphaScale;
-
 		drawList->AddText(position, color, cstring);
 
 		y += size.y;
@@ -82,7 +83,6 @@ void FlagsSetting::SetupGUI(const char* id)
 
 	if (ImGui::Popup(id)) {
 		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Alpha scale"), &alphaScale, 0.0f, 1.0f, xorstr_("%.2f"));
 		ImGui::Checkbox(xorstr_("Shadow"), &shadow);
 		if (shadow)
 			ImGui::ClickableColorButton(xorstr_("Shadow color"), shadowColor);
@@ -105,7 +105,6 @@ void FlagsSetting::SetupGUI(const char* id)
 BEGIN_SERIALIZED_STRUCT(FlagsSetting::Serializer)
 SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
 SERIALIZED_TYPE(xorstr_("Font scale"), fontScale)
-SERIALIZED_TYPE(xorstr_("Alpha scale"), alphaScale)
 SERIALIZED_TYPE(xorstr_("Shadow"), shadow)
 SERIALIZED_TYPE(xorstr_("Shadow color"), shadowColor)
 

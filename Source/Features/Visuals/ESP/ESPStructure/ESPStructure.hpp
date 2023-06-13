@@ -17,10 +17,18 @@ public:
 private:
 	ImColor color;
 	float rounding;
+
+public:
 	float thickness;
+
+private:
 	bool outlined;
 	ImColor outlineColor;
+
+public:
 	float outlineThickness;
+
+private:
 	bool fill;
 	ImColor fillColor;
 
@@ -106,7 +114,6 @@ class FlagsSetting {
 private:
 	bool enabled;
 	float fontScale;
-	float alphaScale;
 	bool shadow;
 	ImColor shadowColor;
 
@@ -212,7 +219,6 @@ class PlayerStateSettings {
 	HealthbarSettings healthbar;
 	TextSetting weapon;
 	FlagsSetting flags;
-	// TODO Flags (Has Armor (m_ArmorValue)/Heavy Armor/Helmet/Defuse Kit, Is Defusing/Carring Hostage/GunGame level (Objective), Is Walking, Spotted, Ammo, Is Immune, Has Bomb, Is Bot)
 
 public:
 	PlayerStateSettings();
