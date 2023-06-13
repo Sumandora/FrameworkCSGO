@@ -6,9 +6,7 @@ A fully-featured training software for Counter Strike: Global Offensive, made fo
 Gentoo/Portage Users might want to use [this](https://github.com/Sumandora/portage-framework) ebuild repository.
 
 ### Dependencies
-**Ubuntu / Debian unstable / Debian testing / Linux Mint**
-
-Debian stable is not supported until debian 12 releases due to outdated gcc and cmake.
+**Ubuntu / Debian / Linux Mint**
 ```sh
 apt-get install gdb git cmake make build-essential libsdl2-dev
 ```
@@ -20,7 +18,7 @@ pacman -S base-devel cmake gdb git sdl2
 ```sh
 dnf install gdb git cmake make gcc-c++ SDL2-devel
 ```
-**OpenSUSE Leap**
+**OpenSUSE Tumbleweed**
 ```sh
 zypper install patchelf gdb git cmake make gcc-c++ SDL2-devel
 ```
