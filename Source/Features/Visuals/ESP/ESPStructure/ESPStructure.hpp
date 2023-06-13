@@ -17,18 +17,10 @@ public:
 private:
 	ImColor color;
 	float rounding;
-
-public:
 	float thickness;
-
-private:
 	bool outlined;
 	ImColor outlineColor;
-
-public:
 	float outlineThickness;
-
-private:
 	bool fill;
 	ImColor fillColor;
 
@@ -36,6 +28,8 @@ public:
 	BoxSettings();
 
 	void Draw(ImDrawList* drawList, const ImVec4& rectangle) const;
+	[[nodiscard]] float GetLineWidth() const;
+
 	bool operator<=>(const BoxSettings& other) const = default;
 	void SetupGUI(const char* id);
 	DECLARE_SERIALIZER(Serializer)
