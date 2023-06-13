@@ -6,12 +6,12 @@ jobs:
   build:
     strategy:
       matrix:
-        distro: ["ubuntu:latest", "debian:unstable", "debian:testing", "dockerscripts/linuxmint:mate", "archlinux:latest", "manjarolinux/base:latest", "fedora:latest", "opensuse/tumbleweed:latest"]
+        distro: ["ubuntu:latest", "debian:latest", "debian:unstable", "debian:testing", "dockerscripts/linuxmint:mate", "archlinux:latest", "manjarolinux/base:latest", "fedora:latest", "opensuse/tumbleweed:latest"]
       fail-fast: false
     runs-on: ubuntu-latest
     container: ${{ matrix.distro }}
     steps:
-      - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'debian:unstable' || matrix.distro == 'debian:testing' || matrix.distro == 'dockerscripts/linuxmint:mate'
+      - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'debian:unstable' || matrix.distro == 'debian:testing' || matrix.distro == 'debian:latest' || matrix.distro == 'dockerscripts/linuxmint:mate'
         name: Setup dependencies
         run: |
           apt-get update
