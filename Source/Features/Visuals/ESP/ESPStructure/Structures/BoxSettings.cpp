@@ -33,6 +33,14 @@ void BoxSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle) const
 	drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), color, rounding, ImDrawFlags_None, thickness);
 }
 
+float BoxSettings::GetLineWidth() const
+{
+	float width = thickness;
+	if (outlined)
+		width += outlineThickness;
+	return width;
+}
+
 void BoxSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);

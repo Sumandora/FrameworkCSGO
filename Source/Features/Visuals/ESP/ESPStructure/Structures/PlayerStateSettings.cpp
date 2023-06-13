@@ -61,7 +61,7 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 		}
 	}
 
-	flags.Draw(drawList, rectangle->z + (boxName.box.thickness + boxName.box.outlineThickness) / 2.0f, rectangle->y, player);
+	flags.Draw(drawList, rectangle->z + boxName.box.GetLineWidth() / 2.0f, rectangle->y, player);
 }
 
 void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
