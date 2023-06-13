@@ -14,12 +14,8 @@
 
 class Flag {
 public:
-	bool enabled;
-	ImColor color;
-
-	inline Flag(ImColor defaultColor)
-		: enabled(false)
-		, color(defaultColor){};
+	bool enabled = false;
+	ImColor color = ImGuiColors::white;
 
 	virtual float GetAlpha(const Player& player) const { return 1.0f; }
 	virtual std::optional<std::string> GetText(const Player& player) const = 0;
@@ -32,41 +28,45 @@ public:
 	END_SERIALIZED_STRUCT
 };
 
-#define DECLARE_FLAG(flagName, defaultColor)                                             \
+#define DECLARE_FLAG(flagName, displayName)                                              \
 	class flagName : public Flag {                                                       \
 	public:                                                                              \
-		inline flagName()                                                                \
-			: Flag(defaultColor)                                                         \
-		{                                                                                \
-		}                                                                                \
 		virtual std::optional<std::string> GetText(const Player& player) const override; \
                                                                                          \
 		virtual std::string GetName() const override                                     \
 		{                                                                                \
-			return xorstr_(#flagName);                                                   \
+			return displayName;                                                          \
 		}                                                                                \
 	};
 
-#define DECLARE_ALPHA_FLAG(flagName, defaultColor)                                       \
+#define DECLARE_ALPHA_FLAG(flagName, displayName)                                        \
 	class flagName : public Flag {                                                       \
 	public:                                                                              \
-		inline flagName()                                                                \
-			: Flag(defaultColor)                                                         \
-		{                                                                                \
-		}                                                                                \
 		virtual float GetAlpha(const Player& player) const override;                     \
 		virtual std::optional<std::string> GetText(const Player& player) const override; \
                                                                                          \
 		virtual std::string GetName() const override                                     \
 		{                                                                                \
-			return xorstr_(#flagName);                                                   \
+			return displayName;                                                          \
 		}                                                                                \
 	};
 
-DECLARE_FLAG(Money, ImGuiColors::green)
-DECLARE_FLAG(Scoped, ImGuiColors::blue)
-DECLARE_FLAG(PinPulled, ImGuiColors::green)
+// TODO Generate boilerplate for the "if(check) text else nullopt"-flags
+// TODO Flags (Has Armor (m_ArmorValue)/Heavy Armor/Helmet, Is Walking, Is Reloading, Is Bot)
+// TODO Flags for non-players?
+DECLARE_FLAG(Money, xorstr_("Money"))
+DECLARE_FLAG(Scoped, xorstr_("Scoped"))
+DECLARE_FLAG(PinPulled, xorstr_("Pin pulled"))
+DECLARE_FLAG(Location, xorstr_("Location"))
+DECLARE_FLAG(Objective, xorstr_("Objective"))
+DECLARE_FLAG(HasDefuser, xorstr_("Has defuser"))
+DECLARE_FLAG(HasBomb, xorstr_("Has bomb"))
+DECLARE_FLAG(Planting, xorstr_("Planting"))
+DECLARE_FLAG(Spotted, xorstr_("Spotted"))
+DECLARE_FLAG(Ammo, xorstr_("Ammo"))
+DECLARE_FLAG(Immune, xorstr_("Immune"))
+DECLARE_FLAG(Walking, xorstr_("Walking"))
 
-DECLARE_ALPHA_FLAG(Flashed, ImGuiColors::white)
+DECLARE_ALPHA_FLAG(Flashed, xorstr_("Flashed"))
 
 #endif

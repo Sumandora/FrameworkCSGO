@@ -12,6 +12,9 @@
 #include "../CBaseHandle.hpp"
 #include "../Math/Vector.hpp"
 
+#define MAX_PLACE_NAME_LENGTH 18
+#define MAX_WEAPONS 64
+
 class CBasePlayer : public CBaseEntity {
 public:
 	NETVAR_FUNCTION(int, Flags, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_fFlags"))
@@ -21,6 +24,7 @@ public:
 	NETVAR_FUNCTION(bool, SurvivalTeam, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_nSurvivalTeam"))
 
 	NETVAR_FUNCTION(CBaseHandle, ActiveWeapon, ClientClassID::CBaseCombatCharacter, xorstr_("DT_BaseCombatCharacter"), xorstr_("m_hActiveWeapon"))
+	NETVAR_FUNCTION(CBaseHandle, Weapons, ClientClassID::CBaseCombatCharacter, xorstr_("DT_BaseCombatCharacter"), xorstr_("m_hMyWeapons"))
 	NETVAR_FUNCTION(bool, WaitForNoAttack, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bWaitForNoAttack"))
 
 	COMBINED_NETVAR_FUNCTION(Vector, AimPunchAngle,
@@ -49,8 +53,16 @@ public:
 
 	NETVAR_FUNCTION(CBaseHandle, ViewModel, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_hViewModel[0]"))
 	NETVAR_FUNCTION(bool, Scoped, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsScoped"))
-
 	NETVAR_FUNCTION(int, Account, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_iAccount"))
+	NETVAR_FUNCTION(char, LastPlaceName, ClientClassID::CBasePlayer, xorstr_("DT_BasePlayer"), xorstr_("m_szLastPlaceName"))
+
+	NETVAR_FUNCTION(bool, IsDefusing, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsDefusing"))
+	NETVAR_FUNCTION(bool, IsGrabbingHostage, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsGrabbingHostage"))
+	NETVAR_FUNCTION(bool, IsRescuing, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsRescuing"))
+
+	NETVAR_FUNCTION(bool, HasDefuser, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bHasDefuser"))
+
+	NETVAR_FUNCTION(bool, IsWalking, ClientClassID::CCSPlayer, xorstr_("DT_CSPlayer"), xorstr_("m_bIsWalking"))
 
 	inline Vector GetEyePosition()
 	{

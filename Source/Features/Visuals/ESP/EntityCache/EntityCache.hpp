@@ -76,10 +76,20 @@ public:
 	CBaseHandle weapon;
 	WeaponID activeWeapon;
 	bool dormant;
-
 	int account;
 	bool scoped;
 	bool pinPulled;
+	char location[MAX_PLACE_NAME_LENGTH];
+	bool defusing;
+	bool grabbingHostage;
+	bool rescuing;
+	bool hasDefuser;
+	bool hasBomb;
+	bool planting;
+	int ammo;
+	int reserveAmmoCount;
+	bool immune;
+	bool walking;
 
 	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };

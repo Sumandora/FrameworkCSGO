@@ -5,9 +5,9 @@
 #include "CBaseEntity.hpp"
 #include "xorstr.hpp"
 
-#include "../CBaseHandle.hpp"
+#include "CBaseCombatWeapon.hpp"
 
-class CBaseCSGrenade : public CBaseEntity {
+class CBaseCSGrenade : public CBaseCombatWeapon {
 public:
 	NETVAR_FUNCTION(CBaseHandle, PinPulled, ClientClassID::CBaseCSGrenade, xorstr_("DT_BaseCSGrenade"), xorstr_("m_bPinPulled"))
 };

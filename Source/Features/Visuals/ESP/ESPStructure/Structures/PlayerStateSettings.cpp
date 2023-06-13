@@ -11,7 +11,21 @@
 #include <memory>
 
 PlayerStateSettings::PlayerStateSettings()
-	: flags(FlagsSetting{ { new Money(), new Scoped(), new Flashed(), new PinPulled() } })
+	: flags(FlagsSetting{
+		{
+			new Money(),
+			new Scoped(),
+			new PinPulled(),
+			new Location(),
+			new Objective(),
+			new HasDefuser(),
+			new HasBomb(),
+			new Planting(),
+			new Spotted(),
+			new Ammo(),
+			new Immune(),
+			new Walking(),
+		} })
 {
 }
 
@@ -47,7 +61,7 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 		}
 	}
 
-	flags.Draw(drawList, rectangle->z, rectangle->y, player);
+	flags.Draw(drawList, rectangle->z + (boxName.box.thickness + boxName.box.outlineThickness) / 2.0f, rectangle->y, player);
 }
 
 void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
