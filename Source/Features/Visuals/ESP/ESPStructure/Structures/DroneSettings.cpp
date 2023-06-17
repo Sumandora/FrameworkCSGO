@@ -24,8 +24,8 @@ void DroneSettings::Draw(ImDrawList* drawList, Drone& drone) const
 	Player* player = EntityCache::PlayerByHandle(drone.target);
 	if (player) {
 		PlayerInfo info{};
-		Interfaces::engine->GetPlayerInfo(player->index, &info);
-		target.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
+		if (Interfaces::engine->GetPlayerInfo(player->index, &info))
+			target.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
 	}
 }
 

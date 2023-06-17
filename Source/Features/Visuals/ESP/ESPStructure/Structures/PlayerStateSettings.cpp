@@ -46,8 +46,8 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 	char name[MAX_NAME_LEN];
 	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
-		Interfaces::engine->GetPlayerInfo(player.index, &info);
-		strcpy(name, info.name);
+		if (Interfaces::engine->GetPlayerInfo(player.index, &info))
+			strcpy(name, info.name);
 	}
 	boxName.Draw(drawList, rectangle.value(), name);
 

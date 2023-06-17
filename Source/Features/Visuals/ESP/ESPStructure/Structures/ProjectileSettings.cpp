@@ -8,6 +8,8 @@
 #include "../../../../../Interfaces.hpp"
 #include <cstdio>
 
+// TODO Can deal team damage option
+
 bool ProjectileSettings::IsEnabled() const
 {
 	return boxName.IsEnabled() || ownerName.enabled || trail.enabled;
@@ -51,8 +53,8 @@ void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile, cons
 	Player* player = EntityCache::PlayerByHandle(projectile.thrower);
 	if (player) {
 		PlayerInfo info{};
-		Interfaces::engine->GetPlayerInfo(player->index, &info);
-		ownerName.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
+		if (Interfaces::engine->GetPlayerInfo(player->index, &info))
+			ownerName.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
 	}
 }
 

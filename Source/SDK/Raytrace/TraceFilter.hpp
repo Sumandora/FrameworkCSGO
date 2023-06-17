@@ -3,7 +3,6 @@
 
 #include "../GameClass/CBaseEntity.hpp"
 
-#include "TraceFilter.hpp"
 #include "TraceType.hpp"
 
 // Valve expects you to make your own implementation of this and pass it to the TraceRay function

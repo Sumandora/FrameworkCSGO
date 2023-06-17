@@ -2,13 +2,13 @@
 #define HOOKS_SDL_SDLHOOK
 
 class SDLHook {
-	void** jumpAddress;
+	void** jumpTarget;
 
 public:
 	void* proxy;
 
 	SDLHook() = delete;
-	SDLHook(const char* name, void* hook);
+	SDLHook(void* handle, const char* name, void* hook);
 	~SDLHook();
 };
 
