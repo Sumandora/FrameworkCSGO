@@ -18,6 +18,13 @@ FlagsSetting::FlagsSetting(std::vector<Flag*> flags)
 {
 }
 
+FlagsSetting::~FlagsSetting()
+{
+	for (Flag* flag : flags) {
+		delete flag;
+	}
+}
+
 bool FlagsSetting::IsEnabled() const
 {
 	if (enabled)

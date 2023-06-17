@@ -9,6 +9,7 @@
 #include "Interfaces.hpp"
 
 #include "ldisasm.h"
+#include "RetAddrSpoofer.hpp"
 #include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
@@ -22,7 +23,7 @@ static CBasePlayer** localPlayerList;
 
 void* Memory::GetBaseAddress(const char* name)
 {
-	void* handle = dlopen(name, RTLD_NOLOAD | RTLD_NOW);
+	void* handle = dlmopen(LM_ID_BASE, name, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	if (!handle)
 		return nullptr;
 	link_map* linkMap;

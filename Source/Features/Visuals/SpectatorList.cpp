@@ -72,10 +72,12 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 
 	for (const SpectatorEntry& spectator : spectators) {
 		PlayerInfo first{};
-		Interfaces::engine->GetPlayerInfo(spectator.spectator, &first);
+		if (!Interfaces::engine->GetPlayerInfo(spectator.spectator, &first))
+			continue;
 
 		PlayerInfo second{};
-		Interfaces::engine->GetPlayerInfo(spectator.spectated, &second);
+		if (!Interfaces::engine->GetPlayerInfo(spectator.spectated, &second))
+			continue;
 
 		const char* unknownObserverMode = xorstr_("Unknown observer mode"); // Initialize it before to prevent dangling pointers
 		const char* observerModeName = LocalizeObserverMode(spectator.mode);

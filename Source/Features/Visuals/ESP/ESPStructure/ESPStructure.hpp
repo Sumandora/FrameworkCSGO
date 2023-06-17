@@ -115,6 +115,7 @@ private:
 
 public:
 	FlagsSetting(std::vector<Flag*> flags);
+	~FlagsSetting();
 
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, float x, float y, const Player& player) const;

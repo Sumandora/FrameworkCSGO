@@ -5,6 +5,7 @@
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
+#include <chrono>
 #include <cmath>
 #include <cstddef>
 #include <unordered_map>
@@ -84,7 +85,7 @@ void Features::General::EventLog::CreateReport(const char* fmt, ...)
 	size = vsnprintf(nullptr, size, fmt, args);
 	va_end(args);
 
-	char str[size];
+	char str[size + 1];
 
 	va_start(args, fmt);
 	vsnprintf(str, size, fmt, args);

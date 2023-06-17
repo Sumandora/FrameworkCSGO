@@ -26,8 +26,8 @@ void SpectatorSettings::Draw(ImDrawList* drawList, Spectator& spectator) const
 	char name[MAX_NAME_LEN];
 	if (boxName.nametag.enabled) { // Don't ask the engine for the name, if we don't have to
 		PlayerInfo info{};
-		Interfaces::engine->GetPlayerInfo(displayNameOfSpectatedEntity && spectated ? spectated->index : spectator.index, &info);
-		strcpy(name, info.name);
+		if (Interfaces::engine->GetPlayerInfo(displayNameOfSpectatedEntity && spectated ? spectated->index : spectator.index, &info))
+			strcpy(name, info.name);
 	}
 
 	const std::optional<ImVec4> rectangle = spectator.screenRectangle.Get();

@@ -20,7 +20,7 @@ void Gui::Construction::Debug::InterfacesTab()
 
 	std::call_once(init, []() {
 		dl_iterate_phdr([](struct dl_phdr_info* info, size_t size, void* data) {
-			void* library = dlopen(info->dlpi_name, RTLD_LOCAL | RTLD_NOLOAD | RTLD_NOW);
+			void* library = dlmopen(LM_ID_BASE, info->dlpi_name, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 			if (!library)
 				return 0;
 

@@ -1,6 +1,7 @@
 #include "EntityCache.hpp"
 
 #include <array>
+#include <mutex>
 #include <unordered_map>
 
 #include "../../../../Interfaces.hpp"

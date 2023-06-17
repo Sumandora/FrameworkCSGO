@@ -17,6 +17,8 @@ public:
 	bool enabled = false;
 	ImColor color = ImGuiColors::white;
 
+	virtual ~Flag() { }
+
 	virtual float GetAlpha(const Player& player) const { return 1.0f; }
 	virtual std::optional<std::string> GetText(const Player& player) const = 0;
 

@@ -70,9 +70,9 @@ T* GetInterface(void* handle, const char* name)
 
 void Interfaces::GetInterfaces()
 {
-	void* client_client = dlopen(xorstr_("./csgo/bin/linux64/client_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
-	void* engine_client = dlopen(xorstr_("./bin/linux64/engine_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
-	void* materialsystem_client = dlopen(xorstr_("./bin/linux64/materialsystem_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* client_client = dlmopen(LM_ID_BASE, xorstr_("./csgo/bin/linux64/client_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* engine_client = dlmopen(LM_ID_BASE, xorstr_("./bin/linux64/engine_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* materialsystem_client = dlmopen(LM_ID_BASE, xorstr_("./bin/linux64/materialsystem_client.so"), RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 
 	baseClient = GetInterface<void>(client_client, xorstr_("VClient"));
 	engine = GetInterface<CEngineClient>(engine_client, xorstr_("VEngineClient"));
