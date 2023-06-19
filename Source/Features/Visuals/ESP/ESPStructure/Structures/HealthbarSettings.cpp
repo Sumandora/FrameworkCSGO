@@ -143,20 +143,21 @@ void HealthbarSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(HealthbarSettings::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Background color"), backgroundColor)
-SERIALIZED_TYPE(xorstr_("Rounding"), rounding)
-SERIALIZED_TYPE(xorstr_("Spacing"), spacing)
-SERIALIZED_TYPE(xorstr_("Width"), width)
-SERIALIZED_TYPE(xorstr_("Alive color"), aliveColor)
-SERIALIZED_TYPE(xorstr_("Dead color"), deadColor)
-SERIALIZED_TYPE(xorstr_("Gradient"), gradient)
-SERIALIZED_TYPE(xorstr_("Outlined"), outlined)
-SERIALIZED_TYPE(xorstr_("Outline color"), outlineColor)
-SERIALIZED_TYPE(xorstr_("Outline thickness"), outlineThickness)
+SCOPED_SERIALIZER(HealthbarSettings)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE_VECTOR4D(xorstr_("Background color"), backgroundColor.Value);
+	SERIALIZE(xorstr_("Rounding"), rounding);
+	SERIALIZE(xorstr_("Spacing"), spacing);
+	SERIALIZE(xorstr_("Width"), width);
+	SERIALIZE_VECTOR4D(xorstr_("Alive color"), aliveColor.Value);
+	SERIALIZE_VECTOR4D(xorstr_("Dead color"), deadColor.Value);
+	SERIALIZE(xorstr_("Gradient"), gradient);
+	SERIALIZE(xorstr_("Outlined"), outlined);
+	SERIALIZE_VECTOR4D(xorstr_("Outline color"), outlineColor.Value);
+	SERIALIZE(xorstr_("Outline thickness"), outlineThickness);
 
-SERIALIZED_STRUCTURE(xorstr_("Health number"), healthNumber)
+	SERIALIZE_STRUCT(xorstr_("Health number"), healthNumber);
 
-SERIALIZED_TYPE(xorstr_("Only when damaged"), onlyWhenDamaged)
-END_SERIALIZED_STRUCT
+	SERIALIZE(xorstr_("Only when damaged"), onlyWhenDamaged);
+}

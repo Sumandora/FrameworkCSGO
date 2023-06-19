@@ -1,6 +1,6 @@
-#include "General.hpp"
+#include "EventLog.hpp"
 
-#include "xorstr.hpp"
+#include "Watermark.hpp"
 
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
@@ -11,29 +11,26 @@
 #include <unordered_map>
 #include <vector>
 
-static bool enabled = true;
-static int duration = 5000;
-
 struct Entry {
 	long time;
 	std::string text;
 };
 
-std::vector<Entry> entries;
+static std::vector<Entry> entries;
 
 static long time()
 {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
+void EventLog::ImGuiRender(ImDrawList* drawList)
 {
 	if (entries.empty())
 		return;
 
 	const long currentTime = time();
 
-	std::erase_if(entries, [currentTime](const Entry& entry) { return currentTime - entry.time > duration; });
+	std::erase_if(entries, [&](const Entry& entry) { return currentTime - entry.time > duration; });
 
 	// Do the enabled check after erasing to prevent memory leaks
 	if (!enabled)
@@ -41,7 +38,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 
 	double yOffset = 0;
 
-	if (Watermark::enabled) {
+	if (watermark.enabled) {
 		yOffset += ImGui::GetTextLineHeightWithSpacing();
 	}
 
@@ -67,7 +64,7 @@ void Features::General::EventLog::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void Features::General::EventLog::SetupGUI()
+void EventLog::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	if (!enabled) {
@@ -76,7 +73,7 @@ void Features::General::EventLog::SetupGUI()
 	ImGui::SliderInt(xorstr_("Duration"), &duration, 0, 10000);
 }
 
-void Features::General::EventLog::CreateReport(const char* fmt, ...)
+void EventLog::CreateReport(const char* fmt, ...)
 {
 	va_list args;
 
@@ -94,7 +91,8 @@ void Features::General::EventLog::CreateReport(const char* fmt, ...)
 	entries.push_back({ time(), str });
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::EventLog::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Duration"), duration)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(EventLog)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Duration"), duration);
+}

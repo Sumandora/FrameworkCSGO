@@ -1,11 +1,6 @@
-// https://github.com/seksea/gamesneeze/blob/ff795abb667979ea649973d4c80291b4071833a9/src/core/features/movement.cpp#L53
+#include "EdgeJump.hpp"
 
-#include "Movement.hpp"
-
-#include "imgui.h"
-#include "xorstr.hpp"
-
-#include "../General/General.hpp"
+#include "../General/EnginePrediction.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
@@ -15,10 +10,7 @@
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../Interfaces.hpp"
 
-static bool enabled = false;
-static int input = ImGuiKey_None;
-
-void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
+void EdgeJump::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !IsInputDown(input, true)) {
 		return;
@@ -35,7 +27,7 @@ void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
 		return;
 
 	// How familiar
-	const int realFlags = Features::General::EnginePrediction::prePredictionFlags;
+	const int realFlags = enginePrediction.prePredictionFlags;
 	const int predFlags = *localPlayer->Flags();
 
 	const bool isOnGround = realFlags & FL_ONGROUND || realFlags & FL_PARTIALGROUND;
@@ -46,14 +38,15 @@ void Features::Movement::EdgeJump::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::EdgeJump::SetupGUI()
+void EdgeJump::SetupGUI()
 {
-	Features::General::EnginePrediction::ImGuiWarning();
+	enginePrediction.ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::EdgeJump::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Input"), input)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(EdgeJump)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Input"), input);
+}

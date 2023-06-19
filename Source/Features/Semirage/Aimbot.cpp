@@ -1,15 +1,14 @@
-#include "Semirage.hpp"
+#include "Aimbot.hpp"
 
 #include "imgui.h"
 
-#include "../General/General.hpp"
+#include "../General/EventLog.hpp"
 
 #include "../../Interfaces.hpp"
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../GUI/Elements/Popup.hpp"
-#include "../../GUI/ImGuiColors.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 
@@ -23,83 +22,8 @@
 #include <cstring>
 #include <optional>
 
-static bool enabled = false;
-static bool autoFire = false;
-static int autoFireKey = ImGuiKey_None;
-// TODO Only when scoped
-// TODO Bones
-
-struct SemirageAimbotWeaponConfig {
-	bool disabled = false;
-
-	bool autoFireRecklessly = false;
-
-	bool onlyWhenShooting = false;
-
-	float fov = 0.0f;
-	float fovScaleX = 1.0f;
-	float fovScaleY = 1.0f;
-
-	bool controlRecoil = true;
-	float recoilScaleX = 1.0f;
-	float recoilScaleY = 1.0f;
-
-	bool smoothOut = false;
-	float horizontalAimSpeed = 0.2f;
-	float verticalAimSpeed = 0.2f;
-
-	bool silent = false;
-
-	bool smoothRotateToOrigin = false;
-	float horizontalRotateToOriginSpeed = 0.2f;
-	float verticalRotateToOriginSpeed = 0.2f;
-	float recombineViews = 0.1f;
-
-	BEGIN_SERIALIZED_STRUCT(Serializer)
-	SERIALIZED_TYPE(xorstr_("Disabled"), disabled)
-
-	SERIALIZED_TYPE(xorstr_("Only when shooting"), onlyWhenShooting)
-
-	SERIALIZED_TYPE(xorstr_("Auto fire recklessly"), autoFireRecklessly)
-
-	SERIALIZED_TYPE(xorstr_("FOV"), fov)
-	SERIALIZED_TYPE(xorstr_("FOV scale X"), fovScaleX)
-	SERIALIZED_TYPE(xorstr_("FOV scale Y"), fovScaleY)
-
-	SERIALIZED_TYPE(xorstr_("Control recoil"), controlRecoil)
-	SERIALIZED_TYPE(xorstr_("Recoil scale X"), recoilScaleX)
-	SERIALIZED_TYPE(xorstr_("Recoil scale Y"), recoilScaleY)
-
-	SERIALIZED_TYPE(xorstr_("Smooth out"), smoothOut)
-	SERIALIZED_TYPE(xorstr_("Horizontal aim speed"), horizontalAimSpeed)
-	SERIALIZED_TYPE(xorstr_("Vertical aim speed"), verticalAimSpeed)
-
-	SERIALIZED_TYPE(xorstr_("Silent"), silent)
-
-	SERIALIZED_TYPE(xorstr_("Smooth rotate to origin"), smoothRotateToOrigin)
-	SERIALIZED_TYPE(xorstr_("Horizontal rotate to origin speed"), horizontalRotateToOriginSpeed)
-	SERIALIZED_TYPE(xorstr_("Vertical rotate to origin speed"), verticalRotateToOriginSpeed)
-	SERIALIZED_TYPE(xorstr_("Recombine views"), recombineViews)
-	END_SERIALIZED_STRUCT
-};
-void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig);
-
-static WeaponConfigurator<SemirageAimbotWeaponConfig> weaponConfigurator(WeaponGUI);
-
-static int maximalFlashAmount = 255;
-static bool dontAimThroughSmoke = false;
-static bool friendlyFire = false;
-
-static bool fovCircle = false; // Technically an ellipse if you use FOV scaling
-static ImColor circleColor = ImGuiColors::white;
-static float thickness = 1.0f;
-
-static bool showDesyncedView = false;
-static ImColor viewColor = ImGuiColors::red;
-static float radius = 5.0f;
-
 static bool wasFaked = false;
-static SemirageAimbotWeaponConfig* lastWeaponConfig = nullptr;
+static SemirageAimbot::WeaponConfig* lastWeaponConfig = nullptr;
 static std::optional<Vector> aimTarget;
 
 CBasePlayer* GetLocalPlayer()
@@ -115,7 +39,7 @@ CBasePlayer* GetLocalPlayer()
 	return localPlayer;
 }
 
-SemirageAimbotWeaponConfig* GetWeaponConfig(CBasePlayer* localPlayer)
+SemirageAimbot::WeaponConfig* SemirageAimbot::GetWeaponConfig(CBasePlayer* localPlayer)
 {
 	auto* combatWeapon = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 	if (!combatWeapon)
@@ -127,14 +51,14 @@ SemirageAimbotWeaponConfig* GetWeaponConfig(CBasePlayer* localPlayer)
 	return weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
 }
 
-Vector GetViewAngles(SemirageAimbotWeaponConfig* weaponConfig, const Vector& currentViewAngles)
+Vector GetViewAngles(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& currentViewAngles)
 {
 	if (weaponConfig && weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
 		return Hooks::Game::CreateMove::lastCmd.viewangles; // TODO Track this
 	return currentViewAngles;
 }
 
-bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
+bool SemirageAimbot::ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
 {
 	if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
 		return false;
@@ -148,7 +72,7 @@ bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
 	return true;
 }
 
-bool CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
+bool SemirageAimbot::CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
 	const Vector head = otherPlayer->GetBonePosition(8);
 
@@ -161,7 +85,7 @@ bool CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 	return trace.m_pEnt == otherPlayer; // The ray was able to travel to its destination
 }
 
-CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
+CBasePlayer* SemirageAimbot::FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 {
 	const Vector playerEye = localPlayer->GetEyePosition();
 
@@ -191,7 +115,7 @@ CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 	return target;
 }
 
-bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfig, bool attacking)
+bool SemirageAimbot::ShouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponConfig, bool attacking)
 {
 	if (weaponConfig->disabled)
 		return false; // Those who reject aid swim alone in their struggles.
@@ -211,7 +135,7 @@ bool ShouldAim(CBasePlayer* localPlayer, SemirageAimbotWeaponConfig* weaponConfi
 	return true;
 }
 
-void RotateToOrigin(SemirageAimbotWeaponConfig* weaponConfig, const Vector& currentView, Vector& target)
+void RotateToOrigin(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& currentView, Vector& target)
 {
 	Vector delta = (target - currentView).Wrap();
 	if (delta.Length() < weaponConfig->recombineViews) {
@@ -227,7 +151,7 @@ void RotateToOrigin(SemirageAimbotWeaponConfig* weaponConfig, const Vector& curr
 	wasFaked = true;
 }
 
-Vector SetRotation(SemirageAimbotWeaponConfig* weaponConfig, const Vector& targetView, const Vector& currentView, const Vector& aimPunch, Vector& target)
+Vector SetRotation(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& targetView, const Vector& currentView, const Vector& aimPunch, Vector& target)
 {
 	Vector recoilCorrected = targetView;
 
@@ -253,7 +177,7 @@ Vector SetRotation(SemirageAimbotWeaponConfig* weaponConfig, const Vector& targe
 	return target;
 }
 
-bool AutoFire(SemirageAimbotWeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles)
+bool SemirageAimbot::AutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles)
 {
 	if (weaponConfig->autoFireRecklessly && hasTarget)
 		return true; // We got an entity in our fov, fire regardless of the trace ray...
@@ -297,7 +221,7 @@ bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles)
 	return false;
 }
 
-void CalculateAimTarget(CBasePlayer* localPlayer)
+void SemirageAimbot::CalculateAimTarget(CBasePlayer* localPlayer)
 {
 	if (!showDesyncedView || !wasFaked) {
 		aimTarget.reset();
@@ -315,7 +239,7 @@ void CalculateAimTarget(CBasePlayer* localPlayer)
 	aimTarget = trace.endpos;
 }
 
-void Features::Semirage::Aimbot::FireEvent(CGameEvent* gameEvent)
+void SemirageAimbot::FireEvent(CGameEvent* gameEvent)
 {
 	if (!wasFaked)
 		return; // No point in trying to reset our view when there is nothing to reset
@@ -331,10 +255,10 @@ void Features::Semirage::Aimbot::FireEvent(CGameEvent* gameEvent)
 	Vector oldView = Hooks::Game::CreateMove::lastCmd.viewangles;
 	Interfaces::engine->SetViewAngles(&oldView);
 
-	Features::General::EventLog::CreateReport(xorstr_("Gracefully undesynced view"));
+	eventLog.CreateReport(xorstr_("Gracefully undesynced view"));
 }
 
-bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
+bool SemirageAimbot::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !Interfaces::engine->IsInGame()) {
 		wasFaked = false;
@@ -349,7 +273,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 		return false;
 	}
 
-	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
+	WeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
 
 	if (!weaponConfig) {
 		if (wasFaked) {
@@ -428,7 +352,7 @@ bool Features::Semirage::Aimbot::CreateMove(CUserCmd* cmd)
 	return willBeSilent;
 }
 
-void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
+void SemirageAimbot::ImGuiRender(ImDrawList* drawList)
 {
 	// TODO Desync View renders when dead?
 	if (!enabled || (!fovCircle && !showDesyncedView))
@@ -447,7 +371,7 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 			drawList->AddCircleFilled(screenspaceView, radius, viewColor); // TODO Perspective division
 	}
 
-	SemirageAimbotWeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
+	WeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
 	if (!weaponConfig)
 		return;
 
@@ -471,59 +395,59 @@ void Features::Semirage::Aimbot::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void WeaponGUI(SemirageAimbotWeaponConfig& weaponConfig)
+void SemirageAimbot::WeaponConfig::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Disabled"), &weaponConfig.disabled);
-	if (weaponConfig.disabled)
+	ImGui::Checkbox(xorstr_("Disabled"), &disabled);
+	if (disabled)
 		return;
 
-	ImGui::Checkbox(xorstr_("Only when shooting"), &weaponConfig.onlyWhenShooting);
-	if (weaponConfig.onlyWhenShooting && autoFire && autoFireKey == 0)
+	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
+	if (onlyWhenShooting && semirageAimbot.autoFire && semirageAimbot.autoFireKey == 0)
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("You are auto-firing without key, this won't make a difference"));
 
-	if (autoFire)
-		ImGui::Checkbox(xorstr_("Auto fire recklessly"), &weaponConfig.autoFireRecklessly);
+	if (semirageAimbot.autoFire)
+		ImGui::Checkbox(xorstr_("Auto fire recklessly"), &autoFireRecklessly);
 
-	ImGui::SliderFloat(xorstr_("FOV"), &weaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Scaling"))) {
-		ImGui::SliderFloat(xorstr_("X Scale"), &weaponConfig.fovScaleX, 0.0f, 2.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Y Scale"), &weaponConfig.fovScaleY, 0.0f, 2.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("X Scale"), &fovScaleX, 0.0f, 2.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Y Scale"), &fovScaleY, 0.0f, 2.0f, xorstr_("%.2f"));
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Control recoil"), &weaponConfig.controlRecoil);
+	ImGui::Checkbox(xorstr_("Control recoil"), &controlRecoil);
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Recoil"))) {
-		ImGui::SliderFloat(xorstr_("X Scale"), &weaponConfig.recoilScaleX, 0.0f, 1.5f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Y Scale"), &weaponConfig.recoilScaleY, 0.0f, 1.5f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("X Scale"), &recoilScaleX, 0.0f, 1.5f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Y Scale"), &recoilScaleY, 0.0f, 1.5f, xorstr_("%.2f"));
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Smooth out"), &weaponConfig.smoothOut);
+	ImGui::Checkbox(xorstr_("Smooth out"), &smoothOut);
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Aim speed"))) {
-		ImGui::SliderFloat(xorstr_("Horizontal aim speed"), &weaponConfig.horizontalAimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Vertical aim speed"), &weaponConfig.verticalAimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Horizontal aim speed"), &horizontalAimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Vertical aim speed"), &verticalAimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Silent"), &weaponConfig.silent);
+	ImGui::Checkbox(xorstr_("Silent"), &silent);
 
 	ImGui::SameLine();
 	if (ImGui::Popup(xorstr_("Silent"))) {
-		ImGui::Checkbox(xorstr_("Smooth rotate to origin"), &weaponConfig.smoothRotateToOrigin);
-		if (weaponConfig.smoothRotateToOrigin) {
-			ImGui::SliderFloat(xorstr_("Horizontal speed"), &weaponConfig.horizontalRotateToOriginSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
-			ImGui::SliderFloat(xorstr_("Vertical speed"), &weaponConfig.verticalRotateToOriginSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+		ImGui::Checkbox(xorstr_("Smooth rotate to origin"), &smoothRotateToOrigin);
+		if (smoothRotateToOrigin) {
+			ImGui::SliderFloat(xorstr_("Horizontal speed"), &horizontalRotateToOriginSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+			ImGui::SliderFloat(xorstr_("Vertical speed"), &verticalRotateToOriginSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
 
-			ImGui::SliderFloat(xorstr_("Recombine views"), &weaponConfig.recombineViews, 0.0f, 1.0f, xorstr_("%.2f"));
+			ImGui::SliderFloat(xorstr_("Recombine views"), &recombineViews, 0.0f, 1.0f, xorstr_("%.2f"));
 		}
 		ImGui::EndPopup();
 	}
 }
 
-void Features::Semirage::Aimbot::SetupGUI()
+void SemirageAimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 
@@ -554,23 +478,52 @@ void Features::Semirage::Aimbot::SetupGUI()
 	weaponConfigurator.SetupGUI();
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Semirage::Aimbot::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
+SCOPED_SERIALIZER(SemirageAimbot::WeaponConfig)
+{
+	SERIALIZE(xorstr_("Disabled"), disabled);
 
-SERIALIZED_TYPE(xorstr_("Auto fire"), autoFire)
-SERIALIZED_TYPE(xorstr_("Auto fire key"), autoFireKey)
+	SERIALIZE(xorstr_("Only when shooting"), onlyWhenShooting);
 
-SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
-SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
-SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
+	SERIALIZE(xorstr_("Auto fire recklessly"), autoFireRecklessly);
 
-SERIALIZED_STRUCTURE(xorstr_("Weapons"), weaponConfigurator)
+	SERIALIZE(xorstr_("FOV"), fov);
+	SERIALIZE(xorstr_("FOV scale X"), fovScaleX);
+	SERIALIZE(xorstr_("FOV scale Y"), fovScaleY);
 
-SERIALIZED_TYPE(xorstr_("FOV Circle"), fovCircle)
-SERIALIZED_TYPE(xorstr_("Circle color"), circleColor)
-SERIALIZED_TYPE(xorstr_("Thickness"), thickness)
+	SERIALIZE(xorstr_("Control recoil"), controlRecoil);
+	SERIALIZE(xorstr_("Recoil scale X"), recoilScaleX);
+	SERIALIZE(xorstr_("Recoil scale Y"), recoilScaleY);
 
-SERIALIZED_TYPE(xorstr_("Show desynced view"), showDesyncedView)
-SERIALIZED_TYPE(xorstr_("View color"), viewColor)
-SERIALIZED_TYPE(xorstr_("Radius"), radius)
-END_SERIALIZED_STRUCT
+	SERIALIZE(xorstr_("Smooth out"), smoothOut);
+	SERIALIZE(xorstr_("Horizontal aim speed"), horizontalAimSpeed);
+	SERIALIZE(xorstr_("Vertical aim speed"), verticalAimSpeed);
+
+	SERIALIZE(xorstr_("Silent"), silent);
+
+	SERIALIZE(xorstr_("Smooth rotate to origin"), smoothRotateToOrigin);
+	SERIALIZE(xorstr_("Horizontal rotate to origin speed"), horizontalRotateToOriginSpeed);
+	SERIALIZE(xorstr_("Vertical rotate to origin speed"), verticalRotateToOriginSpeed);
+	SERIALIZE(xorstr_("Recombine views"), recombineViews);
+}
+
+SCOPED_SERIALIZER(SemirageAimbot)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+
+	SERIALIZE(xorstr_("Auto fire"), autoFire);
+	SERIALIZE(xorstr_("Auto fire key"), autoFireKey);
+
+	SERIALIZE(xorstr_("Maximal flash amount"), maximalFlashAmount);
+	SERIALIZE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke);
+	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
+
+	SERIALIZE_STRUCT(xorstr_("Weapons"), weaponConfigurator);
+
+	SERIALIZE(xorstr_("FOV Circle"), fovCircle);
+	SERIALIZE_VECTOR4D(xorstr_("Circle color"), circleColor.Value);
+	SERIALIZE(xorstr_("Thickness"), thickness);
+
+	SERIALIZE(xorstr_("Show desynced view"), showDesyncedView);
+	SERIALIZE_VECTOR4D(xorstr_("View color"), viewColor.Value);
+	SERIALIZE(xorstr_("Radius"), radius);
+}

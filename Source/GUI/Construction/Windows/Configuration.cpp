@@ -1,4 +1,4 @@
-#include "../ConfigurationTab.hpp"
+#include "Configuration.hpp"
 
 #include <cstring>
 #include <ctime>
@@ -10,17 +10,18 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../../../../Features/General/General.hpp"
-#include "../../../../Serialization/Serialization.hpp"
+#include "../../../Features/General/EventLog.hpp"
+
+#include "../../../Serialization/Serialization.hpp"
 
 // TODO Remake GUI
 
-char* GetConfigFile(const char* filename)
+static char* GetConfigFile(const char* filename)
 {
 	return strcat(strcat(Serialization::GetConfigDirectory(), xorstr_("/")), filename);
 }
 
-bool GatherConfigs(std::vector<std::string>& configs)
+static bool GatherConfigs(std::vector<std::string>& configs)
 {
 	DIR* dir = opendir(Serialization::GetConfigDirectory());
 	if (dir == nullptr)
@@ -39,7 +40,7 @@ bool GatherConfigs(std::vector<std::string>& configs)
 
 	return true;
 }
-void Gui::Construction::Configuration::SaveLoadTab()
+void Gui::Windows::Configuration()
 {
 	static int configSelected;
 	static std::vector<std::string> configs;
@@ -51,13 +52,13 @@ void Gui::Construction::Configuration::SaveLoadTab()
 
 	if (ImGui::Button(xorstr_("Save")) && name[0] != '\0') {
 		auto* cfgName = name;
-		if (!std::string(cfgName).ends_with(xorstr_(".ini")))
-			cfgName = strcat(cfgName, xorstr_(".ini"));
+		if (!std::string(cfgName).ends_with(xorstr_(".json")))
+			cfgName = strcat(cfgName, xorstr_(".json"));
 
 		if (Serialization::Save(GetConfigFile(cfgName)))
-			Features::General::EventLog::CreateReport(xorstr_("Saved config '%s'"), cfgName);
+			eventLog.CreateReport(xorstr_("Saved config '%s'"), cfgName);
 		else
-			Features::General::EventLog::CreateReport(xorstr_("Failed to saved config '%s'"), cfgName);
+			eventLog.CreateReport(xorstr_("Failed to saved config '%s'"), cfgName);
 
 		addedConfig = true;
 		name[0] = '\0';
@@ -85,9 +86,9 @@ void Gui::Construction::Configuration::SaveLoadTab()
 		if (configSelected >= 0 && configSelected < (int)configs.size()) {
 			const char* configName = configs[configSelected].c_str();
 			if (Serialization::Load(GetConfigFile(configName)))
-				Features::General::EventLog::CreateReport(xorstr_("Loaded config '%s'"), configName);
+				eventLog.CreateReport(xorstr_("Loaded config '%s'"), configName);
 			else
-				Features::General::EventLog::CreateReport(xorstr_("Failed to load config '%s'"), configName);
+				eventLog.CreateReport(xorstr_("Failed to load config '%s'"), configName);
 		}
 	}
 	ImGui::PopItemWidth();

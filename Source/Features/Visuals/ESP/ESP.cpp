@@ -1,4 +1,4 @@
-#include "../Visuals.hpp"
+#include "ESP.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -14,29 +14,7 @@
 #include <optional>
 #include <vector>
 
-static bool enabled = false;
-static int onKey = ImGuiKey_None;
-static int drawDistance = 1024 * 8;
-bool Features::Visuals::Esp::considerSpottedEntitiesAsVisible = false;
-bool Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded = true;
-bool Features::Visuals::Esp::considerEveryoneVisibleWhenDead = false;
-bool Features::Visuals::Esp::alignBoundingBox = true;
-bool Features::Visuals::Esp::outOfView = false;
-float Features::Visuals::Esp::outOfViewSize = 30.0f;
-float Features::Visuals::Esp::outOfViewDistance = 300.0f;
-PlayerSettings Features::Visuals::Esp::players;
-static SpectatorSettings spectators;
-static WeaponSettings weapons;
-static ProjectileTypeSettings projectiles;
-static PlantedC4Settings plantedC4;
-static HostageSettings hostages;
-static LootCrateTypeSettings dzLootCrates;
-static GenericEntitySettings dzAmmoBoxes;
-static SentrySettings dzSentries;
-static DroneSettings dzDrones;
-static GenericEntitySettings other;
-
-void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
+void ESP::ImGuiRender(ImDrawList* drawList)
 {
 	if (!enabled || !IsInputDown(onKey, true, std::nullopt))
 		return;
@@ -115,7 +93,7 @@ void Features::Visuals::Esp::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void Features::Visuals::Esp::Update()
+void ESP::Update()
 {
 	if (!enabled || !IsInputDown(onKey, true, std::nullopt))
 		return;
@@ -138,7 +116,7 @@ void Features::Visuals::Esp::Update()
 		dzSentries.IsEnabled());
 }
 
-void Features::Visuals::Esp::SetupGUI()
+void ESP::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SameLine();
@@ -231,30 +209,31 @@ void Features::Visuals::Esp::SetupGUI()
 	ImGui::Text(xorstr_("Sentries: %d"), EntityCache::sentries.size());
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::Esp::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Draw distance"), drawDistance)
-SERIALIZED_TYPE(xorstr_("Hold key"), onKey)
+SCOPED_SERIALIZER(ESP)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Draw distance"), drawDistance);
+	SERIALIZE(xorstr_("Hold key"), onKey);
 
-SERIALIZED_TYPE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible)
-SERIALIZED_TYPE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded)
-SERIALIZED_TYPE(xorstr_("Consider everyone visible when dead"), considerEveryoneVisibleWhenDead)
+	SERIALIZE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible);
+	SERIALIZE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded);
+	SERIALIZE(xorstr_("Consider everyone visible when dead"), considerEveryoneVisibleWhenDead);
 
-SERIALIZED_TYPE(xorstr_("Out of view"), outOfView)
-SERIALIZED_TYPE(xorstr_("Out of view size"), outOfViewSize)
-SERIALIZED_TYPE(xorstr_("Out of view distance"), outOfViewDistance)
+	SERIALIZE(xorstr_("Out of view"), outOfView);
+	SERIALIZE(xorstr_("Out of view size"), outOfViewSize);
+	SERIALIZE(xorstr_("Out of view distance"), outOfViewDistance);
 
-SERIALIZED_TYPE(xorstr_("Align bounding box"), alignBoundingBox)
+	SERIALIZE(xorstr_("Align bounding box"), alignBoundingBox);
 
-SERIALIZED_STRUCTURE(xorstr_("Players"), players)
-SERIALIZED_STRUCTURE(xorstr_("Spectators"), spectators)
-SERIALIZED_STRUCTURE(xorstr_("Weapons"), weapons)
-SERIALIZED_STRUCTURE(xorstr_("Projectiles"), projectiles)
-SERIALIZED_STRUCTURE(xorstr_("Planted C4"), plantedC4)
-SERIALIZED_STRUCTURE(xorstr_("Hostages"), hostages)
-SERIALIZED_STRUCTURE(xorstr_("Loot crates"), dzLootCrates)
-SERIALIZED_STRUCTURE(xorstr_("Ammo boxes"), dzAmmoBoxes)
-SERIALIZED_STRUCTURE(xorstr_("Sentries"), dzSentries)
-SERIALIZED_STRUCTURE(xorstr_("Drones"), dzDrones)
-SERIALIZED_STRUCTURE(xorstr_("Other"), other)
-END_SERIALIZED_STRUCT
+	SERIALIZE_STRUCT(xorstr_("Players"), players);
+	SERIALIZE_STRUCT(xorstr_("Spectators"), spectators);
+	SERIALIZE_STRUCT(xorstr_("Weapons"), weapons);
+	SERIALIZE_STRUCT(xorstr_("Projectiles"), projectiles);
+	SERIALIZE_STRUCT(xorstr_("Planted C4"), plantedC4);
+	SERIALIZE_STRUCT(xorstr_("Hostages"), hostages);
+	SERIALIZE_STRUCT(xorstr_("Loot crates"), dzLootCrates);
+	SERIALIZE_STRUCT(xorstr_("Ammo boxes"), dzAmmoBoxes);
+	SERIALIZE_STRUCT(xorstr_("Sentries"), dzSentries);
+	SERIALIZE_STRUCT(xorstr_("Drones"), dzDrones);
+	SERIALIZE_STRUCT(xorstr_("Other"), other);
+}

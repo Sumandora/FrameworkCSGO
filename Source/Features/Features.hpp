@@ -3,19 +3,25 @@
 
 #include "../Serialization/Serializer.hpp"
 
-#include "General/General.hpp"
-#include "Legit/Legit.hpp"
-#include "Movement/Movement.hpp"
-#include "Semirage/Semirage.hpp"
-#include "Visuals/Visuals.hpp"
+#include <vector>
 
-// TODO OOP
-namespace Features {
-	// GUI
-	void SetupGUI();
+inline std::map<std::string, std::vector<class Feature*>> features;
 
-	// Serialization
-	DECLARE_SERIALIZER(Serializer)
-}
+class Feature {
+	std::string name;
+
+public:
+	Feature() = delete;
+	inline Feature(const std::string& group, const std::string& name)
+	{
+		this->name = name;
+		features[group].push_back(this);
+	}
+
+	const std::string& GetName() const { return name; }
+
+	virtual void SetupGUI() = 0;
+	virtual SERIALIZER() = 0;
+};
 
 #endif

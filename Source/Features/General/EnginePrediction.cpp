@@ -1,7 +1,4 @@
-#include "General.hpp"
-
-#include "imgui.h"
-#include "xorstr.hpp"
+#include "EnginePrediction.hpp"
 
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../GUI/ImGuiColors.hpp"
@@ -10,14 +7,7 @@
 
 #include <cstring>
 
-bool Features::General::EnginePrediction::enabled = true;
-static bool forceResetVelocityModifier = false;
-
-CMoveData Features::General::EnginePrediction::moveData{};
-int Features::General::EnginePrediction::prePredictionFlags = 0;
-MoveType Features::General::EnginePrediction::prePredictionMoveType = MOVETYPE_NONE;
-
-void Features::General::EnginePrediction::ImGuiWarning()
+void EnginePrediction::ImGuiWarning()
 {
 	if (!enabled)
 		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: This feature expects engine prediction to be enabled"));
@@ -25,7 +15,7 @@ void Features::General::EnginePrediction::ImGuiWarning()
 
 static float previousVelocityModifer;
 
-void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
+void EnginePrediction::StartPrediction(CUserCmd* cmd)
 {
 	moveData = {};
 	if (!enabled || !Interfaces::engine->IsInGame())
@@ -43,7 +33,7 @@ void Features::General::EnginePrediction::StartPrediction(CUserCmd* cmd)
 	Utils::StartPrediction(cmd, moveData);
 }
 
-void Features::General::EnginePrediction::EndPrediction()
+void EnginePrediction::EndPrediction()
 {
 	moveData = {};
 
@@ -59,7 +49,7 @@ void Features::General::EnginePrediction::EndPrediction()
 		*Memory::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;
 }
 
-void Features::General::EnginePrediction::SetupGUI()
+void EnginePrediction::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	if (!enabled) {
@@ -69,6 +59,7 @@ void Features::General::EnginePrediction::SetupGUI()
 	ImGui::HelpMarker(xorstr_("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine."));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::EnginePrediction::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(EnginePrediction)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+}

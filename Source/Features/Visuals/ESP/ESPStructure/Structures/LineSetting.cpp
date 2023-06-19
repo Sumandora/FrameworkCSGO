@@ -49,11 +49,12 @@ void LineSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(LineSetting::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Line color"), lineColor)
-SERIALIZED_TYPE(xorstr_("Thickness"), thickness)
-SERIALIZED_TYPE(xorstr_("Outlined"), outlined)
-SERIALIZED_TYPE(xorstr_("Outline color"), outlineColor)
-SERIALIZED_TYPE(xorstr_("Outline thickness"), outlineThickness)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(LineSetting)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE_VECTOR4D(xorstr_("Line color"), lineColor.Value);
+	SERIALIZE(xorstr_("Thickness"), thickness);
+	SERIALIZE(xorstr_("Outlined"), outlined);
+	SERIALIZE_VECTOR4D(xorstr_("Outline color"), outlineColor.Value);
+	SERIALIZE(xorstr_("Outline thickness"), outlineThickness);
+}

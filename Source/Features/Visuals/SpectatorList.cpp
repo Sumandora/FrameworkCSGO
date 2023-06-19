@@ -1,7 +1,4 @@
-#include "Visuals.hpp"
-
-#include "imgui.h"
-#include "xorstr.hpp"
+#include "SpectatorList.hpp"
 
 #include "../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../GUI/Elements/ShadowString.hpp"
@@ -9,13 +6,8 @@
 #include "../../GUI/ImGuiColors.hpp"
 #include "../../Interfaces.hpp"
 
+#include <sstream>
 #include <vector>
-
-static bool enabled = false;
-static bool showMode = true;
-static bool showAllSpectators = true;
-static ImColor otherTargetColor = ImGuiColors::white;
-static ImColor sameTargetColor = ImGuiColors::red;
 
 struct SpectatorEntry {
 	int spectator;
@@ -26,7 +18,7 @@ struct SpectatorEntry {
 
 std::vector<SpectatorEntry> spectators;
 
-void Features::Visuals::SpectatorList::Update()
+void SpectatorList::Update()
 {
 	spectators.clear();
 
@@ -65,7 +57,7 @@ void Features::Visuals::SpectatorList::Update()
 	}
 }
 
-void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
+void SpectatorList::ImGuiRender(ImDrawList* drawList)
 {
 	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float offset = 0;
@@ -104,7 +96,7 @@ void Features::Visuals::SpectatorList::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void Features::Visuals::SpectatorList::SetupGUI()
+void SpectatorList::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Show mode"), &showMode);
@@ -114,10 +106,11 @@ void Features::Visuals::SpectatorList::SetupGUI()
 	ImGui::ClickableColorButton(xorstr_("Same target color"), sameTargetColor);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::SpectatorList::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Show mode"), showMode)
-SERIALIZED_TYPE(xorstr_("Show all spectators"), showAllSpectators)
-SERIALIZED_TYPE(xorstr_("Other target color"), otherTargetColor)
-SERIALIZED_TYPE(xorstr_("Same target color"), sameTargetColor)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(SpectatorList)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Show mode"), showMode);
+	SERIALIZE(xorstr_("Show all spectators"), showAllSpectators);
+	SERIALIZE_VECTOR4D(xorstr_("Other target color"), otherTargetColor.Value);
+	SERIALIZE_VECTOR4D(xorstr_("Same target color"), sameTargetColor.Value);
+}

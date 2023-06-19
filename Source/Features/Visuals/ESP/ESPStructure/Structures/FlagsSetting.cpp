@@ -20,6 +20,7 @@ FlagsSetting::FlagsSetting(std::vector<Flag*> flags)
 
 FlagsSetting::~FlagsSetting()
 {
+	// TODO Why does this crash sometimes?
 	for (Flag* flag : flags) {
 		delete flag;
 	}
@@ -109,14 +110,14 @@ void FlagsSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(FlagsSetting::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Font scale"), fontScale)
-SERIALIZED_TYPE(xorstr_("Shadow"), shadow)
-SERIALIZED_TYPE(xorstr_("Shadow color"), shadowColor)
+SCOPED_SERIALIZER(FlagsSetting)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Font scale"), fontScale);
+	SERIALIZE(xorstr_("Shadow"), shadow);
+	SERIALIZE_VECTOR4D(xorstr_("Shadow color"), shadowColor.Value);
 
-for (Flag* flag : flags) {
-	SERIALIZED_STRUCTURE(flag->GetName().c_str(), (*flag))
+	for (Flag* flag : flags) {
+		SERIALIZE_STRUCT(flag->GetName().c_str(), (*flag));
+	}
 }
-
-END_SERIALIZED_STRUCT

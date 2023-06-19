@@ -66,10 +66,11 @@ void TextSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(TextSetting::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Font scale"), fontScale)
-SERIALIZED_TYPE(xorstr_("Font color"), fontColor)
-SERIALIZED_TYPE(xorstr_("Shadow"), shadow)
-SERIALIZED_TYPE(xorstr_("Shadow color"), shadowColor)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(TextSetting)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Font scale"), fontScale);
+	SERIALIZE_VECTOR4D(xorstr_("Font color"), fontColor.Value);
+	SERIALIZE(xorstr_("Shadow"), shadow);
+	SERIALIZE_VECTOR4D(xorstr_("Shadow color"), shadowColor.Value);
+}

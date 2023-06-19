@@ -1,10 +1,11 @@
 // This file is only targeted if MENUPREVIEW (in CMakeLists.txt) has been enabled
 
-#include "imgui.h"
 #include "GUI/GUI.hpp"
+#include "imgui.h"
 
-void ImGui::ShowDemoWindow(bool* p_open) {
-	if(!*p_open)
+void ImGui::ShowDemoWindow(bool* p_open)
+{
+	if (!*p_open)
 		return;
 
 	SDL_Window* window = SDL_GL_GetCurrentWindow();
@@ -12,5 +13,5 @@ void ImGui::ShowDemoWindow(bool* p_open) {
 	int width, height;
 	SDL_GetWindowSize(window, &width, &height);
 
-	Gui::BuildMenu(width, height);
+	Gui::Build();
 }

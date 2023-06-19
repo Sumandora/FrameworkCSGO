@@ -24,6 +24,7 @@ void GenericEntitySettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(GenericEntitySettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(GenericEntitySettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+}

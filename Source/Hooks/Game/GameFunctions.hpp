@@ -35,7 +35,6 @@ namespace Hooks::Game {
 		inline GameHook* hook;
 
 		inline CViewSetup lastViewSetup{};
-		inline Vector cameraPosition{};
 
 		void HookFunc(void* thisptr, CViewSetup* pSetup);
 	}

@@ -6,6 +6,7 @@
 #include "../../../../../Utils/Projection.hpp"
 
 #include "../../../../../Interfaces.hpp"
+
 #include <cstdio>
 
 // TODO Can deal team damage option
@@ -67,8 +68,9 @@ void ProjectileSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(ProjectileSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Owner name"), ownerName)
-SERIALIZED_STRUCTURE(xorstr_("Trail"), trail)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(ProjectileSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Owner name"), ownerName);
+	SERIALIZE_STRUCT(xorstr_("Trail"), trail);
+}

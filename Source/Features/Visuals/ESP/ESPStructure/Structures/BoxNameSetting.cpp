@@ -26,7 +26,8 @@ void BoxNameSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(BoxNameSetting::Serializer)
-SERIALIZED_STRUCTURE(xorstr_("Box"), box)
-SERIALIZED_STRUCTURE(xorstr_("Name"), nametag)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(BoxNameSetting)
+{
+	SERIALIZE_STRUCT(xorstr_("Box"), box);
+	SERIALIZE_STRUCT(xorstr_("Name"), nametag);
+}

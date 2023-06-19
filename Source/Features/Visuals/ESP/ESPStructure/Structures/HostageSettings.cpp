@@ -44,9 +44,10 @@ void HostageSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(HostageSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Timer"), timer)
+SCOPED_SERIALIZER(HostageSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Timer"), timer);
 
-SERIALIZED_TYPE(xorstr_("Accuracy"), accuracy)
-END_SERIALIZED_STRUCT
+	SERIALIZE(xorstr_("Accuracy"), accuracy);
+}

@@ -2,7 +2,7 @@
 
 #include "../../../../Utils/Projection.hpp"
 #include "../../../../Utils/Trigonometry.hpp"
-#include "../../Visuals.hpp"
+#include "../ESP.hpp"
 
 bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 {
@@ -51,7 +51,7 @@ bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 		return false;
 	}
 
-	if (Features::Visuals::Esp::alignBoundingBox) {
+	if (esp.alignBoundingBox) {
 		rectangle.x = std::round(rectangle.x);
 		rectangle.y = std::round(rectangle.y);
 		rectangle.z = std::round(rectangle.z);
@@ -63,7 +63,7 @@ bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 
 bool ScreenRectangle::HandleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const
 {
-	if (Features::Visuals::Esp::outOfView) {
+	if (esp.outOfView) {
 		const Vector delta = origin - localOrigin;
 		const float angle = (float)DEG2RAD(viewangles.y - 90.0f) - atan2f(delta.y, delta.x);
 
@@ -71,15 +71,15 @@ bool ScreenRectangle::HandleOutOfView(const Vector& localOrigin, const Vector& v
 		const ImVec2 direction(cosf(angle), sinf(angle));
 
 		const ImVec2 screenPosition(
-			(float)display.x / 2.0f + direction.x * Features::Visuals::Esp::outOfViewDistance,
-			(float)display.y / 2.0f + direction.y * Features::Visuals::Esp::outOfViewDistance);
+			(float)display.x / 2.0f + direction.x * esp.outOfViewDistance,
+			(float)display.y / 2.0f + direction.y * esp.outOfViewDistance);
 
 		rectangle = ImVec4(
-			screenPosition.x - Features::Visuals::Esp::outOfViewSize,
-			screenPosition.y - Features::Visuals::Esp::outOfViewSize,
+			screenPosition.x - esp.outOfViewSize,
+			screenPosition.y - esp.outOfViewSize,
 
-			screenPosition.x + Features::Visuals::Esp::outOfViewSize,
-			screenPosition.y + Features::Visuals::Esp::outOfViewSize);
+			screenPosition.x + esp.outOfViewSize,
+			screenPosition.y + esp.outOfViewSize);
 
 		return true;
 	}

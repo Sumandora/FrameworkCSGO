@@ -1,4 +1,4 @@
-#include "../DebugTab.hpp"
+#include "../Debug.hpp"
 
 #include <link.h>
 #include <mutex>
@@ -7,7 +7,7 @@
 #include "../../../../SDK/InterfaceReg.hpp"
 #include "../../../Elements/HelpMarker.hpp"
 
-void Gui::Construction::Debug::InterfacesTab()
+void Gui::Windows::Interfaces()
 {
 	struct Interface {
 		InterfaceReg* reg;

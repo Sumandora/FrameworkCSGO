@@ -32,7 +32,7 @@ public:
 
 	bool operator<=>(const BoxSettings& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class TextSetting {
@@ -53,7 +53,7 @@ public:
 
 	bool operator<=>(const TextSetting& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class HealthbarSettings {
@@ -80,7 +80,7 @@ public:
 	void Draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth = 100) const;
 	bool operator<=>(const HealthbarSettings& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class LineSetting {
@@ -101,7 +101,7 @@ public:
 
 	bool operator<=>(const LineSetting& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class FlagsSetting {
@@ -121,7 +121,7 @@ public:
 	void Draw(ImDrawList* drawList, float x, float y, const Player& player) const;
 	bool operator<=>(const FlagsSetting& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class BoxNameSetting {
@@ -135,7 +135,7 @@ public:
 	void Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const;
 	bool operator<=>(const BoxNameSetting& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class GenericEntitySettings {
@@ -147,7 +147,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Entity& entity, const char* text) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class SentrySettings {
@@ -160,7 +160,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Sentry& sentry) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class LootCrateSettings {
@@ -173,7 +173,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class LootCrateTypeSettings {
@@ -193,7 +193,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, LootCrate& lootCrate) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class DroneSettings {
@@ -206,7 +206,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Drone& drone) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class PlayerStateSettings {
@@ -222,7 +222,7 @@ public:
 	void Draw(ImDrawList* drawList, Player& player) const;
 	bool operator<=>(const PlayerStateSettings& other) const = default;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class WeaponSettings {
@@ -235,7 +235,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Weapon& weapon) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class PlantedC4Settings {
@@ -253,7 +253,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, PlantedC4& bomb) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class HostageSettings {
@@ -267,7 +267,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Hostage& hostage) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class SpectatorSettings {
@@ -281,7 +281,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Spectator& spectator) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class ProjectileSettings {
@@ -295,7 +295,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Projectile& projectile, const char* name) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class ProjectileTypeSettings {
@@ -317,7 +317,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Projectile& projectile) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class PlayerTeamSettings {
@@ -330,7 +330,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Player& player) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 class PlayerSettings {
@@ -344,7 +344,7 @@ public:
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, Player& player) const;
 	void SetupGUI(const char* id);
-	DECLARE_SERIALIZER(Serializer)
+	SERIALIZER();
 };
 
 #endif

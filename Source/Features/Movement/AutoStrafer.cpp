@@ -1,24 +1,18 @@
-#include "Movement.hpp"
+#include "AutoStrafer.hpp"
 
-#include "imgui.h"
-
-#include "../General/General.hpp"
+#include "../General/EnginePrediction.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 #include "../../SDK/GameClass/CBasePlayer.hpp"
+#include "../../SDK/MoveType.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 #include "../../Interfaces.hpp"
 #include "../../Utils/Trigonometry.hpp"
 
+#include <cstddef>
 #include <optional>
-
-static bool enabled = false;
-static bool directional = true;
-static bool allowHardTurns = false;
-static float hardTurnThreshold = 135.0f;
-static bool onlyWhenIdle = false;
 
 static std::optional<float> lastWishDirection = 0.0f;
 
@@ -47,7 +41,7 @@ void AdjustButtons(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
+void AutoStrafer::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
@@ -62,7 +56,7 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (localPlayer->GetMoveType() == MOVETYPE_NOCLIP || localPlayer->GetMoveType() == MOVETYPE_LADDER)
 		return;
 
-	if (*localPlayer->Flags() & FL_ONGROUND && (!Features::General::EnginePrediction::enabled || Features::General::EnginePrediction::prePredictionFlags & FL_ONGROUND)) {
+	if (*localPlayer->Flags() & FL_ONGROUND && (!enginePrediction.enabled || enginePrediction.prePredictionFlags & FL_ONGROUND)) {
 		// Only abort if we are not going to be in air again (if bhopping don't abort)
 		if (cmd->forwardmove == 0.0f && cmd->sidemove == 0.0f)
 			lastWishDirection.reset(); // We have no direction to move to.
@@ -127,9 +121,9 @@ void Features::Movement::AutoStrafer::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::AutoStrafer::SetupGUI()
+void AutoStrafer::SetupGUI()
 {
-	Features::General::EnginePrediction::ImGuiWarning();
+	enginePrediction.ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::Checkbox(xorstr_("Directional"), &directional);
 	if (directional) {
@@ -141,10 +135,11 @@ void Features::Movement::AutoStrafer::SetupGUI()
 	}
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::AutoStrafer::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Directional"), directional)
-SERIALIZED_TYPE(xorstr_("Allow hard turns"), allowHardTurns)
-SERIALIZED_TYPE(xorstr_("Hard turn threshold"), hardTurnThreshold)
-SERIALIZED_TYPE(xorstr_("Only when idle"), onlyWhenIdle)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(AutoStrafer)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Directional"), directional);
+	SERIALIZE(xorstr_("Allow hard turns"), allowHardTurns);
+	SERIALIZE(xorstr_("Hard turn threshold"), hardTurnThreshold);
+	SERIALIZE(xorstr_("Only when idle"), onlyWhenIdle);
+}

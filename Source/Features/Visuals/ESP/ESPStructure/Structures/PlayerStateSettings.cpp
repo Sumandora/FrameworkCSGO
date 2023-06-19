@@ -7,7 +7,8 @@
 
 #include "../../../../../Interfaces.hpp"
 
-#include "../../../Visuals.hpp"
+#include "../../ESP.hpp"
+
 #include <memory>
 
 PlayerStateSettings::PlayerStateSettings()
@@ -80,15 +81,15 @@ void PlayerStateSettings::SetupGUI(const char* id)
 
 	if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
 		if (ImGui::BeginMenu(xorstr_("Teammate"))) {
-			BuildMenu(this, Features::Visuals::Esp::players.teammate);
+			BuildMenu(this, esp.players.teammate);
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu(xorstr_("Enemy"))) {
-			BuildMenu(this, Features::Visuals::Esp::players.enemy);
+			BuildMenu(this, esp.players.enemy);
 			ImGui::EndMenu();
 		}
 		if (ImGui::Selectable(xorstr_("Local"))) {
-			*this = Features::Visuals::Esp::players.local;
+			*this = esp.players.local;
 		}
 		ImGui::EndPopup();
 	}
@@ -100,9 +101,10 @@ void PlayerStateSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlayerStateSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Healthbar"), healthbar)
-SERIALIZED_STRUCTURE(xorstr_("Weapon"), weapon)
-SERIALIZED_STRUCTURE(xorstr_("Flags"), flags)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(PlayerStateSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Healthbar"), healthbar);
+	SERIALIZE_STRUCT(xorstr_("Weapon"), weapon);
+	SERIALIZE_STRUCT(xorstr_("Flags"), flags);
+}

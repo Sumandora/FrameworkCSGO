@@ -1,9 +1,10 @@
-#include "../DebugTab.hpp"
+#include "../Debug.hpp"
 
 #include "../../../../Hooks/Game/GameFunctions.hpp"
+
 #include "imgui.h"
 
-void Gui::Construction::Debug::GameEventsTab()
+void Gui::Windows::GameEvents()
 {
 	ImGui::Text(xorstr_("This log will be extended, whenever a new event is fired"));
 	ImGui::Separator();

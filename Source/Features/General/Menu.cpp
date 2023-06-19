@@ -1,31 +1,17 @@
-#include "General.hpp"
+#include "Menu.hpp"
+
+#include "EventLog.hpp"
 
 #include "../../Hooks/SDL/SDLFunctions.hpp"
-
-#include "xorstr.hpp"
 
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../GUI/GUI.hpp"
 
 #include "../../Utils/Platform/CompilerSupport.hpp"
-#include <optional>
 
-static int menuKey = ImGuiKey_Insert;
-static int style = 0;
+static bool wasPressed = false;
 
-#ifdef DEBUG
-static bool isShowingDemoWindow = false;
-static bool isShowingMetricsWindow = false;
-static bool isShowingDebugLogWindow = false;
-static bool isShowingStackToolWindow = false;
-static bool isShowingAboutWindow = false;
-static bool isShowingStyleEditor = false;
-static bool isShowingUserGuide = false;
-#endif
-
-bool wasPressed = false;
-
-void Features::General::Menu::ImGuiLoop()
+void Menu::ImGuiLoop()
 {
 	switch (style) {
 	case 0:
@@ -65,12 +51,12 @@ void Features::General::Menu::ImGuiLoop()
 
 	if (isPressed && !wasPressed) {
 		Gui::visible = !Gui::visible;
-		Features::General::EventLog::CreateReport(xorstr_("%s the menu"), Gui::visible ? xorstr_("Opened") : xorstr_("Closed"));
+		eventLog.CreateReport(xorstr_("%s the menu"), Gui::visible ? xorstr_("Opened") : xorstr_("Closed"));
 	}
 	wasPressed = isPressed;
 }
 
-void Features::General::Menu::SetupGUI()
+void Menu::SetupGUI()
 {
 	ImGui::InputSelector(xorstr_("Menu key (%s)"), menuKey);
 	if (menuKey == 0)
@@ -101,8 +87,9 @@ void Features::General::Menu::SetupGUI()
 	ImGui::Text(xorstr_("Project name: " PROJECT_NAME));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::Menu::Serializer)
-SERIALIZED_TYPE(xorstr_("Menu key"), menuKey)
-// Intentionally not saving the showing...window because nobody needs those
-SERIALIZED_TYPE(xorstr_("Style"), style)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(Menu)
+{
+	SERIALIZE(xorstr_("Menu key"), menuKey);
+	SERIALIZE(xorstr_("Style"), style);
+	// Intentionally not saving the showing...window because nobody needs those
+}

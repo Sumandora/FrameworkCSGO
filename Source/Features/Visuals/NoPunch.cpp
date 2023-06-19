@@ -1,4 +1,4 @@
-#include "Visuals.hpp"
+#include "NoPunch.hpp"
 
 #include "../../Interfaces.hpp"
 #include "imgui.h"
@@ -6,13 +6,10 @@
 
 #include <vector>
 
-static bool hideViewPunch = false;
-static bool hideAimPunch = false;
-
 static Vector lastViewPunch;
 static Vector lastAimPunch;
 
-void Features::Visuals::NoPunch::HidePunch()
+void NoPunch::HidePunch()
 {
 	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
@@ -31,7 +28,7 @@ void Features::Visuals::NoPunch::HidePunch()
 	lastAimPunch = *localPlayer->AimPunchAngle();
 }
 
-void Features::Visuals::NoPunch::RestorePunch()
+void NoPunch::RestorePunch()
 {
 	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
@@ -47,13 +44,14 @@ void Features::Visuals::NoPunch::RestorePunch()
 		*localPlayer->AimPunchAngle() = lastAimPunch;
 }
 
-void Features::Visuals::NoPunch::SetupGUI()
+void NoPunch::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Hide view punch"), &hideViewPunch);
 	ImGui::Checkbox(xorstr_("Hide aim punch"), &hideAimPunch);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::NoPunch::Serializer)
-SERIALIZED_TYPE(xorstr_("Hide view punch"), hideViewPunch)
-SERIALIZED_TYPE(xorstr_("Hide aim punch"), hideAimPunch)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(NoPunch)
+{
+	SERIALIZE(xorstr_("Hide view punch"), hideViewPunch);
+	SERIALIZE(xorstr_("Hide aim punch"), hideAimPunch);
+}

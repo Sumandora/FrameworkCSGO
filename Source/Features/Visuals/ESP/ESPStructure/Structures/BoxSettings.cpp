@@ -67,14 +67,15 @@ void BoxSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(BoxSettings::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Color"), color)
-SERIALIZED_TYPE(xorstr_("Rounding"), rounding)
-SERIALIZED_TYPE(xorstr_("Thickness"), thickness)
-SERIALIZED_TYPE(xorstr_("Outlined"), outlined)
-SERIALIZED_TYPE(xorstr_("Outline color"), outlineColor)
-SERIALIZED_TYPE(xorstr_("Outline thickness"), outlineThickness)
-SERIALIZED_TYPE(xorstr_("Fill"), fill)
-SERIALIZED_TYPE(xorstr_("Fill color"), fillColor)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(BoxSettings)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE_VECTOR4D(xorstr_("Color"), color.Value);
+	SERIALIZE(xorstr_("Rounding"), rounding);
+	SERIALIZE(xorstr_("Thickness"), thickness);
+	SERIALIZE(xorstr_("Outlined"), outlined);
+	SERIALIZE_VECTOR4D(xorstr_("Outline color"), outlineColor.Value);
+	SERIALIZE(xorstr_("Outline thickness"), outlineThickness);
+	SERIALIZE(xorstr_("Fill"), fill);
+	SERIALIZE_VECTOR4D(xorstr_("Fill color"), fillColor.Value);
+}

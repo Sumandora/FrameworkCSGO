@@ -1,26 +1,29 @@
 #include "../GameFunctions.hpp"
 
-#include "../../../Features/Semirage/Semirage.hpp"
-#include "../../../Features/Visuals/Visuals.hpp"
+#include "../../../Features/Semirage/Backtrack.hpp"
+#include "../../../Features/Visuals/ESP/ESP.hpp"
+#include "../../../Features/Visuals/Fog.hpp"
+#include "../../../Features/Visuals/NoPunch.hpp"
+#include "../../../Features/Visuals/SpectatorList.hpp"
 #include "../../../Interfaces.hpp"
 
 void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
 	case ClientFrameStage::FRAME_START: {
-		Features::Visuals::SpectatorList::Update();
-		Features::Visuals::Esp::Update();
+		spectatorList.Update();
+		esp.Update();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_START: {
-		Features::Visuals::Fog::FrameStageNotify();
-		Features::Semirage::Backtrack::FrameStageNotify();
+		fog.FrameStageNotify();
+		backtrack.FrameStageNotify();
 
-		Features::Visuals::NoPunch::HidePunch();
+		noPunch.HidePunch();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_END: {
-		Features::Visuals::NoPunch::RestorePunch();
+		noPunch.RestorePunch();
 
 		worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
 		break;

@@ -3,12 +3,12 @@
 
 #include "imgui.h"
 
-#define TABBAR(name, constructor)   \
-	if (ImGui::BeginTabBar(name)) { \
-		ImGui::PushID(name);        \
-		constructor();              \
-		ImGui::PopID();             \
-		ImGui::EndTabBar();         \
+#define TABBAR(name, constructor)                                 \
+	if (ImGui::BeginTabBar(name, ImGuiTabBarFlags_Reorderable)) { \
+		ImGui::PushID(name);                                      \
+		constructor();                                            \
+		ImGui::PopID();                                           \
+		ImGui::EndTabBar();                                       \
 	}
 
 #define TABITEM(name, item)          \

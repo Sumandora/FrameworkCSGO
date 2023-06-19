@@ -37,7 +37,8 @@ void DroneSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(DroneSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Target"), target)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(DroneSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Target"), target);
+}

@@ -1,7 +1,6 @@
 #include "../ESPStructure.hpp"
 
 #include "../../../../../GUI/Elements/Popup.hpp"
-#include "../../../../General/General.hpp"
 
 bool LootCrateSettings::IsEnabled() const
 {
@@ -29,7 +28,8 @@ void LootCrateSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(LootCrateSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Healthbar"), healthbar)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(LootCrateSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Healthbar"), healthbar);
+}

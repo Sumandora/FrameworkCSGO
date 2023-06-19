@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <map>
 #include <mutex>
+#include <unordered_map>
 
 #include "imgui.h"
 #include "ImGuiColors.hpp"
@@ -14,11 +16,15 @@
 
 #include "../Hooks/SDL/SDLFunctions.hpp"
 
-#include "../Features/General/General.hpp"
-#include "../Features/Semirage/Semirage.hpp"
-#include "../Features/Visuals/Visuals.hpp"
+#include "../Features/General/EventLog.hpp"
+#include "../Features/General/Menu.hpp"
+#include "../Features/General/Watermark.hpp"
 
-#include "Construction/Settings.hpp"
+#include "../Features/Semirage/Aimbot.hpp"
+#include "../Features/Semirage/Backtrack.hpp"
+
+#include "../Features/Visuals/ESP/ESP.hpp"
+#include "../Features/Visuals/SpectatorList.hpp"
 
 #include "../Serialization/Serialization.hpp"
 
@@ -38,21 +44,6 @@ void Gui::Destroy()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-}
-
-void Gui::BuildMenu(int width, int height)
-{
-	const ImVec2 size(800, 600);
-	ImGui::SetNextWindowSize(size, ImGuiCond_Once);
-	ImGui::SetNextWindowPos(ImVec2((float)width * 0.1f, (float)height * 0.1f), ImGuiCond_Once);
-
-	ImGui::Begin(xorstr_("Framework"));
-
-	ImGui::SetWindowSize(ImVec2(400, 300), ImGuiCond_Once);
-
-	Construction::SetupConstruction();
-
-	ImGui::End();
 }
 
 void Gui::SwapWindow(SDL_Window* window)
@@ -110,20 +101,20 @@ void Gui::SwapWindow(SDL_Window* window)
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
 
-	Features::General::Menu::ImGuiLoop(); // Will take care of the menu key
+	menu.ImGuiLoop(); // Will take care of the menu key
 
 	if (visible) {
-		BuildMenu(width, height);
+		Build();
 	}
 
-	Features::General::Watermark::ImGuiRender(ImGui::GetBackgroundDrawList());
-	Features::General::EventLog::ImGuiRender(ImGui::GetBackgroundDrawList());
+	watermark.ImGuiRender(ImGui::GetBackgroundDrawList());
+	eventLog.ImGuiRender(ImGui::GetBackgroundDrawList());
 
-	Features::Semirage::Aimbot::ImGuiRender(ImGui::GetBackgroundDrawList());
-	Features::Semirage::Backtrack::ImGuiRender(ImGui::GetBackgroundDrawList());
+	semirageAimbot.ImGuiRender(ImGui::GetBackgroundDrawList());
+	backtrack.ImGuiRender(ImGui::GetBackgroundDrawList());
 
-	Features::Visuals::Esp::ImGuiRender(ImGui::GetBackgroundDrawList());
-	Features::Visuals::SpectatorList::ImGuiRender(ImGui::GetBackgroundDrawList());
+	esp.ImGuiRender(ImGui::GetBackgroundDrawList());
+	spectatorList.ImGuiRender(ImGui::GetBackgroundDrawList());
 
 	io.MouseDrawCursor = visible;
 	io.WantCaptureMouse = visible;
