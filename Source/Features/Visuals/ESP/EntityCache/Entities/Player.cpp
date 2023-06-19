@@ -51,7 +51,7 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 		if (esp.considerSpottedEntitiesAsVisible && spotted)
 			visible = true;
 		else
-			visible = IsVisible(entity, backingLocalPlayerEntity);
+			visible = IsVisible(backingLocalPlayerEntity, entity);
 	} else {
 		enemy = false;
 
