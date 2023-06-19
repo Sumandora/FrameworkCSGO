@@ -2,14 +2,14 @@
 
 #include "../../../../../Interfaces.hpp"
 #include "../../../../../Utils/Raytrace.hpp"
-#include "../../../Visuals.hpp"
+#include "../../ESP.hpp"
 
 #include "../../../../../SDK/GameClass/CBaseCSGrenade.hpp"
 #include "../../../../../SDK/GameClass/CC4.hpp"
 
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
-	if (Features::Visuals::Esp::considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
+	if (esp.considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
 		return true;
 
 	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
@@ -17,7 +17,7 @@ bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 	const Vector playerEye = localPlayer->GetEyePosition();
 	const Vector head = boneMatrix[8].Origin();
 
-	if (Features::Visuals::Esp::considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
+	if (esp.considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
 		return false;
 
 	CTraceFilterEntity filter(localPlayer);
@@ -48,7 +48,7 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 		auto* backingLocalPlayerEntity = static_cast<CBasePlayer*>(localPlayer.value().backingEntity);
 		enemy = entity->IsEnemy(backingLocalPlayerEntity);
 
-		if (Features::Visuals::Esp::considerSpottedEntitiesAsVisible && spotted)
+		if (esp.considerSpottedEntitiesAsVisible && spotted)
 			visible = true;
 		else
 			visible = IsVisible(entity, backingLocalPlayerEntity);

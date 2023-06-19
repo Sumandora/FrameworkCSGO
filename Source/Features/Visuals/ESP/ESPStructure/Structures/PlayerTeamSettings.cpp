@@ -4,8 +4,6 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-#include "../../../Visuals.hpp"
-
 bool PlayerTeamSettings::IsEnabled() const
 {
 	return visible.IsEnabled() || occluded.IsEnabled();
@@ -39,7 +37,8 @@ void PlayerTeamSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlayerTeamSettings::Serializer)
-SERIALIZED_STRUCTURE(xorstr_("Visible"), visible)
-SERIALIZED_STRUCTURE(xorstr_("Occluded"), occluded)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(PlayerTeamSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Visible"), visible);
+	SERIALIZE_STRUCT(xorstr_("Occluded"), occluded);
+}

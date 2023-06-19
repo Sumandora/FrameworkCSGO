@@ -1,11 +1,11 @@
 // https://github.com/seksea/gamesneeze/blob/ff795abb667979ea649973d4c80291b4071833a9/src/core/features/movement.cpp#L53
 
-#include "Movement.hpp"
+#include "JumpBug.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "../General/General.hpp"
+#include "../General/EnginePrediction.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
@@ -15,13 +15,9 @@
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../Interfaces.hpp"
 
-static bool enabled = false;
-static int input = ImGuiKey_None;
-static bool preDuck = false;
-
 static bool performing = false;
 
-void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
+void JumpBug::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !IsInputDown(input, true)) {
 		return;
@@ -43,7 +39,7 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 		return;
 	}
 
-	const int realFlags = Features::General::EnginePrediction::prePredictionFlags;
+	const int realFlags = enginePrediction.prePredictionFlags;
 	const int predFlags = *localPlayer->Flags();
 
 	const bool isOnGround = realFlags & FL_ONGROUND || realFlags & FL_PARTIALGROUND;
@@ -63,16 +59,17 @@ void Features::Movement::JumpBug::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::JumpBug::SetupGUI()
+void JumpBug::SetupGUI()
 {
-	Features::General::EnginePrediction::ImGuiWarning();
+	enginePrediction.ImGuiWarning();
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 	ImGui::Checkbox(xorstr_("Pre duck"), &preDuck);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::JumpBug::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Input"), input)
-SERIALIZED_TYPE(xorstr_("Pre duck"), preDuck)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(JumpBug)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Input"), input);
+	SERIALIZE(xorstr_("Pre duck"), preDuck);
+}

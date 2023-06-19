@@ -1,7 +1,4 @@
-#include "Legit.hpp"
-
-#include "imgui.h"
-#include "xorstr.hpp"
+#include "Triggerbot.hpp"
 
 #include "../../Interfaces.hpp"
 
@@ -12,15 +9,7 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-static bool enabled = false;
-static int input = ImGuiKey_None;
-static bool secondaryFireWithR8Revolver = true;
-static bool friendlyFire = false;
-static int maximalFlashAmount = 255;
-static bool dontShootThroughSmoke = false;
-// TODO Delay
-
-void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
+void Triggerbot::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !IsInputDown(input, false))
 		return;
@@ -87,7 +76,7 @@ void Features::Legit::Triggerbot::CreateMove(CUserCmd* cmd)
 		cmd->buttons |= IN_ATTACK;
 }
 
-void Features::Legit::Triggerbot::SetupGUI()
+void Triggerbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
@@ -97,11 +86,12 @@ void Features::Legit::Triggerbot::SetupGUI()
 	ImGui::Checkbox(xorstr_("Don't shoot through smoke"), &dontShootThroughSmoke);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Legit::Triggerbot::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Input"), input)
-SERIALIZED_TYPE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver)
-SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
-SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
-SERIALIZED_TYPE(xorstr_("Don't shoot through smoke"), dontShootThroughSmoke)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(Triggerbot)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Input"), input);
+	SERIALIZE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver);
+	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
+	SERIALIZE(xorstr_("Maximal flash amount"), maximalFlashAmount);
+	SERIALIZE(xorstr_("Don't shoot through smoke"), dontShootThroughSmoke);
+}

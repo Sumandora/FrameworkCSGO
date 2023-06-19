@@ -5,30 +5,36 @@
 #include "../../GUI/ImGuiMacros.hpp"
 #include "../../Serialization/Serializer.hpp"
 #include "WeaponClasses.hpp"
+#include <type_traits>
+
+class BaseWeaponConfig {
+public:
+	virtual void SetupGUI() = 0;
+	virtual SERIALIZER() = 0;
+};
 
 template <typename T>
 class WeaponConfigurator {
+	static_assert(std::is_base_of_v<BaseWeaponConfig, T>, "T is not a BaseWeaponConfig");
+
 	struct OverridableConfig {
 		bool overridden = false;
 		T config;
 
-		BEGIN_SERIALIZED_STRUCT(Serializer)
-		SERIALIZED_TYPE(xorstr_("Overridden"), overridden)
-		SERIALIZED_STRUCTURE(xorstr_("Config"), config)
-		END_SERIALIZED_STRUCT
+		SERIALIZER()
+		{
+			SERIALIZE(xorstr_("Overridden"), overridden);
+			SERIALIZE_STRUCT(xorstr_("Config"), config);
+		}
 	};
-
-	void (*WeaponGUICallback)(T&);
 
 	T sharedConfig;
 	std::map<WeaponClass, OverridableConfig> classConfigs;
 	std::map<WeaponID, OverridableConfig> weaponConfigs;
 
 public:
-	explicit WeaponConfigurator(void (*WeaponGUICallback)(T&))
+	explicit WeaponConfigurator()
 	{
-		this->WeaponGUICallback = WeaponGUICallback;
-
 		// Initialize maps with default values for the serialization works
 		for (int classIndex = static_cast<int>(WeaponClass::PISTOL); classIndex <= static_cast<int>(WeaponClass::SHOTGUN); classIndex++) {
 			auto weaponClass = static_cast<WeaponClass>(classIndex);
@@ -73,14 +79,14 @@ public:
 		if (overridableConfig.overridden) {
 			T& weaponConfig = overridableConfig.config;
 			BuildMenu(weaponConfig);
-			WeaponGUICallback(weaponConfig);
+			weaponConfig.SetupGUI();
 		}
 	}
 
 	void SetupGUI(){
 		TABBAR(xorstr_("#Weapon config"), [&]() {
 			TABITEM(xorstr_("Shared"), [&]() {
-				WeaponGUICallback(sharedConfig);
+				sharedConfig.SetupGUI();
 			})
 
 			for (int classIndex = static_cast<int>(WeaponClass::PISTOL); classIndex <= static_cast<int>(WeaponClass::SHOTGUN); classIndex++) {
@@ -129,17 +135,18 @@ public:
 		return &sharedConfig;
 	}
 
-	BEGIN_SERIALIZED_STRUCT(Serializer)
-	SERIALIZED_STRUCTURE(xorstr_("Shared"), sharedConfig)
-	for (int classIndex = static_cast<int>(WeaponClass::PISTOL); classIndex <= static_cast<int>(WeaponClass::SHOTGUN); classIndex++) {
-		auto weaponClass = static_cast<WeaponClass>(classIndex);
-		SERIALIZED_STRUCTURE(weaponClassLocalization[weaponClass], classConfigs[weaponClass])
+	SERIALIZER()
+	{
+		SERIALIZE_STRUCT(xorstr_("Shared"), sharedConfig);
+		for (int classIndex = static_cast<int>(WeaponClass::PISTOL); classIndex <= static_cast<int>(WeaponClass::SHOTGUN); classIndex++) {
+			auto weaponClass = static_cast<WeaponClass>(classIndex);
+			SERIALIZE_STRUCT(weaponClassLocalization[weaponClass], classConfigs[weaponClass]);
 
-		for (WeaponID weaponId : weaponClassification[weaponClass]) {
-			SERIALIZED_STRUCTURE(weaponLocalization[weaponId], weaponConfigs[weaponId])
+			for (WeaponID weaponId : weaponClassification[weaponClass]) {
+				SERIALIZE_STRUCT(weaponLocalization[weaponId], weaponConfigs[weaponId]);
+			}
 		}
 	}
-	END_SERIALIZED_STRUCT
 };
 
 #endif

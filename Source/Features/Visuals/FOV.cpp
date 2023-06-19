@@ -1,4 +1,4 @@
-#include "Visuals.hpp"
+#include "FOV.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -9,21 +9,9 @@
 
 #include <vector>
 
-static bool forceFOV = false;
-static bool ignoreScoped = true;
-static float fov = 90.0f;
-static bool forceViewModel = false;
-static float viewModelFovOffset = 0.0f;
-static bool viewOffset = true;
-static float offsetX = 0.0f;
-static float offsetY = 0.0f;
-static float offsetZ = 0.0f;
-static float rotationOffsetX = 0.0f;
-static float rotationOffsetY = 0.0f;
-static float rotationOffsetZ = 0.0f;
 // TODO Aspect ratio
 
-void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
+void FOV::OverrideView(CViewSetup* pSetup)
 {
 	if ((!forceFOV && !forceViewModel) || !Interfaces::engine->IsInGame())
 		return;
@@ -89,7 +77,7 @@ void Features::Visuals::FOV::OverrideView(CViewSetup* pSetup)
 	}
 }
 
-void Features::Visuals::FOV::SetupGUI()
+void FOV::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Force FOV"), &forceFOV);
 	if (forceFOV) {
@@ -114,17 +102,18 @@ void Features::Visuals::FOV::SetupGUI()
 	}
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::FOV::Serializer)
-SERIALIZED_TYPE(xorstr_("Force FOV"), forceFOV)
-SERIALIZED_TYPE(xorstr_("Ignore scoped"), ignoreScoped)
-SERIALIZED_TYPE(xorstr_("FOV"), fov)
-SERIALIZED_TYPE(xorstr_("Force View model"), forceViewModel)
-SERIALIZED_TYPE(xorstr_("View model FOV"), viewModelFovOffset)
-SERIALIZED_TYPE(xorstr_("View offset"), viewOffset)
-SERIALIZED_TYPE(xorstr_("Offset X"), offsetX)
-SERIALIZED_TYPE(xorstr_("Offset Y"), offsetY)
-SERIALIZED_TYPE(xorstr_("Offset Z"), offsetZ)
-SERIALIZED_TYPE(xorstr_("Rotation offset X"), rotationOffsetX)
-SERIALIZED_TYPE(xorstr_("Rotation offset Y"), rotationOffsetY)
-SERIALIZED_TYPE(xorstr_("Rotation offset Z"), rotationOffsetZ)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(FOV)
+{
+	SERIALIZE(xorstr_("Force FOV"), forceFOV);
+	SERIALIZE(xorstr_("Ignore scoped"), ignoreScoped);
+	SERIALIZE(xorstr_("FOV"), fov);
+	SERIALIZE(xorstr_("Force View model"), forceViewModel);
+	SERIALIZE(xorstr_("View model FOV"), viewModelFovOffset);
+	SERIALIZE(xorstr_("View offset"), viewOffset);
+	SERIALIZE(xorstr_("Offset X"), offsetX); // TODO Make vectors?
+	SERIALIZE(xorstr_("Offset Y"), offsetY);
+	SERIALIZE(xorstr_("Offset Z"), offsetZ);
+	SERIALIZE(xorstr_("Rotation offset X"), rotationOffsetX);
+	SERIALIZE(xorstr_("Rotation offset Y"), rotationOffsetY);
+	SERIALIZE(xorstr_("Rotation offset Z"), rotationOffsetZ);
+}

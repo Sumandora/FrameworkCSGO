@@ -11,7 +11,7 @@
 #include "Memory.hpp"
 #include "Netvars.hpp"
 
-#include "Features/General/General.hpp"
+#include "Features/General/EventLog.hpp"
 
 // TODO Clantag
 // TODO Force Crosshair
@@ -30,6 +30,10 @@
 // TODO Auto pistol
 
 // TODO Moonwalk
+
+// TODO More movement keybinds
+// TODO Auto ladder
+// TODO Slow walk
 
 // TODO Grenade Prediction & Brightness
 // TODO Color Correction
@@ -58,7 +62,7 @@ void Initializer()
 
 	Hooks::InstallHooks();
 
-	Features::General::EventLog::CreateReport(xorstr_("Initialized!"));
+	eventLog.CreateReport(xorstr_("Initialized!"));
 }
 
 int __attribute__((constructor)) Startup()

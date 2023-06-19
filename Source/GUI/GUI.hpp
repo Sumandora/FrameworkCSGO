@@ -9,7 +9,7 @@ namespace Gui {
 	void Create();
 	void Destroy();
 
-	void BuildMenu(int width, int height);
+	void Build();
 
 	void SwapWindow(SDL_Window* window);
 	void PollEvent(SDL_Event* event);

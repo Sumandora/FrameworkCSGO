@@ -2,10 +2,10 @@
 #define SERIALIZATION
 
 namespace Serialization {
+	char* GetConfigDirectory();
+
 	bool Load(const char* filename);
 	bool Save(const char* filename);
-
-	char* GetConfigDirectory();
 }
 
 #endif

@@ -61,9 +61,8 @@ target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${IMGUI_SOURCE_FILES})
 # Setup xorstr
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/xorstr/include)
 
-# Setup mINI
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/mINI/src)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC MINI_CASE_SENSITIVE)
+# Setup SimpleJSON
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/SimpleJSON)
 
 # Setup length-disassembler
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/length-disassembler)

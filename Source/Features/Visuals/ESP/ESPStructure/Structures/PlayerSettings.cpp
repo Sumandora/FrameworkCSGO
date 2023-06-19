@@ -43,8 +43,9 @@ void PlayerSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlayerSettings::Serializer)
-SERIALIZED_STRUCTURE(xorstr_("Teammate"), teammate)
-SERIALIZED_STRUCTURE(xorstr_("Enemy"), enemy)
-SERIALIZED_STRUCTURE(xorstr_("Local"), local)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(PlayerSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Teammate"), teammate);
+	SERIALIZE_STRUCT(xorstr_("Enemy"), enemy);
+	SERIALIZE_STRUCT(xorstr_("Local"), local);
+}

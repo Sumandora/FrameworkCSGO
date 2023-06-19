@@ -41,7 +41,8 @@ void WeaponSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(WeaponSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Ammo"), ammo)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(WeaponSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Ammo"), ammo);
+}

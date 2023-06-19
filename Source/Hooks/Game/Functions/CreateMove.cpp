@@ -1,6 +1,16 @@
 #include "../GameFunctions.hpp"
 
-#include "../../../Features/Features.hpp"
+#include "../../../Features/General/EnginePrediction.hpp"
+#include "../../../Features/Legit/Triggerbot.hpp"
+#include "../../../Features/Movement/AutoStrafer.hpp"
+#include "../../../Features/Movement/Bhop.hpp"
+#include "../../../Features/Movement/CrouchJump.hpp"
+#include "../../../Features/Movement/EdgeJump.hpp"
+#include "../../../Features/Movement/FastDuck.hpp"
+#include "../../../Features/Movement/JumpBug.hpp"
+#include "../../../Features/Semirage/Aimbot.hpp"
+#include "../../../Features/Semirage/Backtrack.hpp"
+#include "../../../Features/Semirage/RecoilAssistance.hpp"
 #include "../../../Interfaces.hpp"
 
 #include "../../../Utils/MouseCorrection.hpp"
@@ -12,27 +22,27 @@ bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, C
 	if (!cmd || !cmd->command_number)
 		return silent;
 
-	Features::Movement::Bhop::CreateMove(cmd);
-	Features::Movement::CrouchJump::CreateMove(cmd);
-	Features::Movement::FastDuck::CreateMove(cmd);
+	bhop.CreateMove(cmd);
+	crouchJump.CreateMove(cmd);
+	fastDuck.CreateMove(cmd);
 
-	Features::General::EnginePrediction::StartPrediction(cmd);
+	enginePrediction.StartPrediction(cmd);
 	{
-		Features::Movement::AutoStrafer::CreateMove(cmd);
-		Features::Movement::JumpBug::CreateMove(cmd);
-		Features::Movement::EdgeJump::CreateMove(cmd);
+		autoStrafer.CreateMove(cmd);
+		jumpBug.CreateMove(cmd);
+		edgeJump.CreateMove(cmd);
 
-		silent = !Features::Semirage::RecoilAssistance::CreateMove(cmd) && silent;
-		silent = !Features::Semirage::Aimbot::CreateMove(cmd) && silent;
+		silent = !recoilAssistance.CreateMove(cmd) && silent;
+		silent = !semirageAimbot.CreateMove(cmd) && silent;
 
-		Features::Legit::Triggerbot::CreateMove(cmd);
+		triggerbot.CreateMove(cmd);
 
 		// We have to keep in mind that our angles might differ from the client view at this point,
 		// because of that we need to take the cmd at the last point before actually telling the server, that we shot,
 		// so we have the viewangles, which is being told to the server
-		Features::Semirage::Backtrack::CreateMove(cmd);
+		backtrack.CreateMove(cmd);
 	}
-	Features::General::EnginePrediction::EndPrediction();
+	enginePrediction.EndPrediction();
 
 	Utils::CorrectMouseDeltas(cmd);
 

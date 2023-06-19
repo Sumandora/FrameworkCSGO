@@ -1,11 +1,11 @@
-#include "../DebugTab.hpp"
+#include "../Debug.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
 
 #include "../../../../Netvars.hpp"
 
-void Gui::Construction::Debug::NetvarsTab()
+void Gui::Windows::Netvars()
 {
 	for (const auto& [clientClass, tables] : Netvars::netvars) {
 		if (ImGui::TreeNode(clientClass->m_pNetworkName)) {

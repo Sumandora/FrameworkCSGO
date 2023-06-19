@@ -1,5 +1,5 @@
-#ifndef FEATURES_VISUALS_ESP_PLAYERFLAGS
-#define FEATURES_VISUALS_ESP_PLAYERFLAGS
+#ifndef FEATURES_VISUALS_ESP_ESPSTRUCTURE_PLAYERFLAGS
+#define FEATURES_VISUALS_ESP_ESPSTRUCTURE_PLAYERFLAGS
 
 #include "../EntityCache/EntityCache.hpp"
 
@@ -24,10 +24,11 @@ public:
 
 	virtual std::string GetName() const = 0;
 
-	BEGIN_SERIALIZED_STRUCT(Serializer)
-	SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-	SERIALIZED_TYPE(xorstr_("Color"), color)
-	END_SERIALIZED_STRUCT
+	SERIALIZER()
+	{
+		SERIALIZE(xorstr_("Enabled"), enabled);
+		SERIALIZE_VECTOR4D(xorstr_("Color"), color.Value);
+	}
 };
 
 #define DECLARE_FLAG(flagName, displayName)                                              \

@@ -1,4 +1,4 @@
-#include "../DebugTab.hpp"
+#include "../Debug.hpp"
 
 #include "imgui.h"
 #include "xorstr.hpp"
@@ -20,7 +20,7 @@ static void ConstructInner(link_map* linkMap)
 	}
 }
 
-void Gui::Construction::Debug::LinkMapsTab()
+void Gui::Windows::LinkMaps()
 {
 	static link_map* first = [] {
 		void* handle = dlmopen(LM_ID_BASE, nullptr, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);

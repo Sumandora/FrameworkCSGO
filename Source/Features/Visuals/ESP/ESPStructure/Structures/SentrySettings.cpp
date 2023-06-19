@@ -1,7 +1,8 @@
 #include "../ESPStructure.hpp"
 
 #include "../../../../../GUI/Elements/Popup.hpp"
-#include "../../../../General/General.hpp"
+
+#include "../../../../General/EventLog.hpp"
 
 bool SentrySettings::IsEnabled() const
 {
@@ -29,7 +30,8 @@ void SentrySettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(SentrySettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Healthbar"), healthbar)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(SentrySettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Healthbar"), healthbar);
+}

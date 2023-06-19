@@ -1,7 +1,6 @@
-#include "Movement.hpp"
+#include "Bhop.hpp"
 
 #include "../../GUI/Elements/HelpMarker.hpp"
-#include "imgui.h"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 
@@ -9,19 +8,12 @@
 #include "../../SDK/Definitions/StateFlags.hpp"
 
 #include "../../SDK/GameClass/CBasePlayer.hpp"
+#include "../../SDK/MoveType.hpp"
 
 #include "../../Interfaces.hpp"
-#include "../../SDK/MoveType.hpp"
 #include <cstdlib>
 
-static bool enabled = false;
-static float hitChance = 1.0f;
-static float inAirDistortion = 0.0f;
-static int minimumReleaseDelay = 0;
-static int maximumRelaseDelay = 0;
-static bool onlyWhenFalling = false;
-
-void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
+void Bhop::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
@@ -65,7 +57,7 @@ void Features::Movement::Bhop::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::Bhop::SetupGUI()
+void Bhop::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::SliderFloat(xorstr_("Hit chance"), &hitChance, 0, 1, xorstr_("%.2f"));
@@ -76,11 +68,12 @@ void Features::Movement::Bhop::SetupGUI()
 	ImGui::HelpMarker(xorstr_("This is useful when wearing an exojump suit"));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::Bhop::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Hit chance"), hitChance)
-SERIALIZED_TYPE(xorstr_("In air distortion"), inAirDistortion)
-SERIALIZED_TYPE(xorstr_("Minimum release delay"), minimumReleaseDelay)
-SERIALIZED_TYPE(xorstr_("Maximum release delay"), maximumRelaseDelay)
-SERIALIZED_TYPE(xorstr_("Only when falling"), onlyWhenFalling)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(Bhop)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Hit chance"), hitChance);
+	SERIALIZE(xorstr_("In air distortion"), inAirDistortion);
+	SERIALIZE(xorstr_("Minimum release delay"), minimumReleaseDelay);
+	SERIALIZE(xorstr_("Maximum release delay"), maximumRelaseDelay);
+	SERIALIZE(xorstr_("Only when falling"), onlyWhenFalling);
+}

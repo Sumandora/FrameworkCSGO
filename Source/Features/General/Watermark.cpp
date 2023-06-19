@@ -1,31 +1,29 @@
-#include "General.hpp"
-
-#include "xorstr.hpp"
+#include "Watermark.hpp"
 
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
-bool Features::General::Watermark::enabled = true;
-
-void Features::General::Watermark::ImGuiRender(ImDrawList* drawList)
+void Watermark::ImGuiRender(ImDrawList* drawList)
 {
 	if (!enabled)
 		return;
 
-	ShadowString::AddText(drawList, ImVec2(10.0f, 10.0f), ImGuiColors::white, xorstr_(
+	ShadowString::AddText(drawList, ImVec2(10.0f, 10.0f), ImGuiColors::white,
+		xorstr_(
 #ifdef DEBUG
-																				  "Framework (debug build)"
+			"Framework (debug build)"
 #else
-																				  "Framework"
+			"Framework"
 #endif
-																				  ));
+			));
 }
 
-void Features::General::Watermark::SetupGUI()
+void Watermark::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::General::Watermark::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(Watermark)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+}

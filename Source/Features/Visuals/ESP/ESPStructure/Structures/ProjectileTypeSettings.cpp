@@ -1,7 +1,7 @@
 #include "../ESPStructure.hpp"
 
 #include "../../../../../GUI/Elements/Popup.hpp"
-#include "../../../../General/General.hpp"
+#include "../../../../General/EventLog.hpp"
 
 static std::map<ProjectileType, const char*> projectileNames{
 	{ ProjectileType::BREACH_CHARGE, strdup(xorstr_("Breach charge")) },
@@ -25,7 +25,7 @@ ProjectileSettings& ProjectileTypeSettings::GetSettings(ProjectileType type) con
 	switch (type) {
 	case ProjectileType::INVALID:
 		// Something did go horribly wrong
-		Features::General::EventLog::CreateReport(xorstr_("Invalid projectile found?"));
+		eventLog.CreateReport(xorstr_("Invalid projectile found?"));
 		__asm("int3");
 		__builtin_unreachable();
 	case ProjectileType::BREACH_CHARGE:
@@ -83,14 +83,15 @@ void ProjectileTypeSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(ProjectileTypeSettings::Serializer)
-SERIALIZED_STRUCTURE(xorstr_("Breach charge"), breachCharge)
-SERIALIZED_STRUCTURE(xorstr_("Bump Mine"), bumpMine)
-SERIALIZED_STRUCTURE(xorstr_("Decoy"), decoy)
-SERIALIZED_STRUCTURE(xorstr_("Molotov"), molotov)
-SERIALIZED_STRUCTURE(xorstr_("Sensor Grenade"), sensorGrenade)
-SERIALIZED_STRUCTURE(xorstr_("Smoke Grenade"), smokeGrenade)
-SERIALIZED_STRUCTURE(xorstr_("Snowball"), snowball)
-SERIALIZED_STRUCTURE(xorstr_("High Explosive Grenade"), highExplosiveGrenade)
-SERIALIZED_STRUCTURE(xorstr_("Flashbang"), flashbang)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(ProjectileTypeSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Breach charge"), breachCharge);
+	SERIALIZE_STRUCT(xorstr_("Bump Mine"), bumpMine);
+	SERIALIZE_STRUCT(xorstr_("Decoy"), decoy);
+	SERIALIZE_STRUCT(xorstr_("Molotov"), molotov);
+	SERIALIZE_STRUCT(xorstr_("Sensor Grenade"), sensorGrenade);
+	SERIALIZE_STRUCT(xorstr_("Smoke Grenade"), smokeGrenade);
+	SERIALIZE_STRUCT(xorstr_("Snowball"), snowball);
+	SERIALIZE_STRUCT(xorstr_("High Explosive Grenade"), highExplosiveGrenade);
+	SERIALIZE_STRUCT(xorstr_("Flashbang"), flashbang);
+}

@@ -1,65 +1,110 @@
 #ifndef SERIALIZATION_SERIALIZER
 #define SERIALIZATION_SERIALIZER
 
-#include "mini/ini.h"
+#include "xorstr.hpp"
 
-#include "imgui.h"
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpessimizing-move"
+#include "json.hpp"
+#pragma GCC diagnostic pop
 
-#include "../SDK/Math/Vector.hpp"
+#include <type_traits>
 
-enum Direction {
+enum class Direction {
 	SERIALIZE,
 	DESERIALIZE
 };
 
-namespace Serialization {
-	class Serializer {
-	public:
-		explicit Serializer(mINI::INIStructure& structure);
-
-		void SetSection(const char* section);
-		void LeaveSection();
-
-		std::string& GetValue(const char* name);
-
-		// Primitives
-		void Serialize(const char* name, bool& type, Direction direction);
-		void Serialize(const char* name, int& type, Direction direction);
-		void Serialize(const char* name, float& type, Direction direction);
-
-		// TODO Save these as structures rather than types
-
-		// Types
-		void Serialize(const char* name, Vector& type, Direction direction);
-
-		// ImGui
-		void Serialize(const char* name, ImColor& type, Direction direction);
-
-	private:
-		std::string currentSection;
-		mINI::INIStructure& structure;
-	};
+constexpr void Assign(auto& variable, json::JSON& jsonType)
+{
+	if constexpr (std::is_same_v<std::remove_cvref_t<decltype(variable)>, bool>)
+		variable = jsonType.ToBool();
+	else if constexpr (std::is_integral_v<std::remove_cvref_t<decltype(variable)>>)
+		variable = jsonType.ToInt();
+	else if constexpr (std::is_floating_point_v<std::remove_cvref_t<decltype(variable)>>)
+		variable = jsonType.ToFloat();
+	else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(variable)>, const char*> || std::is_same_v<std::remove_cvref_t<decltype(variable)>, std::string>)
+		variable = jsonType.ToString();
+	else
+		throw std::runtime_error(xorstr_("Not a primitive type!"));
 }
 
-#define BEGIN_SERIALIZED_STRUCT(functionName)                                                      \
-	void functionName(Serialization::Serializer serializer, Direction direction, const char* name) \
-	{                                                                                              \
-		serializer.SetSection(name);
+#define SERIALIZE(name, variable)                     \
+	do {                                              \
+		if (direction == Direction::SERIALIZE)        \
+			json[name] = variable;                    \
+		else if (direction == Direction::DESERIALIZE) \
+			if (json.hasKey(name))                    \
+				Assign(variable, json[name]);         \
+	} while (0)
 
-#define SERIALIZED_TYPE(name, variable) \
-	serializer.Serialize(name, variable, direction);
+// Vector serialization sadly requires me to access x,y,z,w variables, because of ImGui
+// TODO Fail-safes
+#define SERIALIZE_VECTOR2D(name, vector)                                             \
+	do {                                                                             \
+		if (direction == Direction::SERIALIZE) {                                     \
+			json[name] = json::Array(vector.x, vector.y);                            \
+		} else if (direction == Direction::DESERIALIZE) {                            \
+			if (!json.hasKey(name))                                                  \
+				break;                                                               \
+			json::JSON& array = json[name];                                          \
+			if (array.JSONType() != json::JSON::Class::Array || array.length() != 2) \
+				break;                                                               \
+			vector.x = array[0].ToFloat();                                           \
+			vector.y = array[1].ToFloat();                                           \
+		}                                                                            \
+	} while (0)
 
-#define SERIALIZED_STRUCTURE(name, variable) \
-	variable.Serializer(serializer, direction, name);
+#define SERIALIZE_VECTOR3D(name, vector)                                             \
+	do {                                                                             \
+		if (direction == Direction::SERIALIZE) {                                     \
+			json[name] = json::Array(vector.x, vector.y, vector.z);                  \
+		} else if (direction == Direction::DESERIALIZE) {                            \
+			if (!json.hasKey(name))                                                  \
+				break;                                                               \
+			json::JSON& array = json[name];                                          \
+			if (array.JSONType() != json::JSON::Class::Array || array.length() != 3) \
+				break;                                                               \
+			vector.x = array[0].ToFloat();                                           \
+			vector.y = array[1].ToFloat();                                           \
+			vector.z = array[2].ToFloat();                                           \
+		}                                                                            \
+	} while (0)
 
-#define SERIALIZED_NAMESPACE(name, namespaceName) \
-	namespaceName::Serializer(serializer, direction, name);
+#define SERIALIZE_VECTOR4D(name, vector)                                             \
+	do {                                                                             \
+		if (direction == Direction::SERIALIZE) {                                     \
+			json[name] = json::Array(vector.x, vector.y, vector.z, vector.w);        \
+		} else if (direction == Direction::DESERIALIZE) {                            \
+			if (!json.hasKey(name))                                                  \
+				break;                                                               \
+			json::JSON& array = json[name];                                          \
+			if (array.JSONType() != json::JSON::Class::Array || array.length() != 4) \
+				break;                                                               \
+			vector.x = array[0].ToFloat();                                           \
+			vector.y = array[1].ToFloat();                                           \
+			vector.z = array[2].ToFloat();                                           \
+			vector.w = array[3].ToFloat();                                           \
+		}                                                                            \
+	} while (0)
 
-#define END_SERIALIZED_STRUCT  \
-	serializer.LeaveSection(); \
-	}
+#define SERIALIZE_STRUCT(name, struct)                                      \
+	do {                                                                    \
+		if (direction == Direction::SERIALIZE) {                            \
+			json::JSON inner = json::JSON::Make(json::JSON::Class::Object); \
+			struct.Serialize(inner, direction);                             \
+			json[name] = inner;                                             \
+		} else if (direction == Direction::DESERIALIZE) {                   \
+			if (!json.hasKey(name))                                         \
+				break;                                                      \
+			struct.Serialize(json[name], direction);                        \
+		}                                                                   \
+	} while (0)
 
-#define DECLARE_SERIALIZER(functionName) \
-	void functionName(Serialization::Serializer serializer, Direction direction, const char* name);
+#define SERIALIZER() \
+	void Serialize(json::JSON& json, Direction direction)
+
+#define SCOPED_SERIALIZER(scope) \
+	void scope::Serialize(json::JSON& json, Direction direction)
 
 #endif

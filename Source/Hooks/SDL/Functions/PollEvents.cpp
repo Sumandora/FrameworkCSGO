@@ -1,6 +1,7 @@
 #include "../SDLFunctions.hpp"
 
-#include "../../../Features/Legit/Legit.hpp"
+#include "../../../Features/Legit/Aimbot.hpp"
+
 #include "../../../GUI/GUI.hpp"
 
 int Hooks::SDL::PollEvents::HookFunc(SDL_Event* event)
@@ -11,7 +12,7 @@ int Hooks::SDL::PollEvents::HookFunc(SDL_Event* event)
 		return returnValue; // These events are not important for our purposes
 
 	Gui::PollEvent(event);
-	Features::Legit::Aimbot::PollEvent(event);
+	legitAimbot.PollEvent(event);
 
 	return returnValue;
 }

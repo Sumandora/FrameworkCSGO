@@ -1,11 +1,11 @@
-#include "Semirage.hpp"
+#include "Backtrack.hpp"
 
 #include <deque>
 #include <map>
 #include <ranges>
 #include <vector>
 
-#include "../General/General.hpp"
+#include "../General/EventLog.hpp"
 
 #include "../../Interfaces.hpp"
 
@@ -18,19 +18,6 @@
 #include "../../Utils/Trigonometry.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"
-
-static bool enabled = false;
-static float scale = 1.0f;
-static bool accountForOutgoingPing = false;
-static bool friendlyFire = false;
-static bool visualize = false;
-
-struct Tick {
-	float simulationTime{};
-	int tickCount{};
-	Vector origin;
-	Matrix3x4 boneMatrix[MAXSTUDIOBONES];
-};
 
 float CalculateLerpTime()
 {
@@ -53,7 +40,7 @@ float CalculateLerpTime()
 	return 0.0f;
 }
 
-bool IsTickValid(const Tick& tick)
+bool Backtrack::IsTickValid(const Tick& tick)
 {
 	// Does the user even want the tick?
 	if (Memory::globalVars->curtime - tick.simulationTime > ConVarStorage::sv_maxunlag()->GetFloat() * scale)
@@ -97,9 +84,7 @@ float CalculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, c
 	return requiredView.Length();
 }
 
-std::map<int, std::vector<Tick>> ticks;
-
-void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
+void Backtrack::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
@@ -168,12 +153,12 @@ void Features::Semirage::Backtrack::CreateMove(CUserCmd* cmd)
 	});
 
 	if (tickCount > 0 && cmd->tick_count != tickCount && (hasLimitedDistance || bestDistance < 5.0f)) {
-		Features::General::EventLog::CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - tickCount);
+		eventLog.CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - tickCount);
 		cmd->tick_count = tickCount;
 	}
 }
 
-void Features::Semirage::Backtrack::FrameStageNotify()
+void Backtrack::FrameStageNotify()
 {
 	if (!enabled || !Interfaces::engine->IsInGame()) {
 		ticks.clear();
@@ -211,7 +196,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 		if (!ticks[i].empty()) {
 			if (ticks[i].back().simulationTime == currentSimulationTime)
 				continue; // We don't have a new position yet
-			std::erase_if(ticks[i], [](const Tick& tick) { return !IsTickValid(tick); });
+			std::erase_if(ticks[i], [&](const Tick& tick) { return !IsTickValid(tick); });
 		}
 
 		Tick tick{};
@@ -225,7 +210,7 @@ void Features::Semirage::Backtrack::FrameStageNotify()
 	}
 }
 
-void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
+void Backtrack::ImGuiRender(ImDrawList* drawList)
 {
 	if (!enabled || !visualize)
 		return;
@@ -242,7 +227,7 @@ void Features::Semirage::Backtrack::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void Features::Semirage::Backtrack::SetupGUI()
+void Backtrack::SetupGUI()
 {
 #ifndef MENUPREVIEW
 	if (!ConVarStorage::cl_lagcompensation()->GetBool() || !ConVarStorage::sv_unlag()->GetBool())
@@ -265,10 +250,11 @@ void Features::Semirage::Backtrack::SetupGUI()
 	);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Semirage::Backtrack::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Scale"), scale)
-SERIALIZED_TYPE(xorstr_("Account for outgoing ping"), accountForOutgoingPing)
-SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
-SERIALIZED_TYPE(xorstr_("Visualize"), visualize)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(Backtrack)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Scale"), scale);
+	SERIALIZE(xorstr_("Account for outgoing ping"), accountForOutgoingPing);
+	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
+	SERIALIZE(xorstr_("Visualize"), visualize);
+}

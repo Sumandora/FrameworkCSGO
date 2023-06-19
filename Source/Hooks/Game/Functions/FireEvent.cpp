@@ -1,6 +1,6 @@
 #include "../GameFunctions.hpp"
 
-#include "../../../Features/Semirage/Semirage.hpp"
+#include "../../../Features/Semirage/Aimbot.hpp"
 
 void Hooks::Game::FireEvent::HookFunc(void* thisptr, CGameEvent* event, bool bServerOnly, bool bClientOnly)
 {
@@ -10,7 +10,7 @@ void Hooks::Game::FireEvent::HookFunc(void* thisptr, CGameEvent* event, bool bSe
 		events[name] = 0;
 	events[name]++;
 #endif
-	Features::Semirage::Aimbot::FireEvent(event);
+	semirageAimbot.FireEvent(event);
 
 	return InvokeFunction<void, void*, CGameEvent*, bool, bool>(hook->proxy, thisptr, event, bServerOnly, bClientOnly);
 }

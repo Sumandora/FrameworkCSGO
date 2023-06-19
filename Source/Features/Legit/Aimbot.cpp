@@ -1,39 +1,14 @@
-#include "Legit.hpp"
-
-#include "imgui.h"
+#include "Aimbot.hpp"
 
 #include "../../Interfaces.hpp"
 
 #include "../../Utils/Raytrace.hpp"
 #include "../../Utils/Trigonometry.hpp"
-#include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include <algorithm>
 #include <cmath>
 
-static bool enabled = false;
-// TODO Input
-
-struct LegitAimbotWeaponConfig {
-	float fov = 3.0f;
-	float smoothness = 4.0f;
-	int maximalInfluence = 1;
-
-	BEGIN_SERIALIZED_STRUCT(Serializer)
-	SERIALIZED_TYPE(xorstr_("FOV"), fov)
-	SERIALIZED_TYPE(xorstr_("Smoothness"), smoothness)
-	SERIALIZED_TYPE(xorstr_("Maximal influence"), maximalInfluence)
-	END_SERIALIZED_STRUCT
-};
-void WeaponGUI(LegitAimbotWeaponConfig& LegitAimbotWeaponConfig);
-
-static WeaponConfigurator<LegitAimbotWeaponConfig> weaponConfigurator(WeaponGUI);
-
-static int maximalFlashAmount = 0;
-static bool dontAimThroughSmoke = true;
-static bool friendlyFire = false;
-
-void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
+void LegitAimbot::PollEvent(SDL_Event* event)
 {
 	if (!enabled)
 		return;
@@ -61,8 +36,8 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
 		return;
 
-	LegitAimbotWeaponConfig* LegitAimbotWeaponConfig = weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
-	if (!LegitAimbotWeaponConfig)
+	WeaponConfig* weaponConfig = weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
+	if (!weaponConfig)
 		return;
 
 	const Vector playerEye = localPlayer->GetEyePosition();
@@ -115,10 +90,10 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (!target)
 		return;
 
-	if (bestRotation.Length() > LegitAimbotWeaponConfig->fov)
+	if (bestRotation.Length() > weaponConfig->fov)
 		return;
 
-	bestRotation /= LegitAimbotWeaponConfig->smoothness;
+	bestRotation /= weaponConfig->smoothness;
 
 	const Vector before = Vector((float)event->motion.xrel, (float)event->motion.yrel, 0);
 	const Vector goal = Vector(-round(bestRotation.y), round(bestRotation.x), 0);
@@ -127,18 +102,18 @@ void Features::Legit::Aimbot::PollEvent(SDL_Event* event)
 	if (dir < 0)
 		return; // We are trying to aim away
 
-	event->motion.xrel += std::clamp((int)goal.x, -LegitAimbotWeaponConfig->maximalInfluence, LegitAimbotWeaponConfig->maximalInfluence);
-	event->motion.yrel += std::clamp((int)goal.y, -LegitAimbotWeaponConfig->maximalInfluence, LegitAimbotWeaponConfig->maximalInfluence);
+	event->motion.xrel += std::clamp((int)goal.x, -weaponConfig->maximalInfluence, weaponConfig->maximalInfluence);
+	event->motion.yrel += std::clamp((int)goal.y, -weaponConfig->maximalInfluence, weaponConfig->maximalInfluence);
 }
 
-void WeaponGUI(LegitAimbotWeaponConfig& LegitAimbotWeaponConfig)
+void LegitAimbot::WeaponConfig::SetupGUI()
 {
-	ImGui::SliderFloat(xorstr_("FOV"), &LegitAimbotWeaponConfig.fov, 0.0f, 10.0f, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("Smoothness"), &LegitAimbotWeaponConfig.smoothness, 1.0f, 5.0f, xorstr_("%.2f"));
-	ImGui::SliderInt(xorstr_("Maximal influence"), &LegitAimbotWeaponConfig.maximalInfluence, 1, 5);
+	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, xorstr_("%.2f"));
+	ImGui::SliderInt(xorstr_("Maximal influence"), &maximalInfluence, 1, 5);
 }
 
-void Features::Legit::Aimbot::SetupGUI()
+void LegitAimbot::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 
@@ -149,11 +124,19 @@ void Features::Legit::Aimbot::SetupGUI()
 	weaponConfigurator.SetupGUI();
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Legit::Aimbot::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Maximal flash amount"), maximalFlashAmount)
-SERIALIZED_TYPE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke)
-SERIALIZED_TYPE(xorstr_("Friendly fire"), friendlyFire)
+SCOPED_SERIALIZER(LegitAimbot::WeaponConfig)
+{
+	SERIALIZE(xorstr_("FOV"), fov);
+	SERIALIZE(xorstr_("Smoothness"), smoothness);
+	SERIALIZE(xorstr_("Maximal influence"), maximalInfluence);
+}
 
-SERIALIZED_STRUCTURE(xorstr_("Weapons"), weaponConfigurator)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(LegitAimbot)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Maximal flash amount"), maximalFlashAmount);
+	SERIALIZE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke);
+	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
+
+	SERIALIZE_STRUCT(xorstr_("Weapons"), weaponConfigurator);
+}

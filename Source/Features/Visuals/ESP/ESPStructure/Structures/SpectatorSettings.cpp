@@ -47,8 +47,9 @@ void SpectatorSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(SpectatorSettings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_TYPE(xorstr_("Only show when spectated entity is dormant"), onlyShowWhenSpectatedEntityIsDormant)
-SERIALIZED_TYPE(xorstr_("Display name of spectated entity"), displayNameOfSpectatedEntity)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(SpectatorSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE(xorstr_("Only show when spectated entity is dormant"), onlyShowWhenSpectatedEntityIsDormant);
+	SERIALIZE(xorstr_("Display name of spectated entity"), displayNameOfSpectatedEntity);
+}

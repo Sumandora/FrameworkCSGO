@@ -1,4 +1,4 @@
-#include "Visuals.hpp"
+#include "Fog.hpp"
 
 #include "../../Interfaces.hpp"
 
@@ -7,23 +7,10 @@
 
 #include "../../SDK/GameClass/CFogController.hpp"
 
-static bool enabled = false;
-static bool hideFog = false;
-static ImColor colorPrimary = ImGuiColors::white;
-static bool blend = false;
-static Vector dirPrimary = {};
-static ImColor colorSecondary = ImGuiColors::black;
-static float start = 0.0f;
-static float end = 0.0f;
-static float farZ = 0.0f;
-static float maxDensity = 1.0f;
-static float hdrColorScale = 1.0f;
-static float zoomFogScale = 1.0f;
-
 // TODO Reset the fog when turned off
 // TODO also some maps might not have a fog controller (?)
 
-void Features::Visuals::Fog::FrameStageNotify()
+void Fog::FrameStageNotify()
 {
 	if (!enabled)
 		return;
@@ -60,7 +47,7 @@ void Features::Visuals::Fog::FrameStageNotify()
 	}
 }
 
-void Features::Visuals::Fog::SetupGUI()
+void Fog::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 
@@ -89,17 +76,18 @@ void Features::Visuals::Fog::SetupGUI()
 	ImGui::SliderFloat(xorstr_("Zoom fog scale"), &zoomFogScale, 0.0f, 1.0f, xorstr_("%.2f"));
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Visuals::Fog::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Hide fog"), hideFog)
-SERIALIZED_TYPE(xorstr_("Color primary"), colorPrimary)
-SERIALIZED_TYPE(xorstr_("Blend"), blend)
-SERIALIZED_TYPE(xorstr_("Dir Primary"), dirPrimary)
-SERIALIZED_TYPE(xorstr_("Color secondary"), colorSecondary)
-SERIALIZED_TYPE(xorstr_("Start"), start)
-SERIALIZED_TYPE(xorstr_("End"), end)
-SERIALIZED_TYPE(xorstr_("Far z"), farZ)
-SERIALIZED_TYPE(xorstr_("Max density"), maxDensity)
-SERIALIZED_TYPE(xorstr_("HDR color scale"), hdrColorScale)
-SERIALIZED_TYPE(xorstr_("Zoom fog scale"), zoomFogScale)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(Fog)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Hide fog"), hideFog);
+	SERIALIZE_VECTOR4D(xorstr_("Color primary"), colorPrimary.Value);
+	SERIALIZE(xorstr_("Blend"), blend);
+	SERIALIZE_VECTOR3D(xorstr_("Dir Primary"), dirPrimary);
+	SERIALIZE_VECTOR4D(xorstr_("Color secondary"), colorSecondary.Value);
+	SERIALIZE(xorstr_("Start"), start);
+	SERIALIZE(xorstr_("End"), end);
+	SERIALIZE(xorstr_("Far z"), farZ);
+	SERIALIZE(xorstr_("Max density"), maxDensity);
+	SERIALIZE(xorstr_("HDR color scale"), hdrColorScale);
+	SERIALIZE(xorstr_("Zoom fog scale"), zoomFogScale);
+}

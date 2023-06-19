@@ -1,7 +1,4 @@
-#include "Movement.hpp"
-
-#include "imgui.h"
-#include "xorstr.hpp"
+#include "CrouchJump.hpp"
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
@@ -10,12 +7,9 @@
 #include "../../Interfaces.hpp"
 #include "../../SDK/MoveType.hpp"
 
-static bool enabled = false;
-static int input = ImGuiKey_None;
-
 static bool performing = false;
 
-void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
+void CrouchJump::CreateMove(CUserCmd* cmd)
 {
 	if (!enabled || !IsInputDown(input, false)) {
 		performing = false;
@@ -46,13 +40,14 @@ void Features::Movement::CrouchJump::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Features::Movement::CrouchJump::SetupGUI()
+void CrouchJump::SetupGUI()
 {
 	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
 	ImGui::InputSelector(xorstr_("Input (%s)"), input);
 }
 
-BEGIN_SERIALIZED_STRUCT(Features::Movement::CrouchJump::Serializer)
-SERIALIZED_TYPE(xorstr_("Enabled"), enabled)
-SERIALIZED_TYPE(xorstr_("Input"), input)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(CrouchJump)
+{
+	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE(xorstr_("Input"), input);
+}

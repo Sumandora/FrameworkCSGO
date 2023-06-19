@@ -1,7 +1,8 @@
 #include "../ESPStructure.hpp"
 
 #include "../../../../../GUI/Elements/Popup.hpp"
-#include "../../../../General/General.hpp"
+
+#include "../../../../General/EventLog.hpp"
 
 static std::map<LootCrateType, const char*> lootCrateNames{
 	{ LootCrateType::PISTOL_CASE, strdup(xorstr_("Pistol Case")) },
@@ -23,7 +24,7 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 	switch (type) {
 	case LootCrateType::INVALID:
 		// Something did go horribly wrong
-		Features::General::EventLog::CreateReport(xorstr_("Invalid loot crate found?"));
+		eventLog.CreateReport(xorstr_("Invalid loot crate found?"));
 		__asm("int3");
 		__builtin_unreachable();
 	case LootCrateType::PISTOL_CASE:
@@ -77,11 +78,12 @@ void LootCrateTypeSettings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(LootCrateTypeSettings::Serializer)
-SERIALIZED_STRUCTURE(xorstr_("Pistol Case"), pistolCase)
-SERIALIZED_STRUCTURE(xorstr_("Light Case"), lightCase)
-SERIALIZED_STRUCTURE(xorstr_("Heavy Case"), heavyCase)
-SERIALIZED_STRUCTURE(xorstr_("Explosive Case"), explosiveCase)
-SERIALIZED_STRUCTURE(xorstr_("Tools Case"), toolsCase)
-SERIALIZED_STRUCTURE(xorstr_("Cash Dufflebag"), cashDufflebag)
-END_SERIALIZED_STRUCT
+SCOPED_SERIALIZER(LootCrateTypeSettings)
+{
+	SERIALIZE_STRUCT(xorstr_("Pistol Case"), pistolCase);
+	SERIALIZE_STRUCT(xorstr_("Light Case"), lightCase);
+	SERIALIZE_STRUCT(xorstr_("Heavy Case"), heavyCase);
+	SERIALIZE_STRUCT(xorstr_("Explosive Case"), explosiveCase);
+	SERIALIZE_STRUCT(xorstr_("Tools Case"), toolsCase);
+	SERIALIZE_STRUCT(xorstr_("Cash Dufflebag"), cashDufflebag);
+}

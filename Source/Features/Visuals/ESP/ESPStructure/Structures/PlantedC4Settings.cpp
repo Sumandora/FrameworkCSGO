@@ -1,4 +1,5 @@
 #include "../ESPStructure.hpp"
+
 #include <iomanip>
 
 #include "xorstr.hpp"
@@ -89,14 +90,15 @@ void PlantedC4Settings::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-BEGIN_SERIALIZED_STRUCT(PlantedC4Settings::Serializer)
-SERIALIZED_STRUCTURE(name, boxName)
-SERIALIZED_STRUCTURE(xorstr_("Timer"), timer)
-SERIALIZED_STRUCTURE(xorstr_("Defuse timer"), defuseTimer)
+SCOPED_SERIALIZER(PlantedC4Settings)
+{
+	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT(xorstr_("Timer"), timer);
+	SERIALIZE_STRUCT(xorstr_("Defuse timer"), defuseTimer);
 
-SERIALIZED_TYPE(xorstr_("Override defuse color"), overrideDefuseColor)
-SERIALIZED_TYPE(xorstr_("Defuse possible with kit"), defusePossibleWithKit)
-SERIALIZED_TYPE(xorstr_("Defuse possible impossible"), defuseImpossible)
+	SERIALIZE(xorstr_("Override defuse color"), overrideDefuseColor);
+	SERIALIZE_VECTOR4D(xorstr_("Defuse possible with kit"), defusePossibleWithKit.Value);
+	SERIALIZE_VECTOR4D(xorstr_("Defuse possible impossible"), defuseImpossible.Value);
 
-SERIALIZED_TYPE(xorstr_("Accuracy"), accuracy)
-END_SERIALIZED_STRUCT
+	SERIALIZE(xorstr_("Accuracy"), accuracy);
+}
