@@ -82,7 +82,8 @@ void EventLog::CreateReport(const char* fmt, ...)
 	size = vsnprintf(nullptr, size, fmt, args);
 	va_end(args);
 
-	char str[size + 1];
+	size += 1;
+	char str[size];
 
 	va_start(args, fmt);
 	vsnprintf(str, size, fmt, args);
