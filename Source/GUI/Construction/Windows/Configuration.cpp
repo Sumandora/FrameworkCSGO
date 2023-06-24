@@ -92,4 +92,13 @@ void Gui::Windows::Configuration()
 		}
 	}
 	ImGui::PopItemWidth();
+	if(configSelected >= 0 && configSelected < (int)configs.size()){
+		const char* configName = configs[configSelected].c_str();
+		if(ImGui::Button(xorstr_("Overwrite config"))){
+			if (Serialization::Save(GetConfigFile(configName)))
+				eventLog.CreateReport(xorstr_("Saved config '%s'"), configName);
+			else
+			eventLog.CreateReport(xorstr_("Failed to saved config '%s'"), configName);
+		}
+	}
 }
