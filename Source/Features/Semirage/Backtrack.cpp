@@ -132,12 +132,7 @@ void Backtrack::CreateMove(CUserCmd* cmd)
 		else
 			currentDistance = (*localPlayer->Origin() - *player->Origin()).Length();
 
-#ifdef __clang__
-		for (size_t index = records.size(); index--;) {
-			const Tick& tick = records[index];
-#else
 		for (const Tick& tick : std::ranges::views::reverse(records)) {
-#endif
 			float delta;
 			if (!hasLimitedDistance)
 				delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
