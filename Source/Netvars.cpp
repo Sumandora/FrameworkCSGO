@@ -1,16 +1,20 @@
 #include "Netvars.hpp"
 
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <tuple>
 #include <unordered_map>
 
+#include "BCRL.hpp"
 #include "Interfaces.hpp"
 #include "SDK/ClientClassIDs.hpp"
 #include "SDK/Netvars/RecvProp.hpp"
 #include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
+
+#include <cassert>
 
 void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
 {
@@ -40,9 +44,18 @@ void Netvars::DumpNetvars()
 	 * 	ret
 	 */
 
+	ClientClass* rootClass = static_cast<ClientClass*>(BCRL::Session::ArrayPointer(Interfaces::baseClient, 8)
+														   .Add(3)
+														   .RelativeToAbsolute()
+														   .Dereference()
+														   .Pointer()
+														   .value());
+
 	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
 	char* relativeAddress = reinterpret_cast<char*>(getAllClasses) + 3;
-	ClientClass* rootClass = *reinterpret_cast<ClientClass**>(Memory::RelativeToAbsolute(relativeAddress));
+	ClientClass* rootClass2 = *reinterpret_cast<ClientClass**>(relativeAddress + 4 + *reinterpret_cast<std::int32_t*>(relativeAddress));
+
+	assert(rootClass == rootClass2);
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;

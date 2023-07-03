@@ -1,5 +1,7 @@
 #include "Memory.hpp"
 
+#include <cassert>
+#include <cstdio>
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <link.h>
@@ -10,76 +12,93 @@
 
 #include "ldisasm.h"
 #include "RetAddrSpoofer.hpp"
+#include "SDK/GameClass/CBasePlayer.hpp"
+#include "SDK/GameClass/CGlobalVars.hpp"
+#include "SDK/GameClass/IMoveHelper.hpp"
+#include "SignatureScanner.hpp"
 #include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
 
-#include "IDASignatureScanner.hpp"
+#include "BCRL.hpp"
 
 void* RetAddrSpoofer::leaveRet = nullptr;
 
 static void* lineGoesThroughSmoke;
 static CBasePlayer** localPlayerList;
 
-void* Memory::GetBaseAddress(const char* name)
-{
-	void* handle = dlmopen(LM_ID_BASE, name, RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
-	if (!handle)
-		return nullptr;
-	link_map* linkMap;
-	if (dlinfo(handle, RTLD_DL_LINKMAP, &linkMap) != 0) {
-		dlclose(handle);
-		return nullptr;
-	}
-	void* base = reinterpret_cast<void*>(linkMap->l_addr);
-	dlclose(handle);
-	return base;
-}
-
-void* Memory::RelativeToAbsolute(void* addr)
-{
-	// RIP-Relatives start after the instruction using it
-	// The relative offsets are 4 bytes long
-
-	return reinterpret_cast<char*>(addr) + 4 + *reinterpret_cast<int32_t*>(addr);
-}
-
 void Memory::Create()
 {
-	void* clientBaseAddress = GetBaseAddress(xorstr_("./csgo/bin/linux64/client_client.so"));
-
-	void** baseClientVTable = Utils::GetVTable(Interfaces::baseClient);
-	void** gameMovementVTable = Utils::GetVTable(Interfaces::gameMovement);
-
 	// Set the address for the return address spoofer
-	RetAddrSpoofer::leaveRet = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("c9 c3")), baseClientVTable[0]); // random code piece
+	RetAddrSpoofer::leaveRet = BCRL::Session::ArrayPointer(Interfaces::baseClient, 0) // random code piece
+								   .NextByteOccurence(xorstr_("c9 c3"))
+								   .Pointer()
+								   .value();
 
-	void* hudProcessInput = baseClientVTable[10];
-	void* getClientMode = RelativeToAbsolute(reinterpret_cast<char*>(hudProcessInput) + 12);
-	clientMode = *reinterpret_cast<void**>(RelativeToAbsolute(reinterpret_cast<char*>(getClientMode) + 4));
+	clientMode = BCRL::Session::ArrayPointer(Interfaces::baseClient, 10)
+					 .Add(12)
+					 .RelativeToAbsolute()
+					 .Add(4)
+					 .RelativeToAbsolute()
+					 .Dereference()
+					 .Pointer()
+					 .value();
 
-	void* hudUpdate = baseClientVTable[11];
-	globalVars = *reinterpret_cast<CGlobalVars**>(RelativeToAbsolute(reinterpret_cast<char*>(hudUpdate) + 16));
+	globalVars = static_cast<CGlobalVars*>(BCRL::Session::ArrayPointer(Interfaces::baseClient, 11)
+											   .Add(16)
+											   .RelativeToAbsolute()
+											   .Dereference()
+											   .Pointer()
+											   .value());
 
-	// void* in_activateMouse = baseClientVTable[16];
-	// cinput = *reinterpret_cast<CInput**>(RelativeToAbsolute(reinterpret_cast<char*>(in_activateMouse) + 3));
+	// cinput = BCRL::Session::ArrayPointer(Interfaces::baseClient, 16)
+	// 			 .Add(3)
+	// 			 .RelativeToAbsolute()
+	// 			 .Dereference()
+	// 			 .Pointer()
+	// 			 .value();
 
 	// If this index changes I'm mad bro...
 	// To find the method, just search for the moveHelper and look at all usages
 	// The method which contains the 1.25 and 1.0 float literals is the one...
-	void* categorizeGroundSurface = gameMovementVTable[69];
-
-	void* leaInstr = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("48 8d 05") /* lea rax */), categorizeGroundSurface);
-	moveHelper = *reinterpret_cast<IMoveHelper**>(RelativeToAbsolute(reinterpret_cast<char*>(leaInstr) + 3));
+	moveHelper
+		= static_cast<IMoveHelper*>(BCRL::Session::ArrayPointer(Interfaces::gameMovement, 69)
+										.NextByteOccurence(xorstr_("48 8d 05") /* lea rax */)
+										.Add(3)
+										.RelativeToAbsolute()
+										.Dereference()
+										.Pointer()
+										.value());
 
 	// Has reference to "splitscreenplayer" inside itself
-	void* fireGameEvent = Utils::GetVTable(clientMode)[55];
-	void* movBeforeCall = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("48 89 85 10 d2 ff ff")), fireGameEvent);
-	void* getLocalPlayer = Memory::RelativeToAbsolute(reinterpret_cast<char*>(movBeforeCall) + 8);
+	localPlayerList = static_cast<CBasePlayer**>(
+		BCRL::Session::ArrayPointer(clientMode, 55)
+			.NextByteOccurence(xorstr_("48 89 85 10 d2 ff ff"))
+			.Add(8)
+			.RelativeToAbsolute()
+			.Add(7)
+			.RelativeToAbsolute()
+			.Pointer()
+			.value());
 
-	localPlayerList = reinterpret_cast<CBasePlayer**>(RelativeToAbsolute(reinterpret_cast<char*>(getLocalPlayer) + 7));
+	lineGoesThroughSmoke = BCRL::Session::Module(xorstr_("client_client.so"))
+							   .NextStringOccurence(xorstr_("sv_show_voip_indicator_for_enemies"))
+							   .FindXREFs(xorstr_("client_client.so"), true, false)
+							   .ForEach([](BCRL::SafePointer& safePointer) { safePointer = safePointer.Add(4); })
+							   .Repeater([](BCRL::SafePointer& pointer) {
+								   if (pointer.DoesMatch(xorstr_("e8 ?? ?? ?? ?? 84 c0"))) {
+									   BCRL::SafePointer newPointer = pointer.Add(1).RelativeToAbsolute();
+									   if (newPointer.DoesMatch(xorstr_("55 48 89 e5 41 56 41 55"))) {
+										   pointer = newPointer;
+										   return false;
+									   }
+								   }
 
-	lineGoesThroughSmoke = SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 e5 41 56 41 55 41 54 53 48 83 ec 30 8b 05 ?? ?? ?? ?? 66")), clientBaseAddress);
+								   pointer = pointer.NextInstruction();
+								   return true;
+							   })
+							   .Pointer()
+							   .value();
 }
 
 bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)

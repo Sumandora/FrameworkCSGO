@@ -79,10 +79,19 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/ReturnAddre
 
 # Setup SignatureScanner
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/SignatureScanner/include)
-file(GLOB SIGNATURESCANNER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/SignatureScanner/Source/*.cpp")
+file(GLOB_RECURSE SIGNATURESCANNER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/SignatureScanner/Source/*.cpp")
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${SIGNATURESCANNER_SOURCE_FILES})
+
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_IDA_SEARCH)
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_STRING_SEARCH)
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_XREF_SEARCH)
 
 # Setup HideSharedObject
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/HideSharedObject/include)
 file(GLOB HIDESHAREDOBJECT_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/HideSharedObject/Source/*.cpp")
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${HIDESHAREDOBJECT_SOURCE_FILES})
+
+# Setup bcrl
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/bcrl/Include)
+file(GLOB_RECURSE BCRL_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/bcrl/Source/*.cpp")
+target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${BCRL_SOURCE_FILES})

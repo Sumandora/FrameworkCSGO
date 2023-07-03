@@ -22,3 +22,6 @@
 [submodule "Dependencies/SimpleJSON"]
 	path = Dependencies/SimpleJSON
 	url = https://github.com/Sumandora/SimpleJSON.git
+[submodule "Dependencies/bcrl"]
+	path = Dependencies/bcrl
+	url = https://github.com/Sumandora/bcrl.git
