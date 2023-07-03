@@ -11,9 +11,6 @@ namespace Memory {
 	inline CGlobalVars* globalVars;
 	inline IMoveHelper* moveHelper;
 
-	void* GetBaseAddress(const char* name);
-	void* RelativeToAbsolute(void* addr);
-
 	void Create();
 
 	bool LineGoesThroughSmoke(const Vector& from, const Vector& to, short _);

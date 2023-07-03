@@ -53,7 +53,8 @@ echo "MyCoolProjectName" > ProjectName
 ```
 
 ### The situation with Clang
-Using Clang is inappropriate and should be avoided. Clang's machine code is too unpredictable, so it is necessary to disable security features. However, you can use clang by setting your `CC` and `CXX` environment variables to `clang` and `clang++` respectively.
+Using Clang is inappropriate and should be avoided. Clang's machine code is too unpredictable, so it is necessary to disable security features. However, you can use clang by setting your `CC` and `CXX` environment variables to `clang` and `clang++` respectively.  
+`Clang doesn't work right now because std::ranges::views::reverse is unsupported`
 
 ## Usage
 A simple inject script using a debugger like GDB or LLDB is provided.  

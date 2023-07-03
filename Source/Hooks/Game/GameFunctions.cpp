@@ -2,7 +2,7 @@
 
 #include "../../Interfaces.hpp"
 
-#include "IDASignatureScanner.hpp"
+#include "BCRL.hpp"
 
 void Hooks::Game::Hook()
 {
@@ -14,7 +14,14 @@ void Hooks::Game::Hook()
 	ViewDrawFade::hook = new class GameHook(Utils::GetVTable(Interfaces::engineRenderView)[29], reinterpret_cast<void*>(ViewDrawFade::HookFunc));
 
 	// VPROF Function: CGameEventManager::FireEvent
-	FireEvent::hook = new class GameHook(SignatureScanner::FindNextOccurrence(SignatureScanner::BuildSignature(xorstr_("55 48 89 f8 48 89 e5 41 57 48 05 e8 00 00 00 41 56 49 89 c7 41 89")), Memory::GetBaseAddress(xorstr_("./bin/linux64/engine_client.so"))), reinterpret_cast<void*>(FireEvent::HookFunc));
+	FireEvent::hook = new class GameHook(
+		BCRL::Session::Module(xorstr_("engine_client.so"))
+			.NextStringOccurence(xorstr_("CGameEventManager::FireEvent"))
+			.FindXREFs(xorstr_("engine_client.so"), true, false)
+			.PrevByteOccurence(xorstr_("55 48 89 f8 48 89 e5"))
+			.Pointer()
+			.value(),
+		reinterpret_cast<void*>(FireEvent::HookFunc));
 }
 
 void Hooks::Game::Unhook()

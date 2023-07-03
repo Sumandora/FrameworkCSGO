@@ -1,5 +1,6 @@
 #include "Interfaces.hpp"
 
+#include <cassert>
 #include <cstring>
 #include <dlfcn.h>
 #include <map>
@@ -9,9 +10,7 @@
 #include "imgui.h"
 #include "xorstr.hpp"
 
-#include "ldisasm.h"
-
-#include "IDASignatureScanner.hpp"
+#include "BCRL.hpp"
 
 void* Interfaces::UncoverCreateFunction(void* createFunc)
 {
@@ -30,22 +29,22 @@ void* Interfaces::UncoverCreateFunction(void* createFunc)
 	 * There is a preprocessor definition in the source engine which creates these exported interface functions.
 	 * But hey who could imagine that the same code also produces the same assembly right?
 	 */
-	const Signature leaRax = SignatureScanner::BuildSignature(xorstr_("48 8d 05"));
-	const Signature movRaxRax = SignatureScanner::BuildSignature(xorstr_("48 8b 00"));
-	const Signature ret = SignatureScanner::BuildSignature(xorstr_("c3")); // Unnecessary but to follow the style
 
 	char* rip = reinterpret_cast<char*>(createFunc);
-	void* interfacePtr{};
-	while (true) {
-		if (SignatureScanner::DoesMatch(leaRax, rip)) { // LEA rax, [rip + offset]
-			interfacePtr = Memory::RelativeToAbsolute(reinterpret_cast<char*>(rip) + 3 /* skip the lea */);
-		} else if (SignatureScanner::DoesMatch(movRaxRax, rip)) { // MOV rax, [rax]
-			interfacePtr = *reinterpret_cast<void**>(interfacePtr);
-		} else if (SignatureScanner::DoesMatch(ret, rip)) { // RET
-			break;
-		}
-		rip += ldisasm(rip, true); // next instruction
-	}
+	void* interfacePtr = nullptr;
+	BCRL::Session::Pointer(rip)
+		.Repeater([&interfacePtr](BCRL::SafePointer& pointer) {
+			if (pointer.DoesMatch(xorstr_("48 8d 05"))) { // LEA rax, [rip + offset]
+				interfacePtr = pointer.Add(3).RelativeToAbsolute().GetPointer();
+			} else if (pointer.DoesMatch(xorstr_("48 8b 00"))) { // MOV rax, [rax]
+				interfacePtr = *reinterpret_cast<void**>(interfacePtr);
+			} else if (pointer.DoesMatch(xorstr_("c3"))) { // RET
+				return false;
+			}
+
+			pointer = pointer.NextInstruction();
+			return true;
+		});
 	return interfacePtr;
 }
 
