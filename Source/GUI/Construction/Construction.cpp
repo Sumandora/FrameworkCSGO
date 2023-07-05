@@ -13,7 +13,7 @@
 
 void Gui::Build()
 {
-	ImGui::SetNextWindowSize({ 800, 600 });
+	ImGui::SetNextWindowSize({ 800, 600 }, ImGuiCond_Once);
 	if (ImGui::Begin(xorstr_("Framework CSGO"))) {
 		TABBAR(xorstr_("#Top level tabs"), []() {
 			for (auto& [category, vector] : features) {
