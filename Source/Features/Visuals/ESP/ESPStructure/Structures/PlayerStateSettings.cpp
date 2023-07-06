@@ -10,23 +10,22 @@
 #include "../../ESP.hpp"
 
 #include <memory>
+#include <utility>
+#include <vector>
 
 PlayerStateSettings::PlayerStateSettings()
-	: flags(FlagsSetting{
-		{
-			new Money(),
-			new Scoped(),
-			new PinPulled(),
-			new Location(),
-			new Objective(),
-			new HasDefuser(),
-			new HasBomb(),
-			new Planting(),
-			new Spotted(),
-			new Ammo(),
-			new Immune(),
-			new Walking(),
-		} })
+	: flags({ std::make_shared<Money>(),
+		std::make_shared<Scoped>(),
+		std::make_shared<PinPulled>(),
+		std::make_shared<Location>(),
+		std::make_shared<Objective>(),
+		std::make_shared<HasDefuser>(),
+		std::make_shared<HasBomb>(),
+		std::make_shared<Planting>(),
+		std::make_shared<Spotted>(),
+		std::make_shared<Ammo>(),
+		std::make_shared<Immune>(),
+		std::make_shared<Walking>() })
 {
 }
 

@@ -14,7 +14,7 @@ namespace Hooks::SDL {
 		void HookFunc(SDL_Window* window);
 	}
 
-	namespace PollEvents {
+	namespace PollEvent {
 		inline SDLHook* hook;
 
 		int HookFunc(SDL_Event* event);

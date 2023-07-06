@@ -8,6 +8,7 @@
 #include "../EntityCache/EntityCache.hpp"
 
 #include "PlayerFlags.hpp"
+#include <memory>
 
 // TODO Generate the boilerplate for implementations
 class BoxSettings {
@@ -108,14 +109,14 @@ class FlagsSetting {
 private:
 	bool enabled;
 	float fontScale;
+	float verticalSpacing;
 	bool shadow;
 	ImColor shadowColor;
 
-	std::vector<Flag*> flags;
+	std::vector<std::shared_ptr<Flag>> flags;
 
 public:
-	FlagsSetting(std::vector<Flag*> flags);
-	~FlagsSetting();
+	FlagsSetting(std::vector<std::shared_ptr<Flag>>&& flags);
 
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, float x, float y, const Player& player) const;

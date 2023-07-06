@@ -105,6 +105,9 @@ void EntityCache::UpdateEntities(
 
 		const CBaseHandle handle = entity->GetRefEHandle();
 
+		if (handle == INVALID_EHANDLE_INDEX)
+			continue;
+
 		if (localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE && localPlayer->observerTarget == handle)
 			continue;
 
