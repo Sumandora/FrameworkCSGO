@@ -43,7 +43,7 @@ void SpectatorList::Update()
 		if (!player)
 			continue;
 
-		if (player->GetDormant() || player->IsAlive())
+		if (player->IsAlive() && *player->Team() != TeamID::TEAM_SPECTATOR)
 			continue;
 
 		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());

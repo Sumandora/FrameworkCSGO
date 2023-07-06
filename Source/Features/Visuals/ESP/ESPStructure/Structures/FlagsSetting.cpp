@@ -7,29 +7,24 @@
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
 #include "../../../../../GUI/ImGuiMacros.hpp"
+#include <memory>
 #include <optional>
+#include <utility>
 
-FlagsSetting::FlagsSetting(std::vector<Flag*> flags)
+FlagsSetting::FlagsSetting(std::vector<std::shared_ptr<Flag>>&& flags)
 	: enabled(false)
 	, fontScale(1.0f)
+	, verticalSpacing(1.0f)
 	, shadow(true)
 	, shadowColor(ImGuiColors::black)
-	, flags(flags)
+	, flags(std::move(flags))
 {
-}
-
-FlagsSetting::~FlagsSetting()
-{
-	// TODO Why does this crash sometimes?
-	for (Flag* flag : flags) {
-		delete flag;
-	}
 }
 
 bool FlagsSetting::IsEnabled() const
 {
 	if (enabled)
-		for (const Flag* flag : flags)
+		for (const std::shared_ptr<Flag>& flag : flags)
 			if (flag->enabled)
 				return true;
 
@@ -49,7 +44,7 @@ void FlagsSetting::Draw(ImDrawList* drawList, float x, float y, const Player& pl
 	ImGui::GetFont()->Scale *= fontScale;
 	ImGui::PushFont(ImGui::GetFont());
 
-	for (const Flag* flag : flags) {
+	for (const std::shared_ptr<Flag>& flag : flags) {
 		if (!flag->enabled)
 			continue;
 
@@ -75,7 +70,7 @@ void FlagsSetting::Draw(ImDrawList* drawList, float x, float y, const Player& pl
 		color.Value.w *= alphaScale;
 		drawList->AddText(position, color, cstring);
 
-		y += size.y;
+		y += size.y * verticalSpacing;
 	}
 
 	ImGui::GetFont()->Scale = oldFontScale;
@@ -91,12 +86,13 @@ void FlagsSetting::SetupGUI(const char* id)
 
 	if (ImGui::Popup(id)) {
 		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, xorstr_("%.2f"));
+		ImGui::SliderFloat(xorstr_("Vertical spacing"), &verticalSpacing, 0.1f, 1.0f, xorstr_("%.2f"));
 		ImGui::Checkbox(xorstr_("Shadow"), &shadow);
 		if (shadow)
 			ImGui::ClickableColorButton(xorstr_("Shadow color"), shadowColor);
 
 		TABBAR(xorstr_("Flags"), [&]() {
-			for (Flag* flag : flags) {
+			for (const std::shared_ptr<Flag>& flag : flags) {
 				TABITEM(flag->GetName().c_str(), [&flag]() {
 					ImGui::Checkbox(xorstr_("Enabled"), &flag->enabled);
 					ImGui::ClickableColorButton(xorstr_("Flag color"), flag->color);
@@ -114,10 +110,11 @@ SCOPED_SERIALIZER(FlagsSetting)
 {
 	SERIALIZE(xorstr_("Enabled"), enabled);
 	SERIALIZE(xorstr_("Font scale"), fontScale);
+	SERIALIZE(xorstr_("Vertical spacing"), verticalSpacing);
 	SERIALIZE(xorstr_("Shadow"), shadow);
 	SERIALIZE_VECTOR4D(xorstr_("Shadow color"), shadowColor.Value);
 
-	for (Flag* flag : flags) {
+	for (const std::shared_ptr<Flag>& flag : flags) {
 		SERIALIZE_STRUCT(flag->GetName().c_str(), (*flag));
 	}
 }

@@ -4,7 +4,7 @@
 
 #include "../../../GUI/GUI.hpp"
 
-int Hooks::SDL::PollEvents::HookFunc(SDL_Event* event)
+int Hooks::SDL::PollEvent::HookFunc(SDL_Event* event)
 {
 	const int returnValue = reinterpret_cast<int (*)(SDL_Event*)>(hook->proxy)(event);
 
