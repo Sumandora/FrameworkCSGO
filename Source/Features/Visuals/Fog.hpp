@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/Math/Vector.hpp"
 
@@ -13,7 +12,7 @@
 inline class Fog : public Feature {
 public:
 	Fog()
-		: Feature(xorstr_("Visuals"), xorstr_("Fog"))
+		: Feature("Visuals", "Fog")
 	{
 	}
 

@@ -2,8 +2,6 @@
 
 #include "../../Interfaces.hpp"
 #include "imgui.h"
-#include "xorstr.hpp"
-
 #include <vector>
 
 static Vector lastViewPunch;
@@ -46,12 +44,12 @@ void NoPunch::RestorePunch()
 
 void NoPunch::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Hide view punch"), &hideViewPunch);
-	ImGui::Checkbox(xorstr_("Hide aim punch"), &hideAimPunch);
+	ImGui::Checkbox("Hide view punch", &hideViewPunch);
+	ImGui::Checkbox("Hide aim punch", &hideAimPunch);
 }
 
 SCOPED_SERIALIZER(NoPunch)
 {
-	SERIALIZE(xorstr_("Hide view punch"), hideViewPunch);
-	SERIALIZE(xorstr_("Hide aim punch"), hideAimPunch);
+	SERIALIZE("Hide view punch", hideViewPunch);
+	SERIALIZE("Hide aim punch", hideAimPunch);
 }

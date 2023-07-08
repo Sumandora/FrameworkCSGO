@@ -3,7 +3,6 @@
 
 #include "CCollisionProperty.hpp"
 #include "VirtualMethod.hpp"
-#include "xorstr.hpp"
 
 #include "../CBaseHandle.hpp"
 #include "../Definitions/Bones.hpp"
@@ -21,17 +20,17 @@
 
 class CBaseEntity {
 public:
-	NETVAR_FUNCTION(TeamID, Team, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_iTeamNum"))
-	NETVAR_FUNCTION(bool, Spotted, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_bSpotted"))
-	NETVAR_FUNCTION(int, SpottedByMask, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_bSpottedByMask"))
-	NETVAR_FUNCTION(Vector, Origin, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_vecOrigin"))
+	NETVAR_FUNCTION(TeamID, Team, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_iTeamNum")
+	NETVAR_FUNCTION(bool, Spotted, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_bSpotted")
+	NETVAR_FUNCTION(int, SpottedByMask, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_bSpottedByMask")
+	NETVAR_FUNCTION(Vector, Origin, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_vecOrigin")
 
-	NETVAR_FUNCTION(CCollisionProperty, Collision, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_Collision"))
+	NETVAR_FUNCTION(CCollisionProperty, Collision, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_Collision")
 
-	NETVAR_FUNCTION(float, SimulationTime, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_flSimulationTime"))
-	NETVAR_FUNCTION(int, OwnerEntity, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_hOwnerEntity"))
+	NETVAR_FUNCTION(float, SimulationTime, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_flSimulationTime")
+	NETVAR_FUNCTION(int, OwnerEntity, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_hOwnerEntity")
 
-	NETVAR_FUNCTION(unsigned char, RenderMode, ClientClassID::CBaseEntity, xorstr_("DT_BaseEntity"), xorstr_("m_nRenderMode"))
+	NETVAR_FUNCTION(unsigned char, RenderMode, ClientClassID::CBaseEntity, "DT_BaseEntity", "m_nRenderMode")
 
 	// MoveType used to be a netvar but got removed, RenderMode is still there.
 	inline unsigned char GetMoveType()

@@ -1,7 +1,6 @@
 #include "../ESPStructure.hpp"
-#include <iomanip>
 
-#include "xorstr.hpp"
+#include <iomanip>
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
@@ -24,7 +23,7 @@ void HostageSettings::Draw(ImDrawList* drawList, Hostage& hostage) const
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), xorstr_("Hostage"));
+	boxName.Draw(drawList, rectangle.value(), "Hostage");
 
 	if (hostage.state == 1) { // Is the hostage being picked up?
 		const float countDown = hostage.grabTime - Memory::globalVars->curtime;
@@ -38,16 +37,16 @@ void HostageSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
-	timer.SetupGUI(xorstr_("Timer"));
+	timer.SetupGUI("Timer");
 	if (timer.enabled)
-		ImGui::SliderInt(xorstr_("Accuracy"), &accuracy, 1, 5);
+		ImGui::SliderInt("Accuracy", &accuracy, 1, 5);
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(HostageSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Timer"), timer);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Timer", timer);
 
-	SERIALIZE(xorstr_("Accuracy"), accuracy);
+	SERIALIZE("Accuracy", accuracy);
 }

@@ -1,7 +1,6 @@
 #include "SDLHook.hpp"
 
 #include "BCRL.hpp"
-#include "xorstr.hpp"
 
 #include <cstdint>
 #include <dlfcn.h>

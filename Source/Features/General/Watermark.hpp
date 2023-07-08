@@ -4,12 +4,11 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 inline class Watermark : public Feature {
 public:
 	Watermark()
-		: Feature(xorstr_("General"), xorstr_("Watermark"))
+		: Feature("General", "Watermark")
 	{
 	}
 

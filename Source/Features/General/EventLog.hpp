@@ -4,12 +4,11 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 inline class EventLog : public Feature {
 public:
 	EventLog()
-		: Feature(xorstr_("General"), xorstr_("Event log"))
+		: Feature("General", "Event log")
 	{
 	}
 
@@ -18,7 +17,7 @@ public:
 
 	void ImGuiRender(ImDrawList* drawList);
 
-	void CreateReport(const char* fmt, ...);
+	void __attribute__((format(printf, 2, 3))) CreateReport(const char* fmt, ...);
 
 	virtual void SetupGUI() override;
 	virtual SERIALIZER() override;

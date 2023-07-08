@@ -4,14 +4,13 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 inline class EdgeJump : public Feature {
 public:
 	EdgeJump()
-		: Feature(xorstr_("Movement"), xorstr_("Edge jump"))
+		: Feature("Movement", "Edge jump")
 	{
 	}
 

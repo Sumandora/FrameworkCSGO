@@ -66,11 +66,11 @@ void EventLog::ImGuiRender(ImDrawList* drawList)
 
 void EventLog::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 	if (!enabled) {
-		ImGui::Text(xorstr_("Warning: Certain features may use the event log as communication"));
+		ImGui::Text("Warning: Certain features may use the event log as communication");
 	}
-	ImGui::SliderInt(xorstr_("Duration"), &duration, 0, 10000);
+	ImGui::SliderInt("Duration", &duration, 0, 10000);
 }
 
 void EventLog::CreateReport(const char* fmt, ...)
@@ -94,6 +94,6 @@ void EventLog::CreateReport(const char* fmt, ...)
 
 SCOPED_SERIALIZER(EventLog)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Duration"), duration);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Duration", duration);
 }

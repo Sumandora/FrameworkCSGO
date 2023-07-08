@@ -1,9 +1,6 @@
 [submodule "Dependencies/imgui"]
 	path = Dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "Dependencies/xorstr"]
-	path = Dependencies/xorstr
-	url = https://github.com/JustasMasiulis/xorstr.git
 [submodule "Dependencies/length-disassembler"]
 	path = Dependencies/length-disassembler
 	url = https://github.com/Nomade040/length-disassembler.git

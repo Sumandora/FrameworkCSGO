@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CMoveData.hpp"
 #include "../../SDK/GameClass/CUserCmd.hpp"
@@ -13,7 +12,7 @@
 inline class EnginePrediction : public Feature {
 public:
 	EnginePrediction()
-		: Feature(xorstr_("General"), xorstr_("Engine prediction"))
+		: Feature("General", "Engine prediction")
 	{
 	}
 

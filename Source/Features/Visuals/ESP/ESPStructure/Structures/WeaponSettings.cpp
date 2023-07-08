@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
 bool WeaponSettings::IsEnabled() const
@@ -28,7 +26,7 @@ void WeaponSettings::Draw(ImDrawList* drawList, Weapon& weapon) const
 	const int ammoClip = weapon.ammo;
 	if (ammoClip != -1) { // Does this weapon even have an ammo capacity? (Knifes, Bombs etc...)
 		char buf[32];
-		sprintf(buf, xorstr_("%d/%d"), ammoClip, weapon.reserveAmmoCount);
+		sprintf(buf, "%d/%d", ammoClip, weapon.reserveAmmoCount);
 		ammo.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, buf);
 	}
 }
@@ -37,12 +35,12 @@ void WeaponSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
-	ammo.SetupGUI(xorstr_("Ammo"));
+	ammo.SetupGUI("Ammo");
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(WeaponSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Ammo"), ammo);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Ammo", ammo);
 }

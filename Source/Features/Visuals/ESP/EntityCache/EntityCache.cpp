@@ -37,12 +37,8 @@ Player* EntityCache::PlayerByHandle(const CBaseHandle& handle)
 	if (localPlayer.has_value() && localPlayer->handle == handle)
 		return &localPlayer.value();
 
-	for (auto& [otherHandle, entity] : players) {
-		if (handle == otherHandle)
-			return &entity;
-	}
-
-	return nullptr;
+	auto player = players.find(handle);
+	return player != players.end() ? &player->second : nullptr;
 }
 
 void EntityCache::UpdateEntities(

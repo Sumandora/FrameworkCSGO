@@ -16,7 +16,6 @@
 #include "SDK/GameClass/CGlobalVars.hpp"
 #include "SDK/GameClass/IMoveHelper.hpp"
 #include "SignatureScanner.hpp"
-#include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
 
@@ -31,7 +30,7 @@ void Memory::Create()
 {
 	// Set the address for the return address spoofer
 	RetAddrSpoofer::leaveRet = BCRL::Session::ArrayPointer(Interfaces::baseClient, 0) // random code piece
-								   .NextByteOccurence(xorstr_("c9 c3"))
+								   .NextByteOccurence("c9 c3")
 								   .Pointer()
 								   .value();
 
@@ -63,7 +62,7 @@ void Memory::Create()
 	// The method which contains the 1.25 and 1.0 float literals is the one...
 	moveHelper
 		= static_cast<IMoveHelper*>(BCRL::Session::ArrayPointer(Interfaces::gameMovement, 69)
-										.NextByteOccurence(xorstr_("48 8d 05") /* lea rax */)
+										.NextByteOccurence("48 8d 05" /* lea rax */)
 										.Add(3)
 										.RelativeToAbsolute()
 										.Dereference()
@@ -73,7 +72,7 @@ void Memory::Create()
 	// Has reference to "splitscreenplayer" inside itself
 	localPlayerList = static_cast<CBasePlayer**>(
 		BCRL::Session::ArrayPointer(clientMode, 55)
-			.NextByteOccurence(xorstr_("48 89 85 10 d2 ff ff"))
+			.NextByteOccurence("48 89 85 10 d2 ff ff")
 			.Add(8)
 			.RelativeToAbsolute()
 			.Add(7)
@@ -81,14 +80,14 @@ void Memory::Create()
 			.Pointer()
 			.value());
 
-	lineGoesThroughSmoke = BCRL::Session::Module(xorstr_("client_client.so"))
-							   .NextStringOccurence(xorstr_("sv_show_voip_indicator_for_enemies"))
-							   .FindXREFs(xorstr_("client_client.so"), true, false)
+	lineGoesThroughSmoke = BCRL::Session::Module("client_client.so")
+							   .NextStringOccurence("sv_show_voip_indicator_for_enemies")
+							   .FindXREFs("client_client.so", true, false)
 							   .ForEach([](BCRL::SafePointer& safePointer) { safePointer = safePointer.Add(4); })
 							   .Repeater([](BCRL::SafePointer& pointer) {
-								   if (pointer.DoesMatch(xorstr_("e8 ?? ?? ?? ?? 84 c0"))) {
+								   if (pointer.DoesMatch("e8 ?? ?? ?? ?? 84 c0")) {
 									   BCRL::SafePointer newPointer = pointer.Add(1).RelativeToAbsolute();
-									   if (newPointer.DoesMatch(xorstr_("55 48 89 e5 41 56 41 55"))) {
+									   if (newPointer.DoesMatch("55 48 89 e5 41 56 41 55")) {
 										   pointer = newPointer;
 										   return false;
 									   }

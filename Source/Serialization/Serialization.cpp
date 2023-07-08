@@ -3,22 +3,22 @@
 #include "Serializer.hpp"
 
 #include "json.hpp"
-#include "xorstr.hpp"
 
 #include <cstring>
 #include <fstream>
 #include <pwd.h>
 #include <sstream>
+#include <string>
 #include <unistd.h>
 
 #include "../Features/Features.hpp"
 
-char* Serialization::GetConfigDirectory()
+std::string Serialization::GetConfigDirectory()
 {
-	return strcat(getpwuid(getuid())->pw_dir, xorstr_("/.config/Framework"));
+	return std::string(getpwuid(getuid())->pw_dir) + "/.config/Framework";
 }
 
-bool Serialization::Load(const char* filename)
+bool Serialization::Load(std::string filename)
 {
 	std::ifstream fileStream(filename);
 	if (fileStream.fail())
@@ -31,6 +31,9 @@ bool Serialization::Load(const char* filename)
 		return false;
 
 	json::JSON json = json::JSON::Load(stringStream.str());
+
+	if (json.IsNull())
+		return false;
 
 	for (auto& [category, vector] : features) {
 		if (!json.hasKey(category))
@@ -52,7 +55,7 @@ bool Serialization::Load(const char* filename)
 	return true;
 }
 
-bool Serialization::Save(const char* filename)
+bool Serialization::Save(std::string filename)
 {
 	std::ofstream fileStream(filename);
 	if (fileStream.fail())

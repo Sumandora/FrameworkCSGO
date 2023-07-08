@@ -4,14 +4,13 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 inline class FastDuck : public Feature {
 public:
 	FastDuck()
-		: Feature(xorstr_("Movement"), xorstr_("Fast Duck"))
+		: Feature("Movement", "Fast Duck")
 	{
 	}
 

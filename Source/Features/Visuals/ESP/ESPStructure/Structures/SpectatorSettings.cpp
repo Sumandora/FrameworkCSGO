@@ -42,14 +42,14 @@ void SpectatorSettings::SetupGUI(const char* id)
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
 
-	ImGui::Checkbox(xorstr_("Only show when spectated entity is dormant"), &onlyShowWhenSpectatedEntityIsDormant);
-	ImGui::Checkbox(xorstr_("Display name of spectated entity"), &displayNameOfSpectatedEntity);
+	ImGui::Checkbox("Only show when spectated entity is dormant", &onlyShowWhenSpectatedEntityIsDormant);
+	ImGui::Checkbox("Display name of spectated entity", &displayNameOfSpectatedEntity);
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(SpectatorSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE(xorstr_("Only show when spectated entity is dormant"), onlyShowWhenSpectatedEntityIsDormant);
-	SERIALIZE(xorstr_("Display name of spectated entity"), displayNameOfSpectatedEntity);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE("Only show when spectated entity is dormant", onlyShowWhenSpectatedEntityIsDormant);
+	SERIALIZE("Display name of spectated entity", displayNameOfSpectatedEntity);
 }

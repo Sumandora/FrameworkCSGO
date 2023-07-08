@@ -1,7 +1,5 @@
 #include "Keybind.hpp"
 
-#include "xorstr.hpp"
-
 #include "../GUI.hpp"
 
 #include <cstdlib>
@@ -30,7 +28,7 @@ IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& s
 	char newLabel[128];
 
 	if (waiting == currentID) {
-		strcpy(newLabel, xorstr_("Waiting for input"));
+		strcpy(newLabel, "Waiting for input");
 
 		bool found = false;
 		for (int imguikey = ImGuiKey_Tab; imguikey != ImGuiKey_KeypadEqual; imguikey++) {
@@ -59,11 +57,11 @@ IMGUI_API bool ImGui::InputSelector(const char* label, int& key, const ImVec2& s
 		char keyName[128];
 
 		if (key == 0) {
-			strcpy(keyName, xorstr_("Unset"));
+			strcpy(keyName, "Unset");
 		} else if (key > 0) {
 			strcpy(keyName, ImGui::GetKeyName(static_cast<ImGuiKey>(key)));
 		} else if (key < 0) {
-			strcpy(keyName, xorstr_("Mouse"));
+			strcpy(keyName, "Mouse");
 			keyName[5] = (char)(48 + abs(key)); // 48 = '0' in ascii
 			keyName[6] = '\0';
 		}

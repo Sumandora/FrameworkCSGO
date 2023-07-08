@@ -9,7 +9,6 @@
 
 #include "imgui.h"
 #include "ImGuiColors.hpp"
-#include "xorstr.hpp"
 
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
@@ -74,8 +73,8 @@ void Gui::SwapWindow(SDL_Window* window)
 		bool loadedFont = false;
 
 		for (const char* path : {
-				 xorstr_("/usr/share/fonts/noto/NotoSans-Regular.ttf"),
-				 xorstr_("/usr/share/fonts/google-noto/NotoSans-Regular.ttf") }) {
+				 "/usr/share/fonts/noto/NotoSans-Regular.ttf",
+				 "/usr/share/fonts/google-noto/NotoSans-Regular.ttf" }) {
 			if (access(path, F_OK) == 0 && io.Fonts->AddFontFromFileTTF(path, fontSize)) {
 				loadedFont = true;
 				break;

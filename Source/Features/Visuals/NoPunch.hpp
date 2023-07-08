@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CViewSetup.hpp"
 
@@ -13,7 +12,7 @@
 inline class NoPunch : public Feature {
 public:
 	NoPunch()
-		: Feature(xorstr_("Visuals"), xorstr_("No punch"))
+		: Feature("Visuals", "No punch")
 	{
 	}
 

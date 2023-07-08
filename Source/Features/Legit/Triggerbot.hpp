@@ -4,14 +4,13 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 inline class Triggerbot : public Feature {
 public:
 	Triggerbot()
-		: Feature(xorstr_("Legit"), xorstr_("Triggerbot"))
+		: Feature("Legit", "Triggerbot")
 	{
 	}
 

@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/Definitions/Bones.hpp"
 #include "../../SDK/GameClass/CUserCmd.hpp"
@@ -13,7 +12,7 @@
 inline class Backtrack : public Feature {
 public:
 	Backtrack()
-		: Feature(xorstr_("Semirage"), xorstr_("Backtrack"))
+		: Feature("Semirage", "Backtrack")
 	{
 	}
 

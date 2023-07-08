@@ -5,13 +5,13 @@
 #include "../../../../General/EventLog.hpp"
 
 static std::map<LootCrateType, const char*> lootCrateNames{
-	{ LootCrateType::PISTOL_CASE, strdup(xorstr_("Pistol Case")) },
-	{ LootCrateType::LIGHT_CASE, strdup(xorstr_("Light Case")) },
-	{ LootCrateType::HEAVY_CASE, strdup(xorstr_("Heavy Case")) },
-	{ LootCrateType::EXPLOSIVE_CASE, strdup(xorstr_("Explosive Case")) },
-	{ LootCrateType::TOOLS_CASE, strdup(xorstr_("Tools Case")) },
-	{ LootCrateType::CASH_DUFFLEBAG, strdup(xorstr_("Cash Dufflebag")) },
-	{ LootCrateType::RANDOM_DROP, strdup(xorstr_("Random Drop")) }
+	{ LootCrateType::PISTOL_CASE, "Pistol Case" },
+	{ LootCrateType::LIGHT_CASE, "Light Case" },
+	{ LootCrateType::HEAVY_CASE, "Heavy Case" },
+	{ LootCrateType::EXPLOSIVE_CASE, "Explosive Case" },
+	{ LootCrateType::TOOLS_CASE, "Tools Case" },
+	{ LootCrateType::CASH_DUFFLEBAG, "Cash Dufflebag" },
+	{ LootCrateType::RANDOM_DROP, "Random Drop" }
 };
 
 bool LootCrateTypeSettings::IsEnabled() const
@@ -24,7 +24,7 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 	switch (type) {
 	case LootCrateType::INVALID:
 		// Something did go horribly wrong
-		eventLog.CreateReport(xorstr_("Invalid loot crate found?"));
+		eventLog.CreateReport("Invalid loot crate found?");
 		__asm("int3");
 		__builtin_unreachable();
 	case LootCrateType::PISTOL_CASE:
@@ -52,12 +52,12 @@ void LootCrateTypeSettings::Draw(ImDrawList* drawList, LootCrate& lootCrate) con
 void LootCrateTypeSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	if (ImGui::BeginTabBar(xorstr_("#Loot crate config selection"), ImGuiTabBarFlags_Reorderable)) {
+	if (ImGui::BeginTabBar("#Loot crate config selection", ImGuiTabBarFlags_Reorderable)) {
 		for (const auto& [type, name] : lootCrateNames) {
 			if (ImGui::BeginTabItem(name)) {
 				LootCrateSettings& lootCrateSettings = GetSettings(type);
 
-				if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
+				if (ImGui::Popup("Copy from", "Copy from")) {
 					for (const auto& [type2, name2] : lootCrateNames) {
 						if (type == type2)
 							continue;
@@ -80,10 +80,10 @@ void LootCrateTypeSettings::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(LootCrateTypeSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Pistol Case"), pistolCase);
-	SERIALIZE_STRUCT(xorstr_("Light Case"), lightCase);
-	SERIALIZE_STRUCT(xorstr_("Heavy Case"), heavyCase);
-	SERIALIZE_STRUCT(xorstr_("Explosive Case"), explosiveCase);
-	SERIALIZE_STRUCT(xorstr_("Tools Case"), toolsCase);
-	SERIALIZE_STRUCT(xorstr_("Cash Dufflebag"), cashDufflebag);
+	SERIALIZE_STRUCT("Pistol Case", pistolCase);
+	SERIALIZE_STRUCT("Light Case", lightCase);
+	SERIALIZE_STRUCT("Heavy Case", heavyCase);
+	SERIALIZE_STRUCT("Explosive Case", explosiveCase);
+	SERIALIZE_STRUCT("Tools Case", toolsCase);
+	SERIALIZE_STRUCT("Cash Dufflebag", cashDufflebag);
 }

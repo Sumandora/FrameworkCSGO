@@ -42,12 +42,12 @@ void CrouchJump::CreateMove(CUserCmd* cmd)
 
 void CrouchJump::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)"), input);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::InputSelector("Input (%s)", input);
 }
 
 SCOPED_SERIALIZER(CrouchJump)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Input"), input);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Input", input);
 }

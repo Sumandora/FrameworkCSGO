@@ -4,14 +4,13 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 inline class CrouchJump : public Feature {
 public:
 	CrouchJump()
-		: Feature(xorstr_("Movement"), xorstr_("Crouch jump"))
+		: Feature("Movement", "Crouch jump")
 	{
 	}
 

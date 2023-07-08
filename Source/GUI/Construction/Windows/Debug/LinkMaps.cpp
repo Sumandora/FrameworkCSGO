@@ -1,7 +1,6 @@
 #include "../Debug.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include <dlfcn.h>
 #include <link.h>
@@ -9,8 +8,8 @@
 static void ConstructInner(link_map* linkMap)
 {
 	if (ImGui::TreeNode(linkMap->l_name)) {
-		ImGui::Text(xorstr_("Address: %p"), linkMap->l_addr);
-		ImGui::Text(xorstr_("Dynamic section: %p"), linkMap->l_ld);
+		ImGui::Text("Address: %p", reinterpret_cast<void*>(linkMap->l_addr));
+		ImGui::Text("Dynamic section: %p", linkMap->l_ld);
 
 		if (linkMap->l_prev)
 			ConstructInner(linkMap->l_prev);

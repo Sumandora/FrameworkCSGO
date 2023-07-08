@@ -2,14 +2,12 @@
 #define SDK_GAMECLASS_CBASECSGRENADE
 
 #include "../../Netvars.hpp"
-#include "CBaseEntity.hpp"
-#include "xorstr.hpp"
-
 #include "CBaseCombatWeapon.hpp"
+#include "CBaseEntity.hpp"
 
 class CBaseCSGrenade : public CBaseCombatWeapon {
 public:
-	NETVAR_FUNCTION(CBaseHandle, PinPulled, ClientClassID::CBaseCSGrenade, xorstr_("DT_BaseCSGrenade"), xorstr_("m_bPinPulled"))
+	NETVAR_FUNCTION(CBaseHandle, PinPulled, ClientClassID::CBaseCSGrenade, "DT_BaseCSGrenade", "m_bPinPulled")
 };
 
 #endif

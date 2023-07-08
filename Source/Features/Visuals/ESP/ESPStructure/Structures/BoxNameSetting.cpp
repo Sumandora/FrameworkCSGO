@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
 bool BoxNameSetting::IsEnabled() const
@@ -21,13 +19,13 @@ void BoxNameSetting::Draw(ImDrawList* drawList, const ImVec4& rectangle, const c
 void BoxNameSetting::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	box.SetupGUI(xorstr_("Box"));
-	nametag.SetupGUI(xorstr_("Name"));
+	box.SetupGUI("Box");
+	nametag.SetupGUI("Name");
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(BoxNameSetting)
 {
-	SERIALIZE_STRUCT(xorstr_("Box"), box);
-	SERIALIZE_STRUCT(xorstr_("Name"), nametag);
+	SERIALIZE_STRUCT("Box", box);
+	SERIALIZE_STRUCT("Name", nametag);
 }

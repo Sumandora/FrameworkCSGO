@@ -2,8 +2,6 @@
 
 #include <algorithm>
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
@@ -118,24 +116,24 @@ void HealthbarSettings::SetupGUI(const char* id)
 	ImGui::SameLine();
 
 	if (ImGui::Popup(id)) {
-		ImGui::ClickableColorButton(xorstr_("Background color"), backgroundColor);
+		ImGui::ClickableColorButton("Background color", backgroundColor);
 		if (!gradient)
-			ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Spacing"), &spacing, 0.0f, 10.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Width"), &width, 0.0f, 10.0f, xorstr_("%.2f"));
+			ImGui::SliderFloat("Rounding", &rounding, 0.0f, 10.0f, "%.2f");
+		ImGui::SliderFloat("Spacing", &spacing, 0.0f, 10.0f, "%.2f");
+		ImGui::SliderFloat("Width", &width, 0.0f, 10.0f, "%.2f");
 
-		ImGui::ClickableColorButton(xorstr_("Alive color"), aliveColor);
-		ImGui::ClickableColorButton(xorstr_("Dead color"), deadColor);
-		ImGui::Checkbox(xorstr_("Gradient"), &gradient);
+		ImGui::ClickableColorButton("Alive color", aliveColor);
+		ImGui::ClickableColorButton("Dead color", deadColor);
+		ImGui::Checkbox("Gradient", &gradient);
 
-		ImGui::Checkbox(xorstr_("Outlined"), &outlined);
+		ImGui::Checkbox("Outlined", &outlined);
 		if (outlined) {
-			ImGui::ClickableColorButton(xorstr_("Outline color"), outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, xorstr_("%.2f"));
+			ImGui::ClickableColorButton("Outline color", outlineColor);
+			ImGui::SliderFloat("Outline thickness", &outlineThickness, 0.0f, 10.0f, "%.2f");
 		}
-		healthNumber.SetupGUI(xorstr_("Health number"));
+		healthNumber.SetupGUI("Health number");
 		if (healthNumber.enabled)
-			ImGui::Checkbox(xorstr_("Only when damaged"), &onlyWhenDamaged);
+			ImGui::Checkbox("Only when damaged", &onlyWhenDamaged);
 
 		ImGui::EndPopup();
 	}
@@ -145,19 +143,19 @@ void HealthbarSettings::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(HealthbarSettings)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE_VECTOR4D(xorstr_("Background color"), backgroundColor.Value);
-	SERIALIZE(xorstr_("Rounding"), rounding);
-	SERIALIZE(xorstr_("Spacing"), spacing);
-	SERIALIZE(xorstr_("Width"), width);
-	SERIALIZE_VECTOR4D(xorstr_("Alive color"), aliveColor.Value);
-	SERIALIZE_VECTOR4D(xorstr_("Dead color"), deadColor.Value);
-	SERIALIZE(xorstr_("Gradient"), gradient);
-	SERIALIZE(xorstr_("Outlined"), outlined);
-	SERIALIZE_VECTOR4D(xorstr_("Outline color"), outlineColor.Value);
-	SERIALIZE(xorstr_("Outline thickness"), outlineThickness);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE_VECTOR4D("Background color", backgroundColor.Value);
+	SERIALIZE("Rounding", rounding);
+	SERIALIZE("Spacing", spacing);
+	SERIALIZE("Width", width);
+	SERIALIZE_VECTOR4D("Alive color", aliveColor.Value);
+	SERIALIZE_VECTOR4D("Dead color", deadColor.Value);
+	SERIALIZE("Gradient", gradient);
+	SERIALIZE("Outlined", outlined);
+	SERIALIZE_VECTOR4D("Outline color", outlineColor.Value);
+	SERIALIZE("Outline thickness", outlineThickness);
 
-	SERIALIZE_STRUCT(xorstr_("Health number"), healthNumber);
+	SERIALIZE_STRUCT("Health number", healthNumber);
 
-	SERIALIZE(xorstr_("Only when damaged"), onlyWhenDamaged);
+	SERIALIZE("Only when damaged", onlyWhenDamaged);
 }

@@ -1,8 +1,6 @@
 #ifndef SERIALIZATION_SERIALIZER
 #define SERIALIZATION_SERIALIZER
 
-#include "xorstr.hpp"
-
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpessimizing-move"
 #include "json.hpp"
@@ -26,7 +24,7 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 	else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(variable)>, const char*> || std::is_same_v<std::remove_cvref_t<decltype(variable)>, std::string>)
 		variable = jsonType.ToString();
 	else
-		throw std::runtime_error(xorstr_("Not a primitive type!"));
+		throw std::runtime_error("Not a primitive type!");
 }
 
 #define SERIALIZE(name, variable)                     \

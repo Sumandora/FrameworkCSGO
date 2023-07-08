@@ -1,8 +1,6 @@
 #ifndef UTILS_WEAPONCONFIG_WEAPONCLASSES
 #define UTILS_WEAPONCONFIG_WEAPONCLASSES
 
-#include "xorstr.hpp"
-
 #include "../../SDK/Weapons/WeaponIDs.hpp"
 
 #include <unordered_map>
@@ -23,20 +21,20 @@ enum class WeaponClass {
 };
 
 static std::unordered_map<WeaponClass, const char*> weaponClassLocalization{
-	{ WeaponClass::NONE, strdup(xorstr_("None")) },
+	{ WeaponClass::NONE, "None" },
 
-	{ WeaponClass::PISTOL, strdup(xorstr_("Pistol")) },
-	{ WeaponClass::HEAVY_PISTOL, strdup(xorstr_("Heavy pistol")) },
+	{ WeaponClass::PISTOL, "Pistol" },
+	{ WeaponClass::HEAVY_PISTOL, "Heavy pistol" },
 
-	{ WeaponClass::SMG, strdup(xorstr_("SMG")) },
+	{ WeaponClass::SMG, "SMG" },
 
-	{ WeaponClass::RIFLE, strdup(xorstr_("Rifle")) },
+	{ WeaponClass::RIFLE, "Rifle" },
 
-	{ WeaponClass::SNIPER, strdup(xorstr_("Sniper")) },
-	{ WeaponClass::AUTO_SNIPER, strdup(xorstr_("Auto sniper")) },
+	{ WeaponClass::SNIPER, "Sniper" },
+	{ WeaponClass::AUTO_SNIPER, "Auto sniper" },
 
-	{ WeaponClass::MACHINE_GUN, strdup(xorstr_("Machine gun")) },
-	{ WeaponClass::SHOTGUN, strdup(xorstr_("Shotgun")) }
+	{ WeaponClass::MACHINE_GUN, "Machine gun" },
+	{ WeaponClass::SHOTGUN, "Shotgun" }
 };
 
 static std::unordered_map<WeaponClass, std::vector<WeaponID>> weaponClassification{

@@ -4,8 +4,6 @@
 #include <cstring>
 #include <map>
 
-#include "xorstr.hpp"
-
 enum class ObserverMode : int {
 	OBS_MODE_NONE = 0,
 	OBS_MODE_DEATHCAM,
@@ -17,13 +15,13 @@ enum class ObserverMode : int {
 };
 
 static std::map<ObserverMode, const char*> observerModeLocalization{
-	{ ObserverMode::OBS_MODE_NONE, strdup(xorstr_("None")) },
-	{ ObserverMode::OBS_MODE_DEATHCAM, strdup(xorstr_("Deathcam")) },
-	{ ObserverMode::OBS_MODE_FREEZECAM, strdup(xorstr_("Freezecam")) },
-	{ ObserverMode::OBS_MODE_FIXED, strdup(xorstr_("Fixed")) },
-	{ ObserverMode::OBS_MODE_IN_EYE, strdup(xorstr_("In Eye")) },
-	{ ObserverMode::OBS_MODE_CHASE, strdup(xorstr_("Chase")) },
-	{ ObserverMode::OBS_MODE_ROAMING, strdup(xorstr_("Roaming")) },
+	{ ObserverMode::OBS_MODE_NONE, "None" },
+	{ ObserverMode::OBS_MODE_DEATHCAM, "Deathcam" },
+	{ ObserverMode::OBS_MODE_FREEZECAM, "Freezecam" },
+	{ ObserverMode::OBS_MODE_FIXED, "Fixed" },
+	{ ObserverMode::OBS_MODE_IN_EYE, "In Eye" },
+	{ ObserverMode::OBS_MODE_CHASE, "Chase" },
+	{ ObserverMode::OBS_MODE_ROAMING, "Roaming" },
 };
 
 inline const char* LocalizeObserverMode(ObserverMode observerMode)

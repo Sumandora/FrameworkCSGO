@@ -15,10 +15,10 @@ void Hooks::Game::Hook()
 
 	// VPROF Function: CGameEventManager::FireEvent
 	FireEvent::hook = new class GameHook(
-		BCRL::Session::Module(xorstr_("engine_client.so"))
-			.NextStringOccurence(xorstr_("CGameEventManager::FireEvent"))
-			.FindXREFs(xorstr_("engine_client.so"), true, false)
-			.PrevByteOccurence(xorstr_("55 48 89 f8 48 89 e5"))
+		BCRL::Session::Module("engine_client.so")
+			.NextStringOccurence("CGameEventManager::FireEvent")
+			.FindXREFs("engine_client.so", true, false)
+			.PrevByteOccurence("55 48 89 f8 48 89 e5")
 			.Pointer()
 			.value(),
 		reinterpret_cast<void*>(FireEvent::HookFunc));

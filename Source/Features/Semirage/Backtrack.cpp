@@ -148,7 +148,7 @@ void Backtrack::CreateMove(CUserCmd* cmd)
 	});
 
 	if (tickCount > 0 && cmd->tick_count != tickCount && (hasLimitedDistance || bestDistance < 5.0f)) {
-		eventLog.CreateReport(xorstr_("Trying to backtrack %d ticks"), cmd->tick_count - tickCount);
+		eventLog.CreateReport("Trying to backtrack %d ticks", cmd->tick_count - tickCount);
 		cmd->tick_count = tickCount;
 	}
 }
@@ -226,17 +226,17 @@ void Backtrack::SetupGUI()
 {
 #ifndef MENUPREVIEW
 	if (!ConVarStorage::cl_lagcompensation()->GetBool() || !ConVarStorage::sv_unlag()->GetBool())
-		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: Judging by convars, lag compensation is disabled."));
+		ImGui::TextColored(ImGuiColors::yellow, "Warning: Judging by convars, lag compensation is disabled.");
 #endif
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("Scale"), &scale, 0.0f, 1.0f, xorstr_("%.2f"));
-	ImGui::Checkbox(xorstr_("Account for outgoing ping"), &accountForOutgoingPing);
-	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
-	ImGui::Checkbox(xorstr_("Visualize"), &visualize);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::SliderFloat("Scale", &scale, 0.0f, 1.0f, "%.2f");
+	ImGui::Checkbox("Account for outgoing ping", &accountForOutgoingPing);
+	ImGui::Checkbox("Friendly fire", &friendlyFire);
+	ImGui::Checkbox("Visualize", &visualize);
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("You are backtracking up to a maximum of %d ms"),
+	ImGui::Text("You are backtracking up to a maximum of %d ms",
 #ifndef MENUPREVIEW
 		(int)(ConVarStorage::sv_maxunlag()->GetFloat() * scale * 1000 /*s to ms*/)
 #else
@@ -247,9 +247,9 @@ void Backtrack::SetupGUI()
 
 SCOPED_SERIALIZER(Backtrack)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Scale"), scale);
-	SERIALIZE(xorstr_("Account for outgoing ping"), accountForOutgoingPing);
-	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
-	SERIALIZE(xorstr_("Visualize"), visualize);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Scale", scale);
+	SERIALIZE("Account for outgoing ping", accountForOutgoingPing);
+	SERIALIZE("Friendly fire", friendlyFire);
+	SERIALIZE("Visualize", visualize);
 }

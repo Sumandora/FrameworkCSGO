@@ -8,8 +8,8 @@
 
 class CHostage : public CBaseEntity {
 public:
-	NETVAR_FUNCTION(int, HostageState, ClientClassID::CHostage, xorstr_("DT_CHostage"), xorstr_("m_nHostageState"))
-	NETVAR_FUNCTION(float, GrabSuccessTime, ClientClassID::CHostage, xorstr_("DT_CHostage"), xorstr_("m_flGrabSuccessTime"))
+	NETVAR_FUNCTION(int, HostageState, ClientClassID::CHostage, "DT_CHostage", "m_nHostageState")
+	NETVAR_FUNCTION(float, GrabSuccessTime, ClientClassID::CHostage, "DT_CHostage", "m_flGrabSuccessTime")
 };
 
 #endif

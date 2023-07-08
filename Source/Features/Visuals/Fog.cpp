@@ -49,45 +49,45 @@ void Fog::FrameStageNotify()
 
 void Fog::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 
 	ImGui::Separator();
 
-	ImGui::Checkbox(xorstr_("Hide fog"), &hideFog);
+	ImGui::Checkbox("Hide fog", &hideFog);
 
 	if (hideFog)
 		return;
 
-	ImGui::ClickableColorButton(xorstr_("Color primary"), colorPrimary);
+	ImGui::ClickableColorButton("Color primary", colorPrimary);
 
-	ImGui::Checkbox(xorstr_("Blend"), &blend);
+	ImGui::Checkbox("Blend", &blend);
 
 	if (blend) {
-		ImGui::DragFloat3(xorstr_("Dir Primary"), dirPrimary.Base(), 0.01f, -1.0f, 1.0f);
-		ImGui::ClickableColorButton(xorstr_("Color secondary"), colorSecondary);
+		ImGui::DragFloat3("Dir Primary", dirPrimary.Base(), 0.01f, -1.0f, 1.0f);
+		ImGui::ClickableColorButton("Color secondary", colorSecondary);
 	}
 
-	ImGui::SliderFloat(xorstr_("Start"), &start, 0.0f, 1024.0f, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("End"), &end, 0.0f, 1024.0f, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("Far z"), &farZ, 0.0f, 1024.0f * 16, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("Max density"), &maxDensity, 0.0f, 1.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat("Start", &start, 0.0f, 1024.0f, "%.2f");
+	ImGui::SliderFloat("End", &end, 0.0f, 1024.0f, "%.2f");
+	ImGui::SliderFloat("Far z", &farZ, 0.0f, 1024.0f * 16, "%.2f");
+	ImGui::SliderFloat("Max density", &maxDensity, 0.0f, 1.0f, "%.2f");
 
-	ImGui::SliderFloat(xorstr_("HDR color scale"), &hdrColorScale, 0.0f, 1.0f, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("Zoom fog scale"), &zoomFogScale, 0.0f, 1.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat("HDR color scale", &hdrColorScale, 0.0f, 1.0f, "%.2f");
+	ImGui::SliderFloat("Zoom fog scale", &zoomFogScale, 0.0f, 1.0f, "%.2f");
 }
 
 SCOPED_SERIALIZER(Fog)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Hide fog"), hideFog);
-	SERIALIZE_VECTOR4D(xorstr_("Color primary"), colorPrimary.Value);
-	SERIALIZE(xorstr_("Blend"), blend);
-	SERIALIZE_VECTOR3D(xorstr_("Dir Primary"), dirPrimary);
-	SERIALIZE_VECTOR4D(xorstr_("Color secondary"), colorSecondary.Value);
-	SERIALIZE(xorstr_("Start"), start);
-	SERIALIZE(xorstr_("End"), end);
-	SERIALIZE(xorstr_("Far z"), farZ);
-	SERIALIZE(xorstr_("Max density"), maxDensity);
-	SERIALIZE(xorstr_("HDR color scale"), hdrColorScale);
-	SERIALIZE(xorstr_("Zoom fog scale"), zoomFogScale);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Hide fog", hideFog);
+	SERIALIZE_VECTOR4D("Color primary", colorPrimary.Value);
+	SERIALIZE("Blend", blend);
+	SERIALIZE_VECTOR3D("Dir Primary", dirPrimary);
+	SERIALIZE_VECTOR4D("Color secondary", colorSecondary.Value);
+	SERIALIZE("Start", start);
+	SERIALIZE("End", end);
+	SERIALIZE("Far z", farZ);
+	SERIALIZE("Max density", maxDensity);
+	SERIALIZE("HDR color scale", hdrColorScale);
+	SERIALIZE("Zoom fog scale", zoomFogScale);
 }

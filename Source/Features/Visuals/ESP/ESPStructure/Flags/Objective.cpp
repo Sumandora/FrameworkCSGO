@@ -10,11 +10,11 @@
 std::optional<std::string> Objective::GetText(const Player& player) const
 {
 	if (player.defusing)
-		return xorstr_("Defusing");
+		return "Defusing";
 	else if (player.grabbingHostage)
-		return xorstr_("Grabbing Hostage");
+		return "Grabbing Hostage";
 	else if (player.rescuing)
-		return xorstr_("Rescuing");
-
-	return std::nullopt;
+		return "Rescuing";
+	else
+		return std::nullopt;
 }

@@ -10,7 +10,7 @@
 void EnginePrediction::ImGuiWarning()
 {
 	if (!enabled)
-		ImGui::TextColored(ImGuiColors::yellow, xorstr_("Warning: This feature expects engine prediction to be enabled"));
+		ImGui::TextColored(ImGuiColors::yellow, "Warning: This feature expects engine prediction to be enabled");
 }
 
 static float previousVelocityModifer;
@@ -51,15 +51,15 @@ void EnginePrediction::EndPrediction()
 
 void EnginePrediction::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 	if (!enabled) {
-		ImGui::Text(xorstr_("Warning: Disabling engine prediction may result in massive accuracy loss"));
+		ImGui::Text("Warning: Disabling engine prediction may result in massive accuracy loss");
 	}
-	ImGui::Checkbox(xorstr_("Force reset velocity modifier"), &forceResetVelocityModifier);
-	ImGui::HelpMarker(xorstr_("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine."));
+	ImGui::Checkbox("Force reset velocity modifier", &forceResetVelocityModifier);
+	ImGui::HelpMarker("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine.");
 }
 
 SCOPED_SERIALIZER(EnginePrediction)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE("Enabled", enabled);
 }

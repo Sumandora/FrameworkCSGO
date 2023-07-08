@@ -108,35 +108,35 @@ void LegitAimbot::PollEvent(SDL_Event* event)
 
 void LegitAimbot::WeaponConfig::SetupGUI()
 {
-	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("Smoothness"), &smoothness, 1.0f, 5.0f, xorstr_("%.2f"));
-	ImGui::SliderInt(xorstr_("Maximal influence"), &maximalInfluence, 1, 5);
+	ImGui::SliderFloat("FOV", &fov, 0.0f, 10.0f, "%.2f");
+	ImGui::SliderFloat("Smoothness", &smoothness, 1.0f, 5.0f, "%.2f");
+	ImGui::SliderInt("Maximal influence", &maximalInfluence, 1, 5);
 }
 
 void LegitAimbot::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 
-	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
-	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
-	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
+	ImGui::SliderInt("Maximal flash amount", &maximalFlashAmount, 0, 255);
+	ImGui::Checkbox("Don't aim through smoke", &dontAimThroughSmoke);
+	ImGui::Checkbox("Friendly fire", &friendlyFire);
 
 	weaponConfigurator.SetupGUI();
 }
 
 SCOPED_SERIALIZER(LegitAimbot::WeaponConfig)
 {
-	SERIALIZE(xorstr_("FOV"), fov);
-	SERIALIZE(xorstr_("Smoothness"), smoothness);
-	SERIALIZE(xorstr_("Maximal influence"), maximalInfluence);
+	SERIALIZE("FOV", fov);
+	SERIALIZE("Smoothness", smoothness);
+	SERIALIZE("Maximal influence", maximalInfluence);
 }
 
 SCOPED_SERIALIZER(LegitAimbot)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Maximal flash amount"), maximalFlashAmount);
-	SERIALIZE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke);
-	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Maximal flash amount", maximalFlashAmount);
+	SERIALIZE("Don't aim through smoke", dontAimThroughSmoke);
+	SERIALIZE("Friendly fire", friendlyFire);
 
-	SERIALIZE_STRUCT(xorstr_("Weapons"), weaponConfigurator);
+	SERIALIZE_STRUCT("Weapons", weaponConfigurator);
 }

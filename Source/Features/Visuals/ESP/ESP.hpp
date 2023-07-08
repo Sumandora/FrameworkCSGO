@@ -4,7 +4,6 @@
 #include "../../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "ESPStructure/ESPStructure.hpp"
 
@@ -15,7 +14,7 @@
 inline class ESP : public Feature {
 public:
 	ESP()
-		: Feature(xorstr_("Visuals"), xorstr_("ESP"))
+		: Feature("Visuals", "ESP")
 	{
 	}
 

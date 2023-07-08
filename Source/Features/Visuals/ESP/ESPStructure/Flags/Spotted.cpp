@@ -8,7 +8,7 @@
 std::optional<std::string> Spotted::GetText(const Player& player) const
 {
 	if (player.spotted)
-		return xorstr_("Spotted");
-
-	return std::nullopt;
+		return "Spotted";
+	else
+		return std::nullopt;
 }

@@ -1,7 +1,6 @@
 #include "ESP.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../../Interfaces.hpp"
 
@@ -85,7 +84,7 @@ void ESP::ImGuiRender(ImDrawList* drawList)
 	}
 
 	for (auto& [_, entity] : EntityCache::ammoBoxes) {
-		dzAmmoBoxes.Draw(drawList, entity, xorstr_("Ammo box"));
+		dzAmmoBoxes.Draw(drawList, entity, "Ammo box");
 	}
 
 	for (auto& [_, entity] : EntityCache::entities) {
@@ -118,77 +117,77 @@ void ESP::Update()
 
 void ESP::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SameLine();
-	ImGui::SliderInt(xorstr_("Draw distance"), &drawDistance, 0, 1024 * 16);
+	ImGui::SliderInt("Draw distance", &drawDistance, 0, 1024 * 16);
 
-	ImGui::Checkbox(xorstr_("Consider spotted entities as visible"), &considerSpottedEntitiesAsVisible);
+	ImGui::Checkbox("Consider spotted entities as visible", &considerSpottedEntitiesAsVisible);
 	ImGui::SameLine();
-	ImGui::Checkbox(xorstr_("Out of view"), &outOfView);
+	ImGui::Checkbox("Out of view", &outOfView);
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Out of view settings"))) {
-		ImGui::SliderFloat(xorstr_("Size"), &outOfViewSize, 0.0f, 50.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Distance"), &outOfViewDistance, 0.0f, 500.0f, xorstr_("%.2f"));
+	if (ImGui::Popup("Out of view settings")) {
+		ImGui::SliderFloat("Size", &outOfViewSize, 0.0f, 50.0f, "%.2f");
+		ImGui::SliderFloat("Distance", &outOfViewDistance, 0.0f, 500.0f, "%.2f");
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Consider smoked off entities as occluded"), &considerSmokedOffEntitiesAsOccluded);
+	ImGui::Checkbox("Consider smoked off entities as occluded", &considerSmokedOffEntitiesAsOccluded);
 	ImGui::SameLine();
-	ImGui::Checkbox(xorstr_("Align bounding boxes with the pixel grid"), &alignBoundingBox);
+	ImGui::Checkbox("Align bounding boxes with the pixel grid", &alignBoundingBox);
 
-	ImGui::Checkbox(xorstr_("Consider everyone visible when dead"), &considerEveryoneVisibleWhenDead);
+	ImGui::Checkbox("Consider everyone visible when dead", &considerEveryoneVisibleWhenDead);
 
-	ImGui::InputSelector(xorstr_("Hold key (%s)"), onKey);
+	ImGui::InputSelector("Hold key (%s)", onKey);
 
-	if (ImGui::BeginTabBar(xorstr_("#Config selection"), ImGuiTabBarFlags_Reorderable)) {
-		if (ImGui::BeginTabItem(xorstr_("Players"))) {
-			players.SetupGUI(xorstr_("Players"));
+	if (ImGui::BeginTabBar("#Config selection", ImGuiTabBarFlags_Reorderable)) {
+		if (ImGui::BeginTabItem("Players")) {
+			players.SetupGUI("Players");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Spectators"))) {
-			spectators.SetupGUI(xorstr_("Spectators"));
+		if (ImGui::BeginTabItem("Spectators")) {
+			spectators.SetupGUI("Spectators");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Weapons"))) {
-			weapons.SetupGUI(xorstr_("Weapons"));
+		if (ImGui::BeginTabItem("Weapons")) {
+			weapons.SetupGUI("Weapons");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Projectiles"))) {
-			projectiles.SetupGUI(xorstr_("Projectiles"));
+		if (ImGui::BeginTabItem("Projectiles")) {
+			projectiles.SetupGUI("Projectiles");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Planted C4"))) {
-			plantedC4.SetupGUI(xorstr_("Planted C4"));
+		if (ImGui::BeginTabItem("Planted C4")) {
+			plantedC4.SetupGUI("Planted C4");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Hostages"))) {
-			hostages.SetupGUI(xorstr_("Hostages"));
+		if (ImGui::BeginTabItem("Hostages")) {
+			hostages.SetupGUI("Hostages");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Danger Zone"))) {
-			if (ImGui::BeginTabBar(xorstr_("#Danger Zone config selection"), ImGuiTabBarFlags_Reorderable)) {
-				if (ImGui::BeginTabItem(xorstr_("Loot crates"))) {
-					dzLootCrates.SetupGUI(xorstr_("Loot crates"));
+		if (ImGui::BeginTabItem("Danger Zone")) {
+			if (ImGui::BeginTabBar("#Danger Zone config selection", ImGuiTabBarFlags_Reorderable)) {
+				if (ImGui::BeginTabItem("Loot crates")) {
+					dzLootCrates.SetupGUI("Loot crates");
 					ImGui::EndTabItem();
 				}
-				if (ImGui::BeginTabItem(xorstr_("Ammo boxes"))) {
-					dzAmmoBoxes.SetupGUI(xorstr_("Ammo boxes"));
+				if (ImGui::BeginTabItem("Ammo boxes")) {
+					dzAmmoBoxes.SetupGUI("Ammo boxes");
 					ImGui::EndTabItem();
 				}
-				if (ImGui::BeginTabItem(xorstr_("Sentries"))) {
-					dzSentries.SetupGUI(xorstr_("Sentries"));
+				if (ImGui::BeginTabItem("Sentries")) {
+					dzSentries.SetupGUI("Sentries");
 					ImGui::EndTabItem();
 				}
-				if (ImGui::BeginTabItem(xorstr_("Drones"))) {
-					dzDrones.SetupGUI(xorstr_("Drones"));
+				if (ImGui::BeginTabItem("Drones")) {
+					dzDrones.SetupGUI("Drones");
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();
 			}
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Other"))) {
-			other.SetupGUI(xorstr_("Other"));
+		if (ImGui::BeginTabItem("Other")) {
+			other.SetupGUI("Other");
 			ImGui::EndTabItem();
 		}
 
@@ -197,43 +196,43 @@ void ESP::SetupGUI()
 
 	ImGui::Separator();
 
-	ImGui::Text(xorstr_("Entities: %d"), EntityCache::entities.size());
-	ImGui::Text(xorstr_("Players: %d"), EntityCache::players.size());
-	ImGui::Text(xorstr_("Spectators: %d"), EntityCache::spectators.size());
-	ImGui::Text(xorstr_("Weapons: %d"), EntityCache::weapons.size());
-	ImGui::Text(xorstr_("Hostages: %d"), EntityCache::hostages.size());
-	ImGui::Text(xorstr_("Projectiles: %d"), EntityCache::projectiles.size());
-	ImGui::Text(xorstr_("Bombs: %d"), EntityCache::bombs.size());
-	ImGui::Text(xorstr_("Loot crates: %d"), EntityCache::lootCrates.size());
-	ImGui::Text(xorstr_("Drones: %d"), EntityCache::drones.size());
-	ImGui::Text(xorstr_("Sentries: %d"), EntityCache::sentries.size());
+	ImGui::Text("Entities: %zu", EntityCache::entities.size());
+	ImGui::Text("Players: %zu", EntityCache::players.size());
+	ImGui::Text("Spectators: %zu", EntityCache::spectators.size());
+	ImGui::Text("Weapons: %zu", EntityCache::weapons.size());
+	ImGui::Text("Hostages: %zu", EntityCache::hostages.size());
+	ImGui::Text("Projectiles: %zu", EntityCache::projectiles.size());
+	ImGui::Text("Bombs: %zu", EntityCache::bombs.size());
+	ImGui::Text("Loot crates: %zu", EntityCache::lootCrates.size());
+	ImGui::Text("Drones: %zu", EntityCache::drones.size());
+	ImGui::Text("Sentries: %zu", EntityCache::sentries.size());
 }
 
 SCOPED_SERIALIZER(ESP)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Draw distance"), drawDistance);
-	SERIALIZE(xorstr_("Hold key"), onKey);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Draw distance", drawDistance);
+	SERIALIZE("Hold key", onKey);
 
-	SERIALIZE(xorstr_("Consider spotted entities as visible"), considerSpottedEntitiesAsVisible);
-	SERIALIZE(xorstr_("Consider smoked off entities as occluded"), considerSmokedOffEntitiesAsOccluded);
-	SERIALIZE(xorstr_("Consider everyone visible when dead"), considerEveryoneVisibleWhenDead);
+	SERIALIZE("Consider spotted entities as visible", considerSpottedEntitiesAsVisible);
+	SERIALIZE("Consider smoked off entities as occluded", considerSmokedOffEntitiesAsOccluded);
+	SERIALIZE("Consider everyone visible when dead", considerEveryoneVisibleWhenDead);
 
-	SERIALIZE(xorstr_("Out of view"), outOfView);
-	SERIALIZE(xorstr_("Out of view size"), outOfViewSize);
-	SERIALIZE(xorstr_("Out of view distance"), outOfViewDistance);
+	SERIALIZE("Out of view", outOfView);
+	SERIALIZE("Out of view size", outOfViewSize);
+	SERIALIZE("Out of view distance", outOfViewDistance);
 
-	SERIALIZE(xorstr_("Align bounding box"), alignBoundingBox);
+	SERIALIZE("Align bounding box", alignBoundingBox);
 
-	SERIALIZE_STRUCT(xorstr_("Players"), players);
-	SERIALIZE_STRUCT(xorstr_("Spectators"), spectators);
-	SERIALIZE_STRUCT(xorstr_("Weapons"), weapons);
-	SERIALIZE_STRUCT(xorstr_("Projectiles"), projectiles);
-	SERIALIZE_STRUCT(xorstr_("Planted C4"), plantedC4);
-	SERIALIZE_STRUCT(xorstr_("Hostages"), hostages);
-	SERIALIZE_STRUCT(xorstr_("Loot crates"), dzLootCrates);
-	SERIALIZE_STRUCT(xorstr_("Ammo boxes"), dzAmmoBoxes);
-	SERIALIZE_STRUCT(xorstr_("Sentries"), dzSentries);
-	SERIALIZE_STRUCT(xorstr_("Drones"), dzDrones);
-	SERIALIZE_STRUCT(xorstr_("Other"), other);
+	SERIALIZE_STRUCT("Players", players);
+	SERIALIZE_STRUCT("Spectators", spectators);
+	SERIALIZE_STRUCT("Weapons", weapons);
+	SERIALIZE_STRUCT("Projectiles", projectiles);
+	SERIALIZE_STRUCT("Planted C4", plantedC4);
+	SERIALIZE_STRUCT("Hostages", hostages);
+	SERIALIZE_STRUCT("Loot crates", dzLootCrates);
+	SERIALIZE_STRUCT("Ammo boxes", dzAmmoBoxes);
+	SERIALIZE_STRUCT("Sentries", dzSentries);
+	SERIALIZE_STRUCT("Drones", dzDrones);
+	SERIALIZE_STRUCT("Other", other);
 }

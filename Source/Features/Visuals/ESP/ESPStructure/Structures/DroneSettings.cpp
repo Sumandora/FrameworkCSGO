@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../Interfaces.hpp"
 
@@ -19,7 +17,7 @@ void DroneSettings::Draw(ImDrawList* drawList, Drone& drone) const
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), xorstr_("Drone"));
+	boxName.Draw(drawList, rectangle.value(), "Drone");
 
 	Player* player = EntityCache::PlayerByHandle(drone.target);
 	if (player) {
@@ -33,12 +31,12 @@ void DroneSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
-	target.SetupGUI(xorstr_("Target"));
+	target.SetupGUI("Target");
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(DroneSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Target"), target);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Target", target);
 }
