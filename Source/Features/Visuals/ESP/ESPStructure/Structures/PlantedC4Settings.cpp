@@ -2,8 +2,6 @@
 
 #include <iomanip>
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
 
@@ -36,7 +34,7 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), xorstr_("Planted C4"));
+	boxName.Draw(drawList, rectangle.value(), "Planted C4");
 
 	if (!bomb.defused && bomb.bombTicking) { // TODO Ask GameRules if the bomb is actually planted
 		if (bomb.bombTime < Memory::globalVars->curtime)
@@ -74,31 +72,31 @@ void PlantedC4Settings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
-	timer.SetupGUI(xorstr_("Timer"));
-	defuseTimer.SetupGUI(xorstr_("Defuse timer"));
+	timer.SetupGUI("Timer");
+	defuseTimer.SetupGUI("Defuse timer");
 
 	if (timer.enabled) {
-		ImGui::Checkbox(xorstr_("Override defuse color"), &overrideDefuseColor);
+		ImGui::Checkbox("Override defuse color", &overrideDefuseColor);
 		if (overrideDefuseColor) {
-			ImGui::ClickableColorButton(xorstr_("Defuse possible with kit"), defusePossibleWithKit);
-			ImGui::ClickableColorButton(xorstr_("Defuse possible impossible"), defuseImpossible);
+			ImGui::ClickableColorButton("Defuse possible with kit", defusePossibleWithKit);
+			ImGui::ClickableColorButton("Defuse possible impossible", defuseImpossible);
 		}
 	}
 
 	if (timer.enabled || defuseTimer.enabled)
-		ImGui::SliderInt(xorstr_("Accuracy"), &accuracy, 1, 5);
+		ImGui::SliderInt("Accuracy", &accuracy, 1, 5);
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(PlantedC4Settings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Timer"), timer);
-	SERIALIZE_STRUCT(xorstr_("Defuse timer"), defuseTimer);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Timer", timer);
+	SERIALIZE_STRUCT("Defuse timer", defuseTimer);
 
-	SERIALIZE(xorstr_("Override defuse color"), overrideDefuseColor);
-	SERIALIZE_VECTOR4D(xorstr_("Defuse possible with kit"), defusePossibleWithKit.Value);
-	SERIALIZE_VECTOR4D(xorstr_("Defuse possible impossible"), defuseImpossible.Value);
+	SERIALIZE("Override defuse color", overrideDefuseColor);
+	SERIALIZE_VECTOR4D("Defuse possible with kit", defusePossibleWithKit.Value);
+	SERIALIZE_VECTOR4D("Defuse possible impossible", defuseImpossible.Value);
 
-	SERIALIZE(xorstr_("Accuracy"), accuracy);
+	SERIALIZE("Accuracy", accuracy);
 }

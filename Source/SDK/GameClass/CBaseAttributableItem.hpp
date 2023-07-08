@@ -1,8 +1,6 @@
 #ifndef SDK_GAMECLASS_CBASEATTRIBUTABLEITEM
 #define SDK_GAMECLASS_CBASEATTRIBUTABLEITEM
 
-#include "xorstr.hpp"
-
 #include "../../Netvars.hpp"
 #include "../Weapons/WeaponIDs.hpp"
 
@@ -11,9 +9,9 @@
 class CBaseAttributableItem : public CBaseEntity {
 public:
 	TRIPLE_COMBINED_NETVAR_FUNCTION(WeaponID, WeaponDefinitionIndex,
-		ClientClassID::CBaseAttributableItem, xorstr_("DT_BaseAttributableItem"), xorstr_("m_AttributeManager"),
-		ClientClassID::CBaseAttributableItem, xorstr_("DT_AttributeContainer"), xorstr_("m_Item"),
-		ClientClassID::CBaseAttributableItem, xorstr_("DT_ScriptCreatedItem"), xorstr_("m_iItemDefinitionIndex"))
+		ClientClassID::CBaseAttributableItem, "DT_BaseAttributableItem", "m_AttributeManager",
+		ClientClassID::CBaseAttributableItem, "DT_AttributeContainer", "m_Item",
+		ClientClassID::CBaseAttributableItem, "DT_ScriptCreatedItem", "m_iItemDefinitionIndex")
 };
 
 #endif

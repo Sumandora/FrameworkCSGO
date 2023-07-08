@@ -102,9 +102,8 @@ std::optional<ImVec4> ScreenRectangle::Get()
 	ImVec4 rectangle;
 	bool visible = CalculateScreenRectangle(rectangle);
 
-	if (!visible && HandleOutOfView(localPlayer->origin, localPlayer->viewangles, rectangle)) { // TODO Buy menu makes oov flicker
+	if (!visible && HandleOutOfView(localPlayer->origin, localPlayer->viewangles, rectangle)) // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
-	}
 
 	if (!visible)
 		return std::nullopt;

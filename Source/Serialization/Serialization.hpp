@@ -1,11 +1,13 @@
 #ifndef SERIALIZATION
 #define SERIALIZATION
 
-namespace Serialization {
-	char* GetConfigDirectory();
+#include <string>
 
-	bool Load(const char* filename);
-	bool Save(const char* filename);
+namespace Serialization {
+	std::string GetConfigDirectory();
+
+	bool Load(std::string filename);
+	bool Save(std::string filename);
 }
 
 #endif

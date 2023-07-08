@@ -26,5 +26,5 @@ void GenericEntitySettings::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(GenericEntitySettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
+	SERIALIZE_STRUCT("Box name", boxName);
 }

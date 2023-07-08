@@ -1,12 +1,10 @@
 #include "../ESPStructure.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
-#include "../../../../../GUI/ImGuiMacros.hpp"
 #include <memory>
 #include <optional>
 #include <utility>
@@ -85,20 +83,22 @@ void FlagsSetting::SetupGUI(const char* id)
 	ImGui::SameLine();
 
 	if (ImGui::Popup(id)) {
-		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Vertical spacing"), &verticalSpacing, 0.1f, 1.0f, xorstr_("%.2f"));
-		ImGui::Checkbox(xorstr_("Shadow"), &shadow);
+		ImGui::SliderFloat("Font scale", &fontScale, 0.1f, 2.0f, "%.2f");
+		ImGui::SliderFloat("Vertical spacing", &verticalSpacing, 0.1f, 1.0f, "%.2f");
+		ImGui::Checkbox("Shadow", &shadow);
 		if (shadow)
-			ImGui::ClickableColorButton(xorstr_("Shadow color"), shadowColor);
+			ImGui::ClickableColorButton("Shadow color", shadowColor);
 
-		TABBAR(xorstr_("Flags"), [&]() {
+		if (ImGui::BeginTabBar("Flags", ImGuiTabBarFlags_Reorderable)) {
 			for (const std::shared_ptr<Flag>& flag : flags) {
-				TABITEM(flag->GetName().c_str(), [&flag]() {
-					ImGui::Checkbox(xorstr_("Enabled"), &flag->enabled);
-					ImGui::ClickableColorButton(xorstr_("Flag color"), flag->color);
-				});
+				if (ImGui::BeginTabItem(flag->GetName().c_str())) {
+					ImGui::Checkbox("Enabled", &flag->enabled);
+					ImGui::ClickableColorButton("Flag color", flag->color);
+					ImGui::EndTabItem();
+				}
 			}
-		})
+			ImGui::EndTabBar();
+		}
 
 		ImGui::EndPopup();
 	}
@@ -108,11 +108,11 @@ void FlagsSetting::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(FlagsSetting)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Font scale"), fontScale);
-	SERIALIZE(xorstr_("Vertical spacing"), verticalSpacing);
-	SERIALIZE(xorstr_("Shadow"), shadow);
-	SERIALIZE_VECTOR4D(xorstr_("Shadow color"), shadowColor.Value);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Font scale", fontScale);
+	SERIALIZE("Vertical spacing", verticalSpacing);
+	SERIALIZE("Shadow", shadow);
+	SERIALIZE_VECTOR4D("Shadow color", shadowColor.Value);
 
 	for (const std::shared_ptr<Flag>& flag : flags) {
 		SERIALIZE_STRUCT(flag->GetName().c_str(), (*flag));

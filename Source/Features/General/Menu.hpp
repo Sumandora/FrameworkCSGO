@@ -4,12 +4,11 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 inline class Menu : public Feature {
 public:
 	Menu()
-		: Feature(xorstr_("General"), xorstr_("Menu"))
+		: Feature("General", "Menu")
 	{
 	}
 

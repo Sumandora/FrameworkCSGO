@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 
@@ -66,10 +64,10 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 
 void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
 {
-	if (ImGui::MenuItem(xorstr_("Visible"))) {
+	if (ImGui::MenuItem("Visible")) {
 		*playerStateSettings = playerTeamSettings.visible;
 	}
-	if (ImGui::MenuItem(xorstr_("Occluded"))) {
+	if (ImGui::MenuItem("Occluded")) {
 		*playerStateSettings = playerTeamSettings.occluded;
 	}
 }
@@ -78,32 +76,32 @@ void PlayerStateSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 
-	if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
-		if (ImGui::BeginMenu(xorstr_("Teammate"))) {
+	if (ImGui::Popup("Copy from", "Copy from")) {
+		if (ImGui::BeginMenu("Teammate")) {
 			BuildMenu(this, esp.players.teammate);
 			ImGui::EndMenu();
 		}
-		if (ImGui::BeginMenu(xorstr_("Enemy"))) {
+		if (ImGui::BeginMenu("Enemy")) {
 			BuildMenu(this, esp.players.enemy);
 			ImGui::EndMenu();
 		}
-		if (ImGui::Selectable(xorstr_("Local"))) {
+		if (ImGui::Selectable("Local")) {
 			*this = esp.players.local;
 		}
 		ImGui::EndPopup();
 	}
 
 	boxName.SetupGUI(id);
-	healthbar.SetupGUI(xorstr_("Healthbar"));
-	weapon.SetupGUI(xorstr_("Weapon"));
-	flags.SetupGUI(xorstr_("Flags"));
+	healthbar.SetupGUI("Healthbar");
+	weapon.SetupGUI("Weapon");
+	flags.SetupGUI("Flags");
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(PlayerStateSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Healthbar"), healthbar);
-	SERIALIZE_STRUCT(xorstr_("Weapon"), weapon);
-	SERIALIZE_STRUCT(xorstr_("Flags"), flags);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Healthbar", healthbar);
+	SERIALIZE_STRUCT("Weapon", weapon);
+	SERIALIZE_STRUCT("Flags", flags);
 }

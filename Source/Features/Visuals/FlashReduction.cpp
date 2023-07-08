@@ -14,10 +14,10 @@ bool FlashReduction::ViewDrawFade(std::byte* color, IMaterial*& pFadeMaterial)
 		return false;
 
 	const char* currName = pFadeMaterial->GetName();
-	if (strcmp(currName, xorstr_("effects/flashbang")) == 0) {
+	if (strcmp(currName, "effects/flashbang") == 0) {
 		return clearFlashbang;
-	} else if (strcmp(currName, xorstr_("effects/flashbang_white")) == 0) {
-		static IMaterial* white = Interfaces::materialSystem->FindMaterial(xorstr_("debug/debugdrawflat"), nullptr);
+	} else if (strcmp(currName, "effects/flashbang_white") == 0) {
+		static IMaterial* white = Interfaces::materialSystem->FindMaterial("debug/debugdrawflat", nullptr);
 
 		const int alpha = (int)color[0]; // RGB = alpha, alpha = 255 (don't ask me why they did it like that)
 
@@ -33,15 +33,15 @@ bool FlashReduction::ViewDrawFade(std::byte* color, IMaterial*& pFadeMaterial)
 
 void FlashReduction::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::Checkbox(xorstr_("Clear flashbang"), &clearFlashbang);
-	ImGui::HelpMarker(xorstr_("Won't draw the screenshot, which was taken at the begin of the flash effect"));
-	ImGui::ClickableColorButton(xorstr_("Flash color"), flashColor, ImGuiColorEditFlags_AlphaBar);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::Checkbox("Clear flashbang", &clearFlashbang);
+	ImGui::HelpMarker("Won't draw the screenshot, which was taken at the begin of the flash effect");
+	ImGui::ClickableColorButton("Flash color", flashColor, ImGuiColorEditFlags_AlphaBar);
 }
 
 SCOPED_SERIALIZER(FlashReduction)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Clear flashbang"), clearFlashbang);
-	SERIALIZE_VECTOR4D(xorstr_("Flash color"), flashColor.Value);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Clear flashbang", clearFlashbang);
+	SERIALIZE_VECTOR4D("Flash color", flashColor.Value);
 }

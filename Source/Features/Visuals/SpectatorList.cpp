@@ -71,18 +71,17 @@ void SpectatorList::ImGuiRender(ImDrawList* drawList)
 		if (!Interfaces::engine->GetPlayerInfo(spectator.spectated, &second))
 			continue;
 
-		const char* unknownObserverMode = xorstr_("Unknown observer mode"); // Initialize it before to prevent dangling pointers
 		const char* observerModeName = LocalizeObserverMode(spectator.mode);
 		if (!observerModeName)
-			observerModeName = unknownObserverMode;
+			observerModeName = "Unknown observer mode";
 
 		std::stringstream ss;
 
 		ss << first.name;
 		if (showAllSpectators)
-			ss << xorstr_(" -> ") << second.name;
+			ss << " -> " << second.name;
 		if (showMode)
-			ss << xorstr_(" (") << observerModeName << xorstr_(")");
+			ss << " (" << observerModeName << ")";
 
 		const std::string str = ss.str();
 		const char* text = str.c_str();
@@ -98,19 +97,19 @@ void SpectatorList::ImGuiRender(ImDrawList* drawList)
 
 void SpectatorList::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::Checkbox(xorstr_("Show mode"), &showMode);
-	ImGui::Checkbox(xorstr_("Show all spectators"), &showAllSpectators);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::Checkbox("Show mode", &showMode);
+	ImGui::Checkbox("Show all spectators", &showAllSpectators);
 	if (showAllSpectators)
-		ImGui::ClickableColorButton(xorstr_("Other target color"), otherTargetColor);
-	ImGui::ClickableColorButton(xorstr_("Same target color"), sameTargetColor);
+		ImGui::ClickableColorButton("Other target color", otherTargetColor);
+	ImGui::ClickableColorButton("Same target color", sameTargetColor);
 }
 
 SCOPED_SERIALIZER(SpectatorList)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Show mode"), showMode);
-	SERIALIZE(xorstr_("Show all spectators"), showAllSpectators);
-	SERIALIZE_VECTOR4D(xorstr_("Other target color"), otherTargetColor.Value);
-	SERIALIZE_VECTOR4D(xorstr_("Same target color"), sameTargetColor.Value);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Show mode", showMode);
+	SERIALIZE("Show all spectators", showAllSpectators);
+	SERIALIZE_VECTOR4D("Other target color", otherTargetColor.Value);
+	SERIALIZE_VECTOR4D("Same target color", sameTargetColor.Value);
 }

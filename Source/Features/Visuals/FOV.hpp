@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CViewSetup.hpp"
 
@@ -13,7 +12,7 @@
 inline class FOV : public Feature {
 public:
 	FOV()
-		: Feature(xorstr_("Visuals"), xorstr_("FOV")) // TODO Rename to "Field of view"?
+		: Feature("Visuals", "FOV") // TODO Rename to "Field of view"?
 	{
 	}
 

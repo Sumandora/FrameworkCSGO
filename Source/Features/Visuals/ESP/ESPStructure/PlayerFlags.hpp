@@ -7,7 +7,6 @@
 #include "../../../../Serialization/Serializer.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include <optional>
 #include <string>
@@ -26,8 +25,8 @@ public:
 
 	SERIALIZER()
 	{
-		SERIALIZE(xorstr_("Enabled"), enabled);
-		SERIALIZE_VECTOR4D(xorstr_("Color"), color.Value);
+		SERIALIZE("Enabled", enabled);
+		SERIALIZE_VECTOR4D("Color", color.Value);
 	}
 };
 
@@ -57,19 +56,19 @@ public:
 // TODO Generate boilerplate for the "if(check) text else nullopt"-flags
 // TODO Flags (Has Armor (m_ArmorValue)/Heavy Armor/Helmet, Is Walking, Is Reloading, Is Bot)
 // TODO Flags for non-players?
-DECLARE_FLAG(Money, xorstr_("Money"))
-DECLARE_FLAG(Scoped, xorstr_("Scoped"))
-DECLARE_FLAG(PinPulled, xorstr_("Pin pulled"))
-DECLARE_FLAG(Location, xorstr_("Location"))
-DECLARE_FLAG(Objective, xorstr_("Objective"))
-DECLARE_FLAG(HasDefuser, xorstr_("Has defuser"))
-DECLARE_FLAG(HasBomb, xorstr_("Has bomb"))
-DECLARE_FLAG(Planting, xorstr_("Planting"))
-DECLARE_FLAG(Spotted, xorstr_("Spotted"))
-DECLARE_FLAG(Ammo, xorstr_("Ammo"))
-DECLARE_FLAG(Immune, xorstr_("Immune"))
-DECLARE_FLAG(Walking, xorstr_("Walking"))
+DECLARE_FLAG(Money, "Money")
+DECLARE_FLAG(Scoped, "Scoped")
+DECLARE_FLAG(PinPulled, "Pin pulled")
+DECLARE_FLAG(Location, "Location")
+DECLARE_FLAG(Objective, "Objective")
+DECLARE_FLAG(HasDefuser, "Has defuser")
+DECLARE_FLAG(HasBomb, "Has bomb")
+DECLARE_FLAG(Planting, "Planting")
+DECLARE_FLAG(Spotted, "Spotted")
+DECLARE_FLAG(Ammo, "Ammo")
+DECLARE_FLAG(Immune, "Immune")
+DECLARE_FLAG(Walking, "Walking")
 
-DECLARE_ALPHA_FLAG(Flashed, xorstr_("Flashed"))
+DECLARE_ALPHA_FLAG(Flashed, "Flashed")
 
 #endif

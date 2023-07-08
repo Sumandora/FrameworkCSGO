@@ -1,8 +1,6 @@
 #include <sys/stat.h>
 #include <thread>
 
-#include "xorstr.hpp"
-
 #include "GUI/GUI.hpp"
 #include "Hooks/Hooks.hpp"
 #include "Serialization/Serialization.hpp"
@@ -50,8 +48,10 @@ void Initializer()
 	srand(time(nullptr));
 
 	struct stat info { };
-	if (!stat(Serialization::GetConfigDirectory(), &info) || !S_ISDIR(info.st_mode))
-		mkdir(Serialization::GetConfigDirectory(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	std::string configPath = Serialization::GetConfigDirectory();
+	const char* configPathCStr = configPath.c_str();
+	if (!stat(configPathCStr, &info) || !S_ISDIR(info.st_mode))
+		mkdir(configPathCStr, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
 	Interfaces::GetInterfaces();
 
@@ -62,7 +62,7 @@ void Initializer()
 
 	Hooks::InstallHooks();
 
-	eventLog.CreateReport(xorstr_("Initialized!"));
+	eventLog.CreateReport("Initialized!");
 }
 
 int __attribute__((constructor)) Startup()

@@ -1,8 +1,6 @@
 #ifndef SDK_GAMECLASS_CVIEWSETUP
 #define SDK_GAMECLASS_CVIEWSETUP
 
-#include "xorstr.hpp"
-
 #include "../Math/Vector.hpp"
 
 class CViewSetup {

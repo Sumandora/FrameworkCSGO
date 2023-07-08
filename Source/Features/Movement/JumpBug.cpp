@@ -3,7 +3,6 @@
 #include "JumpBug.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../General/EnginePrediction.hpp"
 
@@ -62,14 +61,14 @@ void JumpBug::CreateMove(CUserCmd* cmd)
 void JumpBug::SetupGUI()
 {
 	enginePrediction.ImGuiWarning();
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)"), input);
-	ImGui::Checkbox(xorstr_("Pre duck"), &preDuck);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::InputSelector("Input (%s)", input);
+	ImGui::Checkbox("Pre duck", &preDuck);
 }
 
 SCOPED_SERIALIZER(JumpBug)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Input"), input);
-	SERIALIZE(xorstr_("Pre duck"), preDuck);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Input", input);
+	SERIALIZE("Pre duck", preDuck);
 }

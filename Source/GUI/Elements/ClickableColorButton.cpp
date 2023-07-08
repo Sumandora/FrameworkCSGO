@@ -1,7 +1,5 @@
 #include "ClickableColorButton.hpp"
 
-#include "xorstr.hpp"
-
 static ImColor clipboard;
 
 IMGUI_API void ImGui::ClickableColorButton(const char* desc_id, ImColor& col, ImGuiColorEditFlags flags, const ImVec2& size)
@@ -10,21 +8,21 @@ IMGUI_API void ImGui::ClickableColorButton(const char* desc_id, ImColor& col, Im
 
 	const bool clicked = ImGui::ColorButton(desc_id, col.Value, flags, size);
 	if (ImGui::BeginPopupContextItem()) {
-		if (ImGui::Selectable(xorstr_("Copy"))) {
+		if (ImGui::Selectable("Copy")) {
 			clipboard = col;
 		}
-		if (ImGui::Selectable(xorstr_("Paste"))) {
+		if (ImGui::Selectable("Paste")) {
 			col = clipboard;
 		}
 		ImGui::EndPopup();
 	}
 	ImGui::SameLine();
-	ImGui::Text(xorstr_("%s"), desc_id);
+	ImGui::Text("%s", desc_id);
 
 	if (clicked)
-		ImGui::OpenPopup(xorstr_("##Picker"));
+		ImGui::OpenPopup("##Picker");
 
-	if (ImGui::BeginPopup(xorstr_("##Picker"))) {
+	if (ImGui::BeginPopup("##Picker")) {
 		float color[] = { col.Value.x, col.Value.y, col.Value.z, col.Value.w };
 		ImGui::ColorPicker4(desc_id, color, flags);
 		col.Value = ImVec4(color[0], color[1], color[2], color[3]);

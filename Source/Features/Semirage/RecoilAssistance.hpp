@@ -4,14 +4,13 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 inline class RecoilAssistance : public Feature {
 public:
 	RecoilAssistance()
-		: Feature(xorstr_("Semirage"), xorstr_("Recoil assistance"))
+		: Feature("Semirage", "Recoil assistance")
 	{
 	}
 

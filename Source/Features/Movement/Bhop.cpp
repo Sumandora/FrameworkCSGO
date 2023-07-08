@@ -59,21 +59,21 @@ void Bhop::CreateMove(CUserCmd* cmd)
 
 void Bhop::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("Hit chance"), &hitChance, 0, 1, xorstr_("%.2f"));
-	ImGui::SliderFloat(xorstr_("In air distortion"), &inAirDistortion, 0, 1, xorstr_("%.2f"));
-	ImGui::SliderInt(xorstr_("Minimum release delay"), &minimumReleaseDelay, 0, 10);
-	ImGui::SliderInt(xorstr_("Maximum release delay"), &maximumRelaseDelay, 0, 10);
-	ImGui::Checkbox(xorstr_("Only when falling"), &onlyWhenFalling);
-	ImGui::HelpMarker(xorstr_("This is useful when wearing an exojump suit"));
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::SliderFloat("Hit chance", &hitChance, 0, 1, "%.2f");
+	ImGui::SliderFloat("In air distortion", &inAirDistortion, 0, 1, "%.2f");
+	ImGui::SliderInt("Minimum release delay", &minimumReleaseDelay, 0, 10);
+	ImGui::SliderInt("Maximum release delay", &maximumRelaseDelay, 0, 10);
+	ImGui::Checkbox("Only when falling", &onlyWhenFalling);
+	ImGui::HelpMarker("This is useful when wearing an exojump suit");
 }
 
 SCOPED_SERIALIZER(Bhop)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Hit chance"), hitChance);
-	SERIALIZE(xorstr_("In air distortion"), inAirDistortion);
-	SERIALIZE(xorstr_("Minimum release delay"), minimumReleaseDelay);
-	SERIALIZE(xorstr_("Maximum release delay"), maximumRelaseDelay);
-	SERIALIZE(xorstr_("Only when falling"), onlyWhenFalling);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Hit chance", hitChance);
+	SERIALIZE("In air distortion", inAirDistortion);
+	SERIALIZE("Minimum release delay", minimumReleaseDelay);
+	SERIALIZE("Maximum release delay", maximumRelaseDelay);
+	SERIALIZE("Only when falling", onlyWhenFalling);
 }

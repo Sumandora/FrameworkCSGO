@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
@@ -35,12 +33,12 @@ void LineSetting::SetupGUI(const char* id)
 	ImGui::SameLine();
 
 	if (ImGui::Popup(id)) {
-		ImGui::ClickableColorButton(xorstr_("Line color"), lineColor);
-		ImGui::SliderFloat(xorstr_("Thickness"), &thickness, 0.0f, 10.0f, xorstr_("%.2f"));
-		ImGui::Checkbox(xorstr_("Outlined"), &outlined);
+		ImGui::ClickableColorButton("Line color", lineColor);
+		ImGui::SliderFloat("Thickness", &thickness, 0.0f, 10.0f, "%.2f");
+		ImGui::Checkbox("Outlined", &outlined);
 		if (outlined) {
-			ImGui::ClickableColorButton(xorstr_("Outline color"), outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, xorstr_("%.2f"));
+			ImGui::ClickableColorButton("Outline color", outlineColor);
+			ImGui::SliderFloat("Outline thickness", &outlineThickness, 0.0f, 10.0f, "%.2f");
 		}
 
 		ImGui::EndPopup();
@@ -51,10 +49,10 @@ void LineSetting::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(LineSetting)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE_VECTOR4D(xorstr_("Line color"), lineColor.Value);
-	SERIALIZE(xorstr_("Thickness"), thickness);
-	SERIALIZE(xorstr_("Outlined"), outlined);
-	SERIALIZE_VECTOR4D(xorstr_("Outline color"), outlineColor.Value);
-	SERIALIZE(xorstr_("Outline thickness"), outlineThickness);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE_VECTOR4D("Line color", lineColor.Value);
+	SERIALIZE("Thickness", thickness);
+	SERIALIZE("Outlined", outlined);
+	SERIALIZE_VECTOR4D("Outline color", outlineColor.Value);
+	SERIALIZE("Outline thickness", outlineThickness);
 }

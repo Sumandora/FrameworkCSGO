@@ -6,14 +6,13 @@
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "SDL.h"
 
 inline class LegitAimbot : public Feature {
 public:
 	LegitAimbot()
-		: Feature(xorstr_("Legit"), xorstr_("Aimbot"))
+		: Feature("Legit", "Aimbot")
 	{
 	}
 

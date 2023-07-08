@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
 bool PlayerTeamSettings::IsEnabled() const
@@ -23,13 +21,13 @@ void PlayerTeamSettings::Draw(ImDrawList* drawList, Player& player) const
 void PlayerTeamSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	if (ImGui::BeginTabBar(xorstr_("#Player team config selection"), ImGuiTabBarFlags_Reorderable)) {
-		if (ImGui::BeginTabItem(xorstr_("Visible"))) {
-			visible.SetupGUI(xorstr_("Visible"));
+	if (ImGui::BeginTabBar("#Player team config selection", ImGuiTabBarFlags_Reorderable)) {
+		if (ImGui::BeginTabItem("Visible")) {
+			visible.SetupGUI("Visible");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Occluded"))) {
-			occluded.SetupGUI(xorstr_("Occluded"));
+		if (ImGui::BeginTabItem("Occluded")) {
+			occluded.SetupGUI("Occluded");
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -39,6 +37,6 @@ void PlayerTeamSettings::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(PlayerTeamSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Visible"), visible);
-	SERIALIZE_STRUCT(xorstr_("Occluded"), occluded);
+	SERIALIZE_STRUCT("Visible", visible);
+	SERIALIZE_STRUCT("Occluded", occluded);
 }

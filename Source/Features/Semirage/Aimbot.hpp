@@ -6,7 +6,6 @@
 #include "../../Utils/WeaponConfig/WeaponConfig.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../SDK/GameClass/CGameEvent.hpp"
@@ -17,7 +16,7 @@
 inline class SemirageAimbot : public Feature {
 public:
 	SemirageAimbot()
-		: Feature(xorstr_("Semirage"), xorstr_("Aimbot"))
+		: Feature("Semirage", "Aimbot")
 	{
 	}
 

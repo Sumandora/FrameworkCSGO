@@ -11,7 +11,8 @@ float Flashed::GetAlpha(const Player& player) const
 
 std::optional<std::string> Flashed::GetText(const Player& player) const
 {
-	if (player.flashAlpha <= 0)
+	if (player.flashAlpha > 0)
+		return "Flashed: " + std::to_string((int)player.flashAlpha);
+	else
 		return std::nullopt;
-	return xorstr_("Flashed: ") + std::to_string((int)player.flashAlpha);
 }

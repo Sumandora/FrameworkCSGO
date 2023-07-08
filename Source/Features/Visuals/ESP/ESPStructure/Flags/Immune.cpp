@@ -8,6 +8,7 @@
 std::optional<std::string> Immune::GetText(const Player& player) const
 {
 	if (player.immune)
-		return xorstr_("Immune");
-	return std::nullopt;
+		return "Immune";
+	else
+		return std::nullopt;
 }

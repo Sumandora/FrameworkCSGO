@@ -1,7 +1,6 @@
 #include "FOV.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../GUI/Elements/HelpMarker.hpp"
 #include "../../Interfaces.hpp"
@@ -79,41 +78,41 @@ void FOV::OverrideView(CViewSetup* pSetup)
 
 void FOV::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Force FOV"), &forceFOV);
+	ImGui::Checkbox("Force FOV", &forceFOV);
 	if (forceFOV) {
-		ImGui::Checkbox(xorstr_("Ignore scoped"), &ignoreScoped);
-		ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 180.0f);
+		ImGui::Checkbox("Ignore scoped", &ignoreScoped);
+		ImGui::SliderFloat("FOV", &fov, 0.0f, 180.0f);
 	}
 
-	ImGui::Checkbox(xorstr_("Force View model"), &forceViewModel);
+	ImGui::Checkbox("Force View model", &forceViewModel);
 	if (forceViewModel) {
-		ImGui::SliderFloat(xorstr_("View model FOV offset"), &viewModelFovOffset, -90.0f, 90.0f);
+		ImGui::SliderFloat("View model FOV offset", &viewModelFovOffset, -90.0f, 90.0f);
 
-		ImGui::Checkbox(xorstr_("View offset"), &viewOffset);
-		ImGui::HelpMarker(xorstr_("Should the offset be a literal 3D movement?"));
+		ImGui::Checkbox("View offset", &viewOffset);
+		ImGui::HelpMarker("Should the offset be a literal 3D movement?");
 
-		ImGui::DragFloat(xorstr_("Offset X"), &offsetX, 0.1f);
-		ImGui::DragFloat(xorstr_("Offset Y"), &offsetY, 0.1f);
-		ImGui::DragFloat(xorstr_("Offset Z"), &offsetZ, 0.1f);
+		ImGui::DragFloat("Offset X", &offsetX, 0.1f);
+		ImGui::DragFloat("Offset Y", &offsetY, 0.1f);
+		ImGui::DragFloat("Offset Z", &offsetZ, 0.1f);
 
-		ImGui::SliderFloat(xorstr_("Rotation offset X"), &rotationOffsetX, -90.0f, 90.0f);
-		ImGui::SliderFloat(xorstr_("Rotation offset Y"), &rotationOffsetY, -90.0f, 90.0f);
-		ImGui::SliderFloat(xorstr_("Rotation offset Z"), &rotationOffsetZ, -90.0f, 90.0f);
+		ImGui::SliderFloat("Rotation offset X", &rotationOffsetX, -90.0f, 90.0f);
+		ImGui::SliderFloat("Rotation offset Y", &rotationOffsetY, -90.0f, 90.0f);
+		ImGui::SliderFloat("Rotation offset Z", &rotationOffsetZ, -90.0f, 90.0f);
 	}
 }
 
 SCOPED_SERIALIZER(FOV)
 {
-	SERIALIZE(xorstr_("Force FOV"), forceFOV);
-	SERIALIZE(xorstr_("Ignore scoped"), ignoreScoped);
-	SERIALIZE(xorstr_("FOV"), fov);
-	SERIALIZE(xorstr_("Force View model"), forceViewModel);
-	SERIALIZE(xorstr_("View model FOV"), viewModelFovOffset);
-	SERIALIZE(xorstr_("View offset"), viewOffset);
-	SERIALIZE(xorstr_("Offset X"), offsetX); // TODO Make vectors?
-	SERIALIZE(xorstr_("Offset Y"), offsetY);
-	SERIALIZE(xorstr_("Offset Z"), offsetZ);
-	SERIALIZE(xorstr_("Rotation offset X"), rotationOffsetX);
-	SERIALIZE(xorstr_("Rotation offset Y"), rotationOffsetY);
-	SERIALIZE(xorstr_("Rotation offset Z"), rotationOffsetZ);
+	SERIALIZE("Force FOV", forceFOV);
+	SERIALIZE("Ignore scoped", ignoreScoped);
+	SERIALIZE("FOV", fov);
+	SERIALIZE("Force View model", forceViewModel);
+	SERIALIZE("View model FOV", viewModelFovOffset);
+	SERIALIZE("View offset", viewOffset);
+	SERIALIZE("Offset X", offsetX); // TODO Make vectors?
+	SERIALIZE("Offset Y", offsetY);
+	SERIALIZE("Offset Z", offsetZ);
+	SERIALIZE("Rotation offset X", rotationOffsetX);
+	SERIALIZE("Rotation offset Y", rotationOffsetY);
+	SERIALIZE("Rotation offset Z", rotationOffsetZ);
 }

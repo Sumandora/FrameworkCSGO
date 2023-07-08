@@ -244,10 +244,10 @@ void SemirageAimbot::FireEvent(CGameEvent* gameEvent)
 	if (!wasFaked)
 		return; // No point in trying to reset our view when there is nothing to reset
 
-	if (strcmp(gameEvent->GetName(), xorstr_("player_spawn")) != 0)
+	if (strcmp(gameEvent->GetName(), "player_spawn") != 0)
 		return;
 
-	if (Interfaces::engine->GetPlayerForUserID(gameEvent->GetInt(xorstr_("userid"))) != Interfaces::engine->GetLocalPlayer())
+	if (Interfaces::engine->GetPlayerForUserID(gameEvent->GetInt("userid")) != Interfaces::engine->GetLocalPlayer())
 		return;
 
 	// We just respawned, keeping a desynced view is pointless
@@ -255,7 +255,7 @@ void SemirageAimbot::FireEvent(CGameEvent* gameEvent)
 	Vector oldView = Hooks::Game::CreateMove::lastCmd.viewangles;
 	Interfaces::engine->SetViewAngles(&oldView);
 
-	eventLog.CreateReport(xorstr_("Gracefully undesynced view"));
+	eventLog.CreateReport("Gracefully undesynced view");
 }
 
 bool SemirageAimbot::CreateMove(CUserCmd* cmd)
@@ -397,51 +397,51 @@ void SemirageAimbot::ImGuiRender(ImDrawList* drawList)
 
 void SemirageAimbot::WeaponConfig::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Disabled"), &disabled);
+	ImGui::Checkbox("Disabled", &disabled);
 	if (disabled)
 		return;
 
-	ImGui::Checkbox(xorstr_("Only when shooting"), &onlyWhenShooting);
+	ImGui::Checkbox("Only when shooting", &onlyWhenShooting);
 	if (onlyWhenShooting && semirageAimbot.autoFire && semirageAimbot.autoFireKey == 0)
-		ImGui::TextColored(ImGuiColors::yellow, xorstr_("You are auto-firing without key, this won't make a difference"));
+		ImGui::TextColored(ImGuiColors::yellow, "You are auto-firing without key, this won't make a difference");
 
 	if (semirageAimbot.autoFire)
-		ImGui::Checkbox(xorstr_("Auto fire recklessly"), &autoFireRecklessly);
+		ImGui::Checkbox("Auto fire recklessly", &autoFireRecklessly);
 
-	ImGui::SliderFloat(xorstr_("FOV"), &fov, 0.0f, 10.0f, xorstr_("%.2f"));
+	ImGui::SliderFloat("FOV", &fov, 0.0f, 10.0f, "%.2f");
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Scaling"))) {
-		ImGui::SliderFloat(xorstr_("X Scale"), &fovScaleX, 0.0f, 2.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Y Scale"), &fovScaleY, 0.0f, 2.0f, xorstr_("%.2f"));
+	if (ImGui::Popup("Scaling")) {
+		ImGui::SliderFloat("X Scale", &fovScaleX, 0.0f, 2.0f, "%.2f");
+		ImGui::SliderFloat("Y Scale", &fovScaleY, 0.0f, 2.0f, "%.2f");
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Control recoil"), &controlRecoil);
+	ImGui::Checkbox("Control recoil", &controlRecoil);
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Recoil"))) {
-		ImGui::SliderFloat(xorstr_("X Scale"), &recoilScaleX, 0.0f, 1.5f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Y Scale"), &recoilScaleY, 0.0f, 1.5f, xorstr_("%.2f"));
+	if (ImGui::Popup("Recoil")) {
+		ImGui::SliderFloat("X Scale", &recoilScaleX, 0.0f, 1.5f, "%.2f");
+		ImGui::SliderFloat("Y Scale", &recoilScaleY, 0.0f, 1.5f, "%.2f");
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Smooth out"), &smoothOut);
+	ImGui::Checkbox("Smooth out", &smoothOut);
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Aim speed"))) {
-		ImGui::SliderFloat(xorstr_("Horizontal aim speed"), &horizontalAimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Vertical aim speed"), &verticalAimSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+	if (ImGui::Popup("Aim speed")) {
+		ImGui::SliderFloat("Horizontal aim speed", &horizontalAimSpeed, 0.0f, 1.0f, "%.2f");
+		ImGui::SliderFloat("Vertical aim speed", &verticalAimSpeed, 0.0f, 1.0f, "%.2f");
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Silent"), &silent);
+	ImGui::Checkbox("Silent", &silent);
 
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Silent"))) {
-		ImGui::Checkbox(xorstr_("Smooth rotate to origin"), &smoothRotateToOrigin);
+	if (ImGui::Popup("Silent")) {
+		ImGui::Checkbox("Smooth rotate to origin", &smoothRotateToOrigin);
 		if (smoothRotateToOrigin) {
-			ImGui::SliderFloat(xorstr_("Horizontal speed"), &horizontalRotateToOriginSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
-			ImGui::SliderFloat(xorstr_("Vertical speed"), &verticalRotateToOriginSpeed, 0.0f, 1.0f, xorstr_("%.2f"));
+			ImGui::SliderFloat("Horizontal speed", &horizontalRotateToOriginSpeed, 0.0f, 1.0f, "%.2f");
+			ImGui::SliderFloat("Vertical speed", &verticalRotateToOriginSpeed, 0.0f, 1.0f, "%.2f");
 
-			ImGui::SliderFloat(xorstr_("Recombine views"), &recombineViews, 0.0f, 1.0f, xorstr_("%.2f"));
+			ImGui::SliderFloat("Recombine views", &recombineViews, 0.0f, 1.0f, "%.2f");
 		}
 		ImGui::EndPopup();
 	}
@@ -449,29 +449,29 @@ void SemirageAimbot::WeaponConfig::SetupGUI()
 
 void SemirageAimbot::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
+	ImGui::Checkbox("Enabled", &enabled);
 
-	ImGui::Checkbox(xorstr_("Auto fire"), &autoFire);
+	ImGui::Checkbox("Auto fire", &autoFire);
 	if (autoFire)
-		ImGui::InputSelector(xorstr_("Auto fire key (%s)"), autoFireKey);
+		ImGui::InputSelector("Auto fire key (%s)", autoFireKey);
 
-	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
-	ImGui::Checkbox(xorstr_("Don't aim through smoke"), &dontAimThroughSmoke);
-	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
+	ImGui::SliderInt("Maximal flash amount", &maximalFlashAmount, 0, 255);
+	ImGui::Checkbox("Don't aim through smoke", &dontAimThroughSmoke);
+	ImGui::Checkbox("Friendly fire", &friendlyFire);
 
-	ImGui::Checkbox(xorstr_("FOV Circle"), &fovCircle);
+	ImGui::Checkbox("FOV Circle", &fovCircle);
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("FOV Circle settings"))) {
-		ImGui::ClickableColorButton(xorstr_("Color"), circleColor);
-		ImGui::SliderFloat(xorstr_("Thickness"), &thickness, 0.0f, 10.0f, xorstr_("%.2f"));
+	if (ImGui::Popup("FOV Circle settings")) {
+		ImGui::ClickableColorButton("Color", circleColor);
+		ImGui::SliderFloat("Thickness", &thickness, 0.0f, 10.0f, "%.2f");
 		ImGui::EndPopup();
 	}
 
-	ImGui::Checkbox(xorstr_("Show desynced view"), &showDesyncedView);
+	ImGui::Checkbox("Show desynced view", &showDesyncedView);
 	ImGui::SameLine();
-	if (ImGui::Popup(xorstr_("Show desynced view settings"))) {
-		ImGui::ClickableColorButton(xorstr_("Color"), viewColor);
-		ImGui::SliderFloat(xorstr_("Radius"), &radius, 0.0f, 10.0f, xorstr_("%.2f"));
+	if (ImGui::Popup("Show desynced view settings")) {
+		ImGui::ClickableColorButton("Color", viewColor);
+		ImGui::SliderFloat("Radius", &radius, 0.0f, 10.0f, "%.2f");
 		ImGui::EndPopup();
 	}
 
@@ -480,50 +480,50 @@ void SemirageAimbot::SetupGUI()
 
 SCOPED_SERIALIZER(SemirageAimbot::WeaponConfig)
 {
-	SERIALIZE(xorstr_("Disabled"), disabled);
+	SERIALIZE("Disabled", disabled);
 
-	SERIALIZE(xorstr_("Only when shooting"), onlyWhenShooting);
+	SERIALIZE("Only when shooting", onlyWhenShooting);
 
-	SERIALIZE(xorstr_("Auto fire recklessly"), autoFireRecklessly);
+	SERIALIZE("Auto fire recklessly", autoFireRecklessly);
 
-	SERIALIZE(xorstr_("FOV"), fov);
-	SERIALIZE(xorstr_("FOV scale X"), fovScaleX);
-	SERIALIZE(xorstr_("FOV scale Y"), fovScaleY);
+	SERIALIZE("FOV", fov);
+	SERIALIZE("FOV scale X", fovScaleX);
+	SERIALIZE("FOV scale Y", fovScaleY);
 
-	SERIALIZE(xorstr_("Control recoil"), controlRecoil);
-	SERIALIZE(xorstr_("Recoil scale X"), recoilScaleX);
-	SERIALIZE(xorstr_("Recoil scale Y"), recoilScaleY);
+	SERIALIZE("Control recoil", controlRecoil);
+	SERIALIZE("Recoil scale X", recoilScaleX);
+	SERIALIZE("Recoil scale Y", recoilScaleY);
 
-	SERIALIZE(xorstr_("Smooth out"), smoothOut);
-	SERIALIZE(xorstr_("Horizontal aim speed"), horizontalAimSpeed);
-	SERIALIZE(xorstr_("Vertical aim speed"), verticalAimSpeed);
+	SERIALIZE("Smooth out", smoothOut);
+	SERIALIZE("Horizontal aim speed", horizontalAimSpeed);
+	SERIALIZE("Vertical aim speed", verticalAimSpeed);
 
-	SERIALIZE(xorstr_("Silent"), silent);
+	SERIALIZE("Silent", silent);
 
-	SERIALIZE(xorstr_("Smooth rotate to origin"), smoothRotateToOrigin);
-	SERIALIZE(xorstr_("Horizontal rotate to origin speed"), horizontalRotateToOriginSpeed);
-	SERIALIZE(xorstr_("Vertical rotate to origin speed"), verticalRotateToOriginSpeed);
-	SERIALIZE(xorstr_("Recombine views"), recombineViews);
+	SERIALIZE("Smooth rotate to origin", smoothRotateToOrigin);
+	SERIALIZE("Horizontal rotate to origin speed", horizontalRotateToOriginSpeed);
+	SERIALIZE("Vertical rotate to origin speed", verticalRotateToOriginSpeed);
+	SERIALIZE("Recombine views", recombineViews);
 }
 
 SCOPED_SERIALIZER(SemirageAimbot)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
+	SERIALIZE("Enabled", enabled);
 
-	SERIALIZE(xorstr_("Auto fire"), autoFire);
-	SERIALIZE(xorstr_("Auto fire key"), autoFireKey);
+	SERIALIZE("Auto fire", autoFire);
+	SERIALIZE("Auto fire key", autoFireKey);
 
-	SERIALIZE(xorstr_("Maximal flash amount"), maximalFlashAmount);
-	SERIALIZE(xorstr_("Don't aim through smoke"), dontAimThroughSmoke);
-	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
+	SERIALIZE("Maximal flash amount", maximalFlashAmount);
+	SERIALIZE("Don't aim through smoke", dontAimThroughSmoke);
+	SERIALIZE("Friendly fire", friendlyFire);
 
-	SERIALIZE_STRUCT(xorstr_("Weapons"), weaponConfigurator);
+	SERIALIZE_STRUCT("Weapons", weaponConfigurator);
 
-	SERIALIZE(xorstr_("FOV Circle"), fovCircle);
-	SERIALIZE_VECTOR4D(xorstr_("Circle color"), circleColor.Value);
-	SERIALIZE(xorstr_("Thickness"), thickness);
+	SERIALIZE("FOV Circle", fovCircle);
+	SERIALIZE_VECTOR4D("Circle color", circleColor.Value);
+	SERIALIZE("Thickness", thickness);
 
-	SERIALIZE(xorstr_("Show desynced view"), showDesyncedView);
-	SERIALIZE_VECTOR4D(xorstr_("View color"), viewColor.Value);
-	SERIALIZE(xorstr_("Radius"), radius);
+	SERIALIZE("Show desynced view", showDesyncedView);
+	SERIALIZE_VECTOR4D("View color", viewColor.Value);
+	SERIALIZE("Radius", radius);
 }

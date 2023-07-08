@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/IMaterial.hpp"
 
@@ -13,7 +12,7 @@
 inline class FlashReduction : public Feature {
 public:
 	FlashReduction()
-		: Feature(xorstr_("Visuals"), xorstr_("Flash reduction"))
+		: Feature("Visuals", "Flash reduction")
 	{
 	}
 

@@ -8,7 +8,6 @@
 #include <dirent.h>
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../../Features/General/EventLog.hpp"
 
@@ -16,14 +15,14 @@
 
 // TODO Remake GUI
 
-static char* GetConfigFile(const char* filename)
+static std::string GetConfigFile(std::string filename)
 {
-	return strcat(strcat(Serialization::GetConfigDirectory(), xorstr_("/")), filename);
+	return Serialization::GetConfigDirectory() + '/' + filename;
 }
 
 static bool GatherConfigs(std::vector<std::string>& configs)
 {
-	DIR* dir = opendir(Serialization::GetConfigDirectory());
+	DIR* dir = opendir(Serialization::GetConfigDirectory().c_str());
 	if (dir == nullptr)
 		return false;
 
@@ -50,22 +49,22 @@ void Gui::Windows::Configuration()
 
 	bool addedConfig = false;
 
-	if (ImGui::Button(xorstr_("Save")) && name[0] != '\0') {
+	if (ImGui::Button("Save") && name[0] != '\0') {
 		auto* cfgName = name;
-		if (!std::string(cfgName).ends_with(xorstr_(".json")))
-			cfgName = strcat(cfgName, xorstr_(".json"));
+		if (!std::string(cfgName).ends_with(".json"))
+			cfgName = strcat(cfgName, ".json");
 
 		if (Serialization::Save(GetConfigFile(cfgName)))
-			eventLog.CreateReport(xorstr_("Saved config '%s'"), cfgName);
+			eventLog.CreateReport("Saved config '%s'", cfgName);
 		else
-			eventLog.CreateReport(xorstr_("Failed to saved config '%s'"), cfgName);
+			eventLog.CreateReport("Failed to saved config '%s'", cfgName);
 
 		addedConfig = true;
 		name[0] = '\0';
 	}
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 	ImGui::SameLine();
-	ImGui::InputText(xorstr_("##Name"), name, IM_ARRAYSIZE(name));
+	ImGui::InputText("##Name", name, IM_ARRAYSIZE(name));
 	ImGui::PopItemWidth();
 
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
@@ -82,23 +81,23 @@ void Gui::Windows::Configuration()
 		configsArray[i] = configs[i].c_str();
 	}
 
-	if (ImGui::ListBox(xorstr_("##Configs"), &configSelected, configsArray, (int)configs.size(), (int)configs.size())) {
+	if (ImGui::ListBox("##Configs", &configSelected, configsArray, (int)configs.size(), (int)configs.size())) {
 		if (configSelected >= 0 && configSelected < (int)configs.size()) {
 			const char* configName = configs[configSelected].c_str();
 			if (Serialization::Load(GetConfigFile(configName)))
-				eventLog.CreateReport(xorstr_("Loaded config '%s'"), configName);
+				eventLog.CreateReport("Loaded config '%s'", configName);
 			else
-				eventLog.CreateReport(xorstr_("Failed to load config '%s'"), configName);
+				eventLog.CreateReport("Failed to load config '%s'", configName);
 		}
 	}
 	ImGui::PopItemWidth();
-	if(configSelected >= 0 && configSelected < (int)configs.size()){
+	if (configSelected >= 0 && configSelected < (int)configs.size()) {
 		const char* configName = configs[configSelected].c_str();
-		if(ImGui::Button(xorstr_("Overwrite config"))){
+		if (ImGui::Button("Overwrite config")) {
 			if (Serialization::Save(GetConfigFile(configName)))
-				eventLog.CreateReport(xorstr_("Saved config '%s'"), configName);
+				eventLog.CreateReport("Saved config '%s'", configName);
 			else
-			eventLog.CreateReport(xorstr_("Failed to saved config '%s'"), configName);
+				eventLog.CreateReport("Failed to saved config '%s'", configName);
 		}
 	}
 }

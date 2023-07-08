@@ -4,7 +4,6 @@
 #include "../Features.hpp"
 
 #include "imgui.h"
-#include "xorstr.hpp"
 
 #include "../../SDK/GameClass/CViewSetup.hpp"
 
@@ -13,7 +12,7 @@
 inline class SpectatorList : public Feature {
 public:
 	SpectatorList()
-		: Feature(xorstr_("Visuals"), xorstr_("Spectator list"))
+		: Feature("Visuals", "Spectator list")
 	{
 	}
 

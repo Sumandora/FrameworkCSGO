@@ -2,8 +2,8 @@
 #define UTILS_WEAPONCONFIG
 
 #include "../../GUI/Elements/Popup.hpp"
-#include "../../GUI/ImGuiMacros.hpp"
 #include "../../Serialization/Serializer.hpp"
+#include "imgui.h"
 #include "WeaponClasses.hpp"
 #include <type_traits>
 
@@ -23,8 +23,8 @@ class WeaponConfigurator {
 
 		SERIALIZER()
 		{
-			SERIALIZE(xorstr_("Overridden"), overridden);
-			SERIALIZE_STRUCT(xorstr_("Config"), config);
+			SERIALIZE("Overridden", overridden);
+			SERIALIZE_STRUCT("Config", config);
 		}
 	};
 
@@ -47,8 +47,8 @@ public:
 
 	void BuildMenu(T& dest)
 	{
-		if (ImGui::Popup(xorstr_("Copy from"), xorstr_("Copy from"))) {
-			if (ImGui::Selectable(xorstr_("Shared"))) {
+		if (ImGui::Popup("Copy from", "Copy from")) {
+			if (ImGui::Selectable("Shared")) {
 				dest = sharedConfig;
 			}
 
@@ -57,7 +57,7 @@ public:
 				const char* localization = weaponClassLocalization[weaponClass];
 
 				if (ImGui::BeginMenu(localization)) {
-					if (ImGui::MenuItem(xorstr_("Shared"))) {
+					if (ImGui::MenuItem("Shared")) {
 						dest = classConfigs[weaponClass].config;
 					}
 					for (WeaponID weaponId : weaponClassification[weaponClass]) {
@@ -74,7 +74,7 @@ public:
 
 	void ShowConfig(OverridableConfig& overridableConfig)
 	{
-		ImGui::Checkbox(xorstr_("Overridden"), &overridableConfig.overridden);
+		ImGui::Checkbox("Overridden", &overridableConfig.overridden);
 		ImGui::SameLine();
 		if (overridableConfig.overridden) {
 			T& weaponConfig = overridableConfig.config;
@@ -83,30 +83,38 @@ public:
 		}
 	}
 
-	void SetupGUI(){
-		TABBAR(xorstr_("#Weapon config"), [&]() {
-			TABITEM(xorstr_("Shared"), [&]() {
+	void SetupGUI()
+	{
+		if (ImGui::BeginTabBar("#Weapon config"), ImGuiTabBarFlags_Reorderable) {
+			if (ImGui::BeginTabItem("Shared")) {
 				sharedConfig.SetupGUI();
-			})
+				ImGui::EndTabItem();
+			}
 
 			for (int classIndex = static_cast<int>(WeaponClass::PISTOL); classIndex <= static_cast<int>(WeaponClass::SHOTGUN); classIndex++) {
 				auto weaponClass = static_cast<WeaponClass>(classIndex);
 				const char* localization = weaponClassLocalization[weaponClass];
 
-				TABITEM(localization, [&]() {
-					TABBAR(strcat(xorstr_("#Config for "), localization), [&]() {
-						TABITEM(xorstr_("Shared"), [&]() {
+				if (ImGui::BeginTabItem(localization)) {
+					char str[256] = "#Config for ";
+					if (ImGui::BeginTabBar(strcat(str, localization)), ImGuiTabBarFlags_Reorderable) {
+						if (ImGui::BeginTabItem("Shared")) {
 							ShowConfig(classConfigs[weaponClass]);
-						})
-						for (WeaponID weaponId : weaponClassification[weaponClass]) {
-							TABITEM(weaponLocalization[weaponId], [&]() {
-								ShowConfig(weaponConfigs[weaponId]);
-							})
+							ImGui::EndTabItem();
 						}
-					})
-				})
+						for (WeaponID weaponId : weaponClassification[weaponClass]) {
+							if (ImGui::BeginTabItem(weaponLocalization[weaponId])) {
+								ShowConfig(weaponConfigs[weaponId]);
+								ImGui::EndTabItem();
+							}
+						}
+						ImGui::EndTabBar();
+					}
+					ImGui::EndTabItem();
+				}
 			}
-		})
+			ImGui::EndTabBar();
+		}
 	}
 
 	T* GetConfig(WeaponID weaponId)
@@ -137,7 +145,7 @@ public:
 
 	SERIALIZER()
 	{
-		SERIALIZE_STRUCT(xorstr_("Shared"), sharedConfig);
+		SERIALIZE_STRUCT("Shared", sharedConfig);
 		for (int classIndex = static_cast<int>(WeaponClass::PISTOL); classIndex <= static_cast<int>(WeaponClass::SHOTGUN); classIndex++) {
 			auto weaponClass = static_cast<WeaponClass>(classIndex);
 			SERIALIZE_STRUCT(weaponClassLocalization[weaponClass], classConfigs[weaponClass]);

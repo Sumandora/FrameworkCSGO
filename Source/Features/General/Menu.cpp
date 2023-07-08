@@ -51,45 +51,45 @@ void Menu::ImGuiLoop()
 
 	if (isPressed && !wasPressed) {
 		Gui::visible = !Gui::visible;
-		eventLog.CreateReport(xorstr_("%s the menu"), Gui::visible ? xorstr_("Opened") : xorstr_("Closed"));
+		eventLog.CreateReport("%s the menu", Gui::visible ? "Opened" : "Closed");
 	}
 	wasPressed = isPressed;
 }
 
 void Menu::SetupGUI()
 {
-	ImGui::InputSelector(xorstr_("Menu key (%s)"), menuKey);
+	ImGui::InputSelector("Menu key (%s)", menuKey);
 	if (menuKey == 0)
 		menuKey = static_cast<int>(ImGuiKey_Insert);
 #ifdef DEBUG
-	ImGui::Checkbox(xorstr_("Show Demo Window"), &isShowingDemoWindow);
-	ImGui::Checkbox(xorstr_("Show Metrics Window"), &isShowingMetricsWindow);
-	ImGui::Checkbox(xorstr_("Show Debug Log Window"), &isShowingDebugLogWindow);
-	ImGui::Checkbox(xorstr_("Show Stack Tool Window"), &isShowingStackToolWindow);
-	ImGui::Checkbox(xorstr_("Show About Window"), &isShowingAboutWindow);
-	ImGui::Checkbox(xorstr_("Show Style Editor"), &isShowingStyleEditor);
-	ImGui::Checkbox(xorstr_("Show User Guide"), &isShowingUserGuide);
+	ImGui::Checkbox("Show Demo Window", &isShowingDemoWindow);
+	ImGui::Checkbox("Show Metrics Window", &isShowingMetricsWindow);
+	ImGui::Checkbox("Show Debug Log Window", &isShowingDebugLogWindow);
+	ImGui::Checkbox("Show Stack Tool Window", &isShowingStackToolWindow);
+	ImGui::Checkbox("Show About Window", &isShowingAboutWindow);
+	ImGui::Checkbox("Show Style Editor", &isShowingStyleEditor);
+	ImGui::Checkbox("Show User Guide", &isShowingUserGuide);
 #endif
-	if (ImGui::Button(xorstr_("Set style to dark"))) {
+	if (ImGui::Button("Set style to dark")) {
 		style = 0;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button(xorstr_("Set style to light"))) {
+	if (ImGui::Button("Set style to light")) {
 		style = 1;
 	}
 	ImGui::SameLine();
-	if (ImGui::Button(xorstr_("Set style to classic"))) {
+	if (ImGui::Button("Set style to classic")) {
 		style = 2;
 	}
 
-	ImGui::Text(xorstr_("ImGui Version: %s"), ImGui::GetVersion());
-	ImGui::Text(xorstr_("Compiled using: " COMPILER_NAME));
-	ImGui::Text(xorstr_("Project name: " PROJECT_NAME));
+	ImGui::Text("ImGui Version: %s", ImGui::GetVersion());
+	ImGui::Text("Compiled using: " COMPILER_NAME);
+	ImGui::Text("Project name: " PROJECT_NAME);
 }
 
 SCOPED_SERIALIZER(Menu)
 {
-	SERIALIZE(xorstr_("Menu key"), menuKey);
-	SERIALIZE(xorstr_("Style"), style);
+	SERIALIZE("Menu key", menuKey);
+	SERIALIZE("Style", style);
 	// Intentionally not saving the showing...window because nobody needs those
 }

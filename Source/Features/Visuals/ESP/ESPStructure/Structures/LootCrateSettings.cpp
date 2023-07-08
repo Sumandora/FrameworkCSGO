@@ -24,12 +24,12 @@ void LootCrateSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
-	healthbar.SetupGUI(xorstr_("Healthbar"));
+	healthbar.SetupGUI("Healthbar");
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(LootCrateSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Healthbar"), healthbar);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Healthbar", healthbar);
 }

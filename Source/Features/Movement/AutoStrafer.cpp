@@ -124,22 +124,22 @@ void AutoStrafer::CreateMove(CUserCmd* cmd)
 void AutoStrafer::SetupGUI()
 {
 	enginePrediction.ImGuiWarning();
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::Checkbox(xorstr_("Directional"), &directional);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::Checkbox("Directional", &directional);
 	if (directional) {
-		ImGui::Checkbox(xorstr_("Allow hard turns"), &allowHardTurns);
+		ImGui::Checkbox("Allow hard turns", &allowHardTurns);
 		if (allowHardTurns)
-			ImGui::SliderFloat(xorstr_("Hard turn threshold"), &hardTurnThreshold, 0.0f, 180.0f, xorstr_("%.2f"));
+			ImGui::SliderFloat("Hard turn threshold", &hardTurnThreshold, 0.0f, 180.0f, "%.2f");
 	} else {
-		ImGui::Checkbox(xorstr_("Only when idle"), &onlyWhenIdle);
+		ImGui::Checkbox("Only when idle", &onlyWhenIdle);
 	}
 }
 
 SCOPED_SERIALIZER(AutoStrafer)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Directional"), directional);
-	SERIALIZE(xorstr_("Allow hard turns"), allowHardTurns);
-	SERIALIZE(xorstr_("Hard turn threshold"), hardTurnThreshold);
-	SERIALIZE(xorstr_("Only when idle"), onlyWhenIdle);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Directional", directional);
+	SERIALIZE("Allow hard turns", allowHardTurns);
+	SERIALIZE("Hard turn threshold", hardTurnThreshold);
+	SERIALIZE("Only when idle", onlyWhenIdle);
 }

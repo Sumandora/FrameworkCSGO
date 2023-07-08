@@ -58,9 +58,6 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 endif ()
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${IMGUI_SOURCE_FILES})
 
-# Setup xorstr
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/xorstr/include)
-
 # Setup SimpleJSON
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/SimpleJSON)
 

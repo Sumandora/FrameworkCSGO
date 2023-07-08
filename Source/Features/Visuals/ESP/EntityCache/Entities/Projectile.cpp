@@ -19,7 +19,7 @@ void Projectile::Update(CBaseGrenade* entity, int index, const CBaseHandle& hand
 	trail.push_back(*entity->Origin());
 
 	if (clientClass->m_ClassID == ClientClassID::CBaseCSGrenadeProjectile) {
-		if (strstr(entity->GetModel()->szPathName, xorstr_("flashbang")))
+		if (strstr(entity->GetModel()->szPathName, "flashbang"))
 			type = ProjectileType::FLASHBANG;
 		else
 			type = ProjectileType::HIGH_EXPLOSIVE_GRENADE;

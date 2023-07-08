@@ -8,7 +8,7 @@
 std::optional<std::string> Planting::GetText(const Player& player) const
 {
 	if (player.planting)
-		return xorstr_("Planting");
-
-	return std::nullopt;
+		return "Planting";
+	else
+		return std::nullopt;
 }

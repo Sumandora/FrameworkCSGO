@@ -1,8 +1,6 @@
 #ifndef SDK_GAMECLASS_CDRONEGUN
 #define SDK_GAMECLASS_CDRONEGUN
 
-#include "xorstr.hpp"
-
 #include "../../Netvars.hpp"
 #include "VirtualMethod.hpp"
 
@@ -10,7 +8,7 @@
 
 class CDronegun : public CBaseEntity {
 public:
-	NETVAR_FUNCTION(int, Health, ClientClassID::CDronegun, xorstr_("DT_Dronegun"), xorstr_("m_iHealth"))
+	NETVAR_FUNCTION(int, Health, ClientClassID::CDronegun, "DT_Dronegun", "m_iHealth")
 };
 
 #endif

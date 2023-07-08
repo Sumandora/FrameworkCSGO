@@ -46,18 +46,18 @@ bool RecoilAssistance::CreateMove(CUserCmd* cmd)
 
 void RecoilAssistance::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::SliderFloat(xorstr_("Horizontal adjustment"), &horizontalAdjustment, 0.0f, 1.0f);
-	ImGui::SliderFloat(xorstr_("Vertical adjustment"), &verticalAdjustment, 0.0f, 1.0f);
-	ImGui::Checkbox(xorstr_("Silent"), &silent);
-	ImGui::SliderInt(xorstr_("Min shots"), &minShots, 0, 10);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::SliderFloat("Horizontal adjustment", &horizontalAdjustment, 0.0f, 1.0f);
+	ImGui::SliderFloat("Vertical adjustment", &verticalAdjustment, 0.0f, 1.0f);
+	ImGui::Checkbox("Silent", &silent);
+	ImGui::SliderInt("Min shots", &minShots, 0, 10);
 }
 
 SCOPED_SERIALIZER(RecoilAssistance)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Horizontal adjustment"), horizontalAdjustment);
-	SERIALIZE(xorstr_("Vertical adjustment"), verticalAdjustment);
-	SERIALIZE(xorstr_("Silent"), silent);
-	SERIALIZE(xorstr_("Min shots"), minShots);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Horizontal adjustment", horizontalAdjustment);
+	SERIALIZE("Vertical adjustment", verticalAdjustment);
+	SERIALIZE("Silent", silent);
+	SERIALIZE("Min shots", minShots);
 }

@@ -39,6 +39,9 @@ struct Vector {
 		return (float*)this;
 	}
 
+	inline float* begin() { return &x; }
+	inline float* end() { return &z; }
+
 	inline float& operator[](int i)
 	{
 		return ((float*)this)[i];

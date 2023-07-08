@@ -1,8 +1,6 @@
 #ifndef SDK_GAMECLASS_CDRONE
 #define SDK_GAMECLASS_CDRONE
 
-#include "xorstr.hpp"
-
 #include "../../Netvars.hpp"
 #include "VirtualMethod.hpp"
 
@@ -10,7 +8,7 @@
 
 class CDrone : public CBaseEntity {
 public:
-	NETVAR_FUNCTION(CBaseHandle, MoveToThisEntity, ClientClassID::CDrone, xorstr_("DT_Drone"), xorstr_("m_hMoveToThisEntity"))
+	NETVAR_FUNCTION(CBaseHandle, MoveToThisEntity, ClientClassID::CDrone, "DT_Drone", "m_hMoveToThisEntity")
 };
 
 #endif

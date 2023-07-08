@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
@@ -49,17 +47,17 @@ void BoxSettings::SetupGUI(const char* id)
 	ImGui::SameLine();
 
 	if (ImGui::Popup(id)) {
-		ImGui::ClickableColorButton(xorstr_("Color"), color);
-		ImGui::SliderFloat(xorstr_("Rounding"), &rounding, 0.0f, 10.0f, xorstr_("%.2f"));
-		ImGui::SliderFloat(xorstr_("Thickness"), &thickness, 0.0f, 10.0f, xorstr_("%.2f"));
-		ImGui::Checkbox(xorstr_("Outlined"), &outlined);
+		ImGui::ClickableColorButton("Color", color);
+		ImGui::SliderFloat("Rounding", &rounding, 0.0f, 10.0f, "%.2f");
+		ImGui::SliderFloat("Thickness", &thickness, 0.0f, 10.0f, "%.2f");
+		ImGui::Checkbox("Outlined", &outlined);
 		if (outlined) {
-			ImGui::ClickableColorButton(xorstr_("Outline color"), outlineColor);
-			ImGui::SliderFloat(xorstr_("Outline thickness"), &outlineThickness, 0.0f, 10.0f, xorstr_("%.2f"));
+			ImGui::ClickableColorButton("Outline color", outlineColor);
+			ImGui::SliderFloat("Outline thickness", &outlineThickness, 0.0f, 10.0f, "%.2f");
 		}
-		ImGui::Checkbox(xorstr_("Fill"), &fill);
+		ImGui::Checkbox("Fill", &fill);
 		if (fill)
-			ImGui::ClickableColorButton(xorstr_("Fill color"), fillColor);
+			ImGui::ClickableColorButton("Fill color", fillColor);
 
 		ImGui::EndPopup();
 	}
@@ -69,13 +67,13 @@ void BoxSettings::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(BoxSettings)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE_VECTOR4D(xorstr_("Color"), color.Value);
-	SERIALIZE(xorstr_("Rounding"), rounding);
-	SERIALIZE(xorstr_("Thickness"), thickness);
-	SERIALIZE(xorstr_("Outlined"), outlined);
-	SERIALIZE_VECTOR4D(xorstr_("Outline color"), outlineColor.Value);
-	SERIALIZE(xorstr_("Outline thickness"), outlineThickness);
-	SERIALIZE(xorstr_("Fill"), fill);
-	SERIALIZE_VECTOR4D(xorstr_("Fill color"), fillColor.Value);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE_VECTOR4D("Color", color.Value);
+	SERIALIZE("Rounding", rounding);
+	SERIALIZE("Thickness", thickness);
+	SERIALIZE("Outlined", outlined);
+	SERIALIZE_VECTOR4D("Outline color", outlineColor.Value);
+	SERIALIZE("Outline thickness", outlineThickness);
+	SERIALIZE("Fill", fill);
+	SERIALIZE_VECTOR4D("Fill color", fillColor.Value);
 }

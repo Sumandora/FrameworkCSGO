@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
 bool PlayerSettings::IsEnabled() const
@@ -25,17 +23,17 @@ void PlayerSettings::Draw(ImDrawList* drawList, Player& player) const
 void PlayerSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	if (ImGui::BeginTabBar(xorstr_("#Player config selection"), ImGuiTabBarFlags_Reorderable)) {
-		if (ImGui::BeginTabItem(xorstr_("Teammate"))) {
-			teammate.SetupGUI(xorstr_("Teammate"));
+	if (ImGui::BeginTabBar("#Player config selection", ImGuiTabBarFlags_Reorderable)) {
+		if (ImGui::BeginTabItem("Teammate")) {
+			teammate.SetupGUI("Teammate");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Enemy"))) {
-			enemy.SetupGUI(xorstr_("Enemy"));
+		if (ImGui::BeginTabItem("Enemy")) {
+			enemy.SetupGUI("Enemy");
 			ImGui::EndTabItem();
 		}
-		if (ImGui::BeginTabItem(xorstr_("Local"))) {
-			local.SetupGUI(xorstr_("Local"));
+		if (ImGui::BeginTabItem("Local")) {
+			local.SetupGUI("Local");
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -45,7 +43,7 @@ void PlayerSettings::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(PlayerSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Teammate"), teammate);
-	SERIALIZE_STRUCT(xorstr_("Enemy"), enemy);
-	SERIALIZE_STRUCT(xorstr_("Local"), local);
+	SERIALIZE_STRUCT("Teammate", teammate);
+	SERIALIZE_STRUCT("Enemy", enemy);
+	SERIALIZE_STRUCT("Local", local);
 }

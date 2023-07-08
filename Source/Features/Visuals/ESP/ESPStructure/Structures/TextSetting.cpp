@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
@@ -54,11 +52,11 @@ void TextSetting::SetupGUI(const char* id)
 	ImGui::SameLine();
 
 	if (ImGui::Popup(id)) {
-		ImGui::SliderFloat(xorstr_("Font scale"), &fontScale, 0.1f, 2.0f, xorstr_("%.2f"));
-		ImGui::ClickableColorButton(xorstr_("Font color"), fontColor);
-		ImGui::Checkbox(xorstr_("Shadow"), &shadow);
+		ImGui::SliderFloat("Font scale", &fontScale, 0.1f, 2.0f, "%.2f");
+		ImGui::ClickableColorButton("Font color", fontColor);
+		ImGui::Checkbox("Shadow", &shadow);
 		if (shadow)
-			ImGui::ClickableColorButton(xorstr_("Shadow color"), shadowColor);
+			ImGui::ClickableColorButton("Shadow color", shadowColor);
 
 		ImGui::EndPopup();
 	}
@@ -68,9 +66,9 @@ void TextSetting::SetupGUI(const char* id)
 
 SCOPED_SERIALIZER(TextSetting)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Font scale"), fontScale);
-	SERIALIZE_VECTOR4D(xorstr_("Font color"), fontColor.Value);
-	SERIALIZE(xorstr_("Shadow"), shadow);
-	SERIALIZE_VECTOR4D(xorstr_("Shadow color"), shadowColor.Value);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Font scale", fontScale);
+	SERIALIZE_VECTOR4D("Font color", fontColor.Value);
+	SERIALIZE("Shadow", shadow);
+	SERIALIZE_VECTOR4D("Shadow color", shadowColor.Value);
 }

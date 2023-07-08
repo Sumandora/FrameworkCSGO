@@ -78,20 +78,20 @@ void Triggerbot::CreateMove(CUserCmd* cmd)
 
 void Triggerbot::SetupGUI()
 {
-	ImGui::Checkbox(xorstr_("Enabled"), &enabled);
-	ImGui::InputSelector(xorstr_("Input (%s)"), input);
-	ImGui::Checkbox(xorstr_("Secondary fire with R8 Revolver"), &secondaryFireWithR8Revolver);
-	ImGui::Checkbox(xorstr_("Friendly fire"), &friendlyFire);
-	ImGui::SliderInt(xorstr_("Maximal flash amount"), &maximalFlashAmount, 0, 255);
-	ImGui::Checkbox(xorstr_("Don't shoot through smoke"), &dontShootThroughSmoke);
+	ImGui::Checkbox("Enabled", &enabled);
+	ImGui::InputSelector("Input (%s)", input);
+	ImGui::Checkbox("Secondary fire with R8 Revolver", &secondaryFireWithR8Revolver);
+	ImGui::Checkbox("Friendly fire", &friendlyFire);
+	ImGui::SliderInt("Maximal flash amount", &maximalFlashAmount, 0, 255);
+	ImGui::Checkbox("Don't shoot through smoke", &dontShootThroughSmoke);
 }
 
 SCOPED_SERIALIZER(Triggerbot)
 {
-	SERIALIZE(xorstr_("Enabled"), enabled);
-	SERIALIZE(xorstr_("Input"), input);
-	SERIALIZE(xorstr_("Secondary fire with R8 Revolver"), secondaryFireWithR8Revolver);
-	SERIALIZE(xorstr_("Friendly fire"), friendlyFire);
-	SERIALIZE(xorstr_("Maximal flash amount"), maximalFlashAmount);
-	SERIALIZE(xorstr_("Don't shoot through smoke"), dontShootThroughSmoke);
+	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Input", input);
+	SERIALIZE("Secondary fire with R8 Revolver", secondaryFireWithR8Revolver);
+	SERIALIZE("Friendly fire", friendlyFire);
+	SERIALIZE("Maximal flash amount", maximalFlashAmount);
+	SERIALIZE("Don't shoot through smoke", dontShootThroughSmoke);
 }

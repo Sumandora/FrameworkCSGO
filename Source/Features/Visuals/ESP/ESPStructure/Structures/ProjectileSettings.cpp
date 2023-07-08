@@ -1,7 +1,5 @@
 #include "../ESPStructure.hpp"
 
-#include "xorstr.hpp"
-
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../Utils/Projection.hpp"
 
@@ -63,14 +61,14 @@ void ProjectileSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	boxName.SetupGUI(id);
-	ownerName.SetupGUI(xorstr_("Owner name"));
-	trail.SetupGUI(xorstr_("Trail"));
+	ownerName.SetupGUI("Owner name");
+	trail.SetupGUI("Trail");
 	ImGui::PopID();
 }
 
 SCOPED_SERIALIZER(ProjectileSettings)
 {
-	SERIALIZE_STRUCT(xorstr_("Box name"), boxName);
-	SERIALIZE_STRUCT(xorstr_("Owner name"), ownerName);
-	SERIALIZE_STRUCT(xorstr_("Trail"), trail);
+	SERIALIZE_STRUCT("Box name", boxName);
+	SERIALIZE_STRUCT("Owner name", ownerName);
+	SERIALIZE_STRUCT("Trail", trail);
 }

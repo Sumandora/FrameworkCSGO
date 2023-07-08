@@ -1,13 +1,13 @@
 #include "../EntityCache.hpp"
 
-static std::map<const char*, LootCrateType> lootCrateMap {
-	{ strdup(xorstr_("case_pistol.mdl")), LootCrateType::PISTOL_CASE },
-	{ strdup(xorstr_("case_light_weapon.mdl")), LootCrateType::LIGHT_CASE },
-	{ strdup(xorstr_("case_heavy_weapon.mdl")), LootCrateType::HEAVY_CASE },
-	{ strdup(xorstr_("case_explosive.mdl")), LootCrateType::EXPLOSIVE_CASE },
-	{ strdup(xorstr_("case_tools.mdl")), LootCrateType::TOOLS_CASE },
-	{ strdup(xorstr_("dufflebag.mdl")), LootCrateType::CASH_DUFFLEBAG },
-	{ strdup(xorstr_("case_random_drop.mdl")), LootCrateType::RANDOM_DROP }
+static std::map<const char*, LootCrateType> lootCrateMap{
+	{ "case_pistol.mdl", LootCrateType::PISTOL_CASE },
+	{ "case_light_weapon.mdl", LootCrateType::LIGHT_CASE },
+	{ "case_heavy_weapon.mdl", LootCrateType::HEAVY_CASE },
+	{ "case_explosive.mdl", LootCrateType::EXPLOSIVE_CASE },
+	{ "case_tools.mdl", LootCrateType::TOOLS_CASE },
+	{ "dufflebag.mdl", LootCrateType::CASH_DUFFLEBAG },
+	{ "case_random_drop.mdl", LootCrateType::RANDOM_DROP }
 };
 
 void LootCrate::Update(CPhysPropLootCrate* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)

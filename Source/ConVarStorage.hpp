@@ -3,12 +3,10 @@
 
 #include "SDK/GameClass/ConVar.hpp"
 
-#include "xorstr.hpp"
-
-#define LAZY_CONVAR(name)                 \
-	inline ConVar* name()                 \
-	{                                     \
-		return GetConVar(xorstr_(#name)); \
+#define LAZY_CONVAR(name)        \
+	inline ConVar* name()        \
+	{                            \
+		return GetConVar(#name); \
 	}
 
 namespace ConVarStorage {

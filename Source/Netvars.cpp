@@ -10,7 +10,6 @@
 #include "Interfaces.hpp"
 #include "SDK/ClientClassIDs.hpp"
 #include "SDK/Netvars/RecvProp.hpp"
-#include "xorstr.hpp"
 
 #include "Utils/VMT.hpp"
 
@@ -22,7 +21,7 @@ void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
 		RecvProp* prop = &recvTable->m_pProps[i];
 		if (!prop)
 			continue;
-		if (strcmp(prop->m_pVarName, xorstr_("baseclass")) == 0)
+		if (strcmp(prop->m_pVarName, "baseclass") == 0)
 			continue;
 
 		Netvars::netvars[clientClass][recvTable].emplace_back(prop);
@@ -50,12 +49,6 @@ void Netvars::DumpNetvars()
 														   .Dereference()
 														   .Pointer()
 														   .value());
-
-	void* getAllClasses = Utils::GetVTable(Interfaces::baseClient)[8];
-	char* relativeAddress = reinterpret_cast<char*>(getAllClasses) + 3;
-	ClientClass* rootClass2 = *reinterpret_cast<ClientClass**>(relativeAddress + 4 + *reinterpret_cast<std::int32_t*>(relativeAddress));
-
-	assert(rootClass == rootClass2);
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;

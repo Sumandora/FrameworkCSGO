@@ -8,6 +8,7 @@
 std::optional<std::string> HasDefuser::GetText(const Player& player) const
 {
 	if (player.hasDefuser)
-		return xorstr_("Has defuser");
-	return std::nullopt;
+		return "Has defuser";
+	else
+		return std::nullopt;
 }
