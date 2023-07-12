@@ -4,8 +4,8 @@
 #include "../../../../../Utils/Raytrace.hpp"
 #include "../../ESP.hpp"
 
-#include "../../../../../SDK/GameClass/CBaseCSGrenade.hpp"
-#include "../../../../../SDK/GameClass/CC4.hpp"
+#include "../../../../../SDK/GameClass/Entities/CBaseCSGrenade.hpp"
+#include "../../../../../SDK/GameClass/Entities/CC4.hpp"
 
 bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
@@ -32,7 +32,7 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 
 	activeWeapon = WeaponID::WEAPON_NONE;
 	CBaseCombatWeapon* weaponEntity = nullptr;
-	if (*entity->ActiveWeapon() != INVALID_EHANDLE_INDEX) {
+	if (*entity->ActiveWeapon() != invalidEHandleIndex) {
 		weaponEntity = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(entity->ActiveWeapon()));
 		if (weaponEntity) {
 			activeWeapon = *weaponEntity->WeaponDefinitionIndex();

@@ -1,15 +1,15 @@
 #ifndef FEATURES_VISUALS_ESP_ENTITYCACHE
 #define FEATURES_VISUALS_ESP_ENTITYCACHE
 
-#include "../../../../SDK/GameClass/CBaseCombatWeapon.hpp"
-#include "../../../../SDK/GameClass/CBaseEntity.hpp"
-#include "../../../../SDK/GameClass/CBaseGrenade.hpp"
-#include "../../../../SDK/GameClass/CBasePlayer.hpp"
-#include "../../../../SDK/GameClass/CDrone.hpp"
-#include "../../../../SDK/GameClass/CDronegun.hpp"
-#include "../../../../SDK/GameClass/CHostage.hpp"
-#include "../../../../SDK/GameClass/CPhysPropLootCrate.hpp"
-#include "../../../../SDK/GameClass/CPlantedC4.hpp"
+#include "../../../../SDK/GameClass/Entities/CBaseCombatWeapon.hpp"
+#include "../../../../SDK/GameClass/Entities/CBaseEntity.hpp"
+#include "../../../../SDK/GameClass/Entities/CBaseGrenade.hpp"
+#include "../../../../SDK/GameClass/Entities/CBasePlayer.hpp"
+#include "../../../../SDK/GameClass/Entities/CDrone.hpp"
+#include "../../../../SDK/GameClass/Entities/CDronegun.hpp"
+#include "../../../../SDK/GameClass/Entities/CHostage.hpp"
+#include "../../../../SDK/GameClass/Entities/CPhysPropLootCrate.hpp"
+#include "../../../../SDK/GameClass/Entities/CPlantedC4.hpp"
 
 #include "imgui.h"
 

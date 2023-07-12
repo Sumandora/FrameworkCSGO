@@ -6,6 +6,7 @@ namespace Gui::Windows {
 	void Netvars();
 	void Interfaces();
 	void GameEvents();
+	void Panorama();
 }
 
 #endif

@@ -20,10 +20,10 @@ std::array<ClientClassID, 8> projectileClassIDs = {
 template <typename E = Entity, typename P = CBaseEntity*>
 static void UpdateEntity(std::unordered_map<CBaseHandle, E>& map, P p, int index, CBaseHandle handle, ClientClass* clientClass)
 {
-	if (map.contains(handle))
-		map[handle].Update(p, index, handle, clientClass);
+	if (auto it = map.find(handle); it != map.end())
+		it->second.Update(p, index, handle, clientClass);
 	else {
-		E e;
+		E e{};
 		e.Update(p, index, handle, clientClass);
 		map[handle] = e;
 	}
@@ -31,7 +31,7 @@ static void UpdateEntity(std::unordered_map<CBaseHandle, E>& map, P p, int index
 
 Player* EntityCache::PlayerByHandle(const CBaseHandle& handle)
 {
-	if (handle == INVALID_EHANDLE_INDEX)
+	if (handle == invalidEHandleIndex)
 		return nullptr;
 
 	if (localPlayer.has_value() && localPlayer->handle == handle)
@@ -101,7 +101,7 @@ void EntityCache::UpdateEntities(
 
 		const CBaseHandle handle = entity->GetRefEHandle();
 
-		if (handle == INVALID_EHANDLE_INDEX)
+		if (handle == invalidEHandleIndex)
 			continue;
 
 		if (localPlayer->observerMode == ObserverMode::OBS_MODE_IN_EYE && localPlayer->observerTarget == handle)

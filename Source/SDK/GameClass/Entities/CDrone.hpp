@@ -1,8 +1,8 @@
 #ifndef SDK_GAMECLASS_CDRONE
 #define SDK_GAMECLASS_CDRONE
 
-#include "../../Netvars.hpp"
-#include "VirtualMethod.hpp"
+#include "../../../Netvars.hpp"
+#include "../VirtualMethod.hpp"
 
 #include "CBaseEntity.hpp"
 

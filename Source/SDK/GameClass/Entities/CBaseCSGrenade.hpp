@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_CBASECSGRENADE
 #define SDK_GAMECLASS_CBASECSGRENADE
 
-#include "../../Netvars.hpp"
+#include "../../../Netvars.hpp"
 #include "CBaseCombatWeapon.hpp"
 #include "CBaseEntity.hpp"
 

@@ -1,10 +1,10 @@
 #ifndef SDK_GAMECLASS_CBASEGRENADE
 #define SDK_GAMECLASS_CBASEGRENADE
 
-#include "../../Netvars.hpp"
+#include "../../../Netvars.hpp"
 #include "CBaseEntity.hpp"
 
-#include "../CBaseHandle.hpp"
+#include "../../CBaseHandle.hpp"
 
 class CBaseGrenade : public CBaseEntity {
 public:

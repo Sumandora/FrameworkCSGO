@@ -7,10 +7,6 @@
 
 #include "ESPStructure/ESPStructure.hpp"
 
-#include "../../../SDK/GameClass/IMaterial.hpp"
-
-#include "../../../GUI/ImGuiColors.hpp"
-
 inline class ESP : public Feature {
 public:
 	ESP()

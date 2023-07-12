@@ -11,7 +11,7 @@ GameHook::GameHook(void* original, void* hook)
 	while (len <= DetourHooking::minLength) {
 		len += ldisasm(reinterpret_cast<char*>(original) + len, true);
 	}
-	backingHook = new class DetourHooking::Hook(original, hook, len);
+	backingHook = new DetourHooking::Hook(original, hook, len);
 	backingHook->Enable();
 
 	proxy = backingHook->trampoline;

@@ -22,12 +22,8 @@ public:
 	bool forceViewModel = false;
 	float viewModelFovOffset = 0.0f;
 	bool viewOffset = true;
-	float offsetX = 0.0f;
-	float offsetY = 0.0f;
-	float offsetZ = 0.0f;
-	float rotationOffsetX = 0.0f;
-	float rotationOffsetY = 0.0f;
-	float rotationOffsetZ = 0.0f;
+	Vector offset;
+	Vector rotationOffset;
 
 	void OverrideView(CViewSetup* pSetup);
 

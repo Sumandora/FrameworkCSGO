@@ -1,30 +1,24 @@
 #include "Memory.hpp"
 
-#include <cassert>
-#include <cstdio>
-#include <dlfcn.h>
-#include <fcntl.h>
-#include <link.h>
-#include <sys/stat.h>
-#include <vector>
-
 #include "Interfaces.hpp"
 
+#include "BCRL.hpp"
 #include "ldisasm.h"
 #include "RetAddrSpoofer.hpp"
-#include "SDK/GameClass/CBasePlayer.hpp"
-#include "SDK/GameClass/CGlobalVars.hpp"
-#include "SDK/GameClass/IMoveHelper.hpp"
+#include "SDK/GameClass/Panorama/CUIEngine.hpp"
 #include "SignatureScanner.hpp"
 
-#include "Utils/VMT.hpp"
-
-#include "BCRL.hpp"
+#include "SDK/GameClass/CGlobalVars.hpp"
+#include "SDK/GameClass/Entities/CBasePlayer.hpp"
+#include "SDK/GameClass/IMoveHelper.hpp"
+#include <cstdint>
 
 void* RetAddrSpoofer::leaveRet = nullptr;
 
 static void* lineGoesThroughSmoke;
 static CBasePlayer** localPlayerList;
+
+int32_t CUIEngine::panelArrayOffset;
 
 void Memory::Create()
 {
@@ -98,6 +92,15 @@ void Memory::Create()
 							   })
 							   .Pointer()
 							   .value();
+
+	CUIEngine::panelArrayOffset = *static_cast<int32_t*>(
+		BCRL::Session::ArrayPointer(
+			Interfaces::panoramaUIEngine->AccessUIEngine(),
+			CUIEngine::isValidPanelPointerIndex)
+			.NextByteOccurence("48 8b 97")
+			.Add(3)
+			.Pointer()
+			.value());
 }
 
 bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)

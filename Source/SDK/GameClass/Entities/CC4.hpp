@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_CC4
 #define SDK_GAMECLASS_CC4
 
-#include "../../Netvars.hpp"
+#include "../../../Netvars.hpp"
 #include "CBaseCombatWeapon.hpp"
 
 class CC4 : public CBaseCombatWeapon {

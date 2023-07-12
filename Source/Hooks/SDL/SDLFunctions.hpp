@@ -7,6 +7,7 @@
 
 namespace Hooks::SDL {
 	inline SDL_Window* windowPtr = nullptr;
+	inline bool shuttingDown = false;
 
 	namespace SwapWindow {
 		inline SDLHook* hook;
@@ -24,6 +25,12 @@ namespace Hooks::SDL {
 		inline SDLHook* hook;
 
 		void HookFunc(SDL_Window* window, int x, int y);
+	}
+
+	namespace DestroyWindow {
+		inline SDLHook* hook;
+
+		void HookFunc(SDL_Window* window);
 	}
 
 	void Hook();

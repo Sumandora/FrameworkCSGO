@@ -7,7 +7,7 @@
 
 #include <cstdio>
 
-// TODO Can deal team damage option
+// TODO Allow separation based on the throwers team (local, team, enemy)
 
 bool ProjectileSettings::IsEnabled() const
 {

@@ -5,6 +5,7 @@
 #include <dlfcn.h>
 #include <map>
 
+#include "SDK/GameClass/Interfaces/CPanoramaUIEngine.hpp"
 #include "SDK/InterfaceReg.hpp"
 
 #include "imgui.h"
@@ -71,6 +72,7 @@ void Interfaces::GetInterfaces()
 	void* client_client = dlmopen(LM_ID_BASE, "./csgo/bin/linux64/client_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	void* engine_client = dlmopen(LM_ID_BASE, "./bin/linux64/engine_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	void* materialsystem_client = dlmopen(LM_ID_BASE, "./bin/linux64/materialsystem_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* panorama_gl_client = dlmopen(LM_ID_BASE, "./bin/linux64/panorama_gl_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 
 	baseClient = GetInterface<void>(client_client, "VClient");
 	engine = GetInterface<CEngineClient>(engine_client, "VEngineClient");
@@ -81,6 +83,7 @@ void Interfaces::GetInterfaces()
 	gameMovement = GetInterface<CGameMovement>(client_client, "GameMovement");
 	materialSystem = GetInterface<CMaterialSystem>(materialsystem_client, "VMaterialSystem");
 	engineRenderView = GetInterface<void>(engine_client, "VEngineRenderView");
+	panoramaUIEngine = GetInterface<CPanoramaUIEngine>(panorama_gl_client, "PanoramaUIEngine");
 
 	dlclose(client_client);
 	dlclose(engine_client);

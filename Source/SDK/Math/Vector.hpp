@@ -248,6 +248,11 @@ struct Vector {
 		};
 	}
 
+	[[nodiscard]] inline bool IsZero() const
+	{
+		return x == 0 && y == 0 && z == 0;
+	}
+
 	inline Vector Wrap()
 	{
 		// Use 360 in the remainder call and then clamp it to [-89..89] to prevent it from flipping the view

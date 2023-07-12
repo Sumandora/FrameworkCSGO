@@ -4,13 +4,13 @@
 #include "CBaseCombatWeapon.hpp"
 #include "CBaseEntity.hpp"
 
-#include "../Definitions/LifeState.hpp"
-#include "../ObserverMode.hpp"
+#include "../../Definitions/LifeState.hpp"
+#include "../../ObserverMode.hpp"
 
-#include "../../ConVarStorage.hpp"
+#include "../../../ConVarStorage.hpp"
 
-#include "../CBaseHandle.hpp"
-#include "../Math/Vector.hpp"
+#include "../../CBaseHandle.hpp"
+#include "../../Math/Vector.hpp"
 
 #define MAX_PLACE_NAME_LENGTH 18
 #define MAX_WEAPONS 64

@@ -37,7 +37,6 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 	} while (0)
 
 // Vector serialization sadly requires me to access x,y,z,w variables, because of ImGui
-// TODO Fail-safes
 #define SERIALIZE_VECTOR2D(name, vector)                                             \
 	do {                                                                             \
 		if (direction == Direction::SERIALIZE) {                                     \

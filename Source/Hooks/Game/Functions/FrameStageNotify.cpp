@@ -1,8 +1,10 @@
 #include "../GameFunctions.hpp"
 
+#include "../../../Features/Misc/PartyScripts.hpp"
 #include "../../../Features/Semirage/Backtrack.hpp"
 #include "../../../Features/Visuals/ESP/ESP.hpp"
 #include "../../../Features/Visuals/Fog.hpp"
+#include "../../../Features/Visuals/MainMenu.hpp"
 #include "../../../Features/Visuals/NoPunch.hpp"
 #include "../../../Features/Visuals/SpectatorList.hpp"
 #include "../../../Interfaces.hpp"
@@ -13,6 +15,8 @@ void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage sta
 	case ClientFrameStage::FRAME_START: {
 		spectatorList.Update();
 		esp.Update();
+		partyScripts.PerformPartyScripts();
+		mainMenu.UpdateVisibility();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_START: {

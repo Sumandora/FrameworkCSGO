@@ -1,9 +1,9 @@
 #ifndef SDK_GAMECLASS_CBASECOMBATWEAPON
 #define SDK_GAMECLASS_CBASECOMBATWEAPON
 
-#include "../../Netvars.hpp"
-#include "../Weapons/WeaponIDs.hpp"
-#include "VirtualMethod.hpp"
+#include "../../../Netvars.hpp"
+#include "../../Weapons/WeaponIDs.hpp"
+#include "../VirtualMethod.hpp"
 
 #include "CBaseAttributableItem.hpp"
 

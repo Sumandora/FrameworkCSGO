@@ -39,7 +39,7 @@ void FOV::OverrideView(CViewSetup* pSetup)
 		CBaseEntity* viewModel = Interfaces::entityList->GetClientEntityFromHandle(viewer->ViewModel());
 		if (viewModel) {
 			const bool isForcingFOV = viewModelFovOffset != 0;
-			const bool isForcingOffset = offsetX != 0 || offsetY != 0 || offsetZ != 0;
+			const bool isForcingOffset = !offset.IsZero();
 
 			if (isForcingFOV || isForcingOffset) {
 				Vector viewAngles{};
@@ -57,20 +57,16 @@ void FOV::OverrideView(CViewSetup* pSetup)
 
 				if (isForcingOffset) {
 					if (viewOffset) {
-						origin += (forward * offsetY) + (up * offsetZ) + (right * offsetX); // https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/baseviewmodel_shared.cpp#L478
+						origin += (forward * offset.y) + (up * offset.z) + (right * offset.x); // https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/shared/baseviewmodel_shared.cpp#L478
 					} else {
-						origin.x += offsetX;
-						origin.y += offsetY;
-						origin.z += offsetZ;
+						origin += offset;
 					}
 				}
 			}
 
-			if (rotationOffsetX != 0 || rotationOffsetY != 0 || rotationOffsetZ != 0) {
+			if (!rotationOffset.IsZero()) {
 				Vector& angles = viewModel->GetRenderAngles();
-				angles.x += rotationOffsetX;
-				angles.y += rotationOffsetY;
-				angles.z += rotationOffsetZ;
+				angles += rotationOffset;
 			}
 		}
 	}
@@ -91,13 +87,13 @@ void FOV::SetupGUI()
 		ImGui::Checkbox("View offset", &viewOffset);
 		ImGui::HelpMarker("Should the offset be a literal 3D movement?");
 
-		ImGui::DragFloat("Offset X", &offsetX, 0.1f);
-		ImGui::DragFloat("Offset Y", &offsetY, 0.1f);
-		ImGui::DragFloat("Offset Z", &offsetZ, 0.1f);
+		ImGui::DragFloat("Offset X", &offset.x, 0.1f);
+		ImGui::DragFloat("Offset Y", &offset.y, 0.1f);
+		ImGui::DragFloat("Offset Z", &offset.z, 0.1f);
 
-		ImGui::SliderFloat("Rotation offset X", &rotationOffsetX, -90.0f, 90.0f);
-		ImGui::SliderFloat("Rotation offset Y", &rotationOffsetY, -90.0f, 90.0f);
-		ImGui::SliderFloat("Rotation offset Z", &rotationOffsetZ, -90.0f, 90.0f);
+		ImGui::SliderFloat("Rotation offset X", &rotationOffset.x, -90.0f, 90.0f);
+		ImGui::SliderFloat("Rotation offset Y", &rotationOffset.y, -90.0f, 90.0f);
+		ImGui::SliderFloat("Rotation offset Z", &rotationOffset.z, -90.0f, 90.0f);
 	}
 }
 
@@ -109,10 +105,6 @@ SCOPED_SERIALIZER(FOV)
 	SERIALIZE("Force View model", forceViewModel);
 	SERIALIZE("View model FOV", viewModelFovOffset);
 	SERIALIZE("View offset", viewOffset);
-	SERIALIZE("Offset X", offsetX); // TODO Make vectors?
-	SERIALIZE("Offset Y", offsetY);
-	SERIALIZE("Offset Z", offsetZ);
-	SERIALIZE("Rotation offset X", rotationOffsetX);
-	SERIALIZE("Rotation offset Y", rotationOffsetY);
-	SERIALIZE("Rotation offset Z", rotationOffsetZ);
+	SERIALIZE_VECTOR3D("Offset", offset);
+	SERIALIZE_VECTOR3D("Rotation offset", rotationOffset);
 }

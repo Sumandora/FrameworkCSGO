@@ -33,7 +33,7 @@ void SpectatorList::Update()
 			currentTarget = localPlayer;
 		else {
 			CBaseHandle* observerTarget = localPlayer->ObserverTarget();
-			if (*observerTarget != INVALID_EHANDLE_INDEX)
+			if (*observerTarget != invalidEHandleIndex)
 				currentTarget = Interfaces::entityList->GetClientEntityFromHandle(observerTarget);
 		}
 	}
@@ -46,7 +46,11 @@ void SpectatorList::Update()
 		if (player->IsAlive() && *player->Team() != TeamID::TEAM_SPECTATOR)
 			continue;
 
-		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(player->ObserverTarget());
+		CBaseHandle* handle = player->ObserverTarget();
+		if (*handle == invalidEHandleIndex)
+			continue;
+
+		CBaseEntity* target = Interfaces::entityList->GetClientEntityFromHandle(handle);
 		if (!target)
 			continue;
 

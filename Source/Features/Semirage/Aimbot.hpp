@@ -7,9 +7,9 @@
 
 #include "imgui.h"
 
-#include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../SDK/GameClass/CGameEvent.hpp"
 #include "../../SDK/GameClass/CUserCmd.hpp"
+#include "../../SDK/GameClass/Entities/CBasePlayer.hpp"
 
 #include "../../GUI/ImGuiColors.hpp"
 
@@ -25,6 +25,7 @@ public:
 	int autoFireKey = ImGuiKey_None;
 	// TODO Only when scoped
 	// TODO Bones
+	// TODO ignore when jumping
 
 	struct WeaponConfig : public BaseWeaponConfig {
 		bool disabled = false;

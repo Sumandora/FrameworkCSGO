@@ -54,6 +54,10 @@ void Gui::Build()
 						Gui::Windows::GameEvents();
 						ImGui::EndTabItem();
 					}
+					if (ImGui::BeginTabItem("Panorama")) {
+						Gui::Windows::Panorama();
+						ImGui::EndTabItem();
+					}
 					ImGui::EndTabBar();
 				}
 				ImGui::EndTabItem();
