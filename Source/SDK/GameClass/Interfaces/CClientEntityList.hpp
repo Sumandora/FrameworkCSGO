@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_INTERFACES_CCLIENTENTITYLIST
 #define SDK_GAMECLASS_INTERFACES_CCLIENTENTITYLIST
 
-#include "../CBaseEntity.hpp"
+#include "../Entities/CBaseEntity.hpp"
 #include "../VirtualMethod.hpp"
 
 class CClientEntityList {

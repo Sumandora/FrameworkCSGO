@@ -1,19 +1,19 @@
 #ifndef SDK_GAMECLASS_CBASEENTITY
 #define SDK_GAMECLASS_CBASEENTITY
 
-#include "CCollisionProperty.hpp"
-#include "VirtualMethod.hpp"
+#include "../CCollisionProperty.hpp"
+#include "../VirtualMethod.hpp"
 
-#include "../CBaseHandle.hpp"
-#include "../Definitions/Bones.hpp"
-#include "../Math/BoundingBox.hpp"
-#include "../Math/Matrix3x4.hpp"
-#include "../Model/Model.hpp"
-#include "../Netvars/ClientClass.hpp"
-#include "../TeamID.hpp"
+#include "../../CBaseHandle.hpp"
+#include "../../Definitions/Bones.hpp"
+#include "../../Math/BoundingBox.hpp"
+#include "../../Math/Matrix3x4.hpp"
+#include "../../Model/Model.hpp"
+#include "../../Netvars/ClientClass.hpp"
+#include "../../TeamID.hpp"
 
-#include "../../Memory.hpp"
-#include "../../Netvars.hpp"
+#include "../../../Memory.hpp"
+#include "../../../Netvars.hpp"
 
 #include <map>
 #include <optional>

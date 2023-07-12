@@ -16,7 +16,7 @@ void Hooks::InstallHooks()
 
 	HideSharedObject::AddHiddenSharedObject("lib" PROJECT_NAME ".so");
 
-	dlIteratePhdr = new class GameHook((void*)dl_iterate_phdr, (void*)HideSharedObject::HookFunc);
+	dlIteratePhdr = new GameHook((void*)dl_iterate_phdr, (void*)HideSharedObject::HookFunc);
 	HideSharedObject::proxy = dlIteratePhdr->proxy;
 }
 

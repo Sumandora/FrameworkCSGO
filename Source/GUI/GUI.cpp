@@ -126,10 +126,10 @@ void Gui::SwapWindow(SDL_Window* window)
 // I don't even want to know why I have to do this
 static Uint32 lastTextInput;
 
-void Gui::PollEvent(SDL_Event* event)
+bool Gui::PollEvent(SDL_Event* event)
 {
 	if (event->type == SDL_TEXTINPUT && lastTextInput >= event->text.timestamp)
-		return;
+		return visible;
 
 	ImGuiIO& io = ImGui::GetIO();
 	// Emulate these 2 events, because ImGui is broken... :c
@@ -150,8 +150,7 @@ void Gui::PollEvent(SDL_Event* event)
 	if (event->type == SDL_TEXTINPUT)
 		lastTextInput = event->text.timestamp;
 
-	if (visible)
-		event->type = -1; // Change type to an invalid event to make the game ignore it.
+	return visible;
 }
 
 bool Gui::WarpMouseInWindow()

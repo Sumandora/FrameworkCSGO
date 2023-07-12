@@ -1,8 +1,8 @@
 #ifndef SDK_GAMECLASS_INTERFACES_CGAMEMOVEMENT
 #define SDK_GAMECLASS_INTERFACES_CGAMEMOVEMENT
 
-#include "../CBasePlayer.hpp"
 #include "../CMoveData.hpp"
+#include "../Entities/CBasePlayer.hpp"
 #include "../VirtualMethod.hpp"
 
 class CGameMovement {

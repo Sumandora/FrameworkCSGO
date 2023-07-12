@@ -9,8 +9,6 @@
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
 
-#include "../../SDK/GameClass/CBasePlayer.hpp"
-
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../Interfaces.hpp"
 

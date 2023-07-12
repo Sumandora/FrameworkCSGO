@@ -1,8 +1,8 @@
 #ifndef SDK_GAMECLASS_CBASEATTRIBUTABLEITEM
 #define SDK_GAMECLASS_CBASEATTRIBUTABLEITEM
 
-#include "../../Netvars.hpp"
-#include "../Weapons/WeaponIDs.hpp"
+#include "../../../Netvars.hpp"
+#include "../../Weapons/WeaponIDs.hpp"
 
 #include "CBaseEntity.hpp"
 

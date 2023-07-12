@@ -4,7 +4,6 @@
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 #include "../../SDK/Definitions/StateFlags.hpp"
-#include "../../SDK/GameClass/CBasePlayer.hpp"
 #include "../../SDK/MoveType.hpp"
 
 #include "../../Hooks/Game/GameFunctions.hpp"

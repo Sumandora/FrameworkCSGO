@@ -1,8 +1,8 @@
 #ifndef SDK_GAMECLASS_CFOGCONTROLLER
 #define SDK_GAMECLASS_CFOGCONTROLLER
 
-#include "../../Netvars.hpp"
-#include "VirtualMethod.hpp"
+#include "../../../Netvars.hpp"
+#include "../VirtualMethod.hpp"
 
 #include "CBaseEntity.hpp"
 

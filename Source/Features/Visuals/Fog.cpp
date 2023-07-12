@@ -5,7 +5,7 @@
 #include "../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
-#include "../../SDK/GameClass/CFogController.hpp"
+#include "../../SDK/GameClass/Entities/CFogController.hpp"
 
 // TODO Reset the fog when turned off
 // TODO also some maps might not have a fog controller (?)

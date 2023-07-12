@@ -6,12 +6,14 @@
 
 int Hooks::SDL::PollEvent::HookFunc(SDL_Event* event)
 {
-	const int returnValue = reinterpret_cast<int (*)(SDL_Event*)>(hook->proxy)(event);
+	int returnValue = reinterpret_cast<int (*)(SDL_Event*)>(hook->proxy)(event);
 
 	if (event->type >= SDL_FIRSTEVENT && event->type < SDL_KEYDOWN)
 		return returnValue; // These events are not important for our purposes
 
-	Gui::PollEvent(event);
+	while (Gui::PollEvent(event) && returnValue > 0 /* There are events available */) { // Regenerate events until we find one, which is allowed to pass
+		returnValue = reinterpret_cast<int (*)(SDL_Event*)>(hook->proxy)(event);
+	}
 	legitAimbot.PollEvent(event);
 
 	return returnValue;

@@ -11,6 +11,7 @@
 #include "../../../Features/Semirage/Aimbot.hpp"
 #include "../../../Features/Semirage/Backtrack.hpp"
 #include "../../../Features/Semirage/RecoilAssistance.hpp"
+#include "../../../Features/Visuals/ESP/ESP.hpp"
 #include "../../../Interfaces.hpp"
 
 #include "../../../Utils/MouseCorrection.hpp"

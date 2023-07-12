@@ -1,7 +1,7 @@
 #ifndef SDK_GAMECLASS_IMATERIAL
 #define SDK_GAMECLASS_IMATERIAL
 
-#include "CBaseEntity.hpp"
+#include "Entities/CBaseEntity.hpp"
 #include "VirtualMethod.hpp"
 
 class IMaterial {
