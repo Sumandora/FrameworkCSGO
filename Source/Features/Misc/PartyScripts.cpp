@@ -216,11 +216,11 @@ void PartyScripts::SetupGUI()
 SCOPED_SERIALIZER(PartyScripts)
 {
 	SERIALIZE("Popup amount", popupAmount);
-	SERIALIZE("Error amount", errorAmount);
-	SERIALIZE("Selected error", selectedError);
-
 	SERIALIZE("Auto close popups", autoClosePopups);
 	SERIALIZE("Popup interval", popupInterval);
+
+	SERIALIZE("Error amount", errorAmount);
+	SERIALIZE("Selected error", selectedError);
 
 	SERIALIZE("Auto error creation", autoErrorCreation);
 	SERIALIZE("Error interval", errorInterval);

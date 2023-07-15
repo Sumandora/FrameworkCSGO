@@ -3,7 +3,10 @@
 
 #include "../Features.hpp"
 
+#include "../../GUI/Elements/Keybind.hpp"
+
 #include "imgui.h"
+#include <optional>
 
 inline class Menu : public Feature {
 public:
@@ -12,7 +15,14 @@ public:
 	{
 	}
 
-	int menuKey = ImGuiKey_Insert;
+	class MenuKey : public Input {
+	public:
+		inline MenuKey()
+			: Input(Input::Method::KEY, Input::Type::TOGGLE, ImGuiKey_Insert, true){};
+		virtual bool IsAllowed(Method method, Type type, std::optional<unsigned int> key);
+		virtual void OnChange();
+	} menuKey{};
+
 	int style = 0;
 
 #ifdef DEBUG

@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CPLANTEDC4
-#define SDK_GAMECLASS_CPLANTEDC4
+#ifndef SDK_GAMECLASS_ENTITIES_CPLANTEDC4
+#define SDK_GAMECLASS_ENTITIES_CPLANTEDC4
 
 #include "../../../Netvars.hpp"
 #include "../VirtualMethod.hpp"

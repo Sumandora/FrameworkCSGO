@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_PANORAMA_UIENGINE
-#define SDK_GAMECLASS_PANORAMA_UIENGINE
+#ifndef SDK_GAMECLASS_PANORAMA_CUIENGINE
+#define SDK_GAMECLASS_PANORAMA_CUIENGINE
 
 #include "../Padding.hpp"
 #include "../VirtualMethod.hpp"
@@ -7,6 +7,20 @@
 #include "CUIPanel.hpp"
 
 #include <functional>
+
+/*
+ * When executing scripts in games (map loaded) the following error occurs:
+ *	JS Exception! *** Skipping rest of script ***
+ *
+ *	undefined
+ *	line:0, col:-1
+ *
+ *	>>
+ *
+ *	RangeError: Maximum call stack size exceeded
+ *
+ * TODO Is there a way to fix this?
+ */
 
 class PanelArrayEntry { // Make sure this is exactly 0x20 bytes long, the game uses `panelArray + index * 0x20` in its code
 	PADDING(4);

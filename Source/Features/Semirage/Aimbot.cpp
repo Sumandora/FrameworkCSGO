@@ -126,7 +126,7 @@ bool SemirageAimbot::ShouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponCon
 	if (weaponConfig->onlyWhenShooting) {
 		if (!attacking) {
 			if (autoFire) {
-				return IsInputDown(autoFireKey, true);
+				return !autoFireKey.IsSet() || autoFireKey.IsActive();
 			}
 			return false;
 		}
@@ -343,7 +343,7 @@ bool SemirageAimbot::CreateMove(CUserCmd* cmd)
 	}
 
 	if (autoFire) {
-		if (IsInputDown(autoFireKey, true))
+		if (!autoFireKey.IsSet() || autoFireKey.IsActive())
 			if (AutoFire(weaponConfig, hasTarget, localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
 				cmd->buttons |= IN_ATTACK; // FIRE!!!
 	}
@@ -402,7 +402,8 @@ void SemirageAimbot::WeaponConfig::SetupGUI()
 		return;
 
 	ImGui::Checkbox("Only when shooting", &onlyWhenShooting);
-	if (onlyWhenShooting && semirageAimbot.autoFire && semirageAimbot.autoFireKey == 0)
+
+	if (onlyWhenShooting && semirageAimbot.autoFire && !semirageAimbot.autoFireKey.IsSet())
 		ImGui::TextColored(ImGuiColors::yellow, "You are auto-firing without key, this won't make a difference");
 
 	if (semirageAimbot.autoFire)
@@ -511,7 +512,7 @@ SCOPED_SERIALIZER(SemirageAimbot)
 	SERIALIZE("Enabled", enabled);
 
 	SERIALIZE("Auto fire", autoFire);
-	SERIALIZE("Auto fire key", autoFireKey);
+	SERIALIZE_STRUCT("Auto fire key", autoFireKey);
 
 	SERIALIZE("Maximal flash amount", maximalFlashAmount);
 	SERIALIZE("Don't aim through smoke", dontAimThroughSmoke);

@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CBASEENTITY
-#define SDK_GAMECLASS_CBASEENTITY
+#ifndef SDK_GAMECLASS_ENTITIES_CBASEENTITY
+#define SDK_GAMECLASS_ENTITIES_CBASEENTITY
 
 #include "../CCollisionProperty.hpp"
 #include "../VirtualMethod.hpp"

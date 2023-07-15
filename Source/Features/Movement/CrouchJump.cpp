@@ -11,7 +11,7 @@ static bool performing = false;
 
 void CrouchJump::CreateMove(CUserCmd* cmd)
 {
-	if (!enabled || !IsInputDown(input, false)) {
+	if (!enabled || (input.IsSet() && !input.IsActive())) {
 		performing = false;
 		return;
 	}
@@ -49,5 +49,5 @@ void CrouchJump::SetupGUI()
 SCOPED_SERIALIZER(CrouchJump)
 {
 	SERIALIZE("Enabled", enabled);
-	SERIALIZE("Input", input);
+	SERIALIZE_STRUCT("Input", input);
 }

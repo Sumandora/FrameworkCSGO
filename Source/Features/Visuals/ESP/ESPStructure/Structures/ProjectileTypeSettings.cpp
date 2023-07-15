@@ -23,11 +23,6 @@ bool ProjectileTypeSettings::IsEnabled() const
 ProjectileSettings& ProjectileTypeSettings::GetSettings(ProjectileType type) const
 {
 	switch (type) {
-	case ProjectileType::INVALID:
-		// Something did go horribly wrong
-		eventLog.CreateReport("Invalid projectile found?");
-		__asm("int3");
-		__builtin_unreachable();
 	case ProjectileType::BREACH_CHARGE:
 		return breachCharge;
 	case ProjectileType::BUMP_MINE:
@@ -46,6 +41,12 @@ ProjectileSettings& ProjectileTypeSettings::GetSettings(ProjectileType type) con
 		return highExplosiveGrenade;
 	case ProjectileType::FLASHBANG:
 		return flashbang;
+	case ProjectileType::INVALID:
+	default:
+		// Something did go horribly wrong
+		eventLog.CreateReport("Invalid projectile found?");
+		__asm("int3");
+		__builtin_unreachable();
 	}
 }
 

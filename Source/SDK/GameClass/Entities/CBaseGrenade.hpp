@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CBASEGRENADE
-#define SDK_GAMECLASS_CBASEGRENADE
+#ifndef SDK_GAMECLASS_ENTITIES_CBASEGRENADE
+#define SDK_GAMECLASS_ENTITIES_CBASEGRENADE
 
 #include "../../../Netvars.hpp"
 #include "CBaseEntity.hpp"

@@ -1,6 +1,7 @@
 #ifndef SERIALIZATION_SERIALIZER
 #define SERIALIZATION_SERIALIZER
 
+#include <stdexcept>
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpessimizing-move"
 #include "json.hpp"
@@ -24,7 +25,7 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 	else if constexpr (std::is_same_v<std::remove_cvref_t<decltype(variable)>, const char*> || std::is_same_v<std::remove_cvref_t<decltype(variable)>, std::string>)
 		variable = jsonType.ToString();
 	else
-		throw std::runtime_error("Not a primitive type!");
+		throw std::runtime_error("Not a primitive type");
 }
 
 #define SERIALIZE(name, variable)                     \
@@ -96,6 +97,13 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 				break;                                                      \
 			struct.Serialize(json[name], direction);                        \
 		}                                                                   \
+	} while (0)
+
+#define SERIALIZE_ENUM(name, enumValue)                  \
+	do {                                                 \
+		int i = static_cast<int>(enumValue);             \
+		SERIALIZE(name, i);                              \
+		enumValue = static_cast<decltype(enumValue)>(i); \
 	} while (0)
 
 #define SERIALIZER() \

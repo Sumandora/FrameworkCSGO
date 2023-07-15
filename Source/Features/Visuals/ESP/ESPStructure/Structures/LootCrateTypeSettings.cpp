@@ -22,11 +22,6 @@ bool LootCrateTypeSettings::IsEnabled() const
 LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 {
 	switch (type) {
-	case LootCrateType::INVALID:
-		// Something did go horribly wrong
-		eventLog.CreateReport("Invalid loot crate found?");
-		__asm("int3");
-		__builtin_unreachable();
 	case LootCrateType::PISTOL_CASE:
 		return pistolCase;
 	case LootCrateType::LIGHT_CASE:
@@ -41,6 +36,12 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 		return cashDufflebag;
 	case LootCrateType::RANDOM_DROP:
 		return randomDrop;
+	case LootCrateType::INVALID:
+	default:
+		// Something did go horribly wrong
+		eventLog.CreateReport("Invalid loot crate found?");
+		__asm("int3");
+		__builtin_unreachable();
 	}
 }
 

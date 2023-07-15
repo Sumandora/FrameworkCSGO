@@ -11,7 +11,7 @@
 
 void Triggerbot::CreateMove(CUserCmd* cmd)
 {
-	if (!enabled || !IsInputDown(input, false))
+	if (!enabled || (input.IsSet() && !input.IsActive()))
 		return;
 
 	if (!Interfaces::engine->IsInGame())
@@ -89,7 +89,7 @@ void Triggerbot::SetupGUI()
 SCOPED_SERIALIZER(Triggerbot)
 {
 	SERIALIZE("Enabled", enabled);
-	SERIALIZE("Input", input);
+	SERIALIZE_STRUCT("Input", input);
 	SERIALIZE("Secondary fire with R8 Revolver", secondaryFireWithR8Revolver);
 	SERIALIZE("Friendly fire", friendlyFire);
 	SERIALIZE("Maximal flash amount", maximalFlashAmount);

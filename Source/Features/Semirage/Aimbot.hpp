@@ -11,6 +11,7 @@
 #include "../../SDK/GameClass/CUserCmd.hpp"
 #include "../../SDK/GameClass/Entities/CBasePlayer.hpp"
 
+#include "../../GUI/Elements/Keybind.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
 inline class SemirageAimbot : public Feature {
@@ -22,10 +23,12 @@ public:
 
 	bool enabled = false;
 	bool autoFire = false;
-	int autoFireKey = ImGuiKey_None;
+	Input autoFireKey{};
 	// TODO Only when scoped
 	// TODO Bones
 	// TODO ignore when jumping
+
+	// TODO Better computation of recoil
 
 	struct WeaponConfig : public BaseWeaponConfig {
 		bool disabled = false;

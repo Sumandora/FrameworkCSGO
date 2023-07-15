@@ -7,6 +7,8 @@
 
 #include "ESPStructure/ESPStructure.hpp"
 
+#include "../../../GUI/Elements/Keybind.hpp"
+
 inline class ESP : public Feature {
 public:
 	ESP()
@@ -15,7 +17,7 @@ public:
 	}
 
 	bool enabled = false;
-	int onKey = ImGuiKey_None;
+	Input key{};
 	int drawDistance = 1024 * 8;
 	bool considerSpottedEntitiesAsVisible = false;
 	bool considerSmokedOffEntitiesAsOccluded = true;

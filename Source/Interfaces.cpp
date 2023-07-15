@@ -73,6 +73,7 @@ void Interfaces::GetInterfaces()
 	void* engine_client = dlmopen(LM_ID_BASE, "./bin/linux64/engine_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	void* materialsystem_client = dlmopen(LM_ID_BASE, "./bin/linux64/materialsystem_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	void* panorama_gl_client = dlmopen(LM_ID_BASE, "./bin/linux64/panorama_gl_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
+	void* filesystem_stdio_client = dlmopen(LM_ID_BASE, "./bin/linux64/filesystem_stdio_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 
 	baseClient = GetInterface<void>(client_client, "VClient");
 	engine = GetInterface<CEngineClient>(engine_client, "VEngineClient");
@@ -84,7 +85,10 @@ void Interfaces::GetInterfaces()
 	materialSystem = GetInterface<CMaterialSystem>(materialsystem_client, "VMaterialSystem");
 	engineRenderView = GetInterface<void>(engine_client, "VEngineRenderView");
 	panoramaUIEngine = GetInterface<CPanoramaUIEngine>(panorama_gl_client, "PanoramaUIEngine");
+	fileSystem = GetInterface<void>(filesystem_stdio_client, "VFileSystem");
 
+	dlclose(filesystem_stdio_client);
+	dlclose(panorama_gl_client);
 	dlclose(client_client);
 	dlclose(engine_client);
 	dlclose(materialsystem_client);
