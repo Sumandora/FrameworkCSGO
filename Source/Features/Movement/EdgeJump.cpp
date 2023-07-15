@@ -10,7 +10,7 @@
 
 void EdgeJump::CreateMove(CUserCmd* cmd)
 {
-	if (!enabled || !IsInputDown(input, true)) {
+	if (!enabled || (input.IsSet() && !input.IsActive())) {
 		return;
 	}
 
@@ -46,5 +46,5 @@ void EdgeJump::SetupGUI()
 SCOPED_SERIALIZER(EdgeJump)
 {
 	SERIALIZE("Enabled", enabled);
-	SERIALIZE("Input", input);
+	SERIALIZE_STRUCT("Input", input);
 }

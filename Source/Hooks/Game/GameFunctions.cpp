@@ -28,15 +28,31 @@ void Hooks::Game::Hook()
 		BCRL::Session::Module("engine_client.so")
 			.NextStringOccurence("EmitSound: %s pitch out of bounds = %i\n")
 			.FindXREFs("engine_client.so", true, false)
-			.Filter([](BCRL::SafePointer safePointer) { return safePointer.Add(4).Equals('\xe8'); })
+			.Filter([](const BCRL::SafePointer& safePointer) { return safePointer.Add(4).Equals('\xe8'); })
 			.PrevByteOccurence("55 66 0f ef db")
 			.Pointer()
 			.value(),
 		reinterpret_cast<void*>(EmitSound::HookFunc));
+
+	SendNetMsg::hook = new GameHook(
+		BCRL::Session::Module("engine_client.so")
+			.NextStringOccurence("SendNetMsg %s: stream[%s] buffer overflow (maxsize = %d)!\n")
+			.FindXREFs("engine_client.so", true, false)
+			.Filter([](const BCRL::SafePointer& safePointer) { return safePointer.Add(4).DoesMatch("44 89 e9"); })
+			.PrevByteOccurence("55 48 89 e5 41 57")
+			.Pointer()
+			.value(),
+		reinterpret_cast<void*>(SendNetMsg::HookFunc));
+
+	CanLoadThirdPartyFiles::hook = new GameHook(
+		Utils::GetVTable(Interfaces::fileSystem)[128],
+		reinterpret_cast<void*>(CanLoadThirdPartyFiles::HookFunc));
 }
 
 void Hooks::Game::Unhook()
 {
+	delete CanLoadThirdPartyFiles::hook;
+	delete SendNetMsg::hook;
 	delete EmitSound::hook;
 	delete FireEvent::hook;
 	delete ViewDrawFade::hook;

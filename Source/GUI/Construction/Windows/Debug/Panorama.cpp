@@ -24,7 +24,7 @@ void Gui::Windows::Panorama()
 			ImGui::InputText("Panel", panel, IM_ARRAYSIZE(panel));
 			static char context[512] = "panorama/layout/base.xml";
 			ImGui::InputText("Context", context, IM_ARRAYSIZE(context));
-			static char source[4096];
+			static char source[4096] = "";
 			ImGui::InputTextMultiline("Source", source, IM_ARRAYSIZE(source));
 
 			if (ImGui::Button("Execute!")) {

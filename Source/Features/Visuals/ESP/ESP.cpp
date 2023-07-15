@@ -15,7 +15,7 @@
 
 void ESP::ImGuiRender(ImDrawList* drawList)
 {
-	if (!enabled || !IsInputDown(onKey, true, std::nullopt))
+	if (!enabled || (key.IsSet() && !key.IsActive()))
 		return;
 
 	if (!Interfaces::engine->IsInGame())
@@ -94,7 +94,7 @@ void ESP::ImGuiRender(ImDrawList* drawList)
 
 void ESP::Update()
 {
-	if (!enabled || !IsInputDown(onKey, true, std::nullopt))
+	if (!enabled)
 		return;
 
 	if (!Interfaces::engine->IsInGame())
@@ -137,7 +137,7 @@ void ESP::SetupGUI()
 
 	ImGui::Checkbox("Consider everyone visible when dead", &considerEveryoneVisibleWhenDead);
 
-	ImGui::InputSelector("Hold key (%s)", onKey);
+	ImGui::InputSelector("Key (%s)", key);
 
 	if (ImGui::BeginTabBar("#Config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Players")) {
@@ -212,7 +212,7 @@ SCOPED_SERIALIZER(ESP)
 {
 	SERIALIZE("Enabled", enabled);
 	SERIALIZE("Draw distance", drawDistance);
-	SERIALIZE("Hold key", onKey);
+	SERIALIZE_STRUCT("Key", key);
 
 	SERIALIZE("Consider spotted entities as visible", considerSpottedEntitiesAsVisible);
 	SERIALIZE("Consider smoked off entities as occluded", considerSmokedOffEntitiesAsOccluded);

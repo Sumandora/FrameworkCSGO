@@ -7,6 +7,8 @@
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
+#include "../../GUI/Elements/Keybind.hpp"
+
 inline class EdgeJump : public Feature {
 public:
 	EdgeJump()
@@ -15,7 +17,7 @@ public:
 	}
 
 	bool enabled = false;
-	int input = ImGuiKey_None;
+	Input input{};
 
 	void CreateMove(CUserCmd* cmd);
 

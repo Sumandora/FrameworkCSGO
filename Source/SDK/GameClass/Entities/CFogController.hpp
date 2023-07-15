@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CFOGCONTROLLER
-#define SDK_GAMECLASS_CFOGCONTROLLER
+#ifndef SDK_GAMECLASS_ENTITIES_CFOGCONTROLLER
+#define SDK_GAMECLASS_ENTITIES_CFOGCONTROLLER
 
 #include "../../../Netvars.hpp"
 #include "../VirtualMethod.hpp"

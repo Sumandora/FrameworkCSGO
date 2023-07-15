@@ -16,7 +16,7 @@ static bool performing = false;
 
 void JumpBug::CreateMove(CUserCmd* cmd)
 {
-	if (!enabled || !IsInputDown(input, true)) {
+	if (!enabled || (input.IsSet() && !input.IsActive())) {
 		return;
 	}
 
@@ -67,6 +67,6 @@ void JumpBug::SetupGUI()
 SCOPED_SERIALIZER(JumpBug)
 {
 	SERIALIZE("Enabled", enabled);
-	SERIALIZE("Input", input);
+	SERIALIZE_STRUCT("Input", input);
 	SERIALIZE("Pre duck", preDuck);
 }

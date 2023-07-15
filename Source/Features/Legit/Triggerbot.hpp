@@ -5,6 +5,8 @@
 
 #include "imgui.h"
 
+#include "../../GUI/Elements/Keybind.hpp"
+
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
 inline class Triggerbot : public Feature {
@@ -15,7 +17,7 @@ public:
 	}
 
 	bool enabled = false;
-	int input = ImGuiKey_None;
+	Input input{};
 	bool secondaryFireWithR8Revolver = true;
 	bool friendlyFire = false;
 	int maximalFlashAmount = 255;

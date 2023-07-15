@@ -7,6 +7,7 @@ namespace Gui::Windows {
 	void Interfaces();
 	void GameEvents();
 	void Panorama();
+	void Entities();
 }
 
 #endif

@@ -6,6 +6,7 @@
 #include "../../SDK/GameClass/CUserCmd.hpp"
 #include "../../SDK/GameClass/CViewSetup.hpp"
 #include "../../SDK/GameClass/IMaterial.hpp"
+#include "../../SDK/GameClass/INetMessage.hpp"
 #include "../../SDK/Math/Matrix4x4.hpp"
 
 #include "../Hooks.hpp"
@@ -55,6 +56,7 @@ namespace Hooks::Game {
 
 	namespace EmitSound {
 		inline GameHook* hook;
+
 		int HookFunc(void* thisptr,
 			void* filter,
 			int iEntIndex,
@@ -74,6 +76,18 @@ namespace Hooks::Game {
 			float soundtime,
 			int speakerentity,
 			void* params);
+	}
+
+	namespace SendNetMsg {
+		inline GameHook* hook;
+
+		bool HookFunc(void* thisptr, INetMessage* msg, bool bForceReliable, bool bVoice);
+	}
+
+	namespace CanLoadThirdPartyFiles {
+		inline GameHook* hook;
+
+		bool HookFunc(void* thisptr);
 	}
 
 	void Hook();

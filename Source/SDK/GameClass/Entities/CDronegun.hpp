@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CDRONEGUN
-#define SDK_GAMECLASS_CDRONEGUN
+#ifndef SDK_GAMECLASS_ENTITIES_CDRONEGUN
+#define SDK_GAMECLASS_ENTITIES_CDRONEGUN
 
 #include "../../../Netvars.hpp"
 #include "../VirtualMethod.hpp"

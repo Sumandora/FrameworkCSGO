@@ -8,9 +8,23 @@
 #include "../../GUI/GUI.hpp"
 
 #include "../../Utils/Platform/CompilerSupport.hpp"
+#include "imgui.h"
+#include <optional>
 
-static bool wasPressed = false;
+bool Menu::MenuKey::IsAllowed(Method method, Type type, std::optional<unsigned int> key)
+{
+	if (type == Input::Type::HOLD)
+		return false; // I mean, this is technically not impossible, but honestly who would want this?
+	if (method == Input::Method::MOUSE && key == ImGuiMouseButton_Left)
+		return false; // This would result in the menu opening/closing when you try to change the key... completely useless
+	return key.has_value(); // This would render the menu unusable!
+}
 
+void Menu::MenuKey::OnChange()
+{
+	Gui::visible = !Gui::visible;
+	eventLog.CreateReport("%s the menu", Gui::visible ? "Opened" : "Closed");
+}
 void Menu::ImGuiLoop()
 {
 	switch (style) {
@@ -46,21 +60,11 @@ void Menu::ImGuiLoop()
 #endif
 	}
 #endif
-
-	const bool isPressed = IsInputDown(menuKey, false, std::nullopt);
-
-	if (isPressed && !wasPressed) {
-		Gui::visible = !Gui::visible;
-		eventLog.CreateReport("%s the menu", Gui::visible ? "Opened" : "Closed");
-	}
-	wasPressed = isPressed;
 }
 
 void Menu::SetupGUI()
 {
 	ImGui::InputSelector("Menu key (%s)", menuKey);
-	if (menuKey == 0)
-		menuKey = static_cast<int>(ImGuiKey_Insert);
 #ifdef DEBUG
 	ImGui::Checkbox("Show Demo Window", &isShowingDemoWindow);
 	ImGui::Checkbox("Show Metrics Window", &isShowingMetricsWindow);
@@ -89,7 +93,7 @@ void Menu::SetupGUI()
 
 SCOPED_SERIALIZER(Menu)
 {
-	SERIALIZE("Menu key", menuKey);
+	SERIALIZE_STRUCT("Menu key", menuKey);
 	SERIALIZE("Style", style);
 	// Intentionally not saving the showing...window because nobody needs those
 }

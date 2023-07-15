@@ -1,5 +1,6 @@
 #include "../GameFunctions.hpp"
 
+#include "../../../Features/Misc/VoteRevealer.hpp"
 #include "../../../Features/Semirage/Aimbot.hpp"
 
 void Hooks::Game::FireEvent::HookFunc(void* thisptr, CGameEvent* event, bool bServerOnly, bool bClientOnly)
@@ -13,7 +14,9 @@ void Hooks::Game::FireEvent::HookFunc(void* thisptr, CGameEvent* event, bool bSe
 		events[name] = 0;
 	events[name]++;
 #endif
+
 	semirageAimbot.FireEvent(event);
+	voteRevealer.FireEvent(event);
 
 	return InvokeFunction<void, void*, CGameEvent*, bool, bool>(hook->proxy, thisptr, event, bServerOnly, bClientOnly);
 }

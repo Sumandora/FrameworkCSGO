@@ -7,6 +7,8 @@
 
 #include "../../SDK/GameClass/CUserCmd.hpp"
 
+#include "../../GUI/Elements/Keybind.hpp"
+
 inline class JumpBug : public Feature {
 public:
 	JumpBug()
@@ -15,7 +17,7 @@ public:
 	}
 
 	bool enabled = false;
-	int input = ImGuiKey_None;
+	Input input{};
 	bool preDuck = false;
 
 	void CreateMove(CUserCmd* cmd);

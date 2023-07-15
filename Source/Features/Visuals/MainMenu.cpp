@@ -13,11 +13,8 @@
 static void SetVisible(const char* item, bool visible)
 {
 	std::stringstream ss{};
-	ss << "var obj = $.GetContextPanel().FindChildTraverse(\"";
-	ss << item;
-	ss << "\"); if(obj) obj.visible = ";
-	ss << std::boolalpha << visible << std::noboolalpha;
-	ss << ";";
+	ss << "var obj = $.GetContextPanel().FindChildTraverse(\"" << item << "\");";
+	ss << "if(obj != null) obj.visible = " << std::boolalpha << visible << std::noboolalpha << ";";
 	std::string str = ss.str();
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", str.c_str());
 }
@@ -40,12 +37,16 @@ void MainMenu::UpdateVisiblityNow()
 		for (auto& widget : panoramaWidgets)
 			SetVisible(widget.first.second, widget.second);
 
+	// In case the user changes nav bar buttons, we at least try. We expect an error, but who knows...
 	for (auto& button : navBarButtons)
 		SetVisible(button.first.second, button.second);
 }
 
 void MainMenu::UpdateVisibility()
 {
+	if (!Interfaces::engine->IsInGame())
+		return;
+
 	static float lastUpdate = 0.0f;
 	if (Memory::globalVars->curtime - lastUpdate > 1.0f) {
 		UpdateVisiblityNow();

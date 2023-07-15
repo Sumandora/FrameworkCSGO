@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CC4
-#define SDK_GAMECLASS_CC4
+#ifndef SDK_GAMECLASS_ENTITIES_CC4
+#define SDK_GAMECLASS_ENTITIES_CC4
 
 #include "../../../Netvars.hpp"
 #include "CBaseCombatWeapon.hpp"

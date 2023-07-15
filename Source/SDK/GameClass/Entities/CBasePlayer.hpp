@@ -1,5 +1,5 @@
-#ifndef SDK_GAMECLASS_CBASEPLAYER
-#define SDK_GAMECLASS_CBASEPLAYER
+#ifndef SDK_GAMECLASS_ENTITIES_CBASEPLAYER
+#define SDK_GAMECLASS_ENTITIES_CBASEPLAYER
 
 #include "CBaseCombatWeapon.hpp"
 #include "CBaseEntity.hpp"

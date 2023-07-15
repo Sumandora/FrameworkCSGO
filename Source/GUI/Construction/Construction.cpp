@@ -58,6 +58,10 @@ void Gui::Build()
 						Gui::Windows::Panorama();
 						ImGui::EndTabItem();
 					}
+					if (ImGui::BeginTabItem("Entities")) {
+						Gui::Windows::Entities();
+						ImGui::EndTabItem();
+					}
 					ImGui::EndTabBar();
 				}
 				ImGui::EndTabItem();

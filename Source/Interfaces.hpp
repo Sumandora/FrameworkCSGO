@@ -21,6 +21,7 @@ namespace Interfaces {
 	inline CMaterialSystem* materialSystem;
 	inline void* engineRenderView;
 	inline CPanoramaUIEngine* panoramaUIEngine;
+	inline void* fileSystem;
 
 	void GetInterfaces();
 

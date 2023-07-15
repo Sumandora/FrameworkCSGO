@@ -7,6 +7,7 @@
 #include <mutex>
 #include <unordered_map>
 
+#include "Elements/Keybind.hpp"
 #include "imgui.h"
 #include "ImGuiColors.hpp"
 
@@ -99,6 +100,9 @@ void Gui::SwapWindow(SDL_Window* window)
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
+
+	for (Input* input : inputs)
+		input->UpdateState();
 
 	menu.ImGuiLoop(); // Will take care of the menu key
 
