@@ -5,6 +5,7 @@
 #include "BCRL.hpp"
 #include "ldisasm.h"
 #include "RetAddrSpoofer.hpp"
+#include "SDK/GameClass/CGlowObjectManager.hpp"
 #include "SDK/GameClass/Panorama/CUIEngine.hpp"
 #include "SignatureScanner.hpp"
 
@@ -99,6 +100,21 @@ void Memory::Create()
 			CUIEngine::isValidPanelPointerIndex)
 			.NextByteOccurence("48 8b 97")
 			.Add(3)
+			.Pointer()
+			.value());
+
+	glowObjectManager = static_cast<CGlowObjectManager*>(
+		BCRL::Session::Module("client_client.so")
+			.NextStringOccurence("Music.StopAllExceptMusic")
+			.FindXREFs("client_client.so", true, false)
+			.Add(4)
+			.Filter([](const BCRL::SafePointer& safePointer) { return safePointer.DoesMatch("66 0f ef c0"); })
+			.Repeater(6, [](BCRL::SafePointer& safePointer) { safePointer = safePointer.NextInstruction(); })
+			.Add(1)
+			.RelativeToAbsolute()
+			.Repeater(2, [](BCRL::SafePointer& safePointer) { safePointer = safePointer.NextInstruction(); })
+			.Add(3)
+			.RelativeToAbsolute()
 			.Pointer()
 			.value());
 }

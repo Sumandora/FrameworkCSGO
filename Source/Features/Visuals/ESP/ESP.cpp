@@ -121,8 +121,6 @@ void ESP::SetupGUI()
 	ImGui::SameLine();
 	ImGui::SliderInt("Draw distance", &drawDistance, 0, 1024 * 16);
 
-	ImGui::Checkbox("Consider spotted entities as visible", &considerSpottedEntitiesAsVisible);
-	ImGui::SameLine();
 	ImGui::Checkbox("Out of view", &outOfView);
 	ImGui::SameLine();
 	if (ImGui::Popup("Out of view settings")) {
@@ -130,12 +128,15 @@ void ESP::SetupGUI()
 		ImGui::SliderFloat("Distance", &outOfViewDistance, 0.0f, 500.0f, "%.2f");
 		ImGui::EndPopup();
 	}
-
-	ImGui::Checkbox("Consider smoked off entities as occluded", &considerSmokedOffEntitiesAsOccluded);
 	ImGui::SameLine();
 	ImGui::Checkbox("Align bounding boxes with the pixel grid", &alignBoundingBox);
 
-	ImGui::Checkbox("Consider everyone visible when dead", &considerEveryoneVisibleWhenDead);
+	ImGui::Text("Visibility checks");
+	ImGui::SameLine();
+	if (ImGui::Popup("Visibility checker settings")) {
+		visibilityChecker.SetupGUI();
+		ImGui::EndPopup();
+	}
 
 	ImGui::InputSelector("Key (%s)", key);
 
@@ -214,9 +215,7 @@ SCOPED_SERIALIZER(ESP)
 	SERIALIZE("Draw distance", drawDistance);
 	SERIALIZE_STRUCT("Key", key);
 
-	SERIALIZE("Consider spotted entities as visible", considerSpottedEntitiesAsVisible);
-	SERIALIZE("Consider smoked off entities as occluded", considerSmokedOffEntitiesAsOccluded);
-	SERIALIZE("Consider everyone visible when dead", considerEveryoneVisibleWhenDead);
+	SERIALIZE_STRUCT("Visibility checker", visibilityChecker);
 
 	SERIALIZE("Out of view", outOfView);
 	SERIALIZE("Out of view size", outOfViewSize);

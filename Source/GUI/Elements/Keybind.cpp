@@ -131,8 +131,7 @@ IMGUI_API bool ImGui::InputSelector(const char* label, Input& input, const ImVec
 	bool canHaveOtherType = input.IsAllowed(input.method, static_cast<Input::Type>(1 - static_cast<int>(input.type)), input.key);
 
 	if (canHaveOtherType && ImGui::BeginPopupContextItem()) {
-		static const char* types[]{ "Hold", "Toggle" };
-		ImGui::Combo("Type", reinterpret_cast<int*>(&input.type), types, IM_ARRAYSIZE(types));
+		ImGui::Combo("Type", reinterpret_cast<int*>(&input.type), "Hold\0Toggle\0");
 		ImGui::EndPopup();
 	}
 

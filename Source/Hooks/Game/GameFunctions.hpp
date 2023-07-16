@@ -90,6 +90,12 @@ namespace Hooks::Game {
 		bool HookFunc(void* thisptr);
 	}
 
+	namespace DoPostScreenEffects {
+		inline GameHook* hook;
+
+		bool HookFunc(void* thisptr, void* rsi);
+	}
+
 	void Hook();
 	void Unhook();
 }
