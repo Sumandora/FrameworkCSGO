@@ -14,7 +14,6 @@ void Hooks::Game::Hook()
 	// This function references its name through VPROF; Search for ViewDrawFade as string and you will find the function
 	ViewDrawFade::hook = new GameHook(Utils::GetVTable(Interfaces::engineRenderView)[29], reinterpret_cast<void*>(ViewDrawFade::HookFunc));
 
-	// VPROF Function: CGameEventManager::FireEvent
 	FireEvent::hook = new GameHook(
 		BCRL::Session::Module("engine_client.so")
 			.NextStringOccurence("CGameEventManager::FireEvent")
@@ -47,10 +46,15 @@ void Hooks::Game::Hook()
 	CanLoadThirdPartyFiles::hook = new GameHook(
 		Utils::GetVTable(Interfaces::fileSystem)[128],
 		reinterpret_cast<void*>(CanLoadThirdPartyFiles::HookFunc));
+
+	DoPostScreenEffects::hook = new GameHook(
+		Utils::GetVTable(Memory::clientMode)[45],
+		reinterpret_cast<void*>(DoPostScreenEffects::HookFunc));
 }
 
 void Hooks::Game::Unhook()
 {
+	delete DoPostScreenEffects::hook;
 	delete CanLoadThirdPartyFiles::hook;
 	delete SendNetMsg::hook;
 	delete EmitSound::hook;

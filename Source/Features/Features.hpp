@@ -3,9 +3,10 @@
 
 #include "../Serialization/Serializer.hpp"
 
+#include <memory>
 #include <vector>
 
-inline std::map<std::string, std::vector<class Feature*>> features;
+inline std::map<std::string, std::vector<class Feature*>> features{};
 
 class Feature {
 	std::string name;

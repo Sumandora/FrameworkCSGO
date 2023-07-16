@@ -9,6 +9,8 @@
 
 #include "../../../GUI/Elements/Keybind.hpp"
 
+#include "../../../Utils/VisibilityChecker.hpp"
+
 inline class ESP : public Feature {
 public:
 	ESP()
@@ -19,9 +21,7 @@ public:
 	bool enabled = false;
 	Input key{};
 	int drawDistance = 1024 * 8;
-	bool considerSpottedEntitiesAsVisible = false;
-	bool considerSmokedOffEntitiesAsOccluded = true;
-	bool considerEveryoneVisibleWhenDead = false;
+	VisibilityChecker visibilityChecker;
 	bool alignBoundingBox = true;
 	bool outOfView = false;
 	float outOfViewSize = 30.0f;

@@ -7,25 +7,6 @@
 #include "../../../../../SDK/GameClass/Entities/CBaseCSGrenade.hpp"
 #include "../../../../../SDK/GameClass/Entities/CC4.hpp"
 
-bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
-{
-	if (esp.considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
-		return true;
-
-	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
-
-	const Vector playerEye = localPlayer->GetEyePosition();
-	const Vector head = boneMatrix[8].Origin();
-
-	if (esp.considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
-		return false;
-
-	CTraceFilterEntity filter(localPlayer);
-	const Trace trace = Utils::TraceRay(playerEye, head, &filter);
-
-	return trace.m_pEnt == otherPlayer;
-}
-
 void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
 	Entity::Update(entity, index, handle, clientClass);
@@ -48,10 +29,7 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 		auto* backingLocalPlayerEntity = static_cast<CBasePlayer*>(localPlayer.value().backingEntity);
 		enemy = entity->IsEnemy(backingLocalPlayerEntity);
 
-		if (esp.considerSpottedEntitiesAsVisible && spotted)
-			visible = true;
-		else
-			visible = IsVisible(backingLocalPlayerEntity, entity);
+		visible = esp.visibilityChecker.IsVisible(backingLocalPlayerEntity, entity);
 	} else {
 		enemy = false;
 
