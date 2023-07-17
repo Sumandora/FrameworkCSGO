@@ -31,7 +31,7 @@ MainMenu::~MainMenu()
 		SetVisible(button.first.second, strcmp(button.first.second, "MainMenuNavBarShowCommunityServerBrowser") != 0);
 }
 
-void MainMenu::UpdateVisiblityNow()
+void MainMenu::UpdateVisiblityNow() // TODO Don't call IsInGame twice when coming from UpdateVisibility
 {
 	if (!Interfaces::engine->IsInGame())
 		for (auto& widget : panoramaWidgets)

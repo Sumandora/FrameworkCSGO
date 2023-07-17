@@ -33,7 +33,7 @@ public:
 		bool filled = false;
 		int style = 0;
 
-		void Apply(int entindex, CBaseEntity* entity);
+		bool Apply(int entindex, CBaseEntity* entity);
 		void SetupGUI();
 		SERIALIZER();
 	};
@@ -43,7 +43,7 @@ public:
 		GlowSettings enemy{};
 		GlowSettings local{};
 
-		void Apply(int entindex, CBasePlayer* player);
+		bool Apply(int entindex, CBasePlayer* player);
 		void SetupGUI();
 		SERIALIZER();
 	} playerSettings{};
@@ -55,6 +55,10 @@ public:
 
 	std::map<int, int> customGlows{}; // These are added glow objects, which have to be removed later
 
+private:
+	bool UpdateGlow(int entindex, CBaseEntity* entity);
+
+public:
 	void UpdateGlow();
 
 	virtual void SetupGUI() override;

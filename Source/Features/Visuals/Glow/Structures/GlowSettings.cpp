@@ -8,10 +8,10 @@
 #include "../../../../SDK/GameClass/CGlowObjectManager.hpp"
 #include <cstring>
 
-void Glow::GlowSettings::Apply(int entindex, CBaseEntity* entity)
+bool Glow::GlowSettings::Apply(int entindex, CBaseEntity* entity)
 {
 	if (!enabled)
-		return;
+		return false;
 
 	GlowObjectDefinition* glowObject = Memory::glowObjectManager->GetGlowEffect(entity);
 	GlowObjectDefinition newGlowObject;
@@ -32,10 +32,11 @@ void Glow::GlowSettings::Apply(int entindex, CBaseEntity* entity)
 	if (glowObject) {
 		newGlowObject.m_nNextFreeSlot = glowObject->m_nNextFreeSlot;
 		*glowObject = newGlowObject;
-		return;
+		return true;
 	}
 
 	glow.customGlows[entindex] = Memory::glowObjectManager->RegisterGlowObject(newGlowObject);
+	return true;
 }
 
 void Glow::GlowSettings::SetupGUI()
