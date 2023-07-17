@@ -124,8 +124,12 @@ static void CancelMatchmakingIfSearching()
 
 void PartyScripts::PerformPartyScripts()
 {
+	if (!autoClosePopups && !autoErrorCreation && !autoCancelMatchmaking)
+		return;
+
 	if (Interfaces::engine->IsInGame())
 		return; // Executing scripts while in game leads to "Maximum call stack reached" errors...
+
 	if (autoClosePopups) {
 		static float lastUpdate = 0.0f;
 
@@ -138,7 +142,6 @@ void PartyScripts::PerformPartyScripts()
 		static float lastUpdate = 0.0f;
 
 		if (Memory::globalVars->curtime - lastUpdate > errorInterval) {
-
 			if (!randomErrors) {
 				CreateErrorMessage(errorAmount, errorMessages[selectedError]);
 			} else {

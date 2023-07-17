@@ -14,7 +14,7 @@
 
 void AutoAccept::EmitSound(const char* soundEntry)
 {
-	if (!enabled)
+	if (!sendSystemNotification && !autoAccept)
 		return;
 
 	if (std::strcmp(soundEntry, "UIPanorama.popup_accept_match_beep") == 0) {
@@ -23,13 +23,11 @@ void AutoAccept::EmitSound(const char* soundEntry)
 
 		if (sendSystemNotification) {
 			// If we are not auto accepting, we should tell the user that it's urgent, don't set the urgency level however, since a game shouldn't make urgent notifications
-			if (dontAccept)
-				(void)std::system("notify-send \"Matchmaking Game Found. Please accept promptly to join the match.\"");
-			else
-				(void)std::system("notify-send \"Matchmaking Game Found.\"");
+			(void)std::system(autoAccept ? "notify-send \"Matchmaking Game Accepted.\""
+										 : "notify-send \"Matchmaking Game Found. Please accept promptly to join the match.\"");
 		}
 
-		if (!dontAccept) {
+		if (autoAccept) {
 			Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", "$.DispatchEvent(\"MatchAssistedAccept\");");
 		}
 	}
@@ -37,15 +35,13 @@ void AutoAccept::EmitSound(const char* soundEntry)
 
 void AutoAccept::SetupGUI()
 {
-	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::Checkbox("Send system notification", &sendSystemNotification);
-	ImGui::Checkbox("Don't accept", &dontAccept);
-	ImGui::HelpMarker("This may be useful in case you only want the notification");
+	ImGui::Checkbox("Auto accept", &autoAccept);
+	ImGui::HelpMarker("Turn off in case you only want the notification");
 }
 
 SCOPED_SERIALIZER(AutoAccept)
 {
-	SERIALIZE("Enabled", enabled);
 	SERIALIZE("Send system notification", sendSystemNotification);
-	SERIALIZE("Don't accept", dontAccept);
+	SERIALIZE("Auto accept", autoAccept);
 }

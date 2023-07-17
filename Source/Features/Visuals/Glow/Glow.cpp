@@ -20,6 +20,28 @@ Glow::~Glow()
 	}
 }
 
+// Returns false when the glow wasn't applied
+bool Glow::UpdateGlow(int entindex, CBaseEntity* entity)
+{
+	if (!entity || entity->GetDormant())
+		return false;
+	if (entity->IsPlayer()) {
+		auto* player = static_cast<CBasePlayer*>(entity);
+		if (player->IsAlive()) {
+			return playerSettings.Apply(entindex, player);
+		}
+		return false;
+	} else if (entity->IsWeaponWorldModel()) {
+		return weapons.Apply(entindex, entity);
+	} else {
+		ClientClass* clientClass = entity->GetClientClass();
+		if (clientClass->m_ClassID == ClientClassID::CCSRagdoll) {
+			return ragdolls.Apply(entindex, entity);
+		}
+		return false;
+	}
+}
+
 void Glow::UpdateGlow()
 {
 	if (!Interfaces::engine->IsInGame() || !enabled) {
@@ -32,20 +54,7 @@ void Glow::UpdateGlow()
 
 	for (int i = 0; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
 		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (entity && !entity->GetDormant()) {
-			if (entity->IsPlayer()) {
-				auto* player = static_cast<CBasePlayer*>(entity);
-				if (player->IsAlive())
-					playerSettings.Apply(i, player);
-			} else if (entity->IsWeaponWorldModel()) {
-				weapons.Apply(i, entity);
-			} else {
-				ClientClass* clientClass = entity->GetClientClass();
-				if (clientClass->m_ClassID == ClientClassID::CCSRagdoll) {
-					ragdolls.Apply(i, entity);
-				}
-			}
-		} else {
+		if (!UpdateGlow(i, entity)) {
 			auto it = customGlows.find(i);
 			if (it != customGlows.end()) {
 				Memory::glowObjectManager->UnregisterGlowObject(it->second);

@@ -1,14 +1,14 @@
 #include "../Glow.hpp"
 
-void Glow::Player::Apply(int entindex, CBasePlayer* player)
+bool Glow::Player::Apply(int entindex, CBasePlayer* player)
 {
 	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (player == localPlayer)
-		local.Apply(entindex, player);
+		return local.Apply(entindex, player);
 	else if (*player->Team() == *localPlayer->Team())
-		teammate.Apply(entindex, player);
+		return teammate.Apply(entindex, player);
 	else
-		enemy.Apply(entindex, player);
+		return enemy.Apply(entindex, player);
 }
 
 void Glow::Player::SetupGUI()

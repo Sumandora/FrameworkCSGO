@@ -12,9 +12,8 @@ public:
 	{
 	}
 
-	bool enabled = false;
 	bool sendSystemNotification = false;
-	bool dontAccept = false;
+	bool autoAccept = false;
 
 	void EmitSound(const char* soundEntry);
 
