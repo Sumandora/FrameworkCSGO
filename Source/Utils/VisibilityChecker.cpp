@@ -12,10 +12,8 @@ bool VisibilityChecker::IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPl
 	if (considerSpottedEntitiesAsVisible && *otherPlayer->Spotted())
 		return true;
 
-	Matrix3x4* boneMatrix = otherPlayer->SetupBones();
-
 	const Vector playerEye = localPlayer->GetEyePosition();
-	const Vector head = boneMatrix[8].Origin();
+	const Vector head = otherPlayer->GetBonePosition(8);
 
 	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
 		return false;

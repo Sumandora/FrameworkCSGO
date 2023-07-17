@@ -90,6 +90,7 @@ public:
 	int reserveAmmoCount;
 	bool immune;
 	bool walking;
+	Vector headPos;
 
 	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };

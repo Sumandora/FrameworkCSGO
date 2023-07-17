@@ -34,7 +34,7 @@ public:
 	SERIALIZER();
 };
 
-class TextSetting {
+class TextSettings {
 public:
 	bool enabled;
 
@@ -45,12 +45,12 @@ private:
 	ImColor shadowColor;
 
 public:
-	TextSetting();
+	TextSettings();
 
 	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride = std::nullopt) const;
 	[[nodiscard]] float GetLineHeight() const;
 
-	bool operator<=>(const TextSetting& other) const = default;
+	bool operator<=>(const TextSettings& other) const = default;
 	void SetupGUI(const char* id);
 	SERIALIZER();
 };
@@ -70,7 +70,7 @@ private:
 	bool outlined;
 	ImColor outlineColor;
 	float outlineThickness;
-	TextSetting healthNumber;
+	TextSettings healthNumber;
 	bool onlyWhenDamaged;
 
 public:
@@ -82,7 +82,7 @@ public:
 	SERIALIZER();
 };
 
-class LineSetting {
+class LineSettings {
 public:
 	bool enabled;
 
@@ -94,16 +94,37 @@ private:
 	float outlineThickness;
 
 public:
-	LineSetting();
+	LineSettings();
 
 	void Draw(ImDrawList* drawList, std::vector<ImVec2> points) const;
 
-	bool operator<=>(const LineSetting& other) const = default;
+	bool operator<=>(const LineSettings& other) const = default;
 	void SetupGUI(const char* id);
 	SERIALIZER();
 };
 
-class FlagsSetting {
+class CircleSettings {
+public:
+	bool enabled;
+
+private:
+	ImColor circleColor;
+	float radius;
+	bool outlined;
+	ImColor outlineColor;
+	float outlineThickness;
+
+public:
+	CircleSettings();
+
+	void Draw(ImDrawList* drawList, ImVec2 center) const;
+
+	bool operator<=>(const CircleSettings& other) const = default;
+	void SetupGUI(const char* id);
+	SERIALIZER();
+};
+
+class FlagsSettings {
 private:
 	bool enabled;
 	float fontScale;
@@ -114,32 +135,32 @@ private:
 	std::vector<std::shared_ptr<Flag>> flags;
 
 public:
-	FlagsSetting(std::vector<std::shared_ptr<Flag>>&& flags);
+	FlagsSettings(std::vector<std::shared_ptr<Flag>>&& flags);
 
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, float x, float y, const Player& player) const;
-	bool operator<=>(const FlagsSetting& other) const = default;
+	bool operator<=>(const FlagsSettings& other) const = default;
 	void SetupGUI(const char* id);
 	SERIALIZER();
 };
 
-class BoxNameSetting {
+class BoxNameSettings {
 public:
 	BoxSettings box;
-	TextSetting nametag;
+	TextSettings nametag;
 
-	BoxNameSetting() = default;
+	BoxNameSettings() = default;
 
 	[[nodiscard]] bool IsEnabled() const;
 	void Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const;
-	bool operator<=>(const BoxNameSetting& other) const = default;
+	bool operator<=>(const BoxNameSettings& other) const = default;
 	void SetupGUI(const char* id);
 	SERIALIZER();
 };
 
 class GenericEntitySettings {
 public:
-	BoxNameSetting boxName;
+	BoxNameSettings boxName;
 
 	GenericEntitySettings() = default;
 
@@ -150,7 +171,7 @@ public:
 };
 
 class SentrySettings {
-	BoxNameSetting boxName;
+	BoxNameSettings boxName;
 	HealthbarSettings healthbar;
 
 public:
@@ -163,7 +184,7 @@ public:
 };
 
 class LootCrateSettings {
-	BoxNameSetting boxName;
+	BoxNameSettings boxName;
 	HealthbarSettings healthbar;
 
 public:
@@ -196,8 +217,8 @@ public:
 };
 
 class DroneSettings {
-	BoxNameSetting boxName;
-	TextSetting target;
+	BoxNameSettings boxName;
+	TextSettings target;
 
 public:
 	DroneSettings() = default;
@@ -209,10 +230,12 @@ public:
 };
 
 class PlayerStateSettings {
-	BoxNameSetting boxName;
+	BoxNameSettings boxName;
 	HealthbarSettings healthbar;
-	TextSetting weapon;
-	FlagsSetting flags;
+	TextSettings weapon;
+	FlagsSettings flags;
+	CircleSettings headDot;
+	Vector headDotOffset;
 
 public:
 	PlayerStateSettings();
@@ -225,8 +248,8 @@ public:
 };
 
 class WeaponSettings {
-	BoxNameSetting boxName;
-	TextSetting ammo;
+	BoxNameSettings boxName;
+	TextSettings ammo;
 
 public:
 	WeaponSettings() = default;
@@ -238,9 +261,9 @@ public:
 };
 
 class PlantedC4Settings {
-	BoxNameSetting boxName;
-	TextSetting timer;
-	TextSetting defuseTimer;
+	BoxNameSettings boxName;
+	TextSettings timer;
+	TextSettings defuseTimer;
 	bool overrideDefuseColor;
 	ImColor defusePossibleWithKit;
 	ImColor defuseImpossible;
@@ -256,8 +279,8 @@ public:
 };
 
 class HostageSettings {
-	BoxNameSetting boxName;
-	TextSetting timer;
+	BoxNameSettings boxName;
+	TextSettings timer;
 	int accuracy;
 
 public:
@@ -270,7 +293,7 @@ public:
 };
 
 class SpectatorSettings {
-	BoxNameSetting boxName;
+	BoxNameSettings boxName;
 	bool onlyShowWhenSpectatedEntityIsDormant;
 	bool displayNameOfSpectatedEntity;
 
@@ -284,9 +307,9 @@ public:
 };
 
 class ProjectileSettings {
-	BoxNameSetting boxName;
-	TextSetting ownerName;
-	LineSetting trail;
+	BoxNameSettings boxName;
+	TextSettings ownerName;
+	LineSettings trail;
 
 public:
 	ProjectileSettings() = default;

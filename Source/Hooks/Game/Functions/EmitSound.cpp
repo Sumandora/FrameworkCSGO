@@ -1,5 +1,6 @@
 #include "../GameFunctions.hpp"
 
+#include "../../../Features/General/EnginePrediction.hpp"
 #include "../../../Features/Misc/AutoAccept.hpp"
 
 int Hooks::Game::EmitSound::HookFunc(void* thisptr,
@@ -23,6 +24,9 @@ int Hooks::Game::EmitSound::HookFunc(void* thisptr,
 	void* params)
 {
 	autoAccept.EmitSound(pSoundEntry);
+
+	if (enginePrediction.EmitSound(iEntIndex, pSoundEntry))
+		return 0;
 
 	return InvokeFunction<
 		int, void*, void*, int,

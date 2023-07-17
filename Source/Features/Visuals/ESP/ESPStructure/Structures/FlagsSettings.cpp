@@ -9,7 +9,7 @@
 #include <optional>
 #include <utility>
 
-FlagsSetting::FlagsSetting(std::vector<std::shared_ptr<Flag>>&& flags)
+FlagsSettings::FlagsSettings(std::vector<std::shared_ptr<Flag>>&& flags)
 	: enabled(false)
 	, fontScale(1.0f)
 	, verticalSpacing(1.0f)
@@ -19,7 +19,7 @@ FlagsSetting::FlagsSetting(std::vector<std::shared_ptr<Flag>>&& flags)
 {
 }
 
-bool FlagsSetting::IsEnabled() const
+bool FlagsSettings::IsEnabled() const
 {
 	if (enabled)
 		for (const std::shared_ptr<Flag>& flag : flags)
@@ -29,7 +29,7 @@ bool FlagsSetting::IsEnabled() const
 	return false;
 }
 
-void FlagsSetting::Draw(ImDrawList* drawList, float x, float y, const Player& player) const
+void FlagsSettings::Draw(ImDrawList* drawList, float x, float y, const Player& player) const
 {
 	if (!IsEnabled())
 		return;
@@ -75,7 +75,7 @@ void FlagsSetting::Draw(ImDrawList* drawList, float x, float y, const Player& pl
 	ImGui::PopFont();
 }
 
-void FlagsSetting::SetupGUI(const char* id)
+void FlagsSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -106,7 +106,7 @@ void FlagsSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-SCOPED_SERIALIZER(FlagsSetting)
+SCOPED_SERIALIZER(FlagsSettings)
 {
 	SERIALIZE("Enabled", enabled);
 	SERIALIZE("Font scale", fontScale);

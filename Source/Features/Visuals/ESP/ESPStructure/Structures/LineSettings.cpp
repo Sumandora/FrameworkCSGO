@@ -4,7 +4,7 @@
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
 
-LineSetting::LineSetting()
+LineSettings::LineSettings()
 	: enabled(false)
 	, lineColor(ImGuiColors::white)
 	, thickness(1.0f)
@@ -14,7 +14,7 @@ LineSetting::LineSetting()
 {
 }
 
-void LineSetting::Draw(ImDrawList* drawList, std::vector<ImVec2> points) const
+void LineSettings::Draw(ImDrawList* drawList, std::vector<ImVec2> points) const
 {
 	if (!enabled)
 		return;
@@ -25,7 +25,7 @@ void LineSetting::Draw(ImDrawList* drawList, std::vector<ImVec2> points) const
 	drawList->AddPolyline(points.data(), (int)points.size(), lineColor, ImDrawFlags_None, thickness);
 }
 
-void LineSetting::SetupGUI(const char* id)
+void LineSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -47,7 +47,7 @@ void LineSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-SCOPED_SERIALIZER(LineSetting)
+SCOPED_SERIALIZER(LineSettings)
 {
 	SERIALIZE("Enabled", enabled);
 	SERIALIZE_VECTOR4D("Line color", lineColor.Value);

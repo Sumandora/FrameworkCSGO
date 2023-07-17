@@ -5,6 +5,7 @@
 #include "../../Interfaces.hpp"
 #include "../../Utils/Prediction.hpp"
 
+#include <cstdio>
 #include <cstring>
 
 void EnginePrediction::ImGuiWarning()
@@ -14,6 +15,15 @@ void EnginePrediction::ImGuiWarning()
 }
 
 static float previousVelocityModifer;
+
+bool EnginePrediction::EmitSound(int iEntIndex, const char* pSoundEntry)
+{
+	if (dontEmitSoundsDuringPrediction) {
+		if (Interfaces::prediction->m_bInPrediction && Interfaces::prediction->m_bIsFirstTimePredicted && iEntIndex == Interfaces::engine->GetLocalPlayer())
+			return strcasestr(pSoundEntry, "land"); // TODO Better check
+	}
+	return false;
+}
 
 void EnginePrediction::StartPrediction(CUserCmd* cmd)
 {
@@ -57,9 +67,12 @@ void EnginePrediction::SetupGUI()
 	}
 	ImGui::Checkbox("Force reset velocity modifier", &forceResetVelocityModifier);
 	ImGui::HelpMarker("This netvar is not being reset properly when predicting.\nNote that the \"fix\" is not intended by the engine.");
+	ImGui::Checkbox("Don't emit sounds during prediction", &dontEmitSoundsDuringPrediction);
 }
 
 SCOPED_SERIALIZER(EnginePrediction)
 {
 	SERIALIZE("Enabled", enabled);
+	SERIALIZE("Force reset velocity modifier", forceResetVelocityModifier);
+	SERIALIZE("Don't emit sounds during prediction", dontEmitSoundsDuringPrediction);
 }

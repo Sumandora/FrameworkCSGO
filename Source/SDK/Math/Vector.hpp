@@ -3,25 +3,22 @@
 
 #include <algorithm>
 #include <cmath>
+#include <compare>
 
 #include "../../ConVarStorage.hpp"
 
 struct Vector {
 	float x, y, z;
 
-	inline Vector()
+	inline Vector(float scalar = 0.0f)
 	{
-		x = y = z = 0;
+		x = y = z = scalar;
 	}
 	inline Vector(const Vector& other)
 	{
 		x = other.x;
 		y = other.y;
 		z = other.z;
-	}
-	inline explicit Vector(float scalar)
-	{
-		x = y = z = scalar;
 	}
 	inline Vector(float x, float y, float z)
 	{
@@ -130,6 +127,10 @@ struct Vector {
 	{
 		return x != other.x || y != other.y || z != other.z;
 	}
+	inline auto operator<=>(const Vector& other) const
+	{
+		return Length() <=> other.Length();
+	}
 
 	// Invert
 	inline Vector operator-() const
@@ -142,75 +143,75 @@ struct Vector {
 	// Arithmetic with other Vectors
 	inline Vector operator+(const Vector& other) const
 	{
-		Vector vec;
-		vec.x = x + other.x;
-		vec.y = y + other.y;
-		vec.z = z + other.z;
-		return vec;
+		return {
+			x + other.x,
+			y + other.y,
+			z + other.z
+		};
 	}
 
 	inline Vector operator-(const Vector& other) const
 	{
-		Vector vec;
-		vec.x = x - other.x;
-		vec.y = y - other.y;
-		vec.z = z - other.z;
-		return vec;
+		return {
+			x - other.x,
+			y - other.y,
+			z - other.z
+		};
 	}
 
 	inline Vector operator*(const Vector& other) const
 	{
-		Vector vec;
-		vec.x = x * other.x;
-		vec.y = y * other.y;
-		vec.z = z * other.z;
-		return vec;
+		return {
+			x * other.x,
+			y * other.y,
+			z * other.z
+		};
 	}
 
 	inline Vector operator/(const Vector& other) const
 	{
-		Vector vec;
-		vec.x = x / other.x;
-		vec.y = y / other.y;
-		vec.z = z / other.z;
-		return vec;
+		return {
+			x / other.x,
+			y / other.y,
+			z / other.z
+		};
 	}
 
 	// Arithmetic with floating-point number
 	inline Vector operator+(float other) const
 	{
-		Vector vec;
-		vec.x = x + other;
-		vec.y = y + other;
-		vec.z = z + other;
-		return vec;
+		return {
+			x + other,
+			y + other,
+			z + other
+		};
 	}
 
 	inline Vector operator-(float other) const
 	{
-		Vector vec;
-		vec.x = x - other;
-		vec.y = y - other;
-		vec.z = z - other;
-		return vec;
+		return {
+			x - other,
+			y - other,
+			z - other
+		};
 	}
 
 	inline Vector operator*(float other) const
 	{
-		Vector vec;
-		vec.x = x * other;
-		vec.y = y * other;
-		vec.z = z * other;
-		return vec;
+		return {
+			x * other,
+			y * other,
+			z * other
+		};
 	}
 
 	inline Vector operator/(float other) const
 	{
-		Vector vec;
-		vec.x = x / other;
-		vec.y = y / other;
-		vec.z = z / other;
-		return vec;
+		return {
+			x / other,
+			y / other,
+			z / other
+		};
 	}
 
 	[[nodiscard]] inline float HorizontalLengthSquared() const

@@ -4,7 +4,7 @@
 #include "../../../../../GUI/Elements/Popup.hpp"
 #include "../../../../../GUI/ImGuiColors.hpp"
 
-TextSetting::TextSetting()
+TextSettings::TextSettings()
 	: enabled(false)
 	, fontScale(1.0f)
 	, fontColor(ImGuiColors::white)
@@ -13,7 +13,7 @@ TextSetting::TextSetting()
 {
 }
 
-void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride) const
+void TextSettings::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride) const
 {
 	if (!enabled || !text)
 		return;
@@ -39,12 +39,12 @@ void TextSetting::Draw(ImDrawList* drawList, float x, float y, bool centered, co
 	ImGui::PopFont();
 }
 
-float TextSetting::GetLineHeight() const
+float TextSettings::GetLineHeight() const
 {
 	return ImGui::GetTextLineHeight() * fontScale;
 }
 
-void TextSetting::SetupGUI(const char* id)
+void TextSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -64,7 +64,7 @@ void TextSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-SCOPED_SERIALIZER(TextSetting)
+SCOPED_SERIALIZER(TextSettings)
 {
 	SERIALIZE("Enabled", enabled);
 	SERIALIZE("Font scale", fontScale);
