@@ -73,4 +73,6 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 
 	immune = *entity->GunGameImmunity();
 	walking = *entity->IsWalking();
+
+	headPos = entity->GetBonePosition(8);
 }

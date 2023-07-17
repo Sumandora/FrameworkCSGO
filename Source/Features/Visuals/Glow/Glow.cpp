@@ -67,12 +67,6 @@ void Glow::UpdateGlow()
 void Glow::SetupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
-	ImGui::Text("Visibility checks");
-	ImGui::SameLine();
-	if (ImGui::Popup("Visibility checker settings")) {
-		visibilityChecker.SetupGUI();
-		ImGui::EndPopup();
-	}
 
 	if (ImGui::BeginTabBar("#Config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Players")) {
@@ -94,7 +88,6 @@ void Glow::SetupGUI()
 SCOPED_SERIALIZER(Glow)
 {
 	SERIALIZE("Enabled", enabled);
-	SERIALIZE_STRUCT("Visibility checker", visibilityChecker);
 
 	SERIALIZE_STRUCT("Player settings", playerSettings);
 }

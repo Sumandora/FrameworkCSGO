@@ -3,9 +3,12 @@
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../GUI/Elements/Popup.hpp"
 
+#include "../../../../../Utils/Projection.hpp"
+
 #include "../../../../../Interfaces.hpp"
 
 #include "../../ESP.hpp"
+#include "imgui.h"
 
 #include <memory>
 #include <utility>
@@ -24,12 +27,13 @@ PlayerStateSettings::PlayerStateSettings()
 		std::make_shared<Ammo>(),
 		std::make_shared<Immune>(),
 		std::make_shared<Walking>() })
+	, headDotOffset({})
 {
 }
 
 bool PlayerStateSettings::IsEnabled() const
 {
-	return boxName.IsEnabled() || healthbar.enabled || weapon.enabled || flags.IsEnabled();
+	return boxName.IsEnabled() || healthbar.enabled || weapon.enabled || flags.IsEnabled() || headDot.enabled;
 }
 
 void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
@@ -60,6 +64,10 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 	}
 
 	flags.Draw(drawList, rectangle->z + boxName.box.GetLineWidth() / 2.0f, rectangle->y, player);
+
+	ImVec2 center2D;
+	if (Utils::Project(player.headPos + headDotOffset, center2D))
+		headDot.Draw(drawList, center2D);
 }
 
 void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
@@ -95,6 +103,17 @@ void PlayerStateSettings::SetupGUI(const char* id)
 	healthbar.SetupGUI("Healthbar");
 	weapon.SetupGUI("Weapon");
 	flags.SetupGUI("Flags");
+	headDot.SetupGUI("Head dot");
+
+	ImGui::Text("Head dot offset");
+	ImGui::SameLine();
+	if (ImGui::Popup("Head dot offset")) {
+		ImGui::DragFloat("Offset X", &headDotOffset.x, 0.1f);
+		ImGui::DragFloat("Offset Y", &headDotOffset.y, 0.1f);
+		ImGui::DragFloat("Offset Z", &headDotOffset.z, 0.1f);
+		ImGui::EndPopup();
+	}
+
 	ImGui::PopID();
 }
 
@@ -104,4 +123,6 @@ SCOPED_SERIALIZER(PlayerStateSettings)
 	SERIALIZE_STRUCT("Healthbar", healthbar);
 	SERIALIZE_STRUCT("Weapon", weapon);
 	SERIALIZE_STRUCT("Flags", flags);
+	SERIALIZE_STRUCT("Head dot", headDot);
+	SERIALIZE_VECTOR3D("Head dot offset", headDotOffset);
 }

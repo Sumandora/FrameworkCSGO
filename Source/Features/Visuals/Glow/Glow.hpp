@@ -23,7 +23,6 @@ public:
 	~Glow();
 
 	bool enabled = false;
-	VisibilityChecker visibilityChecker;
 
 	// This system could be combined with the esp structure system, however that would complicate many things, since this is not rendering elements
 

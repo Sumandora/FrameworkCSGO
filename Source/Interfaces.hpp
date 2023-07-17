@@ -7,8 +7,8 @@
 #include "SDK/GameClass/Interfaces/CGameMovement.hpp"
 #include "SDK/GameClass/Interfaces/CMaterialSystem.hpp"
 #include "SDK/GameClass/Interfaces/CPanoramaUIEngine.hpp"
+#include "SDK/GameClass/Interfaces/CPrediction.hpp"
 #include "SDK/GameClass/Interfaces/ICvar.hpp"
-#include "SDK/GameClass/Interfaces/IPrediction.hpp"
 
 namespace Interfaces {
 	inline void* baseClient;
@@ -16,7 +16,7 @@ namespace Interfaces {
 	inline CEngineClient* engine;
 	inline CEngineTrace* engineTrace;
 	inline ICvar* icvar;
-	inline IPrediction* prediction;
+	inline CPrediction* prediction;
 	inline CGameMovement* gameMovement;
 	inline CMaterialSystem* materialSystem;
 	inline void* engineRenderView;

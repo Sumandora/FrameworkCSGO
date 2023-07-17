@@ -80,7 +80,7 @@ void Interfaces::GetInterfaces()
 	entityList = GetInterface<CClientEntityList>(client_client, "VClientEntityList");
 	engineTrace = GetInterface<CEngineTrace>(engine_client, "EngineTraceClient");
 	icvar = GetInterface<ICvar>(materialsystem_client, "VEngineCvar");
-	prediction = GetInterface<IPrediction>(client_client, "VClientPrediction");
+	prediction = GetInterface<CPrediction>(client_client, "VClientPrediction");
 	gameMovement = GetInterface<CGameMovement>(client_client, "GameMovement");
 	materialSystem = GetInterface<CMaterialSystem>(materialsystem_client, "VMaterialSystem");
 	engineRenderView = GetInterface<void>(engine_client, "VEngineRenderView");

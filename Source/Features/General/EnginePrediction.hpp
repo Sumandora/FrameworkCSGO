@@ -18,11 +18,14 @@ public:
 
 	bool enabled = true;
 	bool forceResetVelocityModifier = false;
+	bool dontEmitSoundsDuringPrediction = true;
 
 	CMoveData moveData{};
 	int prePredictionFlags = 0;
 	MoveType prePredictionMoveType = MOVETYPE_NONE;
 	void ImGuiWarning();
+
+	bool EmitSound(int iEntIndex, const char* pSoundEntry);
 
 	void StartPrediction(CUserCmd* cmd);
 	void EndPrediction();

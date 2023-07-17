@@ -2,12 +2,12 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-bool BoxNameSetting::IsEnabled() const
+bool BoxNameSettings::IsEnabled() const
 {
 	return box.enabled || nametag.enabled;
 }
 
-void BoxNameSetting::Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const
+void BoxNameSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const
 {
 	if (!IsEnabled())
 		return;
@@ -16,7 +16,7 @@ void BoxNameSetting::Draw(ImDrawList* drawList, const ImVec4& rectangle, const c
 	nametag.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y - nametag.GetLineHeight(), true, text);
 }
 
-void BoxNameSetting::SetupGUI(const char* id)
+void BoxNameSettings::SetupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	box.SetupGUI("Box");
@@ -24,7 +24,7 @@ void BoxNameSetting::SetupGUI(const char* id)
 	ImGui::PopID();
 }
 
-SCOPED_SERIALIZER(BoxNameSetting)
+SCOPED_SERIALIZER(BoxNameSettings)
 {
 	SERIALIZE_STRUCT("Box", box);
 	SERIALIZE_STRUCT("Name", nametag);
