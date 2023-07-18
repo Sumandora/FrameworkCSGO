@@ -60,8 +60,17 @@ SCOPED_SERIALIZER(Input)
 	SERIALIZE_ENUM("Type", type);
 	bool hasKey = key.has_value();
 	SERIALIZE("Has key", hasKey);
-	if (hasKey)
-		SERIALIZE("Key", key.value());
+	if (hasKey) {
+		if (direction == Direction::SERIALIZE) {
+			SERIALIZE("Key", key.value());
+		} else if (direction == Direction::DESERIALIZE) {
+			// Account for the fact that during deserialization the key might not have a value
+			int key = 0;
+			SERIALIZE("Key", key);
+			this->key = key;
+		}
+	} else
+		key.reset();
 }
 
 IMGUI_API bool ImGui::InputSelector(const char* label, Input& input, const ImVec2& size)
