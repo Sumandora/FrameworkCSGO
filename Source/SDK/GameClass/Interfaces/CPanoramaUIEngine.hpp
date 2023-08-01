@@ -5,6 +5,9 @@
 
 class CPanoramaUIEngine {
 public:
+	PADDING(8);
+	CUIEngine* m_pUIEngine;
+
 	VIRTUAL_METHOD(11, AccessUIEngine, CUIEngine*, (), (this))
 };
 

@@ -93,7 +93,7 @@ void AutoStrafer::CreateMove(CUserCmd* cmd)
 		const float delta = std::remainderf(wishDirection - realDirection, 2.0f * M_PI);
 
 		float newDirection;
-		if (allowHardTurns && abs(delta) >= DEG2RAD(hardTurnThreshold))
+		if (allowHardTurns && std::abs(delta) >= DEG2RAD(hardTurnThreshold))
 			newDirection = realDirection + delta; // User wants to make a hard turn, don't smooth it, he might jump into the line of sight of an enemy
 		else {
 			newDirection = realDirection + (delta > 0.0 ? perfectDelta : -perfectDelta);

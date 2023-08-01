@@ -4,11 +4,13 @@
 #include "imgui.h"
 
 #include "../../../../Interfaces.hpp"
+
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <sys/mman.h>
+#include <unistd.h>
 
 void Gui::Windows::Panorama()
 {

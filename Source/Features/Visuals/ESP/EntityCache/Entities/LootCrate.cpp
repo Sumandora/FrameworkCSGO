@@ -26,4 +26,5 @@ void LootCrate::Update(CPhysPropLootCrate* entity, int index, const CBaseHandle&
 	}
 
 	type = LootCrateType::INVALID;
+	__asm("int3");
 }

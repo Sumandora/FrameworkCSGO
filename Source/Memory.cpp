@@ -25,7 +25,7 @@ void Memory::Create()
 {
 	// Set the address for the return address spoofer
 	RetAddrSpoofer::leaveRet = BCRL::Session::ArrayPointer(Interfaces::baseClient, 0) // random code piece
-								   .NextByteOccurence("c9 c3")
+								   .NextByteOccurence("c9 c3", true)
 								   .Pointer()
 								   .value();
 
