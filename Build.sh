@@ -10,22 +10,9 @@ error () {
 	exit 1
 }
 
-log_and_check() {
-    tmpfile=$(mktemp)
-    if "$@" 2>&1 | tee -a "$tmpfile"; then
-        cat "$tmpfile" >> /tmp/build.log
-    else
-        cat "$tmpfile" >> /tmp/build.log
-        rm "$tmpfile"
-        error
-    fi
-    rm "$tmpfile"
-}
-
 echo "Building..."
 echo "This can take up to a couple minutes on slow hardware"
 
-rm -f /tmp/build.log
 rm -rf Build
 mkdir Build
 
@@ -33,9 +20,9 @@ mkdir Build
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
-LANG=en log_and_check cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS"
-LANG=en log_and_check cmake --build Build -j $(nproc)
+LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS"
+LANG=en cmake --build Build -j $(nproc)
 
-log_and_check strip -x -s Build/lib$(cat ProjectName).so
+strip -x -s Build/lib$(cat ProjectName).so
 
 echo "The ELF-Binary has been built in the \"Build\"-directory"
