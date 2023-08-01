@@ -34,7 +34,7 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
-          submodules: true
+          submodules: recursive
 
       - name: Build
         run: MAKEOPTS="-j$(nproc)" ./Build.sh
