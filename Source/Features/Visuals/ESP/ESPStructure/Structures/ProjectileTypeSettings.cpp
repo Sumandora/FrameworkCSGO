@@ -43,9 +43,6 @@ ProjectileSettings& ProjectileTypeSettings::GetSettings(ProjectileType type) con
 		return flashbang;
 	case ProjectileType::INVALID:
 	default:
-		// Something did go horribly wrong
-		eventLog.CreateReport("Invalid projectile found?");
-		__asm("int3");
 		__builtin_unreachable();
 	}
 }

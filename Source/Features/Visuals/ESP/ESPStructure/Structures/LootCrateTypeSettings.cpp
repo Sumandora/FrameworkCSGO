@@ -38,9 +38,6 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 		return randomDrop;
 	case LootCrateType::INVALID:
 	default:
-		// Something did go horribly wrong
-		eventLog.CreateReport("Invalid loot crate found?");
-		__asm("int3");
 		__builtin_unreachable();
 	}
 }

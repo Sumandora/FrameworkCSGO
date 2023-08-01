@@ -25,6 +25,8 @@ void Projectile::Update(CBaseGrenade* entity, int index, const CBaseHandle& hand
 			type = ProjectileType::HIGH_EXPLOSIVE_GRENADE;
 	} else if (projectileMap.contains(clientClass->m_ClassID)) {
 		type = projectileMap[clientClass->m_ClassID];
-	} else
+	} else {
 		type = ProjectileType::INVALID;
+		__asm("int3");
+	}
 }

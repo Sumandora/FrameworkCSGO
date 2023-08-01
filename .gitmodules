@@ -10,6 +10,7 @@
 [submodule "Dependencies/ReturnAddressSpoofer"]
 	path = Dependencies/ReturnAddressSpoofer
 	url = https://github.com/Sumandora/ReturnAddressSpoofer.git
+	branch = object-file-rewriter
 [submodule "Dependencies/SignatureScanner"]
 	path = Dependencies/SignatureScanner
 	url = https://github.com/Sumandora/SignatureScanner.git
