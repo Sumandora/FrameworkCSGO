@@ -75,7 +75,7 @@ file(GLOB LDE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/length-disassembler
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${LDE_SOURCE_FILES})
 
 # Setup DetourHooking
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/DetourHooking/include)
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/DetourHooking/Include)
 file(GLOB DETOURHOOKING_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/DetourHooking/Source/*.cpp")
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${DETOURHOOKING_SOURCE_FILES})
 
