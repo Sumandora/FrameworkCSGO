@@ -12,7 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
-option(MENUPREVIEW "Builds a executable which previews the menu" OFF)
+option(MENUPREVIEW "Builds an executable which previews the menu" OFF)
 if (MENUPREVIEW)
     list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/Main.cpp")
     add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
@@ -22,7 +22,7 @@ else ()
 endif ()
 target_link_libraries(${CMAKE_PROJECT_NAME} dl SDL2 GL)
 
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fno-rtti" "-march=native")
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fno-rtti" "-ffunction-sections" "-march=native")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wall" "-ggdb" "-DDEBUG")
@@ -32,13 +32,13 @@ else()
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fimplicit-constexpr" "-ffunction-sections" "--no-gnu-unique")
+	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fimplicit-constexpr" "--no-gnu-unique")
     if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 		target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fdata-sections" "-s")
 		target_link_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wl,--gc-sections")
     endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wno-unknown-attributes")
+    target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wno-unknown-attributes" "-Wno-unused-private-field" "-stdlib=libc++")
 endif ()
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PROJECT_NAME="${CMAKE_PROJECT_NAME}")
