@@ -4,6 +4,10 @@ Build-Debug/
 build.log
 gdb.log
 
+# CMake
+CMakeFiles/
+CMakeCache.txt
+
 # CLion
 .idea/
 # This folder is being created to house CLion internal CMake data
