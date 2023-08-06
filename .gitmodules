@@ -3,7 +3,7 @@
 	url = https://github.com/ocornut/imgui.git
 [submodule "Dependencies/length-disassembler"]
 	path = Dependencies/length-disassembler
-	url = https://github.com/Nomade040/length-disassembler.git
+	url = https://github.com/Jovvik/length-disassembler.git
 [submodule "Dependencies/DetourHooking"]
 	path = Dependencies/DetourHooking
 	url = https://github.com/Sumandora/DetourHooking.git

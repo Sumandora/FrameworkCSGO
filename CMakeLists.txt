@@ -20,7 +20,7 @@ else ()
     list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/MenuPreview.cpp") # No need for this file if we aren't previewing the menu
     add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCE_FILES})
 endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} dl SDL2 GL)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dl SDL2 GL)
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fno-rtti" "-ffunction-sections" "-march=native")
 
@@ -70,18 +70,16 @@ target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${IMGUI_SOURCE_FILES})
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/SimpleJSON)
 
 # Setup length-disassembler
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/length-disassembler)
-file(GLOB LDE_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/length-disassembler/*.cpp")
-target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${LDE_SOURCE_FILES})
+add_subdirectory("Dependencies/length-disassembler")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE length-disassembler)
 
 # Setup DetourHooking
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/DetourHooking/Include)
-file(GLOB DETOURHOOKING_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/DetourHooking/Source/*.cpp")
-target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${DETOURHOOKING_SOURCE_FILES})
+add_subdirectory("Dependencies/DetourHooking")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
 
 # Setup ReturnAddressSpoofer
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC "Dependencies/ReturnAddressSpoofer/Include")
-add_subdirectory("Dependencies/ReturnAddressSpoofer/ObjectFileRewriter")
+add_subdirectory("Dependencies/ReturnAddressSpoofer")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ReturnAddressSpoofer)
 add_custom_command(
 	TARGET ${CMAKE_PROJECT_NAME} PRE_LINK
 	COMMAND "$<TARGET_FILE:ObjectFileRewriter>" "${CMAKE_BINARY_DIR}/CMakeFiles/${CMAKE_PROJECT_NAME}.dir"
@@ -89,20 +87,17 @@ add_custom_command(
 )
 
 # Setup SignatureScanner
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/SignatureScanner/include)
-file(GLOB_RECURSE SIGNATURESCANNER_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/SignatureScanner/Source/*.cpp")
-target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${SIGNATURESCANNER_SOURCE_FILES})
+add_subdirectory("Dependencies/SignatureScanner")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SignatureScanner)
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_IDA_SEARCH)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_STRING_SEARCH)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_XREF_SEARCH)
 
 # Setup HideSharedObject
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/HideSharedObject/include)
-file(GLOB HIDESHAREDOBJECT_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/HideSharedObject/Source/*.cpp")
-target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${HIDESHAREDOBJECT_SOURCE_FILES})
+add_subdirectory("Dependencies/HideSharedObject")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
 
 # Setup bcrl
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/bcrl/Include)
-file(GLOB_RECURSE BCRL_SOURCE_FILES "${CMAKE_SOURCE_DIR}/Dependencies/bcrl/Source/*.cpp")
-target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${BCRL_SOURCE_FILES})
+add_subdirectory("Dependencies/bcrl")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
