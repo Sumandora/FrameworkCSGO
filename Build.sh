@@ -20,9 +20,9 @@ mkdir Build
 # I don't wanna sit there with a russian to english translation,
 # trying to solve some compilation bug >:(
 # Also allow other compilers (e.g. clang) to be used
-LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS"
-LANG=en cmake --build Build -j $(nproc)
+LANG=en cmake -B Build -D CMAKE_BUILD_TYPE=Release -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS" || error
+LANG=en cmake --build Build -j $(nproc) || error
 
-strip -x -s Build/lib$(cat ProjectName).so
+strip -x -s Build/lib$(cat ProjectName).so || error
 
 echo "The ELF-Binary has been built in the \"Build\"-directory"

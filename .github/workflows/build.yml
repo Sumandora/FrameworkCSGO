@@ -37,7 +37,7 @@ jobs:
           submodules: recursive
 
       - name: Build
-        run: MAKEOPTS="-j$(nproc)" ./Build.sh
+        run: ./Build.sh
 
       - name: Distro name for artifact
         if: always()
@@ -62,4 +62,3 @@ jobs:
           name: ${{ steps.distro_name.outputs.name }}
           path: |
             Build/*.so
-            /tmp/build.log
