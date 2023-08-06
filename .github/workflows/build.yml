@@ -43,11 +43,11 @@ jobs:
 
       - if: matrix.distro == 'ubuntu:latest' || matrix.distro == 'dockerscripts/linuxmint:mate'
         name: Build
-        run: CC=gcc-12 CXX=g++-12 MAKEOPTS="-j$(nproc)" ./Build.sh
+        run: CC=gcc-12 CXX=g++-12 ./Build.sh
 
       - if: "!(matrix.distro == 'ubuntu:latest' || matrix.distro == 'dockerscripts/linuxmint:mate')"
         name: Build
-        run: MAKEOPTS="-j$(nproc)" ./Build.sh
+        run: ./Build.sh
 
       - name: Distro name for artifact
         if: always()
@@ -72,4 +72,3 @@ jobs:
           name: ${{ steps.distro_name.outputs.name }}
           path: |
             Build/*.so
-            /tmp/build.log

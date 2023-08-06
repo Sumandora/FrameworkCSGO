@@ -17,7 +17,7 @@ public:
 	}
 
 	CUtlMemory<Type> m_Memory;
-	int m_Size;
+	int m_Size = 0;
 	Type* m_pElements;
 };
 
