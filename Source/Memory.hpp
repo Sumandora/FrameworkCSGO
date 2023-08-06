@@ -1,7 +1,9 @@
 #ifndef MEMORY
 #define MEMORY
 
+#include "SDK/CUtl/Vector.hpp"
 #include "SDK/GameClass/CGlobalVars.hpp"
+#include <vector>
 class IMoveHelper;
 class CBasePlayer;
 class CGlowObjectManager;
