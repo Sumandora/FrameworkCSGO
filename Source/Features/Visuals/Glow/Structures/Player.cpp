@@ -5,7 +5,7 @@ bool Glow::Player::Apply(int entindex, CBasePlayer* player)
 	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
 	if (player == localPlayer)
 		return local.Apply(entindex, player);
-	else if (player->IsEnemy(localPlayer))
+	else if (!player->IsEnemy(localPlayer))
 		return teammate.Apply(entindex, player);
 	else
 		return enemy.Apply(entindex, player);
