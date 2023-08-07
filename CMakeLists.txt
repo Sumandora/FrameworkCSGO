@@ -10,6 +10,10 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_SKIP_RPATH ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_POLICY_DEFAULT_CMP0002 OLD)
+cmake_policy(SET CMP0002 OLD)
+set(ALLOW_DUPLICATE_CUSTOM_TARGETS TRUE)
+
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
 option(MENUPREVIEW "Builds an executable which previews the menu" OFF)
@@ -67,15 +71,11 @@ endif ()
 target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${IMGUI_SOURCE_FILES})
 
 # Setup SimpleJSON
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC Dependencies/SimpleJSON)
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE Dependencies/SimpleJSON)
 
-# Setup length-disassembler
-add_subdirectory("Dependencies/length-disassembler")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE length-disassembler)
-
-# Setup DetourHooking
-add_subdirectory("Dependencies/DetourHooking")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
+# Setup HideSharedObject
+add_subdirectory("Dependencies/HideSharedObject")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
 
 # Setup ReturnAddressSpoofer
 add_subdirectory("Dependencies/ReturnAddressSpoofer")
@@ -86,18 +86,28 @@ add_custom_command(
 	DEPENDS ObjectFileRewriter
 )
 
-# Setup SignatureScanner
-add_subdirectory("Dependencies/SignatureScanner")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SignatureScanner)
-
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_IDA_SEARCH)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_STRING_SEARCH)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_XREF_SEARCH)
 
-# Setup HideSharedObject
-add_subdirectory("Dependencies/HideSharedObject")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
-
 # Setup bcrl
 add_subdirectory("Dependencies/bcrl")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
+
+# Setup length-disassembler
+if (NOT (TARGET length-disassembler))
+    add_subdirectory("Dependencies/length-disassembler")
+endif ()
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE length-disassembler)
+
+# Setup DetourHooking
+if (NOT (TARGET DetourHooking))
+    add_subdirectory("Dependencies/DetourHooking")
+endif ()
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
+
+# Setup SignatureScanner
+if (NOT (TARGET SignatureScanner))
+    add_subdirectory("Dependencies/SignatureScanner")
+endif ()
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SignatureScanner)
