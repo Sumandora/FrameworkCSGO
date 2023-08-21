@@ -12,7 +12,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
-void Gui::Windows::Panorama()
+void Gui::Windows::panorama()
 {
 	if (ImGui::BeginTabBar("#Panorama debug tabs", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Panels")) {

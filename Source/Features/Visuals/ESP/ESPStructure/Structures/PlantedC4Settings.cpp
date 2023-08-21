@@ -13,28 +13,28 @@ PlantedC4Settings::PlantedC4Settings()
 {
 }
 
-bool PlantedC4Settings::IsEnabled() const
+bool PlantedC4Settings::isEnabled() const
 {
-	return boxName.IsEnabled() || timer.enabled || defuseTimer.enabled;
+	return boxName.isEnabled() || timer.enabled || defuseTimer.enabled;
 }
 
-std::string FloatToString(float num, int accuracy)
+static std::string FloatToString(float num, int accuracy)
 {
 	std::stringstream stream;
 	stream << std::fixed << std::setprecision(accuracy) << num;
 	return stream.str();
 }
 
-void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
+void PlantedC4Settings::draw(ImDrawList* drawList, PlantedC4& bomb) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = bomb.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = bomb.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), "Planted C4");
+	boxName.draw(drawList, rectangle.value(), "Planted C4");
 
 	if (!bomb.defused && bomb.bombTicking) { // TODO Ask GameRules if the bomb is actually planted
 		if (bomb.bombTime < Memory::globalVars->curtime)
@@ -51,9 +51,9 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 				color = defuseImpossible;
 		}
 
-		timer.Draw(drawList, middle, rectangle->w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
+		timer.draw(drawList, middle, rectangle->w, true, FloatToString(defusableCountDown, accuracy).c_str(), color);
 
-		if (EntityCache::PlayerByHandle(bomb.defuser)) {
+		if (EntityCache::playerByHandle(bomb.defuser)) {
 			const float defuseCountDown = bomb.defuseCountDown - Memory::globalVars->curtime;
 			if (defuseCountDown < 0)
 				return; // We are done defusing, no point in showing this anymore
@@ -61,19 +61,19 @@ void PlantedC4Settings::Draw(ImDrawList* drawList, PlantedC4& bomb) const
 			float y = rectangle->w;
 
 			if (timer.enabled)
-				y += timer.GetLineHeight();
+				y += timer.getLineHeight();
 
-			defuseTimer.Draw(drawList, middle, y, true, FloatToString(defuseCountDown, accuracy).c_str(), defuseCountDown > defusableCountDown ? std::optional<ImColor>(defuseImpossible) : std::nullopt);
+			defuseTimer.draw(drawList, middle, y, true, FloatToString(defuseCountDown, accuracy).c_str(), defuseCountDown > defusableCountDown ? std::optional<ImColor>(defuseImpossible) : std::nullopt);
 		}
 	}
 }
 
-void PlantedC4Settings::SetupGUI(const char* id)
+void PlantedC4Settings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	timer.SetupGUI("Timer");
-	defuseTimer.SetupGUI("Defuse timer");
+	boxName.setupGUI(id);
+	timer.setupGUI("Timer");
+	defuseTimer.setupGUI("Defuse timer");
 
 	if (timer.enabled) {
 		ImGui::Checkbox("Override defuse color", &overrideDefuseColor);

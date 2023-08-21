@@ -2,17 +2,17 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-bool WeaponSettings::IsEnabled() const
+bool WeaponSettings::isEnabled() const
 {
-	return boxName.IsEnabled() || ammo.enabled;
+	return boxName.isEnabled() || ammo.enabled;
 }
 
-void WeaponSettings::Draw(ImDrawList* drawList, Weapon& weapon) const
+void WeaponSettings::draw(ImDrawList* drawList, Weapon& weapon) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = weapon.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = weapon.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
@@ -21,21 +21,21 @@ void WeaponSettings::Draw(ImDrawList* drawList, Weapon& weapon) const
 		weaponName = LocalizeWeaponID(weapon.weaponID);
 	}
 
-	boxName.Draw(drawList, rectangle.value(), weaponName);
+	boxName.draw(drawList, rectangle.value(), weaponName);
 
 	const int ammoClip = weapon.ammo;
 	if (ammoClip != -1) { // Does this weapon even have an ammo capacity? (Knifes, Bombs etc...)
 		char buf[32];
 		sprintf(buf, "%d/%d", ammoClip, weapon.reserveAmmoCount);
-		ammo.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, buf);
+		ammo.draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, buf);
 	}
 }
 
-void WeaponSettings::SetupGUI(const char* id)
+void WeaponSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	ammo.SetupGUI("Ammo");
+	boxName.setupGUI(id);
+	ammo.setupGUI("Ammo");
 	ImGui::PopID();
 }
 

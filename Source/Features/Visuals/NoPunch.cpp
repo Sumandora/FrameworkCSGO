@@ -7,12 +7,12 @@
 static Vector lastViewPunch;
 static Vector lastAimPunch;
 
-void NoPunch::HidePunch()
+void NoPunch::hidePunch() const
 {
 	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -26,12 +26,12 @@ void NoPunch::HidePunch()
 	lastAimPunch = *localPlayer->AimPunchAngle();
 }
 
-void NoPunch::RestorePunch()
+void NoPunch::restorePunch() const
 {
 	if ((!hideViewPunch && !hideAimPunch) || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -42,7 +42,7 @@ void NoPunch::RestorePunch()
 		*localPlayer->AimPunchAngle() = lastAimPunch;
 }
 
-void NoPunch::SetupGUI()
+void NoPunch::setupGUI()
 {
 	ImGui::Checkbox("Hide view punch", &hideViewPunch);
 	ImGui::Checkbox("Hide aim punch", &hideAimPunch);

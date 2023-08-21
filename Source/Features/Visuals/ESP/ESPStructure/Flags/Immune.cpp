@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> Immune::GetText(const Player& player) const
+std::optional<std::string> Immune::getText(const Player& player) const
 {
 	if (player.immune)
 		return "Immune";

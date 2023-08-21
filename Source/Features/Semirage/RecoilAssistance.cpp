@@ -6,7 +6,7 @@
 
 static Vector lastAimPunch;
 
-bool RecoilAssistance::CreateMove(CUserCmd* cmd)
+bool RecoilAssistance::createMove(CUserCmd* cmd)
 {
 	if (!enabled || !(cmd->buttons & IN_ATTACK)) {
 		return false;
@@ -15,7 +15,7 @@ bool RecoilAssistance::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return false;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return false;
 
@@ -44,7 +44,7 @@ bool RecoilAssistance::CreateMove(CUserCmd* cmd)
 	return silent;
 }
 
-void RecoilAssistance::SetupGUI()
+void RecoilAssistance::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SliderFloat("Horizontal adjustment", &horizontalAdjustment, 0.0f, 1.0f);

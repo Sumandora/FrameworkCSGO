@@ -8,7 +8,7 @@
 #include "../../../../SDK/GameClass/CGlowObjectManager.hpp"
 #include <cstring>
 
-bool Glow::GlowSettings::Apply(int entindex, CBaseEntity* entity)
+bool Glow::GlowSettings::apply(int entindex, CBaseEntity* entity) const
 {
 	if (!enabled)
 		return false;
@@ -39,18 +39,18 @@ bool Glow::GlowSettings::Apply(int entindex, CBaseEntity* entity)
 	return true;
 }
 
-void Glow::GlowSettings::SetupGUI()
+void Glow::GlowSettings::setupGUI()
 {
 	if (ImGui::Popup("Copy from", "Copy from")) {
 		if (ImGui::BeginMenu("Players")) {
 			if (ImGui::Selectable("Teammate")) {
-				*this = glow.playerSettings.teammate;
+				*this = glow.players.teammate;
 			}
 			if (ImGui::Selectable("Enemy")) {
-				*this = glow.playerSettings.enemy;
+				*this = glow.players.enemy;
 			}
 			if (ImGui::Selectable("Local")) {
-				*this = glow.playerSettings.local;
+				*this = glow.players.local;
 			}
 			ImGui::EndMenu();
 		}

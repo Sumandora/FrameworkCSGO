@@ -13,7 +13,7 @@ TextSettings::TextSettings()
 {
 }
 
-void TextSettings::Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride) const
+void TextSettings::draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride) const
 {
 	if (!enabled || !text)
 		return;
@@ -39,12 +39,12 @@ void TextSettings::Draw(ImDrawList* drawList, float x, float y, bool centered, c
 	ImGui::PopFont();
 }
 
-float TextSettings::GetLineHeight() const
+float TextSettings::getLineHeight() const
 {
 	return ImGui::GetTextLineHeight() * fontScale;
 }
 
-void TextSettings::SetupGUI(const char* id)
+void TextSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);

@@ -24,7 +24,7 @@ public:
 		float smoothness = 4.0f;
 		int maximalInfluence = 1;
 
-		virtual void SetupGUI() override;
+		virtual void setupGUI() override;
 		virtual SERIALIZER() override;
 	};
 
@@ -34,9 +34,9 @@ public:
 	bool dontAimThroughSmoke = true;
 	bool friendlyFire = false;
 
-	void PollEvent(SDL_Event* event);
+	void pollEvent(SDL_Event* event);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } legitAimbot;
 

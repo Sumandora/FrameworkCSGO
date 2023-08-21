@@ -4,10 +4,10 @@
 #include <string>
 
 namespace Serialization {
-	std::string GetConfigDirectory();
+	std::string getConfigDirectory();
 
-	bool Load(std::string filename);
-	bool Save(std::string filename);
+	bool load(std::string filename);
+	bool save(std::string filename);
 }
 
 #endif

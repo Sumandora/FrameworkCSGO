@@ -1,8 +1,8 @@
 #include "../EntityCache.hpp"
 
-void Weapon::Update(CBaseCombatWeapon* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
+void Weapon::update(CBaseCombatWeapon* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
-	Entity::Update(entity, index, handle, clientClass);
+	Entity::update(entity, index, handle, clientClass);
 
 	weaponID = *entity->WeaponDefinitionIndex();
 	ammo = *entity->Ammo();

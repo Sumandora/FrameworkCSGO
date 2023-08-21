@@ -2,11 +2,11 @@
 
 #include "../../../Features/Visuals/FOV.hpp"
 
-void Hooks::Game::OverrideView::HookFunc(void* thisptr, CViewSetup* pSetup)
+void Hooks::Game::OverrideView::hookFunc(void* thisptr, CViewSetup* pSetup)
 {
-	InvokeFunction<void, void*, CViewSetup*>(hook->proxy, thisptr, pSetup);
+	invokeFunction<void, void*, CViewSetup*>(hook->proxy, thisptr, pSetup);
 
-	fov.OverrideView(pSetup);
+	fov.overrideView(pSetup);
 
 	lastViewSetup = *pSetup;
 }

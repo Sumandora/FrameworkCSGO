@@ -8,7 +8,7 @@
 #include <cstring>
 #include <string>
 
-static std::string FormatVote(int vote)
+static std::string formatVote(int vote)
 {
 	switch (vote) {
 	case 0:
@@ -20,7 +20,7 @@ static std::string FormatVote(int vote)
 	}
 }
 
-void VoteRevealer::FireEvent(CGameEvent* gameEvent)
+void VoteRevealer::fireEvent(CGameEvent* gameEvent)
 {
 	if (strcmp(gameEvent->GetName(), "vote_cast") != 0)
 		return;
@@ -29,10 +29,10 @@ void VoteRevealer::FireEvent(CGameEvent* gameEvent)
 	if (!Interfaces::engine->GetPlayerInfo(gameEvent->GetInt("entityid"), &info))
 		return; // Weird?
 
-	eventLog.CreateReport("%s voted %s", info.name, FormatVote(gameEvent->GetInt("vote_option")).c_str());
+	eventLog.createReport("%s voted %s", info.name, formatVote(gameEvent->GetInt("vote_option")).c_str());
 }
 
-void VoteRevealer::SetupGUI()
+void VoteRevealer::setupGUI()
 {
 	ImGui::Checkbox("Reveal voters", &revealVoters);
 }

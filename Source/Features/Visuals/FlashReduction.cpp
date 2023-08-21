@@ -8,7 +8,7 @@
 
 // TODO Render a progress bar into the overlay which shows the serverside flash amount
 
-bool FlashReduction::ViewDrawFade(std::byte* color, IMaterial*& pFadeMaterial)
+bool FlashReduction::viewDrawFade(std::byte* color, IMaterial*& pFadeMaterial) const
 {
 	if (!enabled)
 		return false;
@@ -31,7 +31,7 @@ bool FlashReduction::ViewDrawFade(std::byte* color, IMaterial*& pFadeMaterial)
 	return false;
 }
 
-void FlashReduction::SetupGUI()
+void FlashReduction::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::Checkbox("Clear flashbang", &clearFlashbang);

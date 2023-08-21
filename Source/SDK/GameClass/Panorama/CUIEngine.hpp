@@ -45,7 +45,7 @@ public:
 	}
 
 	// https://github.com/LWSS/McDota/blob/5d577e41a3ce31202f40c0afac5426a0ac7f59c9/src/GUI/Gui.cpp#L32C42-L33C39
-	inline void ForEachPanel(std::function<void(CUIPanel*)> callback)
+	inline void ForEachPanel(const std::function<void(CUIPanel*)>& callback)
 	{
 #ifdef DEBUG
 		for (int i = 0; i < 4096; i++) {

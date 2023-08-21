@@ -7,7 +7,7 @@
 
 // TODO Don't show reserve ammo count
 
-std::optional<std::string> Ammo::GetText(const Player& player) const
+std::optional<std::string> Ammo::getText(const Player& player) const
 {
 	const int ammoClip = player.ammo;
 	if (ammoClip != -1) { // Does this weapon even have an ammo capacity? (Knifes, Bombs etc...)

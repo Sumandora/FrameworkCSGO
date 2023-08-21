@@ -30,7 +30,7 @@
 
 bool Gui::visible = true;
 
-void Gui::Create()
+void Gui::create()
 {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -39,14 +39,14 @@ void Gui::Create()
 	io.LogFilename = nullptr;
 }
 
-void Gui::Destroy()
+void Gui::destroy()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 }
 
-void Gui::SwapWindow(SDL_Window* window)
+void Gui::swapWindow(SDL_Window* window)
 {
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -102,22 +102,22 @@ void Gui::SwapWindow(SDL_Window* window)
 	ImGui::NewFrame();
 
 	for (Input* input : inputs)
-		input->UpdateState();
+		input->updateState();
 
-	menu.ImGuiLoop(); // Will take care of the menu key
+	menu.imGuiLoop(); // Will take care of the menu key
 
 	if (visible) {
-		Build();
+		build();
 	}
 
-	watermark.ImGuiRender(ImGui::GetBackgroundDrawList());
-	eventLog.ImGuiRender(ImGui::GetBackgroundDrawList());
+	watermark.imGuiRender(ImGui::GetBackgroundDrawList());
+	eventLog.imGuiRender(ImGui::GetBackgroundDrawList());
 
-	semirageAimbot.ImGuiRender(ImGui::GetBackgroundDrawList());
-	backtrack.ImGuiRender(ImGui::GetBackgroundDrawList());
+	semirageAimbot.imGuiRender(ImGui::GetBackgroundDrawList());
+	backtrack.imGuiRender(ImGui::GetBackgroundDrawList());
 
-	esp.ImGuiRender(ImGui::GetBackgroundDrawList());
-	spectatorList.ImGuiRender(ImGui::GetBackgroundDrawList());
+	esp.imGuiRender(ImGui::GetBackgroundDrawList());
+	spectatorList.imGuiRender(ImGui::GetBackgroundDrawList());
 
 	io.MouseDrawCursor = visible;
 	io.WantCaptureMouse = visible;
@@ -130,7 +130,7 @@ void Gui::SwapWindow(SDL_Window* window)
 // I don't even want to know why I have to do this
 static Uint32 lastTextInput;
 
-bool Gui::PollEvent(SDL_Event* event)
+bool Gui::pollEvent(SDL_Event* event)
 {
 	if (event->type == SDL_TEXTINPUT && lastTextInput >= event->text.timestamp)
 		return visible;
@@ -157,7 +157,7 @@ bool Gui::PollEvent(SDL_Event* event)
 	return visible;
 }
 
-bool Gui::WarpMouseInWindow()
+bool Gui::warpMouseInWindow()
 {
 	// lol no
 	return visible;

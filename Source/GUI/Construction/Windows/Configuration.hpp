@@ -2,7 +2,7 @@
 #define GUI_CONSTRUCTION_WINDOWS_CONFIGURATION
 
 namespace Gui::Windows {
-	void Configuration();
+	void configuration();
 }
 
 #endif

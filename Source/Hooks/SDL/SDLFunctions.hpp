@@ -12,29 +12,29 @@ namespace Hooks::SDL {
 	namespace SwapWindow {
 		inline SDLHook* hook;
 
-		void HookFunc(SDL_Window* window);
+		void hookFunc(SDL_Window* window);
 	}
 
 	namespace PollEvent {
 		inline SDLHook* hook;
 
-		int HookFunc(SDL_Event* event);
+		int hookFunc(SDL_Event* event);
 	}
 
 	namespace WarpMouseInWindow {
 		inline SDLHook* hook;
 
-		void HookFunc(SDL_Window* window, int x, int y);
+		void hookFunc(SDL_Window* window, int x, int y);
 	}
 
 	namespace DestroyWindow {
 		inline SDLHook* hook;
 
-		void HookFunc(SDL_Window* window);
+		void hookFunc(SDL_Window* window);
 	}
 
-	void Hook();
-	void Unhook();
+	void hook();
+	void unhook();
 }
 
 #endif

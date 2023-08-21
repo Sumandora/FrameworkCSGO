@@ -14,7 +14,7 @@ enum class Direction {
 	DESERIALIZE
 };
 
-constexpr void Assign(auto& variable, json::JSON& jsonType)
+constexpr void assign(auto& variable, json::JSON& jsonType)
 {
 	if constexpr (std::is_same_v<std::remove_cvref_t<decltype(variable)>, bool>)
 		variable = jsonType.ToBool();
@@ -34,7 +34,7 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 			json[name] = variable;                    \
 		else if (direction == Direction::DESERIALIZE) \
 			if (json.hasKey(name))                    \
-				Assign(variable, json[name]);         \
+				assign(variable, json[name]);         \
 	} while (0)
 
 // Vector serialization sadly requires me to access x,y,z,w variables, because of ImGui
@@ -90,12 +90,12 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 	do {                                                                    \
 		if (direction == Direction::SERIALIZE) {                            \
 			json::JSON inner = json::JSON::Make(json::JSON::Class::Object); \
-			struct.Serialize(inner, direction);                             \
+			struct.serialize(inner, direction);                             \
 			json[name] = inner;                                             \
 		} else if (direction == Direction::DESERIALIZE) {                   \
 			if (!json.hasKey(name))                                         \
 				break;                                                      \
-			struct.Serialize(json[name], direction);                        \
+			struct.serialize(json[name], direction);                        \
 		}                                                                   \
 	} while (0)
 
@@ -107,9 +107,9 @@ constexpr void Assign(auto& variable, json::JSON& jsonType)
 	} while (0)
 
 #define SERIALIZER() \
-	void Serialize(json::JSON& json, Direction direction)
+	void serialize(json::JSON& json, Direction direction)
 
 #define SCOPED_SERIALIZER(scope) \
-	void scope::Serialize(json::JSON& json, Direction direction)
+	void scope::serialize(json::JSON& json, Direction direction)
 
 #endif

@@ -9,15 +9,15 @@
 
 #include "../../GUI/Elements/Keybind.hpp"
 
-void Triggerbot::CreateMove(CUserCmd* cmd)
+void Triggerbot::createMove(CUserCmd* cmd)
 {
-	if (!enabled || (input.IsSet() && !input.IsActive()))
+	if (!enabled || (input.isSet() && !input.isActive()))
 		return;
 
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -43,15 +43,15 @@ void Triggerbot::CreateMove(CUserCmd* cmd)
 	viewangles += *localPlayer->AimPunchAngle();
 
 	Vector forward;
-	Utils::AngleVectors(viewangles, &forward);
+	Utils::angleVectors(viewangles, &forward);
 
 	forward = playerEye + (forward * 4096.0f);
 
 	CTraceFilterEntity filter(localPlayer);
 
-	const Trace trace = Utils::TraceRay(playerEye, forward, &filter);
+	const Trace trace = Utils::traceRay(playerEye, forward, &filter);
 
-	if (dontShootThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1))
+	if (dontShootThroughSmoke && Memory::lineGoesThroughSmoke(playerEye, trace.endpos, 1))
 		return;
 
 	CBaseEntity* entity = trace.m_pEnt;
@@ -76,7 +76,7 @@ void Triggerbot::CreateMove(CUserCmd* cmd)
 		cmd->buttons |= IN_ATTACK;
 }
 
-void Triggerbot::SetupGUI()
+void Triggerbot::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::InputSelector("Input (%s)", input);

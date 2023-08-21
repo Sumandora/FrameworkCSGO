@@ -22,10 +22,10 @@ public:
 	ImColor otherTargetColor = ImGuiColors::white;
 	ImColor sameTargetColor = ImGuiColors::red;
 
-	void Update();
-	void ImGuiRender(ImDrawList* drawList);
+	void update() const;
+	void imGuiRender(ImDrawList* drawList) const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } spectatorList;
 

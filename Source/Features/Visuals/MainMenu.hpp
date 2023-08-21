@@ -33,12 +33,12 @@ public:
 	};
 
 private:
-	void UpdateVisiblityNow();
+	void updateVisiblityNow() const;
 
 public:
-	void UpdateVisibility();
+	void updateVisibility() const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } mainMenu;
 

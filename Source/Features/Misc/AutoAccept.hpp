@@ -15,9 +15,9 @@ public:
 	bool sendSystemNotification = false;
 	bool autoAccept = false;
 
-	void EmitSound(const char* soundEntry);
+	void emitSound(const char* soundEntry) const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } autoAccept;
 

@@ -6,12 +6,12 @@
 #include <cstdlib>
 #include <optional>
 
-bool Input::IsActive()
+bool Input::isActive() const
 {
 	return active;
 }
 
-void Input::UpdateState()
+void Input::updateState()
 {
 	if ((Gui::visible && !menuKey) || !key.has_value()) {
 		active = false;
@@ -51,7 +51,7 @@ void Input::UpdateState()
 	}
 	}
 	if (active != prevActive)
-		OnChange();
+		onChange();
 }
 
 SCOPED_SERIALIZER(Input)
@@ -92,10 +92,10 @@ IMGUI_API bool ImGui::InputSelector(const char* label, Input& input, const ImVec
 					newKey = std::nullopt; // Unset
 				else
 					newKey = imguikey;
-				if (input.IsAllowed(Input::Method::KEY, input.type, newKey)) {
+				if (input.isAllowed(Input::Method::KEY, input.type, newKey)) {
 					input.method = Input::Method::KEY;
 					input.key = newKey;
-					input.ResetActive();
+					input.resetActive();
 				}
 				found = true;
 				break;
@@ -106,10 +106,10 @@ IMGUI_API bool ImGui::InputSelector(const char* label, Input& input, const ImVec
 			for (ImGuiMouseButton imguibtn = ImGuiMouseButton_Left; imguibtn < ImGuiMouseButton_COUNT; imguibtn++) {
 				if (ImGui::IsMouseDown(imguibtn)) {
 					waiting.reset();
-					if (input.IsAllowed(Input::Method::MOUSE, input.type, imguibtn)) {
+					if (input.isAllowed(Input::Method::MOUSE, input.type, imguibtn)) {
 						input.method = Input::Method::MOUSE;
 						input.key = imguibtn;
-						input.ResetActive();
+						input.resetActive();
 					}
 					break;
 				}
@@ -137,7 +137,7 @@ IMGUI_API bool ImGui::InputSelector(const char* label, Input& input, const ImVec
 		clicked = true;
 	}
 
-	bool canHaveOtherType = input.IsAllowed(input.method, static_cast<Input::Type>(1 - static_cast<int>(input.type)), input.key);
+	bool canHaveOtherType = input.isAllowed(input.method, static_cast<Input::Type>(1 - static_cast<int>(input.type)), input.key);
 
 	if (canHaveOtherType && ImGui::BeginPopupContextItem()) {
 		ImGui::Combo("Type", reinterpret_cast<int*>(&input.type), "Hold\0Toggle\0");

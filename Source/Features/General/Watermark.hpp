@@ -14,9 +14,9 @@ public:
 
 	bool enabled = true;
 
-	void ImGuiRender(ImDrawList* drawList);
+	void imGuiRender(ImDrawList* drawList);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } watermark;
 

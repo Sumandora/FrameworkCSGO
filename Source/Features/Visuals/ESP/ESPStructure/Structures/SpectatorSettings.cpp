@@ -2,20 +2,20 @@
 
 #include "../../../../../Interfaces.hpp"
 
-bool SpectatorSettings::IsEnabled() const
+bool SpectatorSettings::isEnabled() const
 {
-	return boxName.IsEnabled();
+	return boxName.isEnabled();
 }
 
-void SpectatorSettings::Draw(ImDrawList* drawList, Spectator& spectator) const
+void SpectatorSettings::draw(ImDrawList* drawList, Spectator& spectator) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
 	const Player* spectated = nullptr;
 
 	if (onlyShowWhenSpectatedEntityIsDormant || displayNameOfSpectatedEntity) {
-		Player* player = EntityCache::PlayerByHandle(spectator.observerTarget);
+		Player* player = EntityCache::playerByHandle(spectator.observerTarget);
 		if (player)
 			spectated = player;
 	}
@@ -30,17 +30,17 @@ void SpectatorSettings::Draw(ImDrawList* drawList, Spectator& spectator) const
 			strcpy(name, info.name);
 	}
 
-	const std::optional<ImVec4> rectangle = spectator.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = spectator.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), name);
+	boxName.draw(drawList, rectangle.value(), name);
 }
 
-void SpectatorSettings::SetupGUI(const char* id)
+void SpectatorSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
+	boxName.setupGUI(id);
 
 	ImGui::Checkbox("Only show when spectated entity is dormant", &onlyShowWhenSpectatedEntityIsDormant);
 	ImGui::Checkbox("Display name of spectated entity", &displayNameOfSpectatedEntity);

@@ -3,7 +3,7 @@
 #include "../../../Features/General/EnginePrediction.hpp"
 #include "../../../Features/Misc/AutoAccept.hpp"
 
-int Hooks::Game::EmitSound::HookFunc(void* thisptr,
+int Hooks::Game::EmitSound::hookFunc(void* thisptr,
 	void* filter,
 	int iEntIndex,
 	int iChannel,
@@ -23,12 +23,12 @@ int Hooks::Game::EmitSound::HookFunc(void* thisptr,
 	int speakerentity,
 	void* params)
 {
-	autoAccept.EmitSound(pSoundEntry);
+	autoAccept.emitSound(pSoundEntry);
 
-	if (enginePrediction.EmitSound(iEntIndex, pSoundEntry))
+	if (enginePrediction.emitSound(iEntIndex, pSoundEntry))
 		return 0;
 
-	return InvokeFunction<
+	return invokeFunction<
 		int, void*, void*, int,
 		int, const char*, unsigned int, const char*,
 		float, int, int, int,

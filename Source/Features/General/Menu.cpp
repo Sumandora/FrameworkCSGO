@@ -11,7 +11,7 @@
 #include "imgui.h"
 #include <optional>
 
-bool Menu::MenuKey::IsAllowed(Method method, Type type, std::optional<unsigned int> key)
+bool Menu::MenuKey::isAllowed(Method method, Type type, std::optional<unsigned int> key)
 {
 	if (type == Input::Type::HOLD)
 		return false; // I mean, this is technically not impossible, but honestly who would want this?
@@ -20,12 +20,13 @@ bool Menu::MenuKey::IsAllowed(Method method, Type type, std::optional<unsigned i
 	return key.has_value(); // This would render the menu unusable!
 }
 
-void Menu::MenuKey::OnChange()
+void Menu::MenuKey::onChange()
 {
 	Gui::visible = !Gui::visible;
-	eventLog.CreateReport("%s the menu", Gui::visible ? "Opened" : "Closed");
+	eventLog.createReport("%s the menu", Gui::visible ? "Opened" : "Closed");
 }
-void Menu::ImGuiLoop()
+
+void Menu::imGuiLoop()
 {
 	switch (style) {
 	case 0:
@@ -62,7 +63,7 @@ void Menu::ImGuiLoop()
 #endif
 }
 
-void Menu::SetupGUI()
+void Menu::setupGUI()
 {
 	ImGui::InputSelector("Menu key (%s)", menuKey);
 #ifdef DEBUG

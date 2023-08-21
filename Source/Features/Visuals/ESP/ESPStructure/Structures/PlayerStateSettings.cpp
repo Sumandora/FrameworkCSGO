@@ -31,17 +31,17 @@ PlayerStateSettings::PlayerStateSettings()
 {
 }
 
-bool PlayerStateSettings::IsEnabled() const
+bool PlayerStateSettings::isEnabled() const
 {
-	return boxName.IsEnabled() || healthbar.enabled || weapon.enabled || flags.IsEnabled() || headDot.enabled;
+	return boxName.isEnabled() || healthbar.enabled || weapon.enabled || flags.isEnabled() || headDot.enabled;
 }
 
-void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
+void PlayerStateSettings::draw(ImDrawList* drawList, Player& player) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = player.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = player.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
@@ -51,26 +51,26 @@ void PlayerStateSettings::Draw(ImDrawList* drawList, Player& player) const
 		if (Interfaces::engine->GetPlayerInfo(player.index, &info))
 			strcpy(name, info.name);
 	}
-	boxName.Draw(drawList, rectangle.value(), name);
+	boxName.draw(drawList, rectangle.value(), name);
 
-	healthbar.Draw(drawList, rectangle.value(), player.health);
+	healthbar.draw(drawList, rectangle.value(), player.health);
 
 	if (weapon.enabled) { // Don't ask for the weapon, if we don't have to
 		if (player.activeWeapon > WeaponID::WEAPON_NONE) { // Also prevent invalids
 			const char* localization = LocalizeWeaponID(player.activeWeapon);
 			if (localization)
-				this->weapon.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, localization);
+				this->weapon.draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, localization);
 		}
 	}
 
-	flags.Draw(drawList, rectangle->z + boxName.box.GetLineWidth() / 2.0f, rectangle->y, player);
+	flags.draw(drawList, rectangle->z + boxName.box.getLineWidth() / 2.0f, rectangle->y, player);
 
 	ImVec2 center2D;
-	if (Utils::Project(player.headPos + headDotOffset, center2D))
-		headDot.Draw(drawList, center2D);
+	if (Utils::project(player.headPos + headDotOffset, center2D))
+		headDot.draw(drawList, center2D);
 }
 
-void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
+static void buildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSettings& playerTeamSettings)
 {
 	if (ImGui::MenuItem("Visible")) {
 		*playerStateSettings = playerTeamSettings.visible;
@@ -80,17 +80,17 @@ void BuildMenu(PlayerStateSettings* playerStateSettings, const PlayerTeamSetting
 	}
 }
 
-void PlayerStateSettings::SetupGUI(const char* id)
+void PlayerStateSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 
 	if (ImGui::Popup("Copy from", "Copy from")) {
 		if (ImGui::BeginMenu("Teammate")) {
-			BuildMenu(this, esp.players.teammate);
+			buildMenu(this, esp.players.teammate);
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Enemy")) {
-			BuildMenu(this, esp.players.enemy);
+			buildMenu(this, esp.players.enemy);
 			ImGui::EndMenu();
 		}
 		if (ImGui::Selectable("Local")) {
@@ -99,11 +99,11 @@ void PlayerStateSettings::SetupGUI(const char* id)
 		ImGui::EndPopup();
 	}
 
-	boxName.SetupGUI(id);
-	healthbar.SetupGUI("Healthbar");
-	weapon.SetupGUI("Weapon");
-	flags.SetupGUI("Flags");
-	headDot.SetupGUI("Head dot");
+	boxName.setupGUI(id);
+	healthbar.setupGUI("Healthbar");
+	weapon.setupGUI("Weapon");
+	flags.setupGUI("Flags");
+	headDot.setupGUI("Head dot");
 
 	ImGui::Text("Head dot offset");
 	ImGui::SameLine();

@@ -3,7 +3,7 @@
 #include "../Hooks/Game/GameFunctions.hpp"
 #include "../SDK/Math/Matrix4x4.hpp"
 
-bool Utils::Project(const Vector& world, ImVec2& screen)
+bool Utils::project(const Vector& world, ImVec2& screen)
 {
 	const Matrix4x4& matrix = Hooks::Game::FrameStageNotify::worldToScreenMatrix;
 

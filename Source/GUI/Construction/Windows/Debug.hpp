@@ -2,12 +2,12 @@
 #define GUI_CONSTRUCTION_WINDOWS_DEBUG
 
 namespace Gui::Windows {
-	void LinkMaps();
-	void Netvars();
-	void Interfaces();
-	void GameEvents();
-	void Panorama();
-	void Entities();
+	void linkMaps();
+	void netvars();
+	void interfaces();
+	void gameEvents();
+	void panorama();
+	void entities();
 }
 
 #endif

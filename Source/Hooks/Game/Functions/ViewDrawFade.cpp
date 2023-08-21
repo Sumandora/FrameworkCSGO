@@ -2,10 +2,10 @@
 
 #include "../../../Features/Visuals/FlashReduction.hpp"
 
-void Hooks::Game::ViewDrawFade::HookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen)
+void Hooks::Game::ViewDrawFade::hookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen)
 {
-	if (flashReduction.ViewDrawFade(color, pFadeMaterial))
+	if (flashReduction.viewDrawFade(color, pFadeMaterial))
 		return; // Don't draw
 
-	InvokeFunction<void, void*, std::byte*, void*, bool>(hook->proxy, thisptr, color, pFadeMaterial, mapFullTextureToScreen);
+	invokeFunction<void, void*, std::byte*, void*, bool>(hook->proxy, thisptr, color, pFadeMaterial, mapFullTextureToScreen);
 }

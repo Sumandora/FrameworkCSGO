@@ -10,7 +10,7 @@
 #include <string>
 
 // https://github.com/seksea/eclipse-luas/blob/master/lobbytricks.lua
-static void SpawnPopup(size_t amount)
+static void spawnPopup(size_t amount)
 {
 	std::stringstream ss{};
 	ss << "for(var i = 0; i < " << amount << "; i++) ";
@@ -19,7 +19,7 @@ static void SpawnPopup(size_t amount)
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", str.c_str());
 }
 
-static void ClosePopups()
+static void closePopups()
 {
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", "$.DispatchEvent(\"CSGOHideMainMenu\");");
 }
@@ -103,7 +103,7 @@ static const char* errorMessages[]{
 	"X_SearchTimeExceeded"
 };
 
-static void CreateErrorMessage(size_t amount, const char* type)
+static void createErrorMessage(size_t amount, const char* type)
 {
 	std::stringstream ss{};
 	ss << "for(var i = 0; i < " << amount << "; i++) ";
@@ -112,17 +112,17 @@ static void CreateErrorMessage(size_t amount, const char* type)
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", str.c_str());
 }
 
-static void CancelMatchmaking()
+static void cancelMatchmaking()
 {
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", "LobbyAPI.StopMatchmaking();");
 }
 
-static void CancelMatchmakingIfSearching()
+static void cancelMatchmakingIfSearching()
 {
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", "if (LobbyAPI.GetMatchmakingStatusString() == \"#SFUI_QMM_State_find_searching\") { LobbyAPI.StopMatchmaking(); }");
 }
 
-void PartyScripts::PerformPartyScripts()
+void PartyScripts::performPartyScripts()
 {
 	if (!autoClosePopups && !autoErrorCreation && !autoCancelMatchmaking)
 		return;
@@ -134,7 +134,7 @@ void PartyScripts::PerformPartyScripts()
 		static float lastUpdate = 0.0f;
 
 		if (Memory::globalVars->curtime - lastUpdate > popupInterval) {
-			ClosePopups();
+			closePopups();
 			lastUpdate = Memory::globalVars->curtime;
 		}
 	}
@@ -143,10 +143,10 @@ void PartyScripts::PerformPartyScripts()
 
 		if (Memory::globalVars->curtime - lastUpdate > errorInterval) {
 			if (!randomErrors) {
-				CreateErrorMessage(errorAmount, errorMessages[selectedError]);
+				createErrorMessage(errorAmount, errorMessages[selectedError]);
 			} else {
 				for (int i = 0; i < errorAmount; i++)
-					CreateErrorMessage(1, errorMessages[rand() % IM_ARRAYSIZE(errorMessages)]);
+					createErrorMessage(1, errorMessages[rand() % IM_ARRAYSIZE(errorMessages)]);
 			}
 			lastUpdate = Memory::globalVars->curtime;
 		}
@@ -156,26 +156,26 @@ void PartyScripts::PerformPartyScripts()
 
 		if (Memory::globalVars->curtime - lastUpdate > cancelInterval) {
 			if (!onlyWhenSearching)
-				CancelMatchmaking();
+				cancelMatchmaking();
 			else
-				CancelMatchmakingIfSearching();
+				cancelMatchmakingIfSearching();
 			lastUpdate = Memory::globalVars->curtime;
 		}
 	}
 }
 
-void PartyScripts::SetupGUI()
+void PartyScripts::setupGUI()
 {
 	if (Interfaces::engine->IsInGame())
 		ImGui::TextColored(ImGuiColors::yellow, "Executing scripts in game may lead to bugs/crashes");
 
 	ImGui::SliderInt("Popup amount", &popupAmount, 1, 200);
 	if (ImGui::Button("Spawn popups")) {
-		SpawnPopup(popupAmount);
+		spawnPopup(popupAmount);
 	}
 
 	if (ImGui::Button("Close all popups")) {
-		ClosePopups();
+		closePopups();
 	}
 
 	ImGui::Checkbox("Auto close popups", &autoClosePopups);
@@ -188,12 +188,12 @@ void PartyScripts::SetupGUI()
 
 	ImGui::SliderInt("Error amount", &errorAmount, 1, 200);
 	if (ImGui::Button("Create error messages")) {
-		CreateErrorMessage(errorAmount, errorMessages[selectedError]);
+		createErrorMessage(errorAmount, errorMessages[selectedError]);
 	}
 
 	if (ImGui::Button("Create random error messages")) {
 		for (int i = 0; i < errorAmount; i++) {
-			CreateErrorMessage(1, errorMessages[rand() % IM_ARRAYSIZE(errorMessages)]);
+			createErrorMessage(1, errorMessages[rand() % IM_ARRAYSIZE(errorMessages)]);
 		}
 	}
 
@@ -206,7 +206,7 @@ void PartyScripts::SetupGUI()
 	ImGui::Separator();
 
 	if (ImGui::Button("Cancel matchmaking")) {
-		CancelMatchmaking();
+		cancelMatchmaking();
 	}
 
 	ImGui::Checkbox("Auto cancel matchmaking", &autoCancelMatchmaking);

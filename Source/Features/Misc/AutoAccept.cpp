@@ -12,14 +12,14 @@
 
 // TODO Only once per game? right now we do it every beep sound
 
-void AutoAccept::EmitSound(const char* soundEntry)
+void AutoAccept::emitSound(const char* soundEntry) const
 {
 	if (!sendSystemNotification && !autoAccept)
 		return;
 
 	if (std::strcmp(soundEntry, "UIPanorama.popup_accept_match_beep") == 0) {
 		// Found game!
-		eventLog.CreateReport("Found a game!");
+		eventLog.createReport("Found a game!");
 
 		if (sendSystemNotification) {
 			// If we are not auto accepting, we should tell the user that it's urgent, don't set the urgency level however, since a game shouldn't make urgent notifications
@@ -33,7 +33,7 @@ void AutoAccept::EmitSound(const char* soundEntry)
 	}
 }
 
-void AutoAccept::SetupGUI()
+void AutoAccept::setupGUI()
 {
 	ImGui::Checkbox("Send system notification", &sendSystemNotification);
 	ImGui::Checkbox("Auto accept", &autoAccept);

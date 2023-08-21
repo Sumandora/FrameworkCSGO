@@ -18,9 +18,9 @@ public:
 
 	bool revealVoters;
 
-	void FireEvent(CGameEvent* gameEvent);
+	void fireEvent(CGameEvent* gameEvent);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } voteRevealer;
 

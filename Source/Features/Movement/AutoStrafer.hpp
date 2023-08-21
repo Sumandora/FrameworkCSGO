@@ -20,9 +20,9 @@ public:
 	float hardTurnThreshold = 135.0f;
 	bool onlyWhenIdle = false;
 
-	void CreateMove(CUserCmd* cmd);
+	void createMove(CUserCmd* cmd);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } autoStrafer;
 

@@ -7,7 +7,7 @@
 
 // TODO Different colors?
 
-std::optional<std::string> Objective::GetText(const Player& player) const
+std::optional<std::string> Objective::getText(const Player& player) const
 {
 	if (player.defusing)
 		return "Defusing";

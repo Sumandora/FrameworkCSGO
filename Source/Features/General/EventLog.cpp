@@ -23,7 +23,7 @@ static long time()
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
-void EventLog::ImGuiRender(ImDrawList* drawList)
+void EventLog::imGuiRender(ImDrawList* drawList)
 {
 	if (entries.empty())
 		return;
@@ -64,16 +64,7 @@ void EventLog::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void EventLog::SetupGUI()
-{
-	ImGui::Checkbox("Enabled", &enabled);
-	if (!enabled) {
-		ImGui::Text("Warning: Certain features may use the event log as communication");
-	}
-	ImGui::SliderInt("Duration", &duration, 0, 10000);
-}
-
-void EventLog::CreateReport(const char* fmt, ...)
+void EventLog::createReport(const char* fmt, ...)
 {
 	va_list args;
 
@@ -90,6 +81,15 @@ void EventLog::CreateReport(const char* fmt, ...)
 	va_end(args);
 
 	entries.push_back({ time(), str });
+}
+
+void EventLog::setupGUI()
+{
+	ImGui::Checkbox("Enabled", &enabled);
+	if (!enabled) {
+		ImGui::Text("Warning: Certain features may use the event log as communication");
+	}
+	ImGui::SliderInt("Duration", &duration, 0, 10000);
 }
 
 SCOPED_SERIALIZER(EventLog)

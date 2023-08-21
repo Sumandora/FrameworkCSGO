@@ -17,12 +17,12 @@
 
 void* RetAddrSpoofer::leaveRet = nullptr;
 
-static void* lineGoesThroughSmoke;
+static void* lineGoesThroughSmokeAddress;
 static CBasePlayer** localPlayerList;
 
 int32_t CUIEngine::panelArrayOffset;
 
-void Memory::Create()
+void Memory::create()
 {
 	// Set the address for the return address spoofer
 	RetAddrSpoofer::leaveRet = BCRL::Session::arrayPointer(Interfaces::baseClient, 0) // random code piece
@@ -76,24 +76,24 @@ void Memory::Create()
 			.getPointer()
 			.value());
 
-	lineGoesThroughSmoke = BCRL::Session::module("client_client.so")
-							   .nextStringOccurence("sv_show_voip_indicator_for_enemies")
-							   .findXREFs("client_client.so", true, false)
-							   .forEach([](BCRL::SafePointer& safePointer) { safePointer = safePointer.add(4); })
-							   .repeater([](BCRL::SafePointer& pointer) {
-								   if (pointer.doesMatch("e8 ?? ?? ?? ?? 84 c0")) {
-									   BCRL::SafePointer newPointer = pointer.add(1).relativeToAbsolute();
-									   if (newPointer.doesMatch("55 48 89 e5 41 56 41 55")) {
-										   pointer = newPointer;
-										   return false;
-									   }
-								   }
+	lineGoesThroughSmokeAddress = BCRL::Session::module("client_client.so")
+									  .nextStringOccurence("sv_show_voip_indicator_for_enemies")
+									  .findXREFs("client_client.so", true, false)
+									  .forEach([](BCRL::SafePointer& safePointer) { safePointer = safePointer.add(4); })
+									  .repeater([](BCRL::SafePointer& pointer) {
+										  if (pointer.doesMatch("e8 ?? ?? ?? ?? 84 c0")) {
+											  const BCRL::SafePointer newPointer = pointer.add(1).relativeToAbsolute();
+											  if (newPointer.doesMatch("55 48 89 e5 41 56 41 55")) {
+												  pointer = newPointer;
+												  return false;
+											  }
+										  }
 
-								   pointer = pointer.nextInstruction();
-								   return true;
-							   })
-							   .getPointer()
-							   .value();
+										  pointer = pointer.nextInstruction();
+										  return true;
+									  })
+									  .getPointer()
+									  .value();
 
 	CUIEngine::panelArrayOffset = *static_cast<int32_t*>(
 		BCRL::Session::arrayPointer(Interfaces::panoramaUIEngine->AccessUIEngine(), CUIEngine::isValidPanelPointerIndex)
@@ -118,7 +118,7 @@ void Memory::Create()
 			.value());
 }
 
-bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
+bool Memory::lineGoesThroughSmoke(const Vector& from, const Vector& to, const short _)
 {
 	// Little explanation why I make this struct here:
 	// GCC for some reason decides that pushing the from and to Vector over general purpose registers is a good idea.
@@ -129,20 +129,13 @@ bool Memory::LineGoesThroughSmoke(const Vector& from, const Vector& to, const sh
 		float x, y, z;
 	};
 
-	VectorStruct fromStruct{};
-	fromStruct.x = from.x;
-	fromStruct.y = from.y;
-	fromStruct.z = from.z;
+	const VectorStruct fromStruct{ from.x, from.y, from.z };
+	const VectorStruct toStruct{ to.x, to.y, to.z };
 
-	VectorStruct toStruct{};
-	toStruct.x = to.x;
-	toStruct.y = to.y;
-	toStruct.z = to.z;
-
-	return InvokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmoke, fromStruct, toStruct, _);
+	return invokeFunction<bool, VectorStruct, VectorStruct, short>(lineGoesThroughSmokeAddress, fromStruct, toStruct, _);
 }
 
-CBasePlayer* Memory::GetLocalPlayer()
+CBasePlayer* Memory::getLocalPlayer()
 {
 	return localPlayerList[0]; // There are no split screens in csgo, so safely assume we never want to have something else than 0
 }

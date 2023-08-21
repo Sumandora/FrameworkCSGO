@@ -19,10 +19,10 @@ public:
 	bool hideViewPunch = false;
 	bool hideAimPunch = false;
 
-	void HidePunch();
-	void RestorePunch();
+	void hidePunch() const;
+	void restorePunch() const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } noPunch;
 

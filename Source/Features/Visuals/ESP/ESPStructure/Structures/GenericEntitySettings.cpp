@@ -1,26 +1,26 @@
 #include "../ESPStructure.hpp"
 
-bool GenericEntitySettings::IsEnabled() const
+bool GenericEntitySettings::isEnabled() const
 {
-	return boxName.IsEnabled();
+	return boxName.isEnabled();
 }
 
-void GenericEntitySettings::Draw(ImDrawList* drawList, Entity& entity, const char* text) const
+void GenericEntitySettings::draw(ImDrawList* drawList, Entity& entity, const char* text) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = entity.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = entity.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), text);
+	boxName.draw(drawList, rectangle.value(), text);
 }
 
-void GenericEntitySettings::SetupGUI(const char* id)
+void GenericEntitySettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
+	boxName.setupGUI(id);
 	ImGui::PopID();
 }
 

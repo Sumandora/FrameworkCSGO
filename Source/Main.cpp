@@ -47,31 +47,31 @@
 
 // TODO Show all toggled keybinds
 
-void Initializer()
+void initializer()
 {
 	srand(time(nullptr));
 
 	struct stat info { };
-	std::string configPath = Serialization::GetConfigDirectory();
+	std::string configPath = Serialization::getConfigDirectory();
 	const char* configPathCStr = configPath.c_str();
 	if (!stat(configPathCStr, &info) || !S_ISDIR(info.st_mode))
 		mkdir(configPathCStr, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-	Interfaces::GetInterfaces();
+	Interfaces::getInterfaces();
 
-	Netvars::DumpNetvars();
-	Memory::Create();
+	Netvars::dumpNetvars();
+	Memory::create();
 
-	Gui::Create();
+	Gui::create();
 
-	Hooks::InstallHooks();
+	Hooks::installHooks();
 
-	eventLog.CreateReport("Initialized!");
+	eventLog.createReport("Initialized!");
 }
 
 int __attribute__((constructor)) Startup()
 {
-	std::thread t(Initializer);
+	std::thread t(initializer);
 	t.detach();
 
 	return 0;
@@ -79,6 +79,6 @@ int __attribute__((constructor)) Startup()
 
 void __attribute__((destructor)) Shutdown()
 {
-	Hooks::UninstallHooks();
-	Gui::Destroy();
+	Hooks::uninstallHooks();
+	Gui::destroy();
 }

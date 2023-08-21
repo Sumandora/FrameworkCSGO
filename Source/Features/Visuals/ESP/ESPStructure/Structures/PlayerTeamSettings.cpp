@@ -2,32 +2,32 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-bool PlayerTeamSettings::IsEnabled() const
+bool PlayerTeamSettings::isEnabled() const
 {
-	return visible.IsEnabled() || occluded.IsEnabled();
+	return visible.isEnabled() || occluded.isEnabled();
 }
 
-void PlayerTeamSettings::Draw(ImDrawList* drawList, Player& player) const
+void PlayerTeamSettings::draw(ImDrawList* drawList, Player& player) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
 	if (player.visible)
-		visible.Draw(drawList, player);
+		visible.draw(drawList, player);
 	else
-		occluded.Draw(drawList, player);
+		occluded.draw(drawList, player);
 }
 
-void PlayerTeamSettings::SetupGUI(const char* id)
+void PlayerTeamSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar("#Player team config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Visible")) {
-			visible.SetupGUI("Visible");
+			visible.setupGUI("Visible");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Occluded")) {
-			occluded.SetupGUI("Occluded");
+			occluded.setupGUI("Occluded");
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

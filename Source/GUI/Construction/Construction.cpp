@@ -9,7 +9,7 @@
 
 #include <cstring>
 
-void Gui::Build()
+void Gui::build()
 {
 	ImGui::SetNextWindowSize({ 800, 600 }, ImGuiCond_Once);
 	if (ImGui::Begin("Framework CSGO")) {
@@ -20,8 +20,8 @@ void Gui::Build()
 					tag.insert(0, 1, '#');
 					if (ImGui::BeginTabBar(tag.c_str(), ImGuiTabBarFlags_Reorderable)) {
 						for (Feature* feature : vector) {
-							if (ImGui::BeginTabItem(feature->GetName().c_str())) {
-								feature->SetupGUI();
+							if (ImGui::BeginTabItem(feature->getName().c_str())) {
+								feature->setupGUI();
 								ImGui::EndTabItem();
 							}
 						}
@@ -32,34 +32,34 @@ void Gui::Build()
 			}
 
 			if (ImGui::BeginTabItem("Configuration")) {
-				Gui::Windows::Configuration();
+				Gui::Windows::configuration();
 				ImGui::EndTabItem();
 			}
 
 			if (ImGui::BeginTabItem("Debug")) {
 				if (ImGui::BeginTabBar("#Debug tabs", ImGuiTabBarFlags_Reorderable)) {
 					if (ImGui::BeginTabItem("Link maps")) {
-						Gui::Windows::LinkMaps();
+						Gui::Windows::linkMaps();
 						ImGui::EndTabItem();
 					}
 					if (ImGui::BeginTabItem("Networked vars")) {
-						Gui::Windows::Netvars();
+						Gui::Windows::netvars();
 						ImGui::EndTabItem();
 					}
 					if (ImGui::BeginTabItem("Interfaces")) {
-						Gui::Windows::Interfaces();
+						Gui::Windows::interfaces();
 						ImGui::EndTabItem();
 					}
 					if (ImGui::BeginTabItem("Game events")) {
-						Gui::Windows::GameEvents();
+						Gui::Windows::gameEvents();
 						ImGui::EndTabItem();
 					}
 					if (ImGui::BeginTabItem("Panorama")) {
-						Gui::Windows::Panorama();
+						Gui::Windows::panorama();
 						ImGui::EndTabItem();
 					}
 					if (ImGui::BeginTabItem("Entities")) {
-						Gui::Windows::Entities();
+						Gui::Windows::entities();
 						ImGui::EndTabItem();
 					}
 					ImGui::EndTabBar();

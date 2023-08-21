@@ -9,7 +9,7 @@
 
 class BaseWeaponConfig {
 public:
-	virtual void SetupGUI() = 0;
+	virtual void setupGUI() = 0;
 	virtual SERIALIZER() = 0;
 };
 
@@ -45,7 +45,7 @@ public:
 		}
 	}
 
-	void BuildMenu(T& dest)
+	void buildMenu(T& dest)
 	{
 		if (ImGui::Popup("Copy from", "Copy from")) {
 			if (ImGui::Selectable("Shared")) {
@@ -72,22 +72,22 @@ public:
 		}
 	}
 
-	void ShowConfig(OverridableConfig& overridableConfig)
+	void showConfig(OverridableConfig& overridableConfig)
 	{
 		ImGui::Checkbox("Overridden", &overridableConfig.overridden);
 		ImGui::SameLine();
 		if (overridableConfig.overridden) {
 			T& weaponConfig = overridableConfig.config;
-			BuildMenu(weaponConfig);
-			weaponConfig.SetupGUI();
+			buildMenu(weaponConfig);
+			weaponConfig.setupGUI();
 		}
 	}
 
-	void SetupGUI()
+	void setupGUI()
 	{
 		if (ImGui::BeginTabBar("#Weapon config"), ImGuiTabBarFlags_Reorderable) {
 			if (ImGui::BeginTabItem("Shared")) {
-				sharedConfig.SetupGUI();
+				sharedConfig.setupGUI();
 				ImGui::EndTabItem();
 			}
 
@@ -99,12 +99,12 @@ public:
 					char str[256] = "#Config for ";
 					if (ImGui::BeginTabBar(strcat(str, localization)), ImGuiTabBarFlags_Reorderable) {
 						if (ImGui::BeginTabItem("Shared")) {
-							ShowConfig(classConfigs[weaponClass]);
+							showConfig(classConfigs[weaponClass]);
 							ImGui::EndTabItem();
 						}
 						for (WeaponID weaponId : weaponClassification[weaponClass]) {
 							if (ImGui::BeginTabItem(weaponLocalization[weaponId])) {
-								ShowConfig(weaponConfigs[weaponId]);
+								showConfig(weaponConfigs[weaponId]);
 								ImGui::EndTabItem();
 							}
 						}
@@ -117,7 +117,7 @@ public:
 		}
 	}
 
-	T* GetConfig(WeaponID weaponId)
+	T* getConfig(WeaponID weaponId)
 	{
 		if (weaponConfigs.contains(weaponId)) {
 			OverridableConfig& weaponConfig = weaponConfigs[weaponId];
@@ -125,7 +125,7 @@ public:
 				return &weaponConfig.config;
 		}
 
-		WeaponClass weaponClass = WeaponClassByID(weaponId);
+		WeaponClass weaponClass = weaponClassByID(weaponId);
 		if (weaponClass == WeaponClass::NONE)
 			return nullptr; // This shouldn't happen...
 
@@ -135,10 +135,10 @@ public:
 				return &classConfig.config;
 		}
 
-		return GetSharedConfig();
+		return getSharedConfig();
 	}
 
-	T* GetSharedConfig()
+	T* getSharedConfig()
 	{
 		return &sharedConfig;
 	}

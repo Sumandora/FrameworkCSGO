@@ -4,7 +4,7 @@
 #include "../../../../Utils/Trigonometry.hpp"
 #include "../ESP.hpp"
 
-bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
+bool ScreenRectangle::calculateScreenRectangle(ImVec4& rectangle)
 {
 	const std::optional<BoundingBox>& boundingBox = this->boundingBox;
 
@@ -32,7 +32,7 @@ bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 	for (const auto& point : points) {
 		ImVec2 point2D;
 
-		if (!Utils::Project(point, point2D)) {
+		if (!Utils::project(point, point2D)) {
 			return false;
 		}
 
@@ -61,7 +61,7 @@ bool ScreenRectangle::CalculateScreenRectangle(ImVec4& rectangle)
 	return true;
 }
 
-bool ScreenRectangle::HandleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const
+bool ScreenRectangle::handleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const
 {
 	if (esp.outOfView) {
 		const Vector delta = origin - localOrigin;
@@ -86,13 +86,13 @@ bool ScreenRectangle::HandleOutOfView(const Vector& localOrigin, const Vector& v
 	return false;
 }
 
-void ScreenRectangle::Update(const Vector& origin, const std::optional<BoundingBox>& boundingBox)
+void ScreenRectangle::update(const Vector& origin, const std::optional<BoundingBox>& boundingBox)
 {
 	this->origin = origin;
 	this->boundingBox = boundingBox;
 }
 
-std::optional<ImVec4> ScreenRectangle::Get()
+std::optional<ImVec4> ScreenRectangle::get()
 {
 	std::optional<LocalPlayer> localPlayer = EntityCache::localPlayer;
 
@@ -100,9 +100,9 @@ std::optional<ImVec4> ScreenRectangle::Get()
 		return std::nullopt;
 
 	ImVec4 rectangle;
-	bool visible = CalculateScreenRectangle(rectangle);
+	bool visible = calculateScreenRectangle(rectangle);
 
-	if (!visible && HandleOutOfView(localPlayer->origin, localPlayer->viewangles, rectangle)) // TODO Buy menu makes oov flicker
+	if (!visible && handleOutOfView(localPlayer->origin, localPlayer->viewangles, rectangle)) // TODO Buy menu makes oov flicker
 		visible = true; // We just made them visible ^^
 
 	if (!visible)

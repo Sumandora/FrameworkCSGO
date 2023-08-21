@@ -2,29 +2,29 @@
 
 #include "../../../../../GUI/Elements/Popup.hpp"
 
-bool LootCrateSettings::IsEnabled() const
+bool LootCrateSettings::isEnabled() const
 {
-	return boxName.IsEnabled() || healthbar.enabled;
+	return boxName.isEnabled() || healthbar.enabled;
 }
 
-void LootCrateSettings::Draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const
+void LootCrateSettings::draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = lootCrate.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = lootCrate.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), name);
-	healthbar.Draw(drawList, rectangle.value(), lootCrate.health, lootCrate.maxHealth);
+	boxName.draw(drawList, rectangle.value(), name);
+	healthbar.draw(drawList, rectangle.value(), lootCrate.health, lootCrate.maxHealth);
 }
 
-void LootCrateSettings::SetupGUI(const char* id)
+void LootCrateSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	healthbar.SetupGUI("Healthbar");
+	boxName.setupGUI(id);
+	healthbar.setupGUI("Healthbar");
 	ImGui::PopID();
 }
 

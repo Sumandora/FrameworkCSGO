@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> HasBomb::GetText(const Player& player) const
+std::optional<std::string> HasBomb::getText(const Player& player) const
 {
 	if (player.hasBomb)
 		return "Has bomb";

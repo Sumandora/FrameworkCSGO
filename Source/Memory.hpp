@@ -16,10 +16,10 @@ namespace Memory {
 	inline IMoveHelper* moveHelper;
 	inline CGlowObjectManager* glowObjectManager;
 
-	void Create();
+	void create();
 
-	bool LineGoesThroughSmoke(const Vector& from, const Vector& to, short _);
-	CBasePlayer* GetLocalPlayer();
+	bool lineGoesThroughSmoke(const Vector& from, const Vector& to, short _);
+	CBasePlayer* getLocalPlayer();
 }
 
 #endif

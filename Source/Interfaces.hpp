@@ -23,9 +23,9 @@ namespace Interfaces {
 	inline CPanoramaUIEngine* panoramaUIEngine;
 	inline void* fileSystem;
 
-	void GetInterfaces();
+	void getInterfaces();
 
-	void* UncoverCreateFunction(void* createFunc);
+	void* uncoverCreateFunction(void* createFunc);
 }
 
 #endif

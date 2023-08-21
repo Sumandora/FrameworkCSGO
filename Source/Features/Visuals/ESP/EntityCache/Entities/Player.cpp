@@ -7,9 +7,9 @@
 #include "../../../../../SDK/GameClass/Entities/CBaseCSGrenade.hpp"
 #include "../../../../../SDK/GameClass/Entities/CC4.hpp"
 
-void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
+void Player::update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
-	Entity::Update(entity, index, handle, clientClass);
+	Entity::update(entity, index, handle, clientClass);
 
 	activeWeapon = WeaponID::WEAPON_NONE;
 	CBaseCombatWeapon* weaponEntity = nullptr;
@@ -29,7 +29,7 @@ void Player::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, C
 		auto* backingLocalPlayerEntity = static_cast<CBasePlayer*>(localPlayer.value().backingEntity);
 		enemy = entity->IsEnemy(backingLocalPlayerEntity);
 
-		visible = esp.visibilityChecker.IsVisible(backingLocalPlayerEntity, entity);
+		visible = esp.visibilityChecker.isVisible(backingLocalPlayerEntity, entity);
 	} else {
 		enemy = false;
 

@@ -21,9 +21,9 @@ public:
 	int maximumRelaseDelay = 0;
 	bool onlyWhenFalling = false;
 
-	void CreateMove(CUserCmd* cmd);
+	void createMove(CUserCmd* cmd);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } bhop;
 

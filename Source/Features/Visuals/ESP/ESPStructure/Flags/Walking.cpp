@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> Walking::GetText(const Player& player) const
+std::optional<std::string> Walking::getText(const Player& player) const
 {
 	if (player.walking)
 		return "Walking";

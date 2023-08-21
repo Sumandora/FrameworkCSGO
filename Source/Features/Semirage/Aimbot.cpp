@@ -26,9 +26,9 @@ static bool wasFaked = false;
 static SemirageAimbot::WeaponConfig* lastWeaponConfig = nullptr;
 static std::optional<Vector> aimTarget;
 
-CBasePlayer* GetLocalPlayer()
+static CBasePlayer* getLocalPlayer()
 {
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 
 	if (!localPlayer || !localPlayer->IsAlive())
 		return nullptr;
@@ -39,7 +39,7 @@ CBasePlayer* GetLocalPlayer()
 	return localPlayer;
 }
 
-SemirageAimbot::WeaponConfig* SemirageAimbot::GetWeaponConfig(CBasePlayer* localPlayer)
+SemirageAimbot::WeaponConfig* SemirageAimbot::getWeaponConfig(CBasePlayer* localPlayer)
 {
 	auto* combatWeapon = static_cast<CBaseCombatWeapon*>(Interfaces::entityList->GetClientEntityFromHandle(localPlayer->ActiveWeapon()));
 	if (!combatWeapon)
@@ -48,17 +48,17 @@ SemirageAimbot::WeaponConfig* SemirageAimbot::GetWeaponConfig(CBasePlayer* local
 	if (!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
 		return nullptr;
 
-	return weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
+	return weaponConfigurator.getConfig(*combatWeapon->WeaponDefinitionIndex());
 }
 
-Vector GetViewAngles(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& currentViewAngles)
+static Vector getViewAngles(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& currentViewAngles)
 {
 	if (weaponConfig && weaponConfig->silent && wasFaked && weaponConfig->smoothRotateToOrigin)
 		return Hooks::Game::CreateMove::lastCmd.viewangles; // TODO Track this
 	return currentViewAngles;
 }
 
-bool SemirageAimbot::ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
+bool SemirageAimbot::shouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player)
 {
 	if (!player || player == localPlayer || player->GetDormant() || !player->IsAlive() || *player->GunGameImmunity())
 		return false;
@@ -72,20 +72,20 @@ bool SemirageAimbot::ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* p
 	return true;
 }
 
-bool SemirageAimbot::CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
+bool SemirageAimbot::canPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
 	const Vector head = otherPlayer->GetBonePosition(8);
 
-	if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
+	if (dontAimThroughSmoke && Memory::lineGoesThroughSmoke(localPlayer->GetEyePosition(), head, 1))
 		return false;
 
 	CTraceFilterEntity filter(localPlayer);
-	const Trace trace = Utils::TraceRay(localPlayer->GetEyePosition(), head, &filter);
+	const Trace trace = Utils::traceRay(localPlayer->GetEyePosition(), head, &filter);
 
 	return trace.m_pEnt == otherPlayer; // The ray was able to travel to its destination
 }
 
-CBasePlayer* SemirageAimbot::FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
+CBasePlayer* SemirageAimbot::findTarget(CBasePlayer* localPlayer, const Vector& viewAngles)
 {
 	const Vector playerEye = localPlayer->GetEyePosition();
 
@@ -95,15 +95,15 @@ CBasePlayer* SemirageAimbot::FindTarget(CBasePlayer* localPlayer, const Vector& 
 	// The first object is always the WorldObj
 	for (int i = 1; i < Interfaces::engine->GetMaxClients(); i++) {
 		auto* player = static_cast<CBasePlayer*>(Interfaces::entityList->GetClientEntity(i));
-		if (!ShouldAttackPlayer(localPlayer, player))
+		if (!shouldAttackPlayer(localPlayer, player))
 			continue;
 
 		const Vector head = player->GetBonePosition(8);
 
-		if (!CanPointBeSeen(localPlayer, player))
+		if (!canPointBeSeen(localPlayer, player))
 			continue;
 
-		const Vector viewDelta = (Utils::CalculateView(playerEye, head) - viewAngles).Wrap();
+		const Vector viewDelta = (Utils::calculateView(playerEye, head) - viewAngles).Wrap();
 		const float length = viewDelta.Length();
 
 		if (!target || bestDistance > length) {
@@ -115,7 +115,7 @@ CBasePlayer* SemirageAimbot::FindTarget(CBasePlayer* localPlayer, const Vector& 
 	return target;
 }
 
-bool SemirageAimbot::ShouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponConfig, bool attacking)
+bool SemirageAimbot::shouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponConfig, bool attacking)
 {
 	if (weaponConfig->disabled)
 		return false; // Those who reject aid swim alone in their struggles.
@@ -126,7 +126,7 @@ bool SemirageAimbot::ShouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponCon
 	if (weaponConfig->onlyWhenShooting) {
 		if (!attacking) {
 			if (autoFire) {
-				return !autoFireKey.IsSet() || autoFireKey.IsActive();
+				return !autoFireKey.isSet() || autoFireKey.isActive();
 			}
 			return false;
 		}
@@ -135,7 +135,7 @@ bool SemirageAimbot::ShouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponCon
 	return true;
 }
 
-void RotateToOrigin(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& currentView, Vector& target)
+static void rotateToOrigin(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& currentView, Vector& target)
 {
 	Vector delta = (target - currentView).Wrap();
 	if (delta.Length() < weaponConfig->recombineViews) {
@@ -151,7 +151,7 @@ void RotateToOrigin(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& cu
 	wasFaked = true;
 }
 
-Vector SetRotation(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& targetView, const Vector& currentView, const Vector& aimPunch, Vector& target)
+static Vector setRotation(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& targetView, const Vector& currentView, const Vector& aimPunch, Vector& target)
 {
 	Vector recoilCorrected = targetView;
 
@@ -177,7 +177,7 @@ Vector SetRotation(SemirageAimbot::WeaponConfig* weaponConfig, const Vector& tar
 	return target;
 }
 
-bool SemirageAimbot::AutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles)
+bool SemirageAimbot::performAutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles)
 {
 	if (weaponConfig->autoFireRecklessly && hasTarget)
 		return true; // We got an entity in our fov, fire regardless of the trace ray...
@@ -186,14 +186,14 @@ bool SemirageAimbot::AutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBaseP
 		return false;
 
 	Vector forward;
-	Utils::AngleVectors(viewangles + *localPlayer->AimPunchAngle(), &forward);
+	Utils::angleVectors(viewangles + *localPlayer->AimPunchAngle(), &forward);
 
 	CTraceFilterEntity filter(localPlayer);
 	const Vector playerEye = localPlayer->GetEyePosition();
 
-	const Trace trace = Utils::TraceRay(playerEye, playerEye + forward * 4096.0f, &filter);
+	const Trace trace = Utils::traceRay(playerEye, playerEye + forward * 4096.0f, &filter);
 
-	if (!dontAimThroughSmoke || !Memory::LineGoesThroughSmoke(playerEye, trace.endpos, 1)) {
+	if (!dontAimThroughSmoke || !Memory::lineGoesThroughSmoke(playerEye, trace.endpos, 1)) {
 		CBaseEntity* entity = trace.m_pEnt;
 		if (entity && entity->IsPlayer() && !entity->GetDormant()) {
 			auto* player = static_cast<CBasePlayer*>(entity);
@@ -213,7 +213,7 @@ bool SemirageAimbot::AutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBaseP
 bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles)
 {
 	if (lastWeaponConfig && lastWeaponConfig->silent && wasFaked && lastWeaponConfig->smoothRotateToOrigin) {
-		RotateToOrigin(lastWeaponConfig, currentViewAngles, targetViewAngles);
+		rotateToOrigin(lastWeaponConfig, currentViewAngles, targetViewAngles);
 		return true;
 	}
 	wasFaked = false;
@@ -221,7 +221,7 @@ bool Relax(const Vector& currentViewAngles, Vector& targetViewAngles)
 	return false;
 }
 
-void SemirageAimbot::CalculateAimTarget(CBasePlayer* localPlayer)
+void SemirageAimbot::calculateAimTarget(CBasePlayer* localPlayer)
 {
 	if (!showDesyncedView || !wasFaked) {
 		aimTarget.reset();
@@ -231,15 +231,15 @@ void SemirageAimbot::CalculateAimTarget(CBasePlayer* localPlayer)
 
 	const Vector fakedView = Hooks::Game::CreateMove::lastCmd.viewangles + *localPlayer->AimPunchAngle(); // The game moves your view upwards by the punch angle
 	Vector forward;
-	Utils::AngleVectors(fakedView, &forward);
+	Utils::angleVectors(fakedView, &forward);
 
 	CTraceFilterEntity filter(localPlayer);
-	const Trace trace = Utils::TraceRay(eye, eye + forward * 4096.0f, &filter);
+	const Trace trace = Utils::traceRay(eye, eye + forward * 4096.0f, &filter);
 
 	aimTarget = trace.endpos;
 }
 
-void SemirageAimbot::FireEvent(CGameEvent* gameEvent)
+void SemirageAimbot::fireEvent(CGameEvent* gameEvent)
 {
 	if (!wasFaked)
 		return; // No point in trying to reset our view when there is nothing to reset
@@ -255,10 +255,10 @@ void SemirageAimbot::FireEvent(CGameEvent* gameEvent)
 	Vector oldView = Hooks::Game::CreateMove::lastCmd.viewangles;
 	Interfaces::engine->SetViewAngles(&oldView);
 
-	eventLog.CreateReport("Gracefully undesynced view");
+	eventLog.createReport("Gracefully undesynced view");
 }
 
-bool SemirageAimbot::CreateMove(CUserCmd* cmd)
+bool SemirageAimbot::createMove(CUserCmd* cmd)
 {
 	if (!enabled || !Interfaces::engine->IsInGame()) {
 		wasFaked = false;
@@ -267,38 +267,38 @@ bool SemirageAimbot::CreateMove(CUserCmd* cmd)
 
 	bool willBeSilent = false;
 
-	CBasePlayer* localPlayer = GetLocalPlayer();
+	CBasePlayer* localPlayer = getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive()) { // Without local player we can't shoot, can we?
 		wasFaked = false;
 		return false;
 	}
 
-	WeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
+	WeaponConfig* weaponConfig = getWeaponConfig(localPlayer);
 
 	if (!weaponConfig) {
 		if (wasFaked) {
 			// We still have work to do
-			RotateToOrigin(lastWeaponConfig, Hooks::Game::CreateMove::lastCmd.viewangles, cmd->viewangles);
+			rotateToOrigin(lastWeaponConfig, Hooks::Game::CreateMove::lastCmd.viewangles, cmd->viewangles);
 			willBeSilent = true;
 		}
-		CalculateAimTarget(localPlayer);
+		calculateAimTarget(localPlayer);
 		// Mhm, no work to do. Stop here
 		return willBeSilent;
 	}
 
-	const Vector viewAngles = GetViewAngles(lastWeaponConfig, cmd->viewangles);
+	const Vector viewAngles = getViewAngles(lastWeaponConfig, cmd->viewangles);
 	const Vector recoilView = cmd->viewangles + *localPlayer->AimPunchAngle() * 2.0f;
 
 	bool hasTarget = false;
 
-	if (ShouldAim(localPlayer, weaponConfig, cmd->buttons & IN_ATTACK)) {
-		CBasePlayer* target = FindTarget(localPlayer, recoilView);
+	if (shouldAim(localPlayer, weaponConfig, cmd->buttons & IN_ATTACK)) {
+		CBasePlayer* target = findTarget(localPlayer, recoilView);
 		if (!target) {
 			// We don't have a target, time to relax and try to combine the fake view and the real one again
 			willBeSilent = Relax(viewAngles, cmd->viewangles);
 		} else {
 			// Critical moment: We are facing an enemy
-			const Vector targetView = Utils::CalculateView(localPlayer->GetEyePosition(), target->GetBonePosition(8));
+			const Vector targetView = Utils::calculateView(localPlayer->GetEyePosition(), target->GetBonePosition(8));
 
 			Vector wrappedDelta = (targetView - recoilView /*TODO Config for fake rotation fov*/).Wrap();
 			wrappedDelta.x /= weaponConfig->fovScaleX;
@@ -316,7 +316,7 @@ bool SemirageAimbot::CreateMove(CUserCmd* cmd)
 					// If we were faking, then we need to calculate another view for the player, because the server view is not real
 					Vector playerView{};
 					Interfaces::engine->GetViewAngles(&playerView);
-					SetRotation(weaponConfig, targetView, playerView, *localPlayer->AimPunchAngle(), playerView);
+					setRotation(weaponConfig, targetView, playerView, *localPlayer->AimPunchAngle(), playerView);
 
 					Interfaces::engine->SetViewAngles(&playerView);
 
@@ -324,7 +324,7 @@ bool SemirageAimbot::CreateMove(CUserCmd* cmd)
 					wasFaked = true;
 				}
 
-				SetRotation(weaponConfig, targetView, wasFaked ? Hooks::Game::CreateMove::lastCmd.viewangles : cmd->viewangles, *localPlayer->AimPunchAngle(), cmd->viewangles);
+				setRotation(weaponConfig, targetView, wasFaked ? Hooks::Game::CreateMove::lastCmd.viewangles : cmd->viewangles, *localPlayer->AimPunchAngle(), cmd->viewangles);
 
 				if (!wasFaked) {
 					lastWeaponConfig = weaponConfig; // If the user decides to switch the weapon, and he was using rotate to origin silent aim, we can't just give up...
@@ -343,16 +343,16 @@ bool SemirageAimbot::CreateMove(CUserCmd* cmd)
 	}
 
 	if (autoFire) {
-		if (!autoFireKey.IsSet() || autoFireKey.IsActive())
-			if (AutoFire(weaponConfig, hasTarget, localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
+		if (!autoFireKey.isSet() || autoFireKey.isActive())
+			if (performAutoFire(weaponConfig, hasTarget, localPlayer, cmd->viewangles)) // The user wants us to shoot for him... Let's grant his wish (only 2 remaining...)
 				cmd->buttons |= IN_ATTACK; // FIRE!!!
 	}
 
-	CalculateAimTarget(localPlayer);
+	calculateAimTarget(localPlayer);
 	return willBeSilent;
 }
 
-void SemirageAimbot::ImGuiRender(ImDrawList* drawList)
+void SemirageAimbot::imGuiRender(ImDrawList* drawList)
 {
 	// TODO Desync View renders when dead?
 	if (!enabled || (!fovCircle && !showDesyncedView))
@@ -361,17 +361,17 @@ void SemirageAimbot::ImGuiRender(ImDrawList* drawList)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = GetLocalPlayer();
+	CBasePlayer* localPlayer = getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return; // Without local player we can't shoot, can we?
 
 	if (aimTarget.has_value()) {
 		ImVec2 screenspaceView;
-		if (Utils::Project(aimTarget.value(), screenspaceView))
+		if (Utils::project(aimTarget.value(), screenspaceView))
 			drawList->AddCircleFilled(screenspaceView, radius, viewColor); // TODO Perspective division
 	}
 
-	WeaponConfig* weaponConfig = GetWeaponConfig(localPlayer);
+	WeaponConfig* weaponConfig = getWeaponConfig(localPlayer);
 	if (!weaponConfig)
 		return;
 
@@ -395,7 +395,7 @@ void SemirageAimbot::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void SemirageAimbot::WeaponConfig::SetupGUI()
+void SemirageAimbot::WeaponConfig::setupGUI()
 {
 	ImGui::Checkbox("Disabled", &disabled);
 	if (disabled)
@@ -403,7 +403,7 @@ void SemirageAimbot::WeaponConfig::SetupGUI()
 
 	ImGui::Checkbox("Only when shooting", &onlyWhenShooting);
 
-	if (onlyWhenShooting && semirageAimbot.autoFire && !semirageAimbot.autoFireKey.IsSet())
+	if (onlyWhenShooting && semirageAimbot.autoFire && !semirageAimbot.autoFireKey.isSet())
 		ImGui::TextColored(ImGuiColors::yellow, "You are auto-firing without key, this won't make a difference");
 
 	if (semirageAimbot.autoFire)
@@ -448,7 +448,7 @@ void SemirageAimbot::WeaponConfig::SetupGUI()
 	}
 }
 
-void SemirageAimbot::SetupGUI()
+void SemirageAimbot::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 
@@ -476,7 +476,7 @@ void SemirageAimbot::SetupGUI()
 		ImGui::EndPopup();
 	}
 
-	weaponConfigurator.SetupGUI();
+	weaponConfigurator.setupGUI();
 }
 
 SCOPED_SERIALIZER(SemirageAimbot::WeaponConfig)

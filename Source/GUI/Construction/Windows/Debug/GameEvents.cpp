@@ -4,7 +4,7 @@
 
 #include "imgui.h"
 
-void Gui::Windows::GameEvents()
+void Gui::Windows::gameEvents()
 {
 	ImGui::Text("This log will be extended, whenever a new event is fired");
 	ImGui::Separator();

@@ -8,16 +8,16 @@
 #include "../../GUI/Elements/Keybind.hpp"
 #include "../../Interfaces.hpp"
 
-void EdgeJump::CreateMove(CUserCmd* cmd)
+void EdgeJump::createMove(CUserCmd* cmd)
 {
-	if (!enabled || (input.IsSet() && !input.IsActive())) {
+	if (!enabled || (input.isSet() && !input.isActive())) {
 		return;
 	}
 
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -36,9 +36,9 @@ void EdgeJump::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void EdgeJump::SetupGUI()
+void EdgeJump::setupGUI()
 {
-	enginePrediction.ImGuiWarning();
+	enginePrediction.imGuiWarning();
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::InputSelector("Input (%s)", input);
 }

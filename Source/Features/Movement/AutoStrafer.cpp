@@ -15,7 +15,7 @@
 
 static std::optional<float> lastWishDirection = 0.0f;
 
-void AdjustButtons(CUserCmd* cmd)
+static void adjustButtons(CUserCmd* cmd)
 {
 	// Technically not needed
 	if (cmd->forwardmove > 0) {
@@ -40,7 +40,7 @@ void AdjustButtons(CUserCmd* cmd)
 	}
 }
 
-void AutoStrafer::CreateMove(CUserCmd* cmd)
+void AutoStrafer::createMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
@@ -48,7 +48,7 @@ void AutoStrafer::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -101,7 +101,7 @@ void AutoStrafer::CreateMove(CUserCmd* cmd)
 
 		cmd->forwardmove = cosf(newDirection) * ConVarStorage::cl_forwardspeed()->GetFloat();
 		cmd->sidemove = -sinf(newDirection) * ConVarStorage::cl_sidespeed()->GetFloat();
-		AdjustButtons(cmd);
+		adjustButtons(cmd);
 	} else {
 		const float oldYaw = Hooks::Game::CreateMove::lastCmd.viewangles.y;
 		const float newYaw = cmd->viewangles.y;
@@ -115,14 +115,14 @@ void AutoStrafer::CreateMove(CUserCmd* cmd)
 				cmd->sidemove = -ConVarStorage::cl_sidespeed()->GetFloat();
 			else
 				cmd->sidemove = 0;
-			AdjustButtons(cmd);
+			adjustButtons(cmd);
 		}
 	}
 }
 
-void AutoStrafer::SetupGUI()
+void AutoStrafer::setupGUI()
 {
-	enginePrediction.ImGuiWarning();
+	enginePrediction.imGuiWarning();
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::Checkbox("Directional", &directional);
 	if (directional) {

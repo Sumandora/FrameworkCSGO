@@ -13,5 +13,5 @@ void ImGui::ShowDemoWindow(bool* p_open)
 	int width, height;
 	SDL_GetWindowSize(window, &width, &height);
 
-	Gui::Build();
+	Gui::build();
 }

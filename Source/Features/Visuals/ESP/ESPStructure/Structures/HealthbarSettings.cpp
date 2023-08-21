@@ -22,7 +22,7 @@ HealthbarSettings::HealthbarSettings()
 {
 }
 
-void HealthbarSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth) const
+void HealthbarSettings::draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth) const
 {
 	if (!enabled)
 		return;
@@ -104,11 +104,11 @@ void HealthbarSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle, int 
 
 	if (healthNumber.enabled) {
 		if (!onlyWhenDamaged || healthPercentage < 1.0f)
-			healthNumber.Draw(drawList, healthbar.x + (healthbar.z - healthbar.x) * 0.5f, healthbarHeight - healthNumber.GetLineHeight(), true, std::to_string(health).c_str());
+			healthNumber.draw(drawList, healthbar.x + (healthbar.z - healthbar.x) * 0.5f, healthbarHeight - healthNumber.getLineHeight(), true, std::to_string(health).c_str());
 	}
 }
 
-void HealthbarSettings::SetupGUI(const char* id)
+void HealthbarSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -131,7 +131,7 @@ void HealthbarSettings::SetupGUI(const char* id)
 			ImGui::ClickableColorButton("Outline color", outlineColor);
 			ImGui::SliderFloat("Outline thickness", &outlineThickness, 0.0f, 10.0f, "%.2f");
 		}
-		healthNumber.SetupGUI("Health number");
+		healthNumber.setupGUI("Health number");
 		if (healthNumber.enabled)
 			ImGui::Checkbox("Only when damaged", &onlyWhenDamaged);
 

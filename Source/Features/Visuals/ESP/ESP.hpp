@@ -38,10 +38,10 @@ public:
 	DroneSettings dzDrones;
 	GenericEntitySettings other;
 
-	void Update();
-	void ImGuiRender(ImDrawList* drawList);
+	void update();
+	void imGuiRender(ImDrawList* drawList);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } esp;
 

@@ -4,7 +4,7 @@
 
 #include "../../../../Netvars.hpp"
 
-void Gui::Windows::Netvars()
+void Gui::Windows::netvars()
 {
 	for (const auto& [clientClass, tables] : Netvars::netvars) {
 		if (ImGui::TreeNode(clientClass->m_pNetworkName)) {

@@ -1,8 +1,8 @@
 #include "../EntityCache.hpp"
 
-void PlantedC4::Update(CPlantedC4* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
+void PlantedC4::update(CPlantedC4* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
-	Entity::Update(entity, index, handle, clientClass);
+	Entity::update(entity, index, handle, clientClass);
 
 	defused = *entity->Defused();
 	bombTicking = *entity->BombTicking();

@@ -23,14 +23,14 @@ public:
 	CMoveData moveData{};
 	int prePredictionFlags = 0;
 	MoveType prePredictionMoveType = MOVETYPE_NONE;
-	void ImGuiWarning();
+	void imGuiWarning() const;
 
-	bool EmitSound(int iEntIndex, const char* pSoundEntry);
+	bool emitSound(int iEntIndex, const char* pSoundEntry) const;
 
-	void StartPrediction(CUserCmd* cmd);
-	void EndPrediction();
+	void startPrediction(CUserCmd* cmd);
+	void endPrediction();
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } enginePrediction;
 

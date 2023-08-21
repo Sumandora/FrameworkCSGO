@@ -2,38 +2,38 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-bool PlayerSettings::IsEnabled() const
+bool PlayerSettings::isEnabled() const
 {
-	return teammate.IsEnabled() || enemy.IsEnabled() || local.IsEnabled();
+	return teammate.isEnabled() || enemy.isEnabled() || local.isEnabled();
 }
 
-void PlayerSettings::Draw(ImDrawList* drawList, Player& player) const
+void PlayerSettings::draw(ImDrawList* drawList, Player& player) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	if (player == EntityCache::localPlayer)
-		local.Draw(drawList, player);
+	if (EntityCache::localPlayer.has_value() && player == EntityCache::localPlayer)
+		local.draw(drawList, player);
 	else if (!player.enemy)
-		teammate.Draw(drawList, player);
-	else
-		enemy.Draw(drawList, player);
+		teammate.draw(drawList, player);
+	else if (player.enemy)
+		enemy.draw(drawList, player);
 }
 
-void PlayerSettings::SetupGUI(const char* id)
+void PlayerSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar("#Player config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Teammate")) {
-			teammate.SetupGUI("Teammate");
+			teammate.setupGUI("Teammate");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Enemy")) {
-			enemy.SetupGUI("Enemy");
+			enemy.setupGUI("Enemy");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Local")) {
-			local.SetupGUI("Local");
+			local.setupGUI("Local");
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

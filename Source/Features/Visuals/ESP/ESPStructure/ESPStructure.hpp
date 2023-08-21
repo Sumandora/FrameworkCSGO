@@ -26,11 +26,11 @@ private:
 public:
 	BoxSettings();
 
-	void Draw(ImDrawList* drawList, const ImVec4& rectangle) const;
-	[[nodiscard]] float GetLineWidth() const;
+	void draw(ImDrawList* drawList, const ImVec4& rectangle) const;
+	[[nodiscard]] float getLineWidth() const;
 
 	bool operator<=>(const BoxSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -47,11 +47,11 @@ private:
 public:
 	TextSettings();
 
-	void Draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride = std::nullopt) const;
-	[[nodiscard]] float GetLineHeight() const;
+	void draw(ImDrawList* drawList, float x, float y, bool centered, const char* text, std::optional<ImColor> colorOverride = std::nullopt) const;
+	[[nodiscard]] float getLineHeight() const;
 
 	bool operator<=>(const TextSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -76,9 +76,9 @@ private:
 public:
 	HealthbarSettings();
 
-	void Draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth = 100) const;
+	void draw(ImDrawList* drawList, const ImVec4& rectangle, int health, int maxHealth = 100) const;
 	bool operator<=>(const HealthbarSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -96,10 +96,10 @@ private:
 public:
 	LineSettings();
 
-	void Draw(ImDrawList* drawList, std::vector<ImVec2> points) const;
+	void draw(ImDrawList* drawList, std::vector<ImVec2> points) const;
 
 	bool operator<=>(const LineSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -117,10 +117,10 @@ private:
 public:
 	CircleSettings();
 
-	void Draw(ImDrawList* drawList, ImVec2 center) const;
+	void draw(ImDrawList* drawList, ImVec2 center) const;
 
 	bool operator<=>(const CircleSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -137,10 +137,10 @@ private:
 public:
 	FlagsSettings(std::vector<std::shared_ptr<Flag>>&& flags);
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, float x, float y, const Player& player) const;
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, float x, float y, const Player& player) const;
 	bool operator<=>(const FlagsSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -151,10 +151,10 @@ public:
 
 	BoxNameSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const;
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const;
 	bool operator<=>(const BoxNameSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -164,9 +164,9 @@ public:
 
 	GenericEntitySettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Entity& entity, const char* text) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Entity& entity, const char* text) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -177,9 +177,9 @@ class SentrySettings {
 public:
 	SentrySettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Sentry& sentry) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Sentry& sentry) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -190,9 +190,9 @@ class LootCrateSettings {
 public:
 	LootCrateSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, LootCrate& lootCrate, const char* name) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -205,14 +205,14 @@ class LootCrateTypeSettings {
 	mutable LootCrateSettings cashDufflebag;
 	mutable LootCrateSettings randomDrop;
 
-	LootCrateSettings& GetSettings(LootCrateType type) const;
+	LootCrateSettings& getSettings(LootCrateType type) const;
 
 public:
 	LootCrateTypeSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, LootCrate& lootCrate) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, LootCrate& lootCrate) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -223,9 +223,9 @@ class DroneSettings {
 public:
 	DroneSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Drone& drone) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Drone& drone) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -240,10 +240,10 @@ class PlayerStateSettings {
 public:
 	PlayerStateSettings();
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Player& player) const;
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Player& player) const;
 	bool operator<=>(const PlayerStateSettings& other) const = default;
-	void SetupGUI(const char* id);
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -254,9 +254,9 @@ class WeaponSettings {
 public:
 	WeaponSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Weapon& weapon) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Weapon& weapon) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -272,9 +272,9 @@ class PlantedC4Settings {
 public:
 	PlantedC4Settings();
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, PlantedC4& bomb) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, PlantedC4& bomb) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -286,9 +286,9 @@ class HostageSettings {
 public:
 	HostageSettings();
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Hostage& hostage) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Hostage& hostage) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -300,9 +300,9 @@ class SpectatorSettings {
 public:
 	SpectatorSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Spectator& spectator) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Spectator& spectator) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -314,9 +314,9 @@ class ProjectileSettings {
 public:
 	ProjectileSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Projectile& projectile, const char* name) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Projectile& projectile, const char* name) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -331,14 +331,14 @@ class ProjectileTypeSettings {
 	mutable ProjectileSettings highExplosiveGrenade;
 	mutable ProjectileSettings flashbang;
 
-	ProjectileSettings& GetSettings(ProjectileType type) const;
+	ProjectileSettings& getSettings(ProjectileType type) const;
 
 public:
 	ProjectileTypeSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Projectile& projectile) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Projectile& projectile) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -349,9 +349,9 @@ public:
 
 	PlayerTeamSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Player& player) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Player& player) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 
@@ -363,9 +363,9 @@ public:
 
 	PlayerSettings() = default;
 
-	[[nodiscard]] bool IsEnabled() const;
-	void Draw(ImDrawList* drawList, Player& player) const;
-	void SetupGUI(const char* id);
+	[[nodiscard]] bool isEnabled() const;
+	void draw(ImDrawList* drawList, Player& player) const;
+	void setupGUI(const char* id);
 	SERIALIZER();
 };
 

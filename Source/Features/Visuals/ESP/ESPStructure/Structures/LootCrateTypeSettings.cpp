@@ -14,12 +14,12 @@ static std::map<LootCrateType, const char*> lootCrateNames{
 	{ LootCrateType::RANDOM_DROP, "Random Drop" }
 };
 
-bool LootCrateTypeSettings::IsEnabled() const
+bool LootCrateTypeSettings::isEnabled() const
 {
-	return pistolCase.IsEnabled() || lightCase.IsEnabled() || heavyCase.IsEnabled() || explosiveCase.IsEnabled() || toolsCase.IsEnabled() || cashDufflebag.IsEnabled();
+	return pistolCase.isEnabled() || lightCase.isEnabled() || heavyCase.isEnabled() || explosiveCase.isEnabled() || toolsCase.isEnabled() || cashDufflebag.isEnabled();
 }
 
-LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
+LootCrateSettings& LootCrateTypeSettings::getSettings(LootCrateType type) const
 {
 	switch (type) {
 	case LootCrateType::PISTOL_CASE:
@@ -42,18 +42,18 @@ LootCrateSettings& LootCrateTypeSettings::GetSettings(LootCrateType type) const
 	}
 }
 
-void LootCrateTypeSettings::Draw(ImDrawList* drawList, LootCrate& lootCrate) const
+void LootCrateTypeSettings::draw(ImDrawList* drawList, LootCrate& lootCrate) const
 {
-	GetSettings(lootCrate.type).Draw(drawList, lootCrate, lootCrateNames[lootCrate.type]);
+	getSettings(lootCrate.type).draw(drawList, lootCrate, lootCrateNames[lootCrate.type]);
 }
 
-void LootCrateTypeSettings::SetupGUI(const char* id)
+void LootCrateTypeSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar("#Loot crate config selection", ImGuiTabBarFlags_Reorderable)) {
 		for (const auto& [type, name] : lootCrateNames) {
 			if (ImGui::BeginTabItem(name)) {
-				LootCrateSettings& lootCrateSettings = GetSettings(type);
+				LootCrateSettings& lootCrateSettings = getSettings(type);
 
 				if (ImGui::Popup("Copy from", "Copy from")) {
 					for (const auto& [type2, name2] : lootCrateNames) {
@@ -61,13 +61,13 @@ void LootCrateTypeSettings::SetupGUI(const char* id)
 							continue;
 
 						if (ImGui::Selectable(name2)) {
-							lootCrateSettings = GetSettings(type2);
+							lootCrateSettings = getSettings(type2);
 						}
 					}
 					ImGui::EndPopup();
 				}
 
-				lootCrateSettings.SetupGUI(name);
+				lootCrateSettings.setupGUI(name);
 				ImGui::EndTabItem();
 			}
 		}

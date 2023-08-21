@@ -2,25 +2,25 @@
 
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 
-bool BoxNameSettings::IsEnabled() const
+bool BoxNameSettings::isEnabled() const
 {
 	return box.enabled || nametag.enabled;
 }
 
-void BoxNameSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const
+void BoxNameSettings::draw(ImDrawList* drawList, const ImVec4& rectangle, const char* text) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	box.Draw(drawList, rectangle);
-	nametag.Draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y - nametag.GetLineHeight(), true, text);
+	box.draw(drawList, rectangle);
+	nametag.draw(drawList, rectangle.x + (rectangle.z - rectangle.x) * 0.5f, rectangle.y - nametag.getLineHeight(), true, text);
 }
 
-void BoxNameSettings::SetupGUI(const char* id)
+void BoxNameSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	box.SetupGUI("Box");
-	nametag.SetupGUI("Name");
+	box.setupGUI("Box");
+	nametag.setupGUI("Name");
 	ImGui::PopID();
 }
 

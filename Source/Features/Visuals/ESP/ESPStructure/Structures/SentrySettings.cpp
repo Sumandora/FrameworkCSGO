@@ -4,29 +4,29 @@
 
 #include "../../../../General/EventLog.hpp"
 
-bool SentrySettings::IsEnabled() const
+bool SentrySettings::isEnabled() const
 {
-	return boxName.IsEnabled() || healthbar.enabled;
+	return boxName.isEnabled() || healthbar.enabled;
 }
 
-void SentrySettings::Draw(ImDrawList* drawList, Sentry& sentry) const
+void SentrySettings::draw(ImDrawList* drawList, Sentry& sentry) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = sentry.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = sentry.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), "Sentry");
-	healthbar.Draw(drawList, rectangle.value(), sentry.health, 220); // MaxHealth is hardcoded as 220 (Revealed by doing "ent_dump Dronegun" in console)
+	boxName.draw(drawList, rectangle.value(), "Sentry");
+	healthbar.draw(drawList, rectangle.value(), sentry.health, 220); // MaxHealth is hardcoded as 220 (Revealed by doing "ent_dump Dronegun" in console)
 }
 
-void SentrySettings::SetupGUI(const char* id)
+void SentrySettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	healthbar.SetupGUI("Healthbar");
+	boxName.setupGUI(id);
+	healthbar.setupGUI("Healthbar");
 	ImGui::PopID();
 }
 

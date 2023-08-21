@@ -10,8 +10,8 @@ class VisibilityChecker {
 	bool considerEveryoneVisibleWhenDead = false;
 
 public:
-	bool IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer);
-	void SetupGUI();
+	bool isVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer);
+	void setupGUI();
 	SERIALIZER();
 };
 

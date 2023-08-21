@@ -1,8 +1,8 @@
 #include "../EntityCache.hpp"
 
-void Spectator::Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
+void Spectator::update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
-	Player::Update(entity, index, handle, clientClass);
+	Player::update(entity, index, handle, clientClass);
 
 	observerMode = *entity->ObserverMode();
 	observerTarget = *entity->ObserverTarget();

@@ -10,7 +10,7 @@
 #include <sstream>
 #include <string>
 
-static void SetVisible(const char* item, bool visible)
+static void setVisible(const char* item, bool visible)
 {
 	std::stringstream ss{};
 	ss << "var obj = $.GetContextPanel().FindChildTraverse(\"" << item << "\");";
@@ -25,45 +25,45 @@ MainMenu::~MainMenu()
 		return;
 	// TODO maybe save defaults and use that instead, for scalability?
 	for (auto& widget : panoramaWidgets)
-		SetVisible(widget.first.second, true);
+		setVisible(widget.first.second, true);
 
 	for (auto& button : navBarButtons)
-		SetVisible(button.first.second, strcmp(button.first.second, "MainMenuNavBarShowCommunityServerBrowser") != 0);
+		setVisible(button.first.second, strcmp(button.first.second, "MainMenuNavBarShowCommunityServerBrowser") != 0);
 }
 
-void MainMenu::UpdateVisiblityNow() // TODO Don't call IsInGame twice when coming from UpdateVisibility
+void MainMenu::updateVisiblityNow() const // TODO Don't call IsInGame twice when coming from UpdateVisibility
 {
 	if (!Interfaces::engine->IsInGame())
 		for (auto& widget : panoramaWidgets)
-			SetVisible(widget.first.second, widget.second);
+			setVisible(widget.first.second, widget.second);
 
 	// In case the user changes nav bar buttons, we at least try. We expect an error, but who knows...
 	for (auto& button : navBarButtons)
-		SetVisible(button.first.second, button.second);
+		setVisible(button.first.second, button.second);
 }
 
-void MainMenu::UpdateVisibility()
+void MainMenu::updateVisibility() const
 {
 	if (!Interfaces::engine->IsInGame())
 		return;
 
 	static float lastUpdate = 0.0f;
 	if (Memory::globalVars->curtime - lastUpdate > 1.0f) {
-		UpdateVisiblityNow();
+		updateVisiblityNow();
 		lastUpdate = Memory::globalVars->curtime;
 	}
 }
 
-void MainMenu::SetupGUI()
+void MainMenu::setupGUI()
 {
 	ImGui::Separator();
 	for (auto& widget : panoramaWidgets)
 		if (ImGui::Checkbox(widget.first.first, &widget.second))
-			UpdateVisiblityNow();
+			updateVisiblityNow();
 	ImGui::Separator();
 	for (auto& button : navBarButtons)
 		if (ImGui::Checkbox(button.first.first, &button.second))
-			UpdateVisiblityNow();
+			updateVisiblityNow();
 }
 
 SCOPED_SERIALIZER(MainMenu)
@@ -72,5 +72,6 @@ SCOPED_SERIALIZER(MainMenu)
 		SERIALIZE(widget.first.first, widget.second);
 	for (auto& button : navBarButtons)
 		SERIALIZE(button.first.first, button.second);
-	UpdateVisiblityNow();
+	if (direction == Direction::DESERIALIZE)
+		updateVisiblityNow();
 }

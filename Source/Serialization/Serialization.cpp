@@ -13,12 +13,12 @@
 
 #include "../Features/Features.hpp"
 
-std::string Serialization::GetConfigDirectory()
+std::string Serialization::getConfigDirectory()
 {
 	return std::string(getpwuid(getuid())->pw_dir) + "/.config/Framework";
 }
 
-bool Serialization::Load(std::string filename)
+bool Serialization::load(std::string filename)
 {
 	std::ifstream fileStream(filename);
 	if (fileStream.fail())
@@ -41,12 +41,12 @@ bool Serialization::Load(std::string filename)
 
 		json::JSON categoryJson = json[category];
 		for (Feature* feature : vector) {
-			const std::string& featureName = feature->GetName();
+			const std::string& featureName = feature->getName();
 			if (!categoryJson.hasKey(featureName))
 				continue;
 
 			json::JSON featureJson = categoryJson[featureName];
-			feature->Serialize(featureJson, Direction::DESERIALIZE);
+			feature->serialize(featureJson, Direction::DESERIALIZE);
 		}
 	}
 
@@ -55,7 +55,7 @@ bool Serialization::Load(std::string filename)
 	return true;
 }
 
-bool Serialization::Save(std::string filename)
+bool Serialization::save(std::string filename)
 {
 	std::ofstream fileStream(filename);
 	if (fileStream.fail())
@@ -66,8 +66,8 @@ bool Serialization::Save(std::string filename)
 		json::JSON categoryJson = json::Object();
 		for (Feature* feature : vector) {
 			json::JSON featureJson = json::Object();
-			feature->Serialize(featureJson, Direction::SERIALIZE);
-			categoryJson[feature->GetName()] = featureJson;
+			feature->serialize(featureJson, Direction::SERIALIZE);
+			categoryJson[feature->getName()] = featureJson;
 		}
 		json[category] = categoryJson;
 	}

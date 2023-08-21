@@ -15,14 +15,14 @@
 
 // TODO Remake GUI
 
-static std::string GetConfigFile(std::string filename)
+static std::string getConfigFile(const std::string& filename)
 {
-	return Serialization::GetConfigDirectory() + '/' + filename;
+	return Serialization::getConfigDirectory() + '/' + filename;
 }
 
-static bool GatherConfigs(std::vector<std::string>& configs)
+static bool gatherConfigs(std::vector<std::string>& configs)
 {
-	DIR* dir = opendir(Serialization::GetConfigDirectory().c_str());
+	DIR* dir = opendir(Serialization::getConfigDirectory().c_str());
 	if (dir == nullptr)
 		return false;
 
@@ -39,7 +39,7 @@ static bool GatherConfigs(std::vector<std::string>& configs)
 
 	return true;
 }
-void Gui::Windows::Configuration()
+void Gui::Windows::configuration()
 {
 	static int configSelected;
 	static std::vector<std::string> configs;
@@ -54,10 +54,10 @@ void Gui::Windows::Configuration()
 		if (!std::string(cfgName).ends_with(".json"))
 			cfgName = strcat(cfgName, ".json");
 
-		if (Serialization::Save(GetConfigFile(cfgName)))
-			eventLog.CreateReport("Saved config '%s'", cfgName);
+		if (Serialization::save(getConfigFile(cfgName)))
+			eventLog.createReport("Saved config '%s'", cfgName);
 		else
-			eventLog.CreateReport("Failed to saved config '%s'", cfgName);
+			eventLog.createReport("Failed to saved config '%s'", cfgName);
 
 		addedConfig = true;
 		name[0] = '\0';
@@ -72,7 +72,7 @@ void Gui::Windows::Configuration()
 
 	if (currTime - lastRefresh > 1 || addedConfig) {
 		configs.clear();
-		GatherConfigs(configs);
+		gatherConfigs(configs);
 		lastRefresh = currTime;
 	}
 
@@ -84,20 +84,20 @@ void Gui::Windows::Configuration()
 	if (ImGui::ListBox("##Configs", &configSelected, configsArray, (int)configs.size(), (int)configs.size())) {
 		if (configSelected >= 0 && configSelected < (int)configs.size()) {
 			const char* configName = configs[configSelected].c_str();
-			if (Serialization::Load(GetConfigFile(configName)))
-				eventLog.CreateReport("Loaded config '%s'", configName);
+			if (Serialization::load(getConfigFile(configName)))
+				eventLog.createReport("Loaded config '%s'", configName);
 			else
-				eventLog.CreateReport("Failed to load config '%s'", configName);
+				eventLog.createReport("Failed to load config '%s'", configName);
 		}
 	}
 	ImGui::PopItemWidth();
 	if (configSelected >= 0 && configSelected < (int)configs.size()) {
 		const char* configName = configs[configSelected].c_str();
 		if (ImGui::Button("Overwrite config")) {
-			if (Serialization::Save(GetConfigFile(configName)))
-				eventLog.CreateReport("Saved config '%s'", configName);
+			if (Serialization::save(getConfigFile(configName)))
+				eventLog.createReport("Saved config '%s'", configName);
 			else
-				eventLog.CreateReport("Failed to saved config '%s'", configName);
+				eventLog.createReport("Failed to saved config '%s'", configName);
 		}
 	}
 }

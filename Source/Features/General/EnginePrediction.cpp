@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <cstring>
 
-void EnginePrediction::ImGuiWarning()
+void EnginePrediction::imGuiWarning() const
 {
 	if (!enabled)
 		ImGui::TextColored(ImGuiColors::yellow, "Warning: This feature expects engine prediction to be enabled");
@@ -16,22 +16,22 @@ void EnginePrediction::ImGuiWarning()
 
 static float previousVelocityModifer;
 
-bool EnginePrediction::EmitSound(int iEntIndex, const char* pSoundEntry)
+bool EnginePrediction::emitSound(int iEntIndex, const char* pSoundEntry) const
 {
 	if (dontEmitSoundsDuringPrediction) {
 		if (Interfaces::prediction->m_bInPrediction && Interfaces::prediction->m_bIsFirstTimePredicted && iEntIndex == Interfaces::engine->GetLocalPlayer())
-			return strcasestr(pSoundEntry, "land"); // TODO Better check
+			return strcasestr(pSoundEntry, "land") != nullptr; // TODO Better check
 	}
 	return false;
 }
 
-void EnginePrediction::StartPrediction(CUserCmd* cmd)
+void EnginePrediction::startPrediction(CUserCmd* cmd)
 {
 	moveData = {};
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
@@ -40,10 +40,10 @@ void EnginePrediction::StartPrediction(CUserCmd* cmd)
 	prePredictionMoveType = static_cast<MoveType>(localPlayer->GetMoveType());
 
 	previousVelocityModifer = *localPlayer->VelocityModifier();
-	Utils::StartPrediction(cmd, moveData);
+	Utils::startPrediction(cmd, moveData);
 }
 
-void EnginePrediction::EndPrediction()
+void EnginePrediction::endPrediction()
 {
 	moveData = {};
 
@@ -53,13 +53,13 @@ void EnginePrediction::EndPrediction()
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	Utils::EndPrediction();
+	Utils::endPrediction();
 
 	if (forceResetVelocityModifier) // I'm curious why people on UC seem to have so many problems figuring this out... Does this have some major downside, which I haven't noticed yet?
-		*Memory::GetLocalPlayer()->VelocityModifier() = previousVelocityModifer;
+		*Memory::getLocalPlayer()->VelocityModifier() = previousVelocityModifer;
 }
 
-void EnginePrediction::SetupGUI()
+void EnginePrediction::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	if (!enabled) {

@@ -6,12 +6,12 @@
 #define LAZY_CONVAR(name)        \
 	inline ConVar* name()        \
 	{                            \
-		return GetConVar(#name); \
+		return getConVar(#name); \
 	}
 
 namespace ConVarStorage {
 
-	ConVar* GetConVar(const char* name);
+	ConVar* getConVar(const char* name);
 
 	// Combat
 	LAZY_CONVAR(mp_teammates_are_enemies)

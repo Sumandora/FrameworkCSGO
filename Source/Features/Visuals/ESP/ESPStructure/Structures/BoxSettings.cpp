@@ -17,7 +17,7 @@ BoxSettings::BoxSettings()
 {
 }
 
-void BoxSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle) const
+void BoxSettings::draw(ImDrawList* drawList, const ImVec4& rectangle) const
 {
 	if (!enabled)
 		return;
@@ -31,7 +31,7 @@ void BoxSettings::Draw(ImDrawList* drawList, const ImVec4& rectangle) const
 	drawList->AddRect(ImVec2(rectangle.x, rectangle.y), ImVec2(rectangle.z, rectangle.w), color, rounding, ImDrawFlags_None, thickness);
 }
 
-float BoxSettings::GetLineWidth() const
+float BoxSettings::getLineWidth() const
 {
 	float width = thickness;
 	if (outlined)
@@ -39,7 +39,7 @@ float BoxSettings::GetLineWidth() const
 	return width;
 }
 
-void BoxSettings::SetupGUI(const char* id)
+void BoxSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);

@@ -20,13 +20,13 @@ class ScreenRectangle {
 	Vector origin;
 	std::optional<BoundingBox> boundingBox;
 
-	bool CalculateScreenRectangle(ImVec4& rectangle);
-	bool HandleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const;
+	bool calculateScreenRectangle(ImVec4& rectangle);
+	bool handleOutOfView(const Vector& localOrigin, const Vector& viewangles, ImVec4& rectangle) const;
 
 public:
-	void Update(const Vector& origin, const std::optional<BoundingBox>& boundingBox);
+	void update(const Vector& origin, const std::optional<BoundingBox>& boundingBox);
 
-	std::optional<ImVec4> Get();
+	std::optional<ImVec4> get();
 };
 
 class Entity {
@@ -48,7 +48,7 @@ public:
 
 	bool markForRemoval; // This variable tracks if the entity is marked for removal
 
-	void Update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CBaseEntity* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 
 	bool operator==(const Entity& other) const
 	{
@@ -63,7 +63,7 @@ public:
 	int reserveAmmoCount;
 	int ownerEntity;
 
-	void Update(CBaseCombatWeapon* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CBaseCombatWeapon* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class Player : public Entity {
@@ -92,7 +92,7 @@ public:
 	bool walking;
 	Vector headPos;
 
-	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class Spectator : public Player {
@@ -100,7 +100,7 @@ public:
 	ObserverMode observerMode;
 	CBaseHandle observerTarget;
 
-	void Update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CBasePlayer* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class LocalPlayer : public Player {
@@ -120,7 +120,7 @@ public:
 	CBaseHandle defuser;
 	float defuseCountDown;
 
-	void Update(CPlantedC4* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CPlantedC4* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class Hostage : public Entity {
@@ -128,7 +128,7 @@ public:
 	int state;
 	float grabTime;
 
-	void Update(CHostage* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CHostage* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 enum class ProjectileType {
@@ -151,7 +151,7 @@ public:
 	CBaseHandle thrower;
 	ProjectileType type;
 
-	void Update(CBaseGrenade* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CBaseGrenade* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 enum class LootCrateType {
@@ -173,21 +173,21 @@ public:
 
 	LootCrateType type;
 
-	void Update(CPhysPropLootCrate* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CPhysPropLootCrate* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class Drone : public Entity {
 public:
 	CBaseHandle target;
 
-	void Update(CDrone* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CDrone* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 class Sentry : public Entity {
 public:
 	int health;
 
-	void Update(CDronegun* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
+	void update(CDronegun* entity, int index, const CBaseHandle& handle, ClientClass* clientClass);
 };
 
 namespace EntityCache {
@@ -205,9 +205,9 @@ namespace EntityCache {
 	inline std::unordered_map<CBaseHandle, Drone> drones;
 	inline std::unordered_map<CBaseHandle, Sentry> sentries;
 
-	Player* PlayerByHandle(const CBaseHandle& handle);
+	Player* playerByHandle(const CBaseHandle& handle);
 
-	void UpdateEntities(
+	void updateEntities(
 		int maxDistance,
 		bool captureEntities,
 		bool capturePlayers,

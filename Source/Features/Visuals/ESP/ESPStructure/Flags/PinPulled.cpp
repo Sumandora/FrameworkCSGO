@@ -3,7 +3,7 @@
 #include "imgui.h"
 #include <string>
 
-std::optional<std::string> PinPulled::GetText(const Player& player) const
+std::optional<std::string> PinPulled::getText(const Player& player) const
 {
 	if (player.pinPulled)
 		return "Pin pulled";

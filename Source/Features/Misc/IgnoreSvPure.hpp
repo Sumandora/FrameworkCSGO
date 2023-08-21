@@ -13,7 +13,7 @@ public:
 	bool cancelNetMessage = false;
 	bool allowThirdPartyFiles = false;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } ignoreSvPure;
 

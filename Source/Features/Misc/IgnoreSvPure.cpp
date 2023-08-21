@@ -2,7 +2,7 @@
 
 #include "../../GUI/ImGuiColors.hpp"
 
-void IgnoreSvPure::SetupGUI()
+void IgnoreSvPure::setupGUI()
 {
 	ImGui::Checkbox("Cancel net message", &cancelNetMessage);
 	ImGui::Checkbox("Allow third party files", &allowThirdPartyFiles);

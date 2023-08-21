@@ -27,9 +27,9 @@ public:
 	float cancelInterval = 1.0f;
 	bool onlyWhenSearching = false;
 
-	void PerformPartyScripts();
+	void performPartyScripts();
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } partyScripts;
 

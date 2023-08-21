@@ -10,9 +10,9 @@ static std::map<const char*, LootCrateType> lootCrateMap{
 	{ "case_random_drop.mdl", LootCrateType::RANDOM_DROP }
 };
 
-void LootCrate::Update(CPhysPropLootCrate* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
+void LootCrate::update(CPhysPropLootCrate* entity, int index, const CBaseHandle& handle, ClientClass* clientClass)
 {
-	Entity::Update(entity, index, handle, clientClass);
+	Entity::update(entity, index, handle, clientClass);
 
 	health = *entity->Health();
 	maxHealth = *entity->MaxHealth();

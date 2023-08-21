@@ -14,7 +14,7 @@ LineSettings::LineSettings()
 {
 }
 
-void LineSettings::Draw(ImDrawList* drawList, std::vector<ImVec2> points) const
+void LineSettings::draw(ImDrawList* drawList, std::vector<ImVec2> points) const
 {
 	if (!enabled)
 		return;
@@ -25,7 +25,7 @@ void LineSettings::Draw(ImDrawList* drawList, std::vector<ImVec2> points) const
 	drawList->AddPolyline(points.data(), (int)points.size(), lineColor, ImDrawFlags_None, thickness);
 }
 
-void LineSettings::SetupGUI(const char* id)
+void LineSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
