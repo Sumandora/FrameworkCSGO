@@ -21,28 +21,28 @@ Glow::~Glow()
 }
 
 // Returns false when the glow wasn't applied
-bool Glow::UpdateGlow(int entindex, CBaseEntity* entity)
+bool Glow::updateGlow(int entindex, CBaseEntity* entity) const
 {
 	if (!entity || entity->GetDormant())
 		return false;
 	if (entity->IsPlayer()) {
 		auto* player = static_cast<CBasePlayer*>(entity);
 		if (player->IsAlive()) {
-			return playerSettings.Apply(entindex, player);
+			return players.apply(entindex, player);
 		}
 		return false;
 	} else if (entity->IsWeaponWorldModel()) {
-		return weapons.Apply(entindex, entity);
+		return weapons.apply(entindex, entity);
 	} else {
 		ClientClass* clientClass = entity->GetClientClass();
 		if (clientClass->m_ClassID == ClientClassID::CCSRagdoll) {
-			return ragdolls.Apply(entindex, entity);
+			return ragdolls.apply(entindex, entity);
 		}
 		return false;
 	}
 }
 
-void Glow::UpdateGlow()
+void Glow::updateGlow()
 {
 	if (!Interfaces::engine->IsInGame() || !enabled) {
 		for (const auto& [entindex, glowIndex] : customGlows) {
@@ -54,7 +54,7 @@ void Glow::UpdateGlow()
 
 	for (int i = 0; i < Interfaces::entityList->GetHighestEntityIndex(); i++) {
 		auto* entity = Interfaces::entityList->GetClientEntity(i);
-		if (!UpdateGlow(i, entity)) {
+		if (!updateGlow(i, entity)) {
 			auto it = customGlows.find(i);
 			if (it != customGlows.end()) {
 				Memory::glowObjectManager->UnregisterGlowObject(it->second);
@@ -64,21 +64,21 @@ void Glow::UpdateGlow()
 	}
 }
 
-void Glow::SetupGUI()
+void Glow::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 
 	if (ImGui::BeginTabBar("#Config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Players")) {
-			playerSettings.SetupGUI();
+			players.setupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Weapons")) {
-			weapons.SetupGUI();
+			weapons.setupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Ragdolls")) {
-			ragdolls.SetupGUI();
+			ragdolls.setupGUI();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -89,5 +89,7 @@ SCOPED_SERIALIZER(Glow)
 {
 	SERIALIZE("Enabled", enabled);
 
-	SERIALIZE_STRUCT("Player settings", playerSettings);
+	SERIALIZE_STRUCT("Players", players);
+	SERIALIZE_STRUCT("Weapons", weapons);
+	SERIALIZE_STRUCT("Ragdolls", ragdolls);
 }

@@ -56,7 +56,7 @@ public:
 		float verticalRotateToOriginSpeed = 0.2f;
 		float recombineViews = 0.1f;
 
-		virtual void SetupGUI() override;
+		virtual void setupGUI() override;
 		virtual SERIALIZER() override;
 	};
 
@@ -75,20 +75,20 @@ public:
 	float radius = 5.0f;
 
 private:
-	WeaponConfig* GetWeaponConfig(CBasePlayer* localPlayer);
-	bool ShouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player);
-	bool CanPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer);
-	CBasePlayer* FindTarget(CBasePlayer* localPlayer, const Vector& viewAngles);
-	bool ShouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponConfig, bool attacking);
-	bool AutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles);
-	void CalculateAimTarget(CBasePlayer* localPlayer);
+	WeaponConfig* getWeaponConfig(CBasePlayer* localPlayer);
+	bool shouldAttackPlayer(CBasePlayer* localPlayer, CBasePlayer* player);
+	bool canPointBeSeen(CBasePlayer* localPlayer, CBasePlayer* otherPlayer);
+	CBasePlayer* findTarget(CBasePlayer* localPlayer, const Vector& viewAngles);
+	bool shouldAim(CBasePlayer* localPlayer, WeaponConfig* weaponConfig, bool attacking);
+	bool performAutoFire(WeaponConfig* weaponConfig, bool hasTarget, CBasePlayer* localPlayer, const Vector& viewangles);
+	void calculateAimTarget(CBasePlayer* localPlayer);
 
 public:
-	void FireEvent(CGameEvent* gameEvent);
-	bool CreateMove(CUserCmd* cmd);
-	void ImGuiRender(ImDrawList* drawList);
+	void fireEvent(CGameEvent* gameEvent);
+	bool createMove(CUserCmd* cmd);
+	void imGuiRender(ImDrawList* drawList);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } semirageAimbot;
 

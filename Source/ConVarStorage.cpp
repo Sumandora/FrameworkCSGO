@@ -3,7 +3,7 @@
 #include "Interfaces.hpp"
 #include <unordered_map>
 
-ConVar* ConVarStorage::GetConVar(const char* name)
+ConVar* ConVarStorage::getConVar(const char* name)
 {
 	static std::unordered_map<std::string, ConVar*> conVarMap{};
 

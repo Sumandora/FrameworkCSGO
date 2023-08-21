@@ -3,35 +3,35 @@
 #include "../../../../../GUI/Elements/ClickableColorButton.hpp"
 #include "../../../../../Interfaces.hpp"
 
-bool DroneSettings::IsEnabled() const
+bool DroneSettings::isEnabled() const
 {
-	return boxName.IsEnabled() || target.enabled;
+	return boxName.isEnabled() || target.enabled;
 }
 
-void DroneSettings::Draw(ImDrawList* drawList, Drone& drone) const
+void DroneSettings::draw(ImDrawList* drawList, Drone& drone) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = drone.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = drone.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), "Drone");
+	boxName.draw(drawList, rectangle.value(), "Drone");
 
-	Player* player = EntityCache::PlayerByHandle(drone.target);
+	Player* player = EntityCache::playerByHandle(drone.target);
 	if (player) {
 		PlayerInfo info{};
 		if (Interfaces::engine->GetPlayerInfo(player->index, &info))
-			target.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
+			target.draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
 	}
 }
 
-void DroneSettings::SetupGUI(const char* id)
+void DroneSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	target.SetupGUI("Target");
+	boxName.setupGUI(id);
+	target.setupGUI("Target");
 	ImGui::PopID();
 }
 

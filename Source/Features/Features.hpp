@@ -19,9 +19,9 @@ public:
 		features[group].push_back(this);
 	}
 
-	const std::string& GetName() const { return name; }
+	[[nodiscard]] const std::string& getName() const { return name; }
 
-	virtual void SetupGUI() = 0;
+	virtual void setupGUI() = 0;
 	virtual SERIALIZER() = 0;
 };
 

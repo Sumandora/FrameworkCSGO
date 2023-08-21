@@ -21,12 +21,12 @@ public:
 	bool secondaryFireWithR8Revolver = true;
 	bool friendlyFire = false;
 	int maximalFlashAmount = 255;
-	bool dontShootThroughSmoke = false;
+	bool dontShootThroughSmoke = true;
 	// TODO Delay
 
-	void CreateMove(CUserCmd* cmd);
+	void createMove(CUserCmd* cmd);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } triggerbot;
 

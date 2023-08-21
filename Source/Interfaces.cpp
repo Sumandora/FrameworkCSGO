@@ -12,7 +12,7 @@
 
 #include "BCRL.hpp"
 
-void* Interfaces::UncoverCreateFunction(void* createFunc)
+void* Interfaces::uncoverCreateFunction(void* createFunc)
 {
 	/**
 	 * These functions look like this:
@@ -49,7 +49,7 @@ void* Interfaces::UncoverCreateFunction(void* createFunc)
 }
 
 template <typename T>
-T* GetInterface(void* handle, const char* name)
+static T* getInterface(void* handle, const char* name)
 {
 	void* interfacesList = dlsym(handle, "s_pInterfaceRegs");
 
@@ -60,14 +60,14 @@ T* GetInterface(void* handle, const char* name)
 
 	for (InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList); interface; interface = interface->m_pNext) {
 		if (std::strncmp(interface->m_pName, name, std::strlen(interface->m_pName) - 3) == 0) {
-			return reinterpret_cast<T*>(Interfaces::UncoverCreateFunction(interface->m_CreateFn));
+			return reinterpret_cast<T*>(Interfaces::uncoverCreateFunction(interface->m_CreateFn));
 		}
 	}
 
 	return nullptr;
 }
 
-void Interfaces::GetInterfaces()
+void Interfaces::getInterfaces()
 {
 	void* client_client = dlmopen(LM_ID_BASE, "./csgo/bin/linux64/client_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	void* engine_client = dlmopen(LM_ID_BASE, "./bin/linux64/engine_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
@@ -75,17 +75,17 @@ void Interfaces::GetInterfaces()
 	void* panorama_gl_client = dlmopen(LM_ID_BASE, "./bin/linux64/panorama_gl_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 	void* filesystem_stdio_client = dlmopen(LM_ID_BASE, "./bin/linux64/filesystem_stdio_client.so", RTLD_NOW | RTLD_NOLOAD | RTLD_LOCAL);
 
-	baseClient = GetInterface<void>(client_client, "VClient");
-	engine = GetInterface<CEngineClient>(engine_client, "VEngineClient");
-	entityList = GetInterface<CClientEntityList>(client_client, "VClientEntityList");
-	engineTrace = GetInterface<CEngineTrace>(engine_client, "EngineTraceClient");
-	icvar = GetInterface<ICvar>(materialsystem_client, "VEngineCvar");
-	prediction = GetInterface<CPrediction>(client_client, "VClientPrediction");
-	gameMovement = GetInterface<CGameMovement>(client_client, "GameMovement");
-	materialSystem = GetInterface<CMaterialSystem>(materialsystem_client, "VMaterialSystem");
-	engineRenderView = GetInterface<void>(engine_client, "VEngineRenderView");
-	panoramaUIEngine = GetInterface<CPanoramaUIEngine>(panorama_gl_client, "PanoramaUIEngine");
-	fileSystem = GetInterface<void>(filesystem_stdio_client, "VFileSystem");
+	baseClient = getInterface<void>(client_client, "VClient");
+	engine = getInterface<CEngineClient>(engine_client, "VEngineClient");
+	entityList = getInterface<CClientEntityList>(client_client, "VClientEntityList");
+	engineTrace = getInterface<CEngineTrace>(engine_client, "EngineTraceClient");
+	icvar = getInterface<ICvar>(materialsystem_client, "VEngineCvar");
+	prediction = getInterface<CPrediction>(client_client, "VClientPrediction");
+	gameMovement = getInterface<CGameMovement>(client_client, "GameMovement");
+	materialSystem = getInterface<CMaterialSystem>(materialsystem_client, "VMaterialSystem");
+	engineRenderView = getInterface<void>(engine_client, "VEngineRenderView");
+	panoramaUIEngine = getInterface<CPanoramaUIEngine>(panorama_gl_client, "PanoramaUIEngine");
+	fileSystem = getInterface<void>(filesystem_stdio_client, "VFileSystem");
 
 	dlclose(filesystem_stdio_client);
 	dlclose(panorama_gl_client);

@@ -20,9 +20,9 @@ public:
 	Input input{};
 	bool preDuck = false;
 
-	void CreateMove(CUserCmd* cmd);
+	void createMove(CUserCmd* cmd) const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } jumpBug;
 

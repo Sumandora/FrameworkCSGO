@@ -4,7 +4,7 @@
 
 #include "../../SDK/Definitions/InputFlags.hpp"
 
-void FastDuck::CreateMove(CUserCmd* cmd)
+void FastDuck::createMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
@@ -14,7 +14,7 @@ void FastDuck::CreateMove(CUserCmd* cmd)
 	// TODO Fake Duck
 }
 
-void FastDuck::SetupGUI()
+void FastDuck::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::Text("Warning: This feature is known to cause untrusted bans");

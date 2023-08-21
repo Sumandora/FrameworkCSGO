@@ -6,7 +6,7 @@
 #ifdef __clang__
 
 template <typename Ret, typename... Args>
-inline auto InvokeFunction(void* method, Args... args) -> Ret
+inline auto invokeFunction(void* method, Args... args) -> Ret
 {
 	return reinterpret_cast<Ret (*)(Args...)>(method)(args...);
 }
@@ -14,7 +14,7 @@ inline auto InvokeFunction(void* method, Args... args) -> Ret
 #else
 
 template <typename Ret, typename... Args>
-inline auto InvokeFunction(void* method, Args... args) -> Ret
+inline auto invokeFunction(void* method, Args... args) -> Ret
 {
 	return RetAddrSpoofer::invoke<Ret, Args...>(method, args...);
 }

@@ -10,12 +10,12 @@
 
 // TODO Aspect ratio
 
-void FOV::OverrideView(CViewSetup* pSetup)
+void FOV::overrideView(CViewSetup* pSetup) const
 {
 	if ((!forceFOV && !forceViewModel) || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	CBasePlayer* viewer = localPlayer;
 
 	if (!viewer)
@@ -48,7 +48,7 @@ void FOV::OverrideView(CViewSetup* pSetup)
 				Vector forward{};
 				Vector right{};
 				Vector up{};
-				Utils::AngleVectors(viewAngles, &forward, &right, &up);
+				Utils::angleVectors(viewAngles, &forward, &right, &up);
 
 				Vector& origin = viewModel->GetRenderOrigin();
 
@@ -72,7 +72,7 @@ void FOV::OverrideView(CViewSetup* pSetup)
 	}
 }
 
-void FOV::SetupGUI()
+void FOV::setupGUI()
 {
 	ImGui::Checkbox("Force FOV", &forceFOV);
 	if (forceFOV) {

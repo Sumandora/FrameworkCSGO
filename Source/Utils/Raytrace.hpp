@@ -8,7 +8,7 @@
 #include "../SDK/Raytrace/TraceFilter.hpp"
 
 namespace Utils {
-	Trace TraceRay(Vector start, Vector end, ITraceFilter* filter);
+	Trace traceRay(Vector start, Vector end, ITraceFilter* filter);
 }
 
 #endif

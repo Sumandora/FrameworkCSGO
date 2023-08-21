@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> Spotted::GetText(const Player& player) const
+std::optional<std::string> Spotted::getText(const Player& player) const
 {
 	if (player.spotted)
 		return "Spotted";

@@ -2,8 +2,8 @@
 #define HOOKS
 
 namespace Hooks {
-	void InstallHooks();
-	void UninstallHooks();
+	void installHooks();
+	void uninstallHooks();
 }
 
 #endif

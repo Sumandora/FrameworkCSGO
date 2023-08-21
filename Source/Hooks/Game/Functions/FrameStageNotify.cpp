@@ -9,25 +9,25 @@
 #include "../../../Features/Visuals/SpectatorList.hpp"
 #include "../../../Interfaces.hpp"
 
-void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage stage)
+void Hooks::Game::FrameStageNotify::hookFunc(void* thisptr, ClientFrameStage stage)
 {
 	switch (stage) {
 	case ClientFrameStage::FRAME_START: {
-		spectatorList.Update();
-		esp.Update();
-		partyScripts.PerformPartyScripts();
-		mainMenu.UpdateVisibility();
+		spectatorList.update();
+		esp.update();
+		partyScripts.performPartyScripts();
+		mainMenu.updateVisibility();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_START: {
-		fog.FrameStageNotify();
-		backtrack.FrameStageNotify();
+		fog.frameStageNotify();
+		backtrack.frameStageNotify();
 
-		noPunch.HidePunch();
+		noPunch.hidePunch();
 		break;
 	}
 	case ClientFrameStage::FRAME_RENDER_END: {
-		noPunch.RestorePunch();
+		noPunch.restorePunch();
 
 		worldToScreenMatrix = *Interfaces::engine->WorldToScreenMatrix();
 		break;
@@ -36,5 +36,5 @@ void Hooks::Game::FrameStageNotify::HookFunc(void* thisptr, ClientFrameStage sta
 		// ignored
 		break;
 	}
-	return InvokeFunction<void, void*, ClientFrameStage>(hook->proxy, thisptr, stage);
+	return invokeFunction<void, void*, ClientFrameStage>(hook->proxy, thisptr, stage);
 }

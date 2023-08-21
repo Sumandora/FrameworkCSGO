@@ -4,12 +4,12 @@
 #include <algorithm>
 #include <string>
 
-float Flashed::GetAlpha(const Player& player) const
+float Flashed::getAlpha(const Player& player) const
 {
 	return std::clamp(player.flashAlpha / 255.0f, 0.0f, 1.0f);
 }
 
-std::optional<std::string> Flashed::GetText(const Player& player) const
+std::optional<std::string> Flashed::getText(const Player& player) const
 {
 	if (player.flashAlpha > 0)
 		return "Flashed: " + std::to_string((int)player.flashAlpha);

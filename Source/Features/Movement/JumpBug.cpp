@@ -14,16 +14,16 @@
 
 static bool performing = false;
 
-void JumpBug::CreateMove(CUserCmd* cmd)
+void JumpBug::createMove(CUserCmd* cmd) const
 {
-	if (!enabled || (input.IsSet() && !input.IsActive())) {
+	if (!enabled || (input.isSet() && !input.isActive())) {
 		return;
 	}
 
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -56,9 +56,9 @@ void JumpBug::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void JumpBug::SetupGUI()
+void JumpBug::setupGUI()
 {
-	enginePrediction.ImGuiWarning();
+	enginePrediction.imGuiWarning();
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::InputSelector("Input (%s)", input);
 	ImGui::Checkbox("Pre duck", &preDuck);

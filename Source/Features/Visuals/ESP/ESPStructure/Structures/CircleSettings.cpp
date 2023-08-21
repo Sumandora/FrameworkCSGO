@@ -14,7 +14,7 @@ CircleSettings::CircleSettings()
 {
 }
 
-void CircleSettings::Draw(ImDrawList* drawList, ImVec2 center) const
+void CircleSettings::draw(ImDrawList* drawList, ImVec2 center) const
 {
 	if (!enabled)
 		return;
@@ -25,7 +25,7 @@ void CircleSettings::Draw(ImDrawList* drawList, ImVec2 center) const
 	drawList->AddCircleFilled(center, radius, circleColor);
 }
 
-void CircleSettings::SetupGUI(const char* id)
+void CircleSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);

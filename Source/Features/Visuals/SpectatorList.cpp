@@ -18,14 +18,14 @@ struct SpectatorEntry {
 
 std::vector<SpectatorEntry> spectators;
 
-void SpectatorList::Update()
+void SpectatorList::update() const
 {
 	spectators.clear();
 
 	if (!enabled || !Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 
 	CBaseEntity* currentTarget = nullptr;
 	if (localPlayer) {
@@ -61,7 +61,7 @@ void SpectatorList::Update()
 	}
 }
 
-void SpectatorList::ImGuiRender(ImDrawList* drawList)
+void SpectatorList::imGuiRender(ImDrawList* drawList) const
 {
 	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
 	float offset = 0;
@@ -99,7 +99,7 @@ void SpectatorList::ImGuiRender(ImDrawList* drawList)
 	}
 }
 
-void SpectatorList::SetupGUI()
+void SpectatorList::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::Checkbox("Show mode", &showMode);

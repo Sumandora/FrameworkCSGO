@@ -16,9 +16,9 @@ public:
 
 	bool enabled = false;
 
-	void CreateMove(CUserCmd* cmd);
+	void createMove(CUserCmd* cmd);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } fastDuck;
 

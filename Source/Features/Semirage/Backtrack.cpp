@@ -19,7 +19,7 @@
 
 #include "../../Hooks/Game/GameFunctions.hpp"
 
-float CalculateLerpTime()
+static float calculateLerpTime()
 {
 	// https://github.com/SwagSoftware/Kisak-Strike/blob/4c2fdc31432b4f5b911546c8c0d499a9cff68a85/game/server/gameinterface.cpp#L3281
 	float flUpdateRateValue = ConVarStorage::cl_updaterate()->GetFloat();
@@ -40,7 +40,7 @@ float CalculateLerpTime()
 	return 0.0f;
 }
 
-bool Backtrack::IsTickValid(const Tick& tick)
+bool Backtrack::isTickValid(const Tick& tick) const
 {
 	// Does the user even want the tick?
 	if (Memory::globalVars->curtime - tick.simulationTime > ConVarStorage::sv_maxunlag()->GetFloat() * scale)
@@ -61,7 +61,7 @@ bool Backtrack::IsTickValid(const Tick& tick)
 			correct += chan->GetLatency(FLOW_OUTGOING); // The server should account for this.
 	}
 
-	const float m_fLerpTime = CalculateLerpTime();
+	const float m_fLerpTime = calculateLerpTime();
 
 	correct += m_fLerpTime;
 
@@ -74,9 +74,9 @@ bool Backtrack::IsTickValid(const Tick& tick)
 	return fabs(deltaTime) <= 0.2f; // If our delta is higher than this the game will ignore our target time. We won't be able to hit anything
 }
 
-float CalculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, const Vector& b)
+static float calculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, const Vector& b)
 {
-	Vector requiredView = Utils::CalculateView(localPlayer->GetEyePosition(), b);
+	Vector requiredView = Utils::calculateView(localPlayer->GetEyePosition(), b);
 	requiredView -= *localPlayer->AimPunchAngle() * 2.0f;
 	requiredView -= viewangles;
 	requiredView.Wrap();
@@ -84,12 +84,12 @@ float CalculateFOVDistance(CBasePlayer* localPlayer, const Vector& viewangles, c
 	return requiredView.Length();
 }
 
-void Backtrack::CreateMove(CUserCmd* cmd)
+void Backtrack::createMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -128,14 +128,14 @@ void Backtrack::CreateMove(CUserCmd* cmd)
 
 		float currentDistance;
 		if (!hasLimitedDistance)
-			currentDistance = CalculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
+			currentDistance = calculateFOVDistance(localPlayer, cmd->viewangles, boneMatrix[8].Origin());
 		else
 			currentDistance = (*localPlayer->Origin() - *player->Origin()).Length();
 
 		for (const Tick& tick : std::ranges::views::reverse(records)) {
 			float delta;
 			if (!hasLimitedDistance)
-				delta = CalculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
+				delta = calculateFOVDistance(localPlayer, cmd->viewangles, tick.boneMatrix[8].Origin());
 			else // If we are holding a hasLimitedDistance search for the closest tick
 				delta = (*localPlayer->Origin() - tick.origin).Length();
 
@@ -148,19 +148,19 @@ void Backtrack::CreateMove(CUserCmd* cmd)
 	});
 
 	if (tickCount > 0 && cmd->tick_count != tickCount && (hasLimitedDistance || bestDistance < 5.0f)) {
-		eventLog.CreateReport("Trying to backtrack %d ticks", cmd->tick_count - tickCount);
+		eventLog.createReport("Trying to backtrack %d ticks", cmd->tick_count - tickCount);
 		cmd->tick_count = tickCount;
 	}
 }
 
-void Backtrack::FrameStageNotify()
+void Backtrack::frameStageNotify()
 {
 	if (!enabled || !Interfaces::engine->IsInGame()) {
 		ticks.clear();
 		return;
 	}
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer) {
 		ticks.clear();
 		return;
@@ -191,7 +191,7 @@ void Backtrack::FrameStageNotify()
 		if (!ticks[i].empty()) {
 			if (ticks[i].back().simulationTime == currentSimulationTime)
 				continue; // We don't have a new position yet
-			std::erase_if(ticks[i], [&](const Tick& tick) { return !IsTickValid(tick); });
+			std::erase_if(ticks[i], [&](const Tick& tick) { return !isTickValid(tick); });
 		}
 
 		Tick tick{};
@@ -205,7 +205,7 @@ void Backtrack::FrameStageNotify()
 	}
 }
 
-void Backtrack::ImGuiRender(ImDrawList* drawList)
+void Backtrack::imGuiRender(ImDrawList* drawList)
 {
 	if (!enabled || !visualize)
 		return;
@@ -213,16 +213,16 @@ void Backtrack::ImGuiRender(ImDrawList* drawList)
 	for (const auto& pair : ticks) {
 		for (const auto& tick : pair.second) {
 			ImVec2 screenOrigin;
-			Utils::Project(tick.origin, screenOrigin);
+			Utils::project(tick.origin, screenOrigin);
 			drawList->AddCircleFilled(screenOrigin, 5.0f, ImGuiColors::white);
 			ImVec2 screenHead;
-			Utils::Project(tick.boneMatrix[8].Origin(), screenHead);
+			Utils::project(tick.boneMatrix[8].Origin(), screenHead);
 			drawList->AddCircleFilled(screenHead, 5.0f, ImGuiColors::red);
 		}
 	}
 }
 
-void Backtrack::SetupGUI()
+void Backtrack::setupGUI()
 {
 #ifndef MENUPREVIEW
 	if (!ConVarStorage::cl_lagcompensation()->GetBool() || !ConVarStorage::sv_unlag()->GetBool())

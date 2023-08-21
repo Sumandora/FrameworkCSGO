@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> Location::GetText(const Player& player) const
+std::optional<std::string> Location::getText(const Player& player) const
 {
 	if (strlen(player.location) > 0)
 		return player.location;

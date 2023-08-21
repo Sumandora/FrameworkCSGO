@@ -15,12 +15,12 @@ static std::map<ProjectileType, const char*> projectileNames{
 	{ ProjectileType::FLASHBANG, "Flashbang" },
 };
 
-bool ProjectileTypeSettings::IsEnabled() const
+bool ProjectileTypeSettings::isEnabled() const
 {
-	return breachCharge.IsEnabled() || bumpMine.IsEnabled() || decoy.IsEnabled() || molotov.IsEnabled() || sensorGrenade.IsEnabled() || smokeGrenade.IsEnabled() || snowball.IsEnabled() || highExplosiveGrenade.IsEnabled() || flashbang.IsEnabled();
+	return breachCharge.isEnabled() || bumpMine.isEnabled() || decoy.isEnabled() || molotov.isEnabled() || sensorGrenade.isEnabled() || smokeGrenade.isEnabled() || snowball.isEnabled() || highExplosiveGrenade.isEnabled() || flashbang.isEnabled();
 }
 
-ProjectileSettings& ProjectileTypeSettings::GetSettings(ProjectileType type) const
+ProjectileSettings& ProjectileTypeSettings::getSettings(ProjectileType type) const
 {
 	switch (type) {
 	case ProjectileType::BREACH_CHARGE:
@@ -47,18 +47,18 @@ ProjectileSettings& ProjectileTypeSettings::GetSettings(ProjectileType type) con
 	}
 }
 
-void ProjectileTypeSettings::Draw(ImDrawList* drawList, Projectile& projectile) const
+void ProjectileTypeSettings::draw(ImDrawList* drawList, Projectile& projectile) const
 {
-	GetSettings(projectile.type).Draw(drawList, projectile, projectileNames[projectile.type]);
+	getSettings(projectile.type).draw(drawList, projectile, projectileNames[projectile.type]);
 }
 
-void ProjectileTypeSettings::SetupGUI(const char* id)
+void ProjectileTypeSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	if (ImGui::BeginTabBar("#Projectile config selection", ImGuiTabBarFlags_Reorderable)) {
 		for (const auto& [type, name] : projectileNames) {
 			if (ImGui::BeginTabItem(name)) {
-				ProjectileSettings& projectileSettings = GetSettings(type);
+				ProjectileSettings& projectileSettings = getSettings(type);
 
 				if (ImGui::Popup("Copy from", "Copy from")) {
 					for (const auto& [type2, name2] : projectileNames) {
@@ -66,13 +66,13 @@ void ProjectileTypeSettings::SetupGUI(const char* id)
 							continue;
 
 						if (ImGui::Selectable(name2)) {
-							projectileSettings = GetSettings(type2);
+							projectileSettings = getSettings(type2);
 						}
 					}
 					ImGui::EndPopup();
 				}
 
-				projectileSettings.SetupGUI(name);
+				projectileSettings.setupGUI(name);
 				ImGui::EndTabItem();
 			}
 		}

@@ -16,36 +16,36 @@
 
 #include "../../../Utils/MouseCorrection.hpp"
 
-bool Hooks::Game::CreateMove::HookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
+bool Hooks::Game::CreateMove::hookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd)
 {
-	bool silent = InvokeFunction<bool, void*, float, CUserCmd*>(hook->proxy, thisptr, flInputSampleTime, cmd);
+	bool silent = invokeFunction<bool, void*, float, CUserCmd*>(hook->proxy, thisptr, flInputSampleTime, cmd);
 
 	if (!cmd || !cmd->command_number)
 		return silent;
 
-	bhop.CreateMove(cmd);
-	crouchJump.CreateMove(cmd);
-	fastDuck.CreateMove(cmd);
+	bhop.createMove(cmd);
+	crouchJump.createMove(cmd);
+	fastDuck.createMove(cmd);
 
-	enginePrediction.StartPrediction(cmd);
+	enginePrediction.startPrediction(cmd);
 	{
-		autoStrafer.CreateMove(cmd);
-		jumpBug.CreateMove(cmd);
-		edgeJump.CreateMove(cmd);
+		autoStrafer.createMove(cmd);
+		jumpBug.createMove(cmd);
+		edgeJump.createMove(cmd);
 
-		silent = !recoilAssistance.CreateMove(cmd) && silent;
-		silent = !semirageAimbot.CreateMove(cmd) && silent;
+		silent = !recoilAssistance.createMove(cmd) && silent;
+		silent = !semirageAimbot.createMove(cmd) && silent;
 
-		triggerbot.CreateMove(cmd);
+		triggerbot.createMove(cmd);
 
 		// We have to keep in mind that our angles might differ from the client view at this point,
 		// because of that we need to take the cmd at the last point before actually telling the server, that we shot,
 		// so we have the viewangles, which is being told to the server
-		backtrack.CreateMove(cmd);
+		backtrack.createMove(cmd);
 	}
-	enginePrediction.EndPrediction();
+	enginePrediction.endPrediction();
 
-	Utils::CorrectMouseDeltas(cmd);
+	Utils::correctMouseDeltas(cmd);
 
 	cmd->viewangles_copy = cmd->viewangles;
 	cmd->buttons_copy = cmd->buttons;

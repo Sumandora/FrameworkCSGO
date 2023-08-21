@@ -1,29 +1,29 @@
 #include "../Glow.hpp"
 
-bool Glow::Player::Apply(int entindex, CBasePlayer* player)
+bool Glow::Player::apply(int entindex, CBasePlayer* player) const
 {
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (player == localPlayer)
-		return local.Apply(entindex, player);
+		return local.apply(entindex, player);
 	else if (!player->IsEnemy(localPlayer))
-		return teammate.Apply(entindex, player);
+		return teammate.apply(entindex, player);
 	else
-		return enemy.Apply(entindex, player);
+		return enemy.apply(entindex, player);
 }
 
-void Glow::Player::SetupGUI()
+void Glow::Player::setupGUI()
 {
 	if (ImGui::BeginTabBar("#Player config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Teammate")) {
-			teammate.SetupGUI();
+			teammate.setupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Enemy")) {
-			enemy.SetupGUI();
+			enemy.setupGUI();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Local")) {
-			local.SetupGUI();
+			local.setupGUI();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

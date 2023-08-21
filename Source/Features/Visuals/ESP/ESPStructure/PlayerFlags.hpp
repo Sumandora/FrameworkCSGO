@@ -18,10 +18,10 @@ public:
 
 	virtual ~Flag() { }
 
-	virtual float GetAlpha(const Player& player) const { return 1.0f; }
-	virtual std::optional<std::string> GetText(const Player& player) const = 0;
+	virtual float getAlpha(const Player& player) const { return 1.0f; }
+	virtual std::optional<std::string> getText(const Player& player) const = 0;
 
-	virtual std::string GetName() const = 0;
+	virtual std::string getName() const = 0;
 
 	SERIALIZER()
 	{
@@ -33,9 +33,9 @@ public:
 #define DECLARE_FLAG(flagName, displayName)                                              \
 	class flagName : public Flag {                                                       \
 	public:                                                                              \
-		virtual std::optional<std::string> GetText(const Player& player) const override; \
+		virtual std::optional<std::string> getText(const Player& player) const override; \
                                                                                          \
-		virtual std::string GetName() const override                                     \
+		virtual std::string getName() const override                                     \
 		{                                                                                \
 			return displayName;                                                          \
 		}                                                                                \
@@ -44,17 +44,17 @@ public:
 #define DECLARE_ALPHA_FLAG(flagName, displayName)                                        \
 	class flagName : public Flag {                                                       \
 	public:                                                                              \
-		virtual float GetAlpha(const Player& player) const override;                     \
-		virtual std::optional<std::string> GetText(const Player& player) const override; \
+		virtual float getAlpha(const Player& player) const override;                     \
+		virtual std::optional<std::string> getText(const Player& player) const override; \
                                                                                          \
-		virtual std::string GetName() const override                                     \
+		virtual std::string getName() const override                                     \
 		{                                                                                \
 			return displayName;                                                          \
 		}                                                                                \
 	};
 
 // TODO Generate boilerplate for the "if(check) text else nullopt"-flags
-// TODO Flags (Has Armor (m_ArmorValue)/Heavy Armor/Helmet, Is Walking, Is Reloading, Is Bot)
+// TODO Flags (Has Armor (m_ArmorValue)/Heavy Armor/Helmet, Is Reloading, Is Bot)
 // TODO Flags for non-players?
 DECLARE_FLAG(Money, "Money")
 DECLARE_FLAG(Scoped, "Scoped")

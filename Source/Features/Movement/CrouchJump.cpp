@@ -9,9 +9,9 @@
 
 static bool performing = false;
 
-void CrouchJump::CreateMove(CUserCmd* cmd)
+void CrouchJump::createMove(CUserCmd* cmd)
 {
-	if (!enabled || (input.IsSet() && !input.IsActive())) {
+	if (!enabled || (input.isSet() && !input.isActive())) {
 		performing = false;
 		return;
 	}
@@ -19,7 +19,7 @@ void CrouchJump::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive()) {
 		performing = false;
 		return;
@@ -40,7 +40,7 @@ void CrouchJump::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void CrouchJump::SetupGUI()
+void CrouchJump::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::InputSelector("Input (%s)", input);

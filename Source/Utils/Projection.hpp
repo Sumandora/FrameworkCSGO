@@ -5,7 +5,7 @@
 #include "imgui.h"
 
 namespace Utils {
-	bool Project(const Vector& world, ImVec2& screen);
+	bool project(const Vector& world, ImVec2& screen);
 }
 
 #endif

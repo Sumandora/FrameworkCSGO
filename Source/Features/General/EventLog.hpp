@@ -15,11 +15,11 @@ public:
 	bool enabled = true;
 	int duration = 5000;
 
-	void ImGuiRender(ImDrawList* drawList);
+	void imGuiRender(ImDrawList* drawList);
 
-	void __attribute__((format(printf, 2, 3))) CreateReport(const char* fmt, ...);
+	void __attribute__((format(printf, 2, 3))) createReport(const char* fmt, ...);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } eventLog;
 

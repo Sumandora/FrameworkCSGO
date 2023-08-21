@@ -7,7 +7,7 @@
 #include "../../../../SDK/InterfaceReg.hpp"
 #include "../../../Elements/HelpMarker.hpp"
 
-void Gui::Windows::Interfaces()
+void Gui::Windows::interfaces()
 {
 	struct Interface {
 		InterfaceReg* reg;
@@ -64,8 +64,7 @@ void Gui::Windows::Interfaces()
 						ImGui::Text("Uncovered address: %p", cachedInterface.uncoveredAddress);
 					} else {
 						if (ImGui::Button("Uncover create function")) {
-							cachedInterface.uncoveredAddress = Interfaces::UncoverCreateFunction(
-								cachedInterface.reg->m_CreateFn);
+							cachedInterface.uncoveredAddress = Interfaces::uncoverCreateFunction(cachedInterface.reg->m_CreateFn);
 						}
 					}
 

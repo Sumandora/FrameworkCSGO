@@ -48,7 +48,7 @@ static std::unordered_map<WeaponClass, std::vector<WeaponID>> weaponClassificati
 	{ WeaponClass::SHOTGUN, { WeaponID::WEAPON_NOVA, WeaponID::WEAPON_XM1014, WeaponID::WEAPON_MAG7, WeaponID::WEAPON_SAWEDOFF } }
 };
 
-inline WeaponClass WeaponClassByID(WeaponID weaponId)
+inline WeaponClass weaponClassByID(WeaponID weaponId)
 {
 	for (auto [weaponClass, weaponIds] : weaponClassification)
 		for (const WeaponID weaponId2 : weaponIds)

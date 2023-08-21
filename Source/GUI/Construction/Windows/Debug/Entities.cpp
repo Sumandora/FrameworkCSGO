@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-static void ShowNetvar(const CBaseEntity* base, const RecvProp* var)
+static void showNetvar(const CBaseEntity* base, const RecvProp* var)
 {
 	// TODO Use SendPropType here, to determine type:
 	const void* ptr = reinterpret_cast<const char*>(base) + var->m_Offset;
@@ -20,7 +20,7 @@ static void ShowNetvar(const CBaseEntity* base, const RecvProp* var)
 	ImGui::Text("64-bit Int: (%ld)", *static_cast<const int64_t*>(ptr));
 }
 
-void Gui::Windows::Entities()
+void Gui::Windows::entities()
 {
 	if (!Interfaces::engine->IsInGame())
 		return;
@@ -39,7 +39,7 @@ void Gui::Windows::Entities()
 					if (ImGui::TreeNode(table->m_pNetTableName)) {
 						for (const RecvProp* var : vars)
 							if (ImGui::TreeNode(var->m_pVarName)) {
-								ShowNetvar(entity, var);
+								showNetvar(entity, var);
 								ImGui::TreePop();
 							}
 						ImGui::TreePop();

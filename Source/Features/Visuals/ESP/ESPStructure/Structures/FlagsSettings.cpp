@@ -19,7 +19,7 @@ FlagsSettings::FlagsSettings(std::vector<std::shared_ptr<Flag>>&& flags)
 {
 }
 
-bool FlagsSettings::IsEnabled() const
+bool FlagsSettings::isEnabled() const
 {
 	if (enabled)
 		for (const std::shared_ptr<Flag>& flag : flags)
@@ -29,9 +29,9 @@ bool FlagsSettings::IsEnabled() const
 	return false;
 }
 
-void FlagsSettings::Draw(ImDrawList* drawList, float x, float y, const Player& player) const
+void FlagsSettings::draw(ImDrawList* drawList, float x, float y, const Player& player) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
 	if (fontScale <= 0.0f)
@@ -46,7 +46,7 @@ void FlagsSettings::Draw(ImDrawList* drawList, float x, float y, const Player& p
 		if (!flag->enabled)
 			continue;
 
-		std::optional<std::string> text = flag->GetText(player);
+		std::optional<std::string> text = flag->getText(player);
 		if (!text.has_value())
 			continue;
 
@@ -55,7 +55,7 @@ void FlagsSettings::Draw(ImDrawList* drawList, float x, float y, const Player& p
 		const ImVec2 size = ImGui::CalcTextSize(cstring);
 		const ImVec2 position(x, y);
 
-		float alphaScale = flag->GetAlpha(player);
+		float alphaScale = flag->getAlpha(player);
 
 		if (shadow) {
 
@@ -75,7 +75,7 @@ void FlagsSettings::Draw(ImDrawList* drawList, float x, float y, const Player& p
 	ImGui::PopFont();
 }
 
-void FlagsSettings::SetupGUI(const char* id)
+void FlagsSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
 	ImGui::Checkbox(id, &enabled);
@@ -91,7 +91,7 @@ void FlagsSettings::SetupGUI(const char* id)
 
 		if (ImGui::BeginTabBar("Flags", ImGuiTabBarFlags_Reorderable)) {
 			for (const std::shared_ptr<Flag>& flag : flags) {
-				if (ImGui::BeginTabItem(flag->GetName().c_str())) {
+				if (ImGui::BeginTabItem(flag->getName().c_str())) {
 					ImGui::Checkbox("Enabled", &flag->enabled);
 					ImGui::ClickableColorButton("Flag color", flag->color);
 					ImGui::EndTabItem();
@@ -115,6 +115,6 @@ SCOPED_SERIALIZER(FlagsSettings)
 	SERIALIZE_VECTOR4D("Shadow color", shadowColor.Value);
 
 	for (const std::shared_ptr<Flag>& flag : flags) {
-		SERIALIZE_STRUCT(flag->GetName().c_str(), (*flag));
+		SERIALIZE_STRUCT(flag->getName().c_str(), (*flag));
 	}
 }

@@ -20,9 +20,9 @@ public:
 	bool clearFlashbang = false;
 	ImColor flashColor = ImGuiColors::white;
 
-	bool ViewDrawFade(std::byte* color, IMaterial*& pFadeMaterial);
+	bool viewDrawFade(std::byte* color, IMaterial*& pFadeMaterial) const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } flashReduction;
 

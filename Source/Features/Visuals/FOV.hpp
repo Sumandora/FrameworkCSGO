@@ -25,9 +25,9 @@ public:
 	Vector offset;
 	Vector rotationOffset;
 
-	void OverrideView(CViewSetup* pSetup);
+	void overrideView(CViewSetup* pSetup) const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } fov;
 

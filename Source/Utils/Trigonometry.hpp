@@ -15,10 +15,10 @@ enum {
 };
 
 namespace Utils {
-	void AngleVectors(const Vector& angles, Vector* forward);
-	void AngleVectors(Vector angles, Vector* forward, Vector* right, Vector* up);
-	void VectorAngles(Vector& forward, Vector& angles);
-	Vector CalculateView(const Vector& a, const Vector& b);
+	void angleVectors(const Vector& angles, Vector* forward);
+	void angleVectors(Vector angles, Vector* forward, Vector* right, Vector* up);
+	void vectorAngles(Vector& forward, Vector& angles);
+	Vector calculateView(const Vector& a, const Vector& b);
 }
 
 #endif

@@ -13,9 +13,9 @@
 #include <optional>
 #include <vector>
 
-void ESP::ImGuiRender(ImDrawList* drawList)
+void ESP::imGuiRender(ImDrawList* drawList)
 {
-	if (!enabled || (key.IsSet() && !key.IsActive()))
+	if (!enabled || (key.isSet() && !key.isActive()))
 		return;
 
 	if (!Interfaces::engine->IsInGame())
@@ -30,7 +30,7 @@ void ESP::ImGuiRender(ImDrawList* drawList)
 		Interfaces::engine->GetViewAngles(&viewangles);
 	}
 
-	players.Draw(drawList, localPlayer.value());
+	players.draw(drawList, localPlayer.value());
 
 	// Give spectators a lower priority than actual players
 	for (auto& [_, spectator] : EntityCache::spectators) {
@@ -45,54 +45,54 @@ void ESP::ImGuiRender(ImDrawList* drawList)
 				continue;
 		}
 
-		spectators.Draw(drawList, spectator);
+		spectators.draw(drawList, spectator);
 	}
 
 	for (auto& [_, player] : EntityCache::players) {
 		if (player.dormant)
 			continue; // No point in displaying outdated positions
-		players.Draw(drawList, player);
+		players.draw(drawList, player);
 	}
 
 	for (auto& [_, weapon] : EntityCache::weapons) {
 		if (weapon.ownerEntity == -1)
-			weapons.Draw(drawList, weapon);
+			weapons.draw(drawList, weapon);
 	}
 
 	for (auto& [_, hostage] : EntityCache::hostages) {
-		hostages.Draw(drawList, hostage);
+		hostages.draw(drawList, hostage);
 	}
 
 	for (auto& [_, projectile] : EntityCache::projectiles) {
-		projectiles.Draw(drawList, projectile);
+		projectiles.draw(drawList, projectile);
 	}
 
 	for (auto& [_, bomb] : EntityCache::bombs) {
-		plantedC4.Draw(drawList, bomb);
+		plantedC4.draw(drawList, bomb);
 	}
 
 	for (auto& [_, lootCrate] : EntityCache::lootCrates) {
-		dzLootCrates.Draw(drawList, lootCrate);
+		dzLootCrates.draw(drawList, lootCrate);
 	}
 
 	for (auto& [_, drone] : EntityCache::drones) {
-		dzDrones.Draw(drawList, drone);
+		dzDrones.draw(drawList, drone);
 	}
 
 	for (auto& [_, sentry] : EntityCache::sentries) {
-		dzSentries.Draw(drawList, sentry);
+		dzSentries.draw(drawList, sentry);
 	}
 
 	for (auto& [_, entity] : EntityCache::ammoBoxes) {
-		dzAmmoBoxes.Draw(drawList, entity, "Ammo box");
+		dzAmmoBoxes.draw(drawList, entity, "Ammo box");
 	}
 
 	for (auto& [_, entity] : EntityCache::entities) {
-		other.Draw(drawList, entity, entity.clientClass->m_pNetworkName);
+		other.draw(drawList, entity, entity.clientClass->m_pNetworkName);
 	}
 }
 
-void ESP::Update()
+void ESP::update()
 {
 	if (!enabled)
 		return;
@@ -100,22 +100,22 @@ void ESP::Update()
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	EntityCache::UpdateEntities(
+	EntityCache::updateEntities(
 		drawDistance,
-		other.IsEnabled(),
-		players.teammate.IsEnabled() || players.enemy.IsEnabled() || players.teammate.IsEnabled(),
-		spectators.IsEnabled(),
-		weapons.IsEnabled(),
-		hostages.IsEnabled(),
-		projectiles.IsEnabled(),
-		plantedC4.IsEnabled(),
-		dzAmmoBoxes.IsEnabled(),
-		dzLootCrates.IsEnabled(),
-		dzDrones.IsEnabled(),
-		dzSentries.IsEnabled());
+		other.isEnabled(),
+		players.isEnabled(),
+		spectators.isEnabled(),
+		weapons.isEnabled(),
+		hostages.isEnabled(),
+		projectiles.isEnabled(),
+		plantedC4.isEnabled(),
+		dzAmmoBoxes.isEnabled(),
+		dzLootCrates.isEnabled(),
+		dzDrones.isEnabled(),
+		dzSentries.isEnabled());
 }
 
-void ESP::SetupGUI()
+void ESP::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SameLine();
@@ -134,7 +134,7 @@ void ESP::SetupGUI()
 	ImGui::Text("Visibility checks");
 	ImGui::SameLine();
 	if (ImGui::Popup("Visibility checker settings")) {
-		visibilityChecker.SetupGUI();
+		visibilityChecker.setupGUI();
 		ImGui::EndPopup();
 	}
 
@@ -142,45 +142,45 @@ void ESP::SetupGUI()
 
 	if (ImGui::BeginTabBar("#Config selection", ImGuiTabBarFlags_Reorderable)) {
 		if (ImGui::BeginTabItem("Players")) {
-			players.SetupGUI("Players");
+			players.setupGUI("Players");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Spectators")) {
-			spectators.SetupGUI("Spectators");
+			spectators.setupGUI("Spectators");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Weapons")) {
-			weapons.SetupGUI("Weapons");
+			weapons.setupGUI("Weapons");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Projectiles")) {
-			projectiles.SetupGUI("Projectiles");
+			projectiles.setupGUI("Projectiles");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Planted C4")) {
-			plantedC4.SetupGUI("Planted C4");
+			plantedC4.setupGUI("Planted C4");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Hostages")) {
-			hostages.SetupGUI("Hostages");
+			hostages.setupGUI("Hostages");
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Danger Zone")) {
 			if (ImGui::BeginTabBar("#Danger Zone config selection", ImGuiTabBarFlags_Reorderable)) {
 				if (ImGui::BeginTabItem("Loot crates")) {
-					dzLootCrates.SetupGUI("Loot crates");
+					dzLootCrates.setupGUI("Loot crates");
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem("Ammo boxes")) {
-					dzAmmoBoxes.SetupGUI("Ammo boxes");
+					dzAmmoBoxes.setupGUI("Ammo boxes");
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem("Sentries")) {
-					dzSentries.SetupGUI("Sentries");
+					dzSentries.setupGUI("Sentries");
 					ImGui::EndTabItem();
 				}
 				if (ImGui::BeginTabItem("Drones")) {
-					dzDrones.SetupGUI("Drones");
+					dzDrones.setupGUI("Drones");
 					ImGui::EndTabItem();
 				}
 				ImGui::EndTabBar();
@@ -188,7 +188,7 @@ void ESP::SetupGUI()
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Other")) {
-			other.SetupGUI("Other");
+			other.setupGUI("Other");
 			ImGui::EndTabItem();
 		}
 

@@ -10,7 +10,7 @@
 // TODO Reset the fog when turned off
 // TODO also some maps might not have a fog controller (?)
 
-void Fog::FrameStageNotify()
+void Fog::frameStageNotify() const
 {
 	if (!enabled)
 		return;
@@ -47,7 +47,7 @@ void Fog::FrameStageNotify()
 	}
 }
 
-void Fog::SetupGUI()
+void Fog::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 

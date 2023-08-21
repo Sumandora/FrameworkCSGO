@@ -9,10 +9,10 @@
 static GameHook* dlIteratePhdr;
 void* HideSharedObject::proxy;
 
-void Hooks::InstallHooks()
+void Hooks::installHooks()
 {
-	Game::Hook();
-	SDL::Hook();
+	Game::hook();
+	SDL::hook();
 
 	HideSharedObject::addHiddenSharedObject("lib" PROJECT_NAME ".so");
 
@@ -20,10 +20,10 @@ void Hooks::InstallHooks()
 	HideSharedObject::proxy = dlIteratePhdr->proxy;
 }
 
-void Hooks::UninstallHooks()
+void Hooks::uninstallHooks()
 {
 	delete dlIteratePhdr;
 
-	SDL::Unhook();
-	Game::Unhook();
+	SDL::unhook();
+	Game::unhook();
 }

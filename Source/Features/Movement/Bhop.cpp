@@ -11,7 +11,7 @@
 #include "../../Interfaces.hpp"
 #include <cstdlib>
 
-void Bhop::CreateMove(CUserCmd* cmd)
+void Bhop::createMove(CUserCmd* cmd)
 {
 	if (!enabled)
 		return;
@@ -19,7 +19,7 @@ void Bhop::CreateMove(CUserCmd* cmd)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -55,7 +55,7 @@ void Bhop::CreateMove(CUserCmd* cmd)
 	}
 }
 
-void Bhop::SetupGUI()
+void Bhop::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 	ImGui::SliderFloat("Hit chance", &hitChance, 0, 1, "%.2f");

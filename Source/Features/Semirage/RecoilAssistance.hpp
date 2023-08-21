@@ -20,9 +20,9 @@ public:
 	bool silent = false;
 	int minShots = 1;
 
-	bool CreateMove(CUserCmd* cmd);
+	bool createMove(CUserCmd* cmd);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } recoilAssistance;
 

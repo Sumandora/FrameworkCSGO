@@ -49,15 +49,15 @@ public:
 		: Input{ false } {};
 	inline ~Input() { std::erase(inputs, this); }
 
-	inline bool IsSet() { return key.has_value(); }
-	bool IsActive();
-	void UpdateState();
-	void ResetActive() { active = false; } // We don't keep old states, when changing keys
+	inline bool isSet() const { return key.has_value(); }
+	bool isActive() const;
+	void updateState();
+	void resetActive() { active = false; } // We don't keep old states, when changing keys
 
 	SERIALIZER();
 
-	virtual bool IsAllowed(Method method, Type type, std::optional<unsigned int> key) { return true; }
-	virtual void OnChange() { }
+	virtual bool isAllowed(Method method, Type type, std::optional<unsigned int> key) { return true; }
+	virtual void onChange() { }
 };
 
 namespace ImGui {

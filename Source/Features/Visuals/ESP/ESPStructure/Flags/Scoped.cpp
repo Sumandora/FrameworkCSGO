@@ -4,7 +4,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> Scoped::GetText(const Player& player) const
+std::optional<std::string> Scoped::getText(const Player& player) const
 {
 	if (player.scoped)
 		return "Scoped";

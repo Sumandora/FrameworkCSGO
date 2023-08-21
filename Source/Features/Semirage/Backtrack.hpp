@@ -32,14 +32,14 @@ public:
 	std::map<int, std::vector<Backtrack::Tick>> ticks;
 
 private:
-	bool IsTickValid(const Tick& tick);
+	bool isTickValid(const Tick& tick) const;
 
 public:
-	void CreateMove(CUserCmd* cmd);
-	void FrameStageNotify();
-	void ImGuiRender(ImDrawList* drawList);
+	void createMove(CUserCmd* cmd);
+	void frameStageNotify();
+	void imGuiRender(ImDrawList* drawList);
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } backtrack;
 

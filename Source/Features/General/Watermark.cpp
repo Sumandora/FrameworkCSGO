@@ -3,7 +3,7 @@
 #include "../../GUI/Elements/ShadowString.hpp"
 #include "../../GUI/ImGuiColors.hpp"
 
-void Watermark::ImGuiRender(ImDrawList* drawList)
+void Watermark::imGuiRender(ImDrawList* drawList)
 {
 	if (!enabled)
 		return;
@@ -16,7 +16,7 @@ void Watermark::ImGuiRender(ImDrawList* drawList)
 	);
 }
 
-void Watermark::SetupGUI()
+void Watermark::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 }

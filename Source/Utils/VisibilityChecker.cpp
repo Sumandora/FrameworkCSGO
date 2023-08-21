@@ -4,7 +4,7 @@
 
 #include "Raytrace.hpp"
 
-bool VisibilityChecker::IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
+bool VisibilityChecker::isVisible(CBasePlayer* localPlayer, CBasePlayer* otherPlayer)
 {
 	if (considerEveryoneVisibleWhenDead && !localPlayer->IsAlive())
 		return true;
@@ -15,16 +15,16 @@ bool VisibilityChecker::IsVisible(CBasePlayer* localPlayer, CBasePlayer* otherPl
 	const Vector playerEye = localPlayer->GetEyePosition();
 	const Vector head = otherPlayer->GetBonePosition(8);
 
-	if (considerSmokedOffEntitiesAsOccluded && Memory::LineGoesThroughSmoke(playerEye, head, 1))
+	if (considerSmokedOffEntitiesAsOccluded && Memory::lineGoesThroughSmoke(playerEye, head, 1))
 		return false;
 
 	CTraceFilterEntity filter(localPlayer);
-	const Trace trace = Utils::TraceRay(playerEye, head, &filter);
+	const Trace trace = Utils::traceRay(playerEye, head, &filter);
 
 	return trace.m_pEnt == otherPlayer;
 }
 
-void VisibilityChecker::SetupGUI()
+void VisibilityChecker::setupGUI()
 {
 	ImGui::Checkbox("Consider spotted entities as visible", &considerSpottedEntitiesAsVisible);
 	ImGui::Checkbox("Consider smoked off entities as occluded", &considerSmokedOffEntitiesAsOccluded);

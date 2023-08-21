@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> Planting::GetText(const Player& player) const
+std::optional<std::string> Planting::getText(const Player& player) const
 {
 	if (player.planting)
 		return "Planting";

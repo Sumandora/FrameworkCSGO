@@ -6,14 +6,14 @@
 namespace Gui {
 	extern bool visible;
 
-	void Create();
-	void Destroy();
+	void create();
+	void destroy();
 
-	void Build();
+	void build();
 
-	void SwapWindow(SDL_Window* window);
-	bool PollEvent(SDL_Event* event);
-	bool WarpMouseInWindow();
+	void swapWindow(SDL_Window* window);
+	bool pollEvent(SDL_Event* event);
+	bool warpMouseInWindow();
 }
 
 #endif

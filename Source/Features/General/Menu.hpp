@@ -19,8 +19,8 @@ public:
 	public:
 		inline MenuKey()
 			: Input(Input::Method::KEY, Input::Type::TOGGLE, ImGuiKey_Insert, true){};
-		virtual bool IsAllowed(Method method, Type type, std::optional<unsigned int> key);
-		virtual void OnChange();
+		virtual bool isAllowed(Method method, Type type, std::optional<unsigned int> key) override;
+		virtual void onChange() override;
 	} menuKey{};
 
 	int style = 0;
@@ -35,9 +35,9 @@ public:
 	bool isShowingUserGuide = false;
 #endif
 
-	void ImGuiLoop();
+	void imGuiLoop();
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } menu;
 

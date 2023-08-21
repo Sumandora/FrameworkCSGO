@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <cmath>
 
-void LegitAimbot::PollEvent(SDL_Event* event)
+void LegitAimbot::pollEvent(SDL_Event* event)
 {
 	if (!enabled)
 		return;
@@ -19,7 +19,7 @@ void LegitAimbot::PollEvent(SDL_Event* event)
 	if (!Interfaces::engine->IsInGame())
 		return;
 
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 	if (!localPlayer || !localPlayer->IsAlive())
 		return;
 
@@ -36,7 +36,7 @@ void LegitAimbot::PollEvent(SDL_Event* event)
 	if (!IsFirearm(*combatWeapon->WeaponDefinitionIndex()))
 		return;
 
-	WeaponConfig* weaponConfig = weaponConfigurator.GetConfig(*combatWeapon->WeaponDefinitionIndex());
+	WeaponConfig* weaponConfig = weaponConfigurator.getConfig(*combatWeapon->WeaponDefinitionIndex());
 	if (!weaponConfig)
 		return;
 
@@ -66,15 +66,15 @@ void LegitAimbot::PollEvent(SDL_Event* event)
 
 		const Vector head = boneMatrix[8].Origin();
 
-		if (dontAimThroughSmoke && Memory::LineGoesThroughSmoke(playerEye, head, 1))
+		if (dontAimThroughSmoke && Memory::lineGoesThroughSmoke(playerEye, head, 1))
 			continue;
 
-		const Trace trace = Utils::TraceRay(playerEye, head, &filter);
+		const Trace trace = Utils::traceRay(playerEye, head, &filter);
 
 		if (trace.m_pEnt != player)
 			continue; // The enemy is behind something...
 
-		Vector rotation = Utils::CalculateView(playerEye, head);
+		Vector rotation = Utils::calculateView(playerEye, head);
 		rotation -= *localPlayer->AimPunchAngle() * 2.0f;
 		rotation -= viewAngles;
 		rotation = rotation.Wrap();
@@ -106,14 +106,14 @@ void LegitAimbot::PollEvent(SDL_Event* event)
 	event->motion.yrel += std::clamp((int)goal.y, -weaponConfig->maximalInfluence, weaponConfig->maximalInfluence);
 }
 
-void LegitAimbot::WeaponConfig::SetupGUI()
+void LegitAimbot::WeaponConfig::setupGUI()
 {
 	ImGui::SliderFloat("FOV", &fov, 0.0f, 10.0f, "%.2f");
 	ImGui::SliderFloat("Smoothness", &smoothness, 1.0f, 5.0f, "%.2f");
 	ImGui::SliderInt("Maximal influence", &maximalInfluence, 1, 5);
 }
 
-void LegitAimbot::SetupGUI()
+void LegitAimbot::setupGUI()
 {
 	ImGui::Checkbox("Enabled", &enabled);
 
@@ -121,7 +121,7 @@ void LegitAimbot::SetupGUI()
 	ImGui::Checkbox("Don't aim through smoke", &dontAimThroughSmoke);
 	ImGui::Checkbox("Friendly fire", &friendlyFire);
 
-	weaponConfigurator.SetupGUI();
+	weaponConfigurator.setupGUI();
 }
 
 SCOPED_SERIALIZER(LegitAimbot::WeaponConfig)

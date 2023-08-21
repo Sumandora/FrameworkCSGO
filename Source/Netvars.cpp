@@ -15,7 +15,7 @@
 
 #include <cassert>
 
-void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
+void readTable(ClientClass* clientClass, RecvTable* recvTable)
 {
 	for (int i = 0; i < recvTable->m_nProps; i++) {
 		RecvProp* prop = &recvTable->m_pProps[i];
@@ -27,11 +27,11 @@ void ReadTable(ClientClass* clientClass, RecvTable* recvTable)
 		Netvars::netvars[clientClass][recvTable].emplace_back(prop);
 
 		if (prop->m_pDataTable && strcmp(prop->m_pDataTable->m_pNetTableName, prop->m_pVarName) != 0) // sometimes there are tables, which have var names. They are always second; skip them
-			ReadTable(clientClass, prop->m_pDataTable);
+			readTable(clientClass, prop->m_pDataTable);
 	}
 }
 
-void Netvars::DumpNetvars()
+void Netvars::dumpNetvars()
 {
 	/**
 	 * GetAllClasses assembly:
@@ -52,11 +52,11 @@ void Netvars::DumpNetvars()
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {
 		RecvTable* table = cClass->m_pRecvTable;
-		ReadTable(cClass, table);
+		readTable(cClass, table);
 	}
 }
 
-RecvProp* Netvars::GetOffset(ClientClassID clientClassID, const std::string& tableName, const std::string& variableName)
+RecvProp* Netvars::getOffset(ClientClassID clientClassID, const std::string& tableName, const std::string& variableName)
 {
 	for (const auto& [clientClass, tables] : Netvars::netvars)
 		if (clientClass->m_ClassID == clientClassID)

@@ -9,35 +9,35 @@ HostageSettings::HostageSettings()
 {
 }
 
-bool HostageSettings::IsEnabled() const
+bool HostageSettings::isEnabled() const
 {
-	return boxName.IsEnabled() || timer.enabled;
+	return boxName.isEnabled() || timer.enabled;
 }
 
-void HostageSettings::Draw(ImDrawList* drawList, Hostage& hostage) const
+void HostageSettings::draw(ImDrawList* drawList, Hostage& hostage) const
 {
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
-	const std::optional<ImVec4> rectangle = hostage.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = hostage.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), "Hostage");
+	boxName.draw(drawList, rectangle.value(), "Hostage");
 
 	if (hostage.state == 1) { // Is the hostage being picked up?
 		const float countDown = hostage.grabTime - Memory::globalVars->curtime;
 		std::stringstream stream;
 		stream << std::fixed << std::setprecision(accuracy) << countDown;
-		timer.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, stream.str().c_str());
+		timer.draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, stream.str().c_str());
 	}
 }
 
-void HostageSettings::SetupGUI(const char* id)
+void HostageSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	timer.SetupGUI("Timer");
+	boxName.setupGUI(id);
+	timer.setupGUI("Timer");
 	if (timer.enabled)
 		ImGui::SliderInt("Accuracy", &accuracy, 1, 5);
 	ImGui::PopID();

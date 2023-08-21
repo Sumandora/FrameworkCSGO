@@ -3,7 +3,7 @@
 #include <cmath>
 
 // https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1027
-void Utils::AngleVectors(Vector angles, Vector* forward, Vector* right, Vector* up)
+void Utils::angleVectors(Vector angles, Vector* forward, Vector* right, Vector* up)
 {
 	float sr, sp, sy, cr, cp, cy;
 
@@ -30,13 +30,13 @@ void Utils::AngleVectors(Vector angles, Vector* forward, Vector* right, Vector* 
 	}
 }
 
-void Utils::AngleVectors(const Vector& angles, Vector* forward)
+void Utils::angleVectors(const Vector& angles, Vector* forward)
 {
-	AngleVectors(angles, forward, nullptr, nullptr);
+	angleVectors(angles, forward, nullptr, nullptr);
 }
 
 // https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1108
-void Utils::VectorAngles(Vector& forward, Vector& angles)
+void Utils::vectorAngles(Vector& forward, Vector& angles)
 {
 	float tmp, yaw, pitch;
 
@@ -57,10 +57,10 @@ void Utils::VectorAngles(Vector& forward, Vector& angles)
 	angles[ROLL] = 0;
 }
 
-Vector Utils::CalculateView(const Vector& a, const Vector& b)
+Vector Utils::calculateView(const Vector& a, const Vector& b)
 {
 	Vector delta = b - a;
 	Vector rotation{};
-	Utils::VectorAngles(delta, rotation);
+	Utils::vectorAngles(delta, rotation);
 	return rotation;
 }

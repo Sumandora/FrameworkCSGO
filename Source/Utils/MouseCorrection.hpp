@@ -4,7 +4,7 @@
 #include "../SDK/GameClass/CUserCmd.hpp"
 
 namespace Utils {
-	void CorrectMouseDeltas(CUserCmd* cmd);
+	void correctMouseDeltas(CUserCmd* cmd);
 }
 
 #endif

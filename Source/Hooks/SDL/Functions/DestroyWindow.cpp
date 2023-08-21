@@ -1,6 +1,6 @@
 #include "../SDLFunctions.hpp"
 
-void Hooks::SDL::DestroyWindow::HookFunc(SDL_Window* window)
+void Hooks::SDL::DestroyWindow::hookFunc(SDL_Window* window)
 {
 	if (Hooks::SDL::windowPtr == window)
 		shuttingDown = true;

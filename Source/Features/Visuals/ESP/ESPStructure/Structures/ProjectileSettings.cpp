@@ -9,19 +9,19 @@
 
 // TODO Allow separation based on the throwers team (local, team, enemy)
 
-bool ProjectileSettings::IsEnabled() const
+bool ProjectileSettings::isEnabled() const
 {
-	return boxName.IsEnabled() || ownerName.enabled || trail.enabled;
+	return boxName.isEnabled() || ownerName.enabled || trail.enabled;
 }
 
-void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile, const char* name) const
+void ProjectileSettings::draw(ImDrawList* drawList, Projectile& projectile, const char* name) const
 {
 	if (projectile.type == ProjectileType::INVALID) {
 		__asm("int3");
 		return;
 	}
 
-	if (!IsEnabled())
+	if (!isEnabled())
 		return;
 
 	// Render trail even if we don't have a rectangle
@@ -30,9 +30,9 @@ void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile, cons
 
 		for (const Vector& pos : projectile.trail) {
 			ImVec2 point2D;
-			if (!Utils::Project(pos, point2D)) {
+			if (!Utils::project(pos, point2D)) {
 				if (!points.empty()) {
-					trail.Draw(drawList, points);
+					trail.draw(drawList, points);
 					points.clear();
 				}
 				continue;
@@ -40,29 +40,29 @@ void ProjectileSettings::Draw(ImDrawList* drawList, Projectile& projectile, cons
 			points.push_back(point2D);
 		}
 
-		trail.Draw(drawList, points);
+		trail.draw(drawList, points);
 	}
 
-	const std::optional<ImVec4> rectangle = projectile.screenRectangle.Get();
+	const std::optional<ImVec4> rectangle = projectile.screenRectangle.get();
 	if (!rectangle.has_value())
 		return;
 
-	boxName.Draw(drawList, rectangle.value(), name);
+	boxName.draw(drawList, rectangle.value(), name);
 
-	Player* player = EntityCache::PlayerByHandle(projectile.thrower);
+	Player* player = EntityCache::playerByHandle(projectile.thrower);
 	if (player) {
 		PlayerInfo info{};
 		if (Interfaces::engine->GetPlayerInfo(player->index, &info))
-			ownerName.Draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
+			ownerName.draw(drawList, rectangle->x + (rectangle->z - rectangle->x) * 0.5f, rectangle->w, true, info.name);
 	}
 }
 
-void ProjectileSettings::SetupGUI(const char* id)
+void ProjectileSettings::setupGUI(const char* id)
 {
 	ImGui::PushID(id);
-	boxName.SetupGUI(id);
-	ownerName.SetupGUI("Owner name");
-	trail.SetupGUI("Trail");
+	boxName.setupGUI(id);
+	ownerName.setupGUI("Owner name");
+	trail.setupGUI("Trail");
 	ImGui::PopID();
 }
 

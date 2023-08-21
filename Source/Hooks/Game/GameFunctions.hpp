@@ -21,7 +21,7 @@ namespace Hooks::Game {
 
 		inline CUserCmd lastCmd{};
 
-		bool HookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd);
+		bool hookFunc(void* thisptr, float flInputSampleTime, CUserCmd* cmd);
 	}
 
 	namespace FrameStageNotify {
@@ -29,7 +29,7 @@ namespace Hooks::Game {
 
 		inline Matrix4x4 worldToScreenMatrix{};
 
-		void HookFunc(void* thisptr, ClientFrameStage stage);
+		void hookFunc(void* thisptr, ClientFrameStage stage);
 	}
 
 	namespace OverrideView {
@@ -37,13 +37,13 @@ namespace Hooks::Game {
 
 		inline CViewSetup lastViewSetup{};
 
-		void HookFunc(void* thisptr, CViewSetup* pSetup);
+		void hookFunc(void* thisptr, CViewSetup* pSetup);
 	}
 
 	namespace ViewDrawFade {
 		inline GameHook* hook;
 
-		void HookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen);
+		void hookFunc(void* thisptr, std::byte* color, IMaterial* pFadeMaterial, bool mapFullTextureToScreen);
 	}
 
 	namespace FireEvent {
@@ -51,13 +51,13 @@ namespace Hooks::Game {
 
 		inline std::unordered_map<std::string, int> events;
 
-		void HookFunc(void* thisptr, CGameEvent* event, bool bServerOnly, bool bClientOnly);
+		void hookFunc(void* thisptr, CGameEvent* event, bool bServerOnly, bool bClientOnly);
 	}
 
 	namespace EmitSound {
 		inline GameHook* hook;
 
-		int HookFunc(void* thisptr,
+		int hookFunc(void* thisptr,
 			void* filter,
 			int iEntIndex,
 			int iChannel,
@@ -81,23 +81,23 @@ namespace Hooks::Game {
 	namespace SendNetMsg {
 		inline GameHook* hook;
 
-		bool HookFunc(void* thisptr, INetMessage* msg, bool bForceReliable, bool bVoice);
+		bool hookFunc(void* thisptr, INetMessage* msg, bool bForceReliable, bool bVoice);
 	}
 
 	namespace CanLoadThirdPartyFiles {
 		inline GameHook* hook;
 
-		bool HookFunc(void* thisptr);
+		bool hookFunc(void* thisptr);
 	}
 
 	namespace DoPostScreenEffects {
 		inline GameHook* hook;
 
-		bool HookFunc(void* thisptr, void* rsi);
+		bool hookFunc(void* thisptr, void* rsi);
 	}
 
-	void Hook();
-	void Unhook();
+	void hook();
+	void unhook();
 }
 
 #endif

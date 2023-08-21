@@ -5,7 +5,7 @@
 #include <optional>
 #include <string>
 
-std::optional<std::string> HasDefuser::GetText(const Player& player) const
+std::optional<std::string> HasDefuser::getText(const Player& player) const
 {
 	if (player.hasDefuser)
 		return "Has defuser";

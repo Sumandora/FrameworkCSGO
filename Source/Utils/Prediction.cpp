@@ -6,9 +6,9 @@
 float oldCurtime;
 float oldFrametime;
 
-bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData)
+bool Utils::startPrediction(CUserCmd* cmd, CMoveData& moveData)
 {
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 
 	if (!localPlayer)
 		return false;
@@ -29,9 +29,9 @@ bool Utils::StartPrediction(CUserCmd* cmd, CMoveData& moveData)
 	return true;
 }
 
-void Utils::EndPrediction()
+void Utils::endPrediction()
 {
-	CBasePlayer* localPlayer = Memory::GetLocalPlayer();
+	CBasePlayer* localPlayer = Memory::getLocalPlayer();
 
 	if (!localPlayer)
 		return;

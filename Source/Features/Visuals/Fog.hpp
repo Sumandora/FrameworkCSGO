@@ -29,9 +29,9 @@ public:
 	float hdrColorScale = 1.0f;
 	float zoomFogScale = 1.0f;
 
-	void FrameStageNotify();
+	void frameStageNotify() const;
 
-	virtual void SetupGUI() override;
+	virtual void setupGUI() override;
 	virtual SERIALIZER() override;
 } fog;
 
