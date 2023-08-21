@@ -15,31 +15,31 @@ void Hooks::Game::Hook()
 	ViewDrawFade::hook = new GameHook(Utils::GetVTable(Interfaces::engineRenderView)[29], reinterpret_cast<void*>(ViewDrawFade::HookFunc));
 
 	FireEvent::hook = new GameHook(
-		BCRL::Session::Module("engine_client.so")
-			.NextStringOccurence("CGameEventManager::FireEvent")
-			.FindXREFs("engine_client.so", true, false)
-			.PrevByteOccurence("55 48 89 f8 48 89 e5")
-			.Pointer()
+		BCRL::Session::module("engine_client.so")
+			.nextStringOccurence("CGameEventManager::FireEvent")
+			.findXREFs("engine_client.so", true, false)
+			.prevByteOccurence("55 48 89 f8 48 89 e5")
+			.getPointer()
 			.value(),
 		reinterpret_cast<void*>(FireEvent::HookFunc));
 
 	EmitSound::hook = new GameHook(
-		BCRL::Session::Module("engine_client.so")
-			.NextStringOccurence("EmitSound: %s pitch out of bounds = %i\n")
-			.FindXREFs("engine_client.so", true, false)
-			.Filter([](const BCRL::SafePointer& safePointer) { return safePointer.Add(4).Equals('\xe8'); })
-			.PrevByteOccurence("55 66 0f ef db")
-			.Pointer()
+		BCRL::Session::module("engine_client.so")
+			.nextStringOccurence("EmitSound: %s pitch out of bounds = %i\n")
+			.findXREFs("engine_client.so", true, false)
+			.filter([](const BCRL::SafePointer& safePointer) { return safePointer.add(4).equals('\xe8'); })
+			.prevByteOccurence("55 66 0f ef db")
+			.getPointer()
 			.value(),
 		reinterpret_cast<void*>(EmitSound::HookFunc));
 
 	SendNetMsg::hook = new GameHook(
-		BCRL::Session::Module("engine_client.so")
-			.NextStringOccurence("SendNetMsg %s: stream[%s] buffer overflow (maxsize = %d)!\n")
-			.FindXREFs("engine_client.so", true, false)
-			.Filter([](const BCRL::SafePointer& safePointer) { return safePointer.Add(4).DoesMatch("44 89 e9"); })
-			.PrevByteOccurence("55 48 89 e5 41 57")
-			.Pointer()
+		BCRL::Session::module("engine_client.so")
+			.nextStringOccurence("SendNetMsg %s: stream[%s] buffer overflow (maxsize = %d)!\n")
+			.findXREFs("engine_client.so", true, false)
+			.filter([](const BCRL::SafePointer& safePointer) { return safePointer.add(4).doesMatch("44 89 e9"); })
+			.prevByteOccurence("55 48 89 e5 41 57")
+			.getPointer()
 			.value(),
 		reinterpret_cast<void*>(SendNetMsg::HookFunc));
 

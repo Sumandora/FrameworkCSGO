@@ -1,25 +1,6 @@
 [submodule "Dependencies/imgui"]
 	path = Dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "Dependencies/length-disassembler"]
-	path = Dependencies/length-disassembler
-	url = https://github.com/Nomade040/length-disassembler.git
-[submodule "Dependencies/DetourHooking"]
-	path = Dependencies/DetourHooking
-	url = https://github.com/Sumandora/DetourHooking.git
-[submodule "Dependencies/ReturnAddressSpoofer"]
-	path = Dependencies/ReturnAddressSpoofer
-	url = https://github.com/Sumandora/ReturnAddressSpoofer.git
-	branch = object-file-rewriter
-[submodule "Dependencies/SignatureScanner"]
-	path = Dependencies/SignatureScanner
-	url = https://github.com/Sumandora/SignatureScanner.git
-[submodule "Dependencies/HideSharedObject"]
-	path = Dependencies/HideSharedObject
-	url = https://github.com/Sumandora/HideSharedObject.git
 [submodule "Dependencies/SimpleJSON"]
 	path = Dependencies/SimpleJSON
 	url = https://github.com/Sumandora/SimpleJSON.git
-[submodule "Dependencies/bcrl"]
-	path = Dependencies/bcrl
-	url = https://github.com/Sumandora/bcrl.git
