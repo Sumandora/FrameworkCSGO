@@ -16,7 +16,7 @@ inline auto InvokeFunction(void* method, Args... args) -> Ret
 template <typename Ret, typename... Args>
 inline auto InvokeFunction(void* method, Args... args) -> Ret
 {
-	return RetAddrSpoofer::Invoke<Ret, Args...>(method, args...);
+	return RetAddrSpoofer::invoke<Ret, Args...>(method, args...);
 }
 
 #endif

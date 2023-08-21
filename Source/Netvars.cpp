@@ -43,11 +43,11 @@ void Netvars::DumpNetvars()
 	 * 	ret
 	 */
 
-	ClientClass* rootClass = static_cast<ClientClass*>(BCRL::Session::ArrayPointer(Interfaces::baseClient, 8)
-														   .Add(3)
-														   .RelativeToAbsolute()
-														   .Dereference()
-														   .Pointer()
+	ClientClass* rootClass = static_cast<ClientClass*>(BCRL::Session::arrayPointer(Interfaces::baseClient, 8)
+														   .add(3)
+														   .relativeToAbsolute()
+														   .dereference()
+														   .getPointer()
 														   .value());
 
 	for (ClientClass* cClass = rootClass; cClass != nullptr; cClass = cClass->m_pNext) {

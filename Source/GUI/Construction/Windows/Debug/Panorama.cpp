@@ -40,16 +40,16 @@ void Gui::Windows::Panorama()
 				bypassed = true;
 				static const unsigned char returnZero[]{ 0x48, 0x31, 0xc0, 0xc3 };
 
-				char* checkFilePath = static_cast<char*>(BCRL::Session::Module("panorama_gl_client.so")
-															 .NextStringOccurence("FixupResourceName: Illegal full path passed in (\"%s\")!")
-															 .FindXREFs("panorama_gl_client.so", true, false)
-															 .Filter([](const BCRL::SafePointer& safePointer) {
-																 return safePointer.Add(4).DoesMatch("48 89 de");
+				char* checkFilePath = static_cast<char*>(BCRL::Session::module("panorama_gl_client.so")
+															 .nextStringOccurence("FixupResourceName: Illegal full path passed in (\"%s\")!")
+															 .findXREFs("panorama_gl_client.so", true, false)
+															 .filter([](const BCRL::SafePointer& safePointer) {
+																 return safePointer.add(4).doesMatch("48 89 de");
 															 })
-															 .PrevByteOccurence("48 89 fb e8")
-															 .Add(4)
-															 .RelativeToAbsolute()
-															 .Pointer()
+															 .prevByteOccurence("48 89 fb e8")
+															 .add(4)
+															 .relativeToAbsolute()
+															 .getPointer()
 															 .value());
 
 				const size_t pagesize = getpagesize();
