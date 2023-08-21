@@ -32,17 +32,17 @@ void* Interfaces::UncoverCreateFunction(void* createFunc)
 
 	char* rip = reinterpret_cast<char*>(createFunc);
 	void* interfacePtr = nullptr;
-	BCRL::Session::Pointer(rip)
-		.Repeater([&interfacePtr](BCRL::SafePointer& pointer) {
-			if (pointer.DoesMatch("48 8d 05")) { // LEA rax, [rip + offset]
-				interfacePtr = pointer.Add(3).RelativeToAbsolute().GetPointer();
-			} else if (pointer.DoesMatch("48 8b 00")) { // MOV rax, [rax]
+	BCRL::Session::pointer(rip)
+		.repeater([&interfacePtr](BCRL::SafePointer& pointer) {
+			if (pointer.doesMatch("48 8d 05")) { // LEA rax, [rip + offset]
+				interfacePtr = pointer.add(3).relativeToAbsolute().getPointer();
+			} else if (pointer.doesMatch("48 8b 00")) { // MOV rax, [rax]
 				interfacePtr = *reinterpret_cast<void**>(interfacePtr);
-			} else if (pointer.DoesMatch("c3")) { // RET
+			} else if (pointer.doesMatch("c3")) { // RET
 				return false;
 			}
 
-			pointer = pointer.NextInstruction();
+			pointer = pointer.nextInstruction();
 			return true;
 		});
 	return interfacePtr;

@@ -24,7 +24,7 @@ else ()
     list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/MenuPreview.cpp") # No need for this file if we aren't previewing the menu
     add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCE_FILES})
 endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dl SDL2 GL)
+target_link_libraries(${CMAKE_PROJECT_NAME} dl SDL2 GL)
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fno-rtti" "-ffunction-sections" "-march=native")
 
@@ -76,41 +76,47 @@ target_sources(${CMAKE_PROJECT_NAME} PUBLIC ${IMGUI_SOURCE_FILES})
 # Setup SimpleJSON
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE Dependencies/SimpleJSON)
 
-# Setup HideSharedObject
-add_subdirectory("Dependencies/HideSharedObject")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
+include(FetchContent)
+
+FetchContent_Declare(bcrl
+	GIT_REPOSITORY https://github.com/Sumandora/bcrl
+	GIT_PROGRESS TRUE
+	GIT_SHALLOW TRUE
+	GIT_TAG e6b70a3)
+FetchContent_MakeAvailable(bcrl)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
+
+# Setup DetourHooking
+FetchContent_Declare(DetourHooking
+	GIT_REPOSITORY https://github.com/Sumandora/DetourHooking
+	GIT_PROGRESS TRUE
+	GIT_SHALLOW TRUE
+	GIT_TAG abcd850)
+FetchContent_MakeAvailable(DetourHooking)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
 
 # Setup ReturnAddressSpoofer
-add_subdirectory("Dependencies/ReturnAddressSpoofer")
+FetchContent_Declare(ReturnAddressSpoofer
+	GIT_REPOSITORY https://github.com/Sumandora/ReturnAddressSpoofer
+	GIT_PROGRESS TRUE
+	GIT_SHALLOW TRUE
+	GIT_TAG 4d7ccb1)
+FetchContent_MakeAvailable(ReturnAddressSpoofer)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ReturnAddressSpoofer)
+
+add_subdirectory("${ReturnAddressSpoofer_SOURCE_DIR}/ObjectFileRewriter")
 add_custom_command(
 	TARGET ${CMAKE_PROJECT_NAME} PRE_LINK
 	COMMAND "$<TARGET_FILE:ObjectFileRewriter>" "${CMAKE_BINARY_DIR}/CMakeFiles/${CMAKE_PROJECT_NAME}.dir"
 	DEPENDS ObjectFileRewriter
 )
 
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_IDA_SEARCH)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_STRING_SEARCH)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SIGNATURESCANNER_ENABLE_XREF_SEARCH)
+# Setup HideSharedObject
+FetchContent_Declare(HideSharedObject
+	GIT_REPOSITORY https://github.com/Sumandora/HideSharedObject
+	GIT_PROGRESS TRUE
+	GIT_SHALLOW TRUE
+	GIT_TAG 0aaef1e)
+FetchContent_MakeAvailable(HideSharedObject)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
 
-# Setup bcrl
-add_subdirectory("Dependencies/bcrl")
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
-
-# Setup length-disassembler
-if (NOT (TARGET length-disassembler))
-    add_subdirectory("Dependencies/length-disassembler")
-endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE length-disassembler)
-
-# Setup DetourHooking
-if (NOT (TARGET DetourHooking))
-    add_subdirectory("Dependencies/DetourHooking")
-endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
-
-# Setup SignatureScanner
-if (NOT (TARGET SignatureScanner))
-    add_subdirectory("Dependencies/SignatureScanner")
-endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SignatureScanner)
