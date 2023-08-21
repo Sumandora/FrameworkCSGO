@@ -10,10 +10,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_SKIP_RPATH ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_POLICY_DEFAULT_CMP0002 OLD)
-cmake_policy(SET CMP0002 OLD)
-set(ALLOW_DUPLICATE_CUSTOM_TARGETS TRUE)
-
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/*.cpp")
 
 option(MENUPREVIEW "Builds an executable which previews the menu" OFF)
@@ -24,7 +20,7 @@ else ()
     list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/MenuPreview.cpp") # No need for this file if we aren't previewing the menu
     add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCE_FILES})
 endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} dl SDL2 GL)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dl SDL2 GL)
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fno-rtti" "-ffunction-sections" "-march=native")
 
