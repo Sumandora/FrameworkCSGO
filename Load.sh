@@ -17,7 +17,7 @@ if [ -z "$csgo_pid" ]; then
 fi
 
 lib_name="lib$(cat ProjectName).so"
-cp Build/$lib_name /usr/lib64/
+cp Build/"$lib_name" /usr/lib64/
 
 # The following is copied from Fuzion (https://github.com/LWSS/Fuzion/blob/0a4d775e17aba7a723aadce5b80898705e0bd6ff/load#L25); Thanks LWSS and contributors
 # pBypass for crash dumps being sent
@@ -31,7 +31,7 @@ sysctl -w kernel.yama.ptrace_scope=2 # Only allows root to inject code. This is 
 killall -19 steam
 killall -19 steamwebhelper
 
-$DEBUGGER -p $csgo_pid -n -q -batch \
+$DEBUGGER -p "$csgo_pid" -n -q -batch \
   -ex "call ((void*(*)(char*, int)) dlopen)(\"/usr/lib64/$lib_name\", 1)" \
   -ex "call ((char*(*)(void)) dlerror)()" \
   -ex "detach" \

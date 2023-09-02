@@ -23,11 +23,11 @@ killall -19 steamwebhelper
 
 rm -f gdb.log
 
-$DEBUGGER -p $csgo_pid -n -q -batch \
+$DEBUGGER -p "$csgo_pid" -n -q -batch \
   -ex "set \$library = ((void*(*)(char*, int)) dlopen)(\"/usr/lib/$lib_name\", 6)" \
   -ex "set \$dlclose = (int(*)(void*)) dlclose" \
   -ex "call \$dlclose(\$library)" \
-  -ex "call \$dlclose(\$library)" >> gdb.log 2>&1 || {
+  -ex "call \$dlclose(\$library)" 2>&1 || {
 	echo "A error has appeared"
 	echo "$DEBUGGER has failed to dlopen/dlclose the library"
 
@@ -45,4 +45,4 @@ killall -18 steam
 
 echo "Process complete"
 echo "If you face problems related to the unload process"
-echo "you should provide the 'gdb.log' file to whoever is helping you."
+echo "you should provide the gdb session and build log to whoever is helping you."
