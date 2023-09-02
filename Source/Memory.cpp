@@ -26,7 +26,7 @@ void Memory::create()
 {
 	// Set the address for the return address spoofer
 	RetAddrSpoofer::leaveRet = BCRL::Session::arrayPointer(Interfaces::baseClient, 0) // random code piece
-								   .nextByteOccurence("c9 c3", true)
+								   .nextByteOccurrence("c9 c3", true)
 								   .getPointer()
 								   .value();
 
@@ -58,7 +58,7 @@ void Memory::create()
 	// The method which contains the 1.25 and 1.0 float literals is the one...
 	moveHelper
 		= static_cast<IMoveHelper*>(BCRL::Session::arrayPointer(Interfaces::gameMovement, 69)
-										.nextByteOccurence("48 8d 05" /* lea rax */)
+										.nextByteOccurrence("48 8d 05" /* lea rax */)
 										.add(3)
 										.relativeToAbsolute()
 										.dereference()
@@ -68,7 +68,7 @@ void Memory::create()
 	// Has reference to "splitscreenplayer" inside itself
 	localPlayerList = static_cast<CBasePlayer**>(
 		BCRL::Session::arrayPointer(clientMode, 55)
-			.nextByteOccurence("48 89 85 10 d2 ff ff")
+			.nextByteOccurrence("48 89 85 10 d2 ff ff")
 			.add(8)
 			.relativeToAbsolute()
 			.add(7)
@@ -77,7 +77,7 @@ void Memory::create()
 			.value());
 
 	lineGoesThroughSmokeAddress = BCRL::Session::module("client_client.so")
-									  .nextStringOccurence("sv_show_voip_indicator_for_enemies")
+									  .nextStringOccurrence("sv_show_voip_indicator_for_enemies")
 									  .findXREFs("client_client.so", true, false)
 									  .forEach([](BCRL::SafePointer& safePointer) { safePointer = safePointer.add(4); })
 									  .repeater([](BCRL::SafePointer& pointer) {
@@ -97,14 +97,14 @@ void Memory::create()
 
 	CUIEngine::panelArrayOffset = *static_cast<int32_t*>(
 		BCRL::Session::arrayPointer(Interfaces::panoramaUIEngine->AccessUIEngine(), CUIEngine::isValidPanelPointerIndex)
-			.nextByteOccurence("48 8b 97")
+			.nextByteOccurrence("48 8b 97")
 			.add(3)
 			.getPointer()
 			.value());
 
 	glowObjectManager = static_cast<CGlowObjectManager*>(
 		BCRL::Session::module("client_client.so")
-			.nextStringOccurence("Music.StopAllExceptMusic")
+			.nextStringOccurrence("Music.StopAllExceptMusic")
 			.findXREFs("client_client.so", true, false)
 			.add(4)
 			.filter([](const BCRL::SafePointer& safePointer) { return safePointer.doesMatch("66 0f ef c0"); })

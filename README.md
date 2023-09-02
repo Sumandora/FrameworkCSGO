@@ -39,7 +39,7 @@ If you want to supply additional compiler arguments use `CXXFLAGS`
 ```sh
 CXXFLAGS="-fstack-protector-strong" ./Build.sh
 ```
-Some of these might break the resulting binary however.
+Some of these might break the resulting binary, however.
 
 A ELF-Binary will be built in the "Build"-subdirectory, which will be created by the script.
 

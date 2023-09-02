@@ -56,8 +56,6 @@ static T* getInterface(void* handle, const char* name)
 	if (!interfacesList)
 		return nullptr;
 
-	;
-
 	for (InterfaceReg* interface = *reinterpret_cast<InterfaceReg**>(interfacesList); interface; interface = interface->m_pNext) {
 		if (std::strncmp(interface->m_pName, name, std::strlen(interface->m_pName) - 3) == 0) {
 			return reinterpret_cast<T*>(Interfaces::uncoverCreateFunction(interface->m_CreateFn));

@@ -16,29 +16,29 @@ void Hooks::Game::hook()
 
 	FireEvent::hook = new GameHook(
 		BCRL::Session::module("engine_client.so")
-			.nextStringOccurence("CGameEventManager::FireEvent")
+			.nextStringOccurrence("CGameEventManager::FireEvent")
 			.findXREFs("engine_client.so", true, false)
-			.prevByteOccurence("55 48 89 f8 48 89 e5")
+			.prevByteOccurrence("55 48 89 f8 48 89 e5")
 			.getPointer()
 			.value(),
 		reinterpret_cast<void*>(FireEvent::hookFunc));
 
 	EmitSound::hook = new GameHook(
 		BCRL::Session::module("engine_client.so")
-			.nextStringOccurence("EmitSound: %s pitch out of bounds = %i\n")
+			.nextStringOccurrence("EmitSound: %s pitch out of bounds = %i\n")
 			.findXREFs("engine_client.so", true, false)
 			.filter([](const BCRL::SafePointer& safePointer) { return safePointer.add(4).equals('\xe8'); })
-			.prevByteOccurence("55 66 0f ef db")
+			.prevByteOccurrence("55 66 0f ef db")
 			.getPointer()
 			.value(),
 		reinterpret_cast<void*>(EmitSound::hookFunc));
 
 	SendNetMsg::hook = new GameHook(
 		BCRL::Session::module("engine_client.so")
-			.nextStringOccurence("SendNetMsg %s: stream[%s] buffer overflow (maxsize = %d)!\n")
+			.nextStringOccurrence("SendNetMsg %s: stream[%s] buffer overflow (maxsize = %d)!\n")
 			.findXREFs("engine_client.so", true, false)
 			.filter([](const BCRL::SafePointer& safePointer) { return safePointer.add(4).doesMatch("44 89 e9"); })
-			.prevByteOccurence("55 48 89 e5 41 57")
+			.prevByteOccurrence("55 48 89 e5 41 57")
 			.getPointer()
 			.value(),
 		reinterpret_cast<void*>(SendNetMsg::hookFunc));

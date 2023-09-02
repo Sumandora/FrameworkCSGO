@@ -41,12 +41,12 @@ void Gui::Windows::panorama()
 				static const unsigned char returnZero[]{ 0x48, 0x31, 0xc0, 0xc3 };
 
 				char* checkFilePath = static_cast<char*>(BCRL::Session::module("panorama_gl_client.so")
-															 .nextStringOccurence("FixupResourceName: Illegal full path passed in (\"%s\")!")
+															 .nextStringOccurrence("FixupResourceName: Illegal full path passed in (\"%s\")!")
 															 .findXREFs("panorama_gl_client.so", true, false)
 															 .filter([](const BCRL::SafePointer& safePointer) {
 																 return safePointer.add(4).doesMatch("48 89 de");
 															 })
-															 .prevByteOccurence("48 89 fb e8")
+															 .prevByteOccurrence("48 89 fb e8")
 															 .add(4)
 															 .relativeToAbsolute()
 															 .getPointer()
