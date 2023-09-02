@@ -4,7 +4,7 @@ echo "Building Debug-Binary"
 mkdir -p Build-Debug
 
 cmake -B Build-Debug -D CMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_FLAGS_RELEASE="$CXXFLAGS" || exit 1
-cmake --build Build-Debug -j $(nproc) || exit 1
+cmake --build Build-Debug -j "$(nproc)" || exit 1
 
 # Set the DEBUGGER variable on the cmdline to use lldb or any debugger
 # Make sure it supports the following commands
@@ -24,6 +24,6 @@ fi
 
 lib_name="lib$(cat ProjectName).so"
 
-$DEBUGGER -p $csgo_pid \
+$DEBUGGER -p "$csgo_pid" \
 	-ex "call ((void*(*)(char*, int)) dlopen)(\"$(pwd)/Build-Debug/$lib_name\", 1)" \
 	-ex "continue"
