@@ -21,8 +21,6 @@ lib_name="lib$(cat ProjectName).so"
 killall -19 steam
 killall -19 steamwebhelper
 
-rm -f gdb.log
-
 $DEBUGGER -p "$csgo_pid" -n -q -batch \
   -ex "set \$library = ((void*(*)(char*, int)) dlopen)(\"/usr/lib/$lib_name\", 6)" \
   -ex "set \$dlclose = (int(*)(void*)) dlclose" \
