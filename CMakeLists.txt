@@ -77,8 +77,7 @@ include(FetchContent)
 FetchContent_Declare(bcrl
 	GIT_REPOSITORY https://github.com/Sumandora/bcrl
 	GIT_PROGRESS TRUE
-	GIT_SHALLOW TRUE
-	GIT_TAG e6b70a3)
+	GIT_TAG f826973)
 FetchContent_MakeAvailable(bcrl)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
 
@@ -86,8 +85,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
 FetchContent_Declare(DetourHooking
 	GIT_REPOSITORY https://github.com/Sumandora/DetourHooking
 	GIT_PROGRESS TRUE
-	GIT_SHALLOW TRUE
-	GIT_TAG abcd850)
+	GIT_TAG 4f14fde)
 FetchContent_MakeAvailable(DetourHooking)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
 
@@ -95,8 +93,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE DetourHooking)
 FetchContent_Declare(ReturnAddressSpoofer
 	GIT_REPOSITORY https://github.com/Sumandora/ReturnAddressSpoofer
 	GIT_PROGRESS TRUE
-	GIT_SHALLOW TRUE
-	GIT_TAG 4d7ccb1)
+	GIT_TAG 04a655d)
 FetchContent_MakeAvailable(ReturnAddressSpoofer)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ReturnAddressSpoofer)
 
@@ -111,8 +108,7 @@ add_custom_command(
 FetchContent_Declare(HideSharedObject
 	GIT_REPOSITORY https://github.com/Sumandora/HideSharedObject
 	GIT_PROGRESS TRUE
-	GIT_SHALLOW TRUE
-	GIT_TAG 0aaef1e)
+	GIT_TAG b83ac20)
 FetchContent_MakeAvailable(HideSharedObject)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
 

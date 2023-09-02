@@ -36,7 +36,7 @@ void Utils::angleVectors(const Vector& angles, Vector* forward)
 }
 
 // https://github.com/SwagSoftware/Kisak-Strike/blob/7df358a4599ba02a4e072f8167a65007c9d8d89c/mathlib/mathlib_base.cpp#L1108
-void Utils::vectorAngles(Vector& forward, Vector& angles)
+void Utils::vectorAngles(const Vector& forward, Vector& angles)
 {
 	float tmp, yaw, pitch;
 

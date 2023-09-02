@@ -16,7 +16,7 @@ void Gui::build()
 		if (ImGui::BeginTabBar("#Top level tabs", ImGuiTabBarFlags_Reorderable)) {
 			for (auto& [category, vector] : features) {
 				if (ImGui::BeginTabItem(category.c_str())) {
-					std::string tag = category.c_str();
+					std::string tag = category;
 					tag.insert(0, 1, '#');
 					if (ImGui::BeginTabBar(tag.c_str(), ImGuiTabBarFlags_Reorderable)) {
 						for (Feature* feature : vector) {

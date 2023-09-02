@@ -1,21 +1,14 @@
 #include "Netvars.hpp"
 
-#include <cstdint>
-#include <cstdio>
 #include <cstring>
 #include <tuple>
-#include <unordered_map>
 
 #include "BCRL.hpp"
 #include "Interfaces.hpp"
 #include "SDK/ClientClassIDs.hpp"
 #include "SDK/Netvars/RecvProp.hpp"
 
-#include "Utils/VMT.hpp"
-
-#include <cassert>
-
-void readTable(ClientClass* clientClass, RecvTable* recvTable)
+static void readTable(ClientClass* clientClass, RecvTable* recvTable)
 {
 	for (int i = 0; i < recvTable->m_nProps; i++) {
 		RecvProp* prop = &recvTable->m_pProps[i];

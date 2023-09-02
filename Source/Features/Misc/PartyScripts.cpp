@@ -106,7 +106,7 @@ static const char* errorMessages[]{
 static void createErrorMessage(size_t amount, const char* type)
 {
 	std::stringstream ss{};
-	ss << "for(var i = 0; i < " << amount << "; i++) ";
+	ss << "for(var i = 0; i < " << amount << "; i++)";
 	ss << "PartyListAPI.SessionCommand(\"Game::ChatReportError\", \"run all xuid ${MyPersonaAPI.GetXuid()} error #SFUI_QMM_ERROR_" << type << "\");";
 	std::string str = ss.str();
 	Interfaces::panoramaUIEngine->AccessUIEngine()->RunScript("CSGOMainMenu", str.c_str());
