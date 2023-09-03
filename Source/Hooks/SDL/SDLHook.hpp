@@ -8,7 +8,7 @@ public:
 	void* proxy;
 
 	SDLHook() = delete;
-	SDLHook(void* handle, const char* name, void* hook);
+	SDLHook(void* original, void* hook);
 	~SDLHook();
 };
 
