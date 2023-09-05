@@ -22,6 +22,9 @@ static std::string formatVote(int vote)
 
 void VoteRevealer::fireEvent(CGameEvent* gameEvent)
 {
+	if(!revealVoters)
+		return;
+
 	if (strcmp(gameEvent->GetName(), "vote_cast") != 0)
 		return;
 
