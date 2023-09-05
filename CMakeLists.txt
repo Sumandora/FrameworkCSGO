@@ -20,14 +20,22 @@ else ()
     list(REMOVE_ITEM SOURCE_FILES "${CMAKE_SOURCE_DIR}/Source/MenuPreview.cpp") # No need for this file if we aren't previewing the menu
     add_library(${CMAKE_PROJECT_NAME} SHARED ${SOURCE_FILES})
 endif ()
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dl SDL2 GL)
 
-target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-fno-rtti" "-ffunction-sections" "-march=native")
+function(apply_obfuscation_parameters TARGET)
+	target_compile_options(${TARGET} PRIVATE "-fno-rtti") # Force a compile time error in case the target is using any RTTI features
+	if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+		target_compile_options(${TARGET} PRIVATE "-fvisibility=hidden" "-fvisibility-inlines-hidden")
+	endif ()
+endfunction()
+
+apply_obfuscation_parameters(${CMAKE_PROJECT_NAME})
+
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-march=native")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-Wall" "-ggdb" "-DDEBUG")
 else()
-	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-Os" "-fvisibility=hidden" "-fvisibility-inlines-hidden")
+	target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-Os")
 	set(CMAKE_CXX_FLAGS "-D'IM_ASSERT(_EXPR)=((void)(_EXPR))' ${CMAKE_CXX_FLAGS}") # TODO Can you do this without set?
 endif()
 
@@ -97,6 +105,8 @@ FetchContent_Declare(ReturnAddressSpoofer
 FetchContent_MakeAvailable(ReturnAddressSpoofer)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ReturnAddressSpoofer)
 
+target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE "-ffunction-sections")
+
 add_subdirectory("${ReturnAddressSpoofer_SOURCE_DIR}/ObjectFileRewriter")
 add_custom_command(
 	TARGET ${CMAKE_PROJECT_NAME} PRE_LINK
@@ -112,3 +122,23 @@ FetchContent_Declare(HideSharedObject
 FetchContent_MakeAvailable(HideSharedObject)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE HideSharedObject)
 
+
+function(apply_obfuscation_recursively TARGET)
+	get_target_property(DEPENDENCIES ${TARGET} LINK_LIBRARIES)
+	if(NOT DEPENDENCIES)
+		return()
+	endif()
+
+	foreach(DEPENDENCY ${DEPENDENCIES})
+		get_target_property(LIB_TYPE ${DEPENDENCY} TYPE)
+		if(NOT LIB_TYPE STREQUAL "INTERFACE_LIBRARY")
+			apply_obfuscation_parameters(${DEPENDENCY})
+		endif ()
+		apply_obfuscation_recursively(${DEPENDENCY})
+	endforeach()
+
+endfunction()
+
+apply_obfuscation_recursively(${CMAKE_PROJECT_NAME})
+
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE dl SDL2 GL)

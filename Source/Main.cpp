@@ -69,7 +69,7 @@ void initializer()
 	eventLog.createReport("Initialized!");
 }
 
-int __attribute((constructor)) Startup()
+int __attribute((constructor)) startup()
 {
 	std::thread t(initializer);
 	t.detach();
@@ -77,7 +77,7 @@ int __attribute((constructor)) Startup()
 	return 0;
 }
 
-void __attribute((destructor)) Shutdown()
+void __attribute((destructor)) shutdown()
 {
 	Hooks::uninstallHooks();
 	Gui::destroy();
