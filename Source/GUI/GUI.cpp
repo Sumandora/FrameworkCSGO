@@ -52,7 +52,7 @@ void Gui::swapWindow(SDL_Window* window)
 
 	static std::once_flag init;
 	std::call_once(init, [&io, window]() {
-		ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
+		ImGui_ImplSDL2_InitForOpenGL(window, SDL_GL_GetCurrentContext());
 		ImGui_ImplOpenGL3_Init();
 
 		// We are running straight into the multi monitor dpi issue here, but to my knowledge there is no appropriate solution to this when using ImGui
@@ -159,6 +159,5 @@ bool Gui::pollEvent(SDL_Event* event)
 
 bool Gui::warpMouseInWindow()
 {
-	// lol no
 	return visible;
 }
