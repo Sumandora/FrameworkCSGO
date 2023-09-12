@@ -13,7 +13,7 @@ namespace Gui {
 
 	void swapWindow(SDL_Window* window);
 	bool pollEvent(SDL_Event* event);
-	bool warpMouseInWindow();
+	bool warpMouseInWindow(int x, int y);
 }
 
 #endif

@@ -9,6 +9,19 @@ namespace Hooks::SDL {
 	inline SDL_Window* windowPtr = nullptr;
 	inline bool shuttingDown = false;
 
+	inline struct BackupVariable {
+		SDL_bool enabled = SDL_GetRelativeMouseMode();
+		~BackupVariable() { SDL_SetRelativeMouseMode(enabled); }
+
+		inline SDL_bool& operator=(SDL_bool other) {
+			enabled = other;
+			return enabled;
+		}
+		inline operator SDL_bool() const {
+			return enabled;
+		}
+	} relativeMouseMode;
+
 	namespace SwapWindow {
 		inline SDLHook* hook;
 
@@ -31,6 +44,12 @@ namespace Hooks::SDL {
 		inline SDLHook* hook;
 
 		void hookFunc(SDL_Window* window);
+	}
+
+	namespace SetRelativeMouseMode {
+		inline SDLHook* hook;
+
+		int hookFunc(SDL_bool enabled);
 	}
 
 	void hook();

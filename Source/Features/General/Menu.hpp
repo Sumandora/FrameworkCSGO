@@ -35,7 +35,7 @@ public:
 	bool isShowingUserGuide = false;
 #endif
 
-	void imGuiLoop();
+	void imGuiLoop() const;
 
 	virtual void setupGUI() override;
 	virtual SERIALIZER() override;

@@ -24,9 +24,14 @@ void Menu::MenuKey::onChange()
 {
 	Gui::visible = !Gui::visible;
 	eventLog.createReport("%s the menu", Gui::visible ? "Opened" : "Closed");
+	reinterpret_cast<int (*)(SDL_bool)>(Hooks::SDL::SetRelativeMouseMode::hook->proxy)(Gui::visible ? SDL_FALSE : Hooks::SDL::relativeMouseMode);
+	if (Gui::visible) {
+		ImGuiIO& io = ImGui::GetIO();
+		reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
+	}
 }
 
-void Menu::imGuiLoop()
+void Menu::imGuiLoop() const
 {
 	switch (style) {
 	case 0:

@@ -2,10 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstring>
-#include <map>
 #include <mutex>
-#include <unordered_map>
 
 #include "Elements/Keybind.hpp"
 #include "imgui.h"
@@ -13,8 +10,6 @@
 
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_sdl2.h"
-
-#include "../Hooks/SDL/SDLFunctions.hpp"
 
 #include "../Features/General/EventLog.hpp"
 #include "../Features/General/Menu.hpp"
@@ -25,8 +20,6 @@
 
 #include "../Features/Visuals/ESP/ESP.hpp"
 #include "../Features/Visuals/SpectatorList.hpp"
-
-#include "../Serialization/Serialization.hpp"
 
 bool Gui::visible = true;
 
@@ -119,6 +112,8 @@ void Gui::swapWindow(SDL_Window* window)
 	esp.imGuiRender(ImGui::GetBackgroundDrawList());
 	spectatorList.imGuiRender(ImGui::GetBackgroundDrawList());
 
+	ImGui::GetForegroundDrawList()->AddRectFilled({ io.MousePos.x - 5, io.MousePos.y - 5 }, { io.MousePos.x + 5, io.MousePos.y + 5 }, ImGuiColors::red);
+
 	io.MouseDrawCursor = visible;
 	io.WantCaptureMouse = visible;
 	io.WantCaptureKeyboard = visible;
@@ -127,37 +122,39 @@ void Gui::swapWindow(SDL_Window* window)
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-// I don't even want to know why I have to do this
-static Uint32 lastTextInput;
-
 bool Gui::pollEvent(SDL_Event* event)
 {
-	if (event->type == SDL_TEXTINPUT && lastTextInput >= event->text.timestamp)
-		return visible;
+	static Uint32 lastEvent;
+	if (event->type == SDL_TEXTINPUT) {
+		if (event->text.timestamp <= lastEvent)
+			return visible; // Not quite sure, why I have to do this
+		lastEvent = event->text.timestamp;
+	}
 
-	ImGuiIO& io = ImGui::GetIO();
-	// Emulate these 2 events, because ImGui is broken... :c
-	if (event->type == SDL_MOUSEMOTION) {
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-
-		io.MousePos.x = (float)x;
-		io.MousePos.y = (float)y;
-		if (visible && SDL_GetMouseFocus() == Hooks::SDL::windowPtr)
-			reinterpret_cast<void (*)(SDL_Window*, int, int)>(Hooks::SDL::WarpMouseInWindow::hook->proxy)(Hooks::SDL::windowPtr, (int)io.MousePos.x, (int)io.MousePos.y);
-	} else if (event->type == SDL_MOUSEWHEEL) {
-		io.MouseWheelH += (float)event->wheel.x;
-		io.MouseWheel += (float)event->wheel.y;
+#if SDL_VERSION_ATLEAST(2, 0, 18)
+	// CS:GOs SDL is 2.0.15, however we can't realistically expect users to download this ancient version, so just do this
+	// preciseX/Y got introduced in 2.0.18
+	if (event->type == SDL_MOUSEWHEEL) {
+		SDL_MouseWheelEvent sdlMouseWheelEvent{};
+		sdlMouseWheelEvent.type = SDL_MOUSEWHEEL;
+		sdlMouseWheelEvent.preciseX = (float)event->wheel.x;
+		sdlMouseWheelEvent.preciseY = (float)event->wheel.y;
+		SDL_Event newEvent;
+		newEvent.wheel = sdlMouseWheelEvent;
+		ImGui_ImplSDL2_ProcessEvent(&newEvent);
 	} else
+#endif
 		ImGui_ImplSDL2_ProcessEvent(event);
-
-	if (event->type == SDL_TEXTINPUT)
-		lastTextInput = event->text.timestamp;
 
 	return visible;
 }
 
-bool Gui::warpMouseInWindow()
+bool Gui::warpMouseInWindow(int x, int y)
 {
+	if (!visible) {
+		ImGuiIO& io = ImGui::GetIO();
+		io.MousePos.x = (float)x;
+		io.MousePos.y = (float)y;
+	}
 	return visible;
 }
