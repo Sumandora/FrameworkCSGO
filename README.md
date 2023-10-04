@@ -3,8 +3,6 @@ A fully-featured training software for Counter Strike: Global Offensive, made fo
 ### WARNING: This program is being detected by Valve. Usage on official, custom or private servers will most likely result in punishment from Valve!
 ## Installation
 
-Gentoo/Portage Users might want to use [this](https://github.com/Sumandora/portage-framework) ebuild repository.
-
 ### Dependencies
 **Ubuntu / Debian / Linux Mint**
 ```sh
