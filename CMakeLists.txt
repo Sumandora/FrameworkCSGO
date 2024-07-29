@@ -85,7 +85,7 @@ include(FetchContent)
 FetchContent_Declare(bcrl
 	GIT_REPOSITORY https://github.com/Sumandora/bcrl
 	GIT_PROGRESS TRUE
-	GIT_TAG f826973)
+	GIT_TAG f826973-gcc-14)
 FetchContent_MakeAvailable(bcrl)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE bcrl)
 
